@@ -25,7 +25,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel
+from qt_api import QWidget, QHBoxLayout, QPushButton, QLabel
 
 
 class HiddenTitleBar(QWidget):

@@ -38,9 +38,9 @@ from operator import itemgetter
 from random import uniform
 
 import openshot
-from PyQt5.QtCore import pyqtSlot, Qt, QCoreApplication, QTimer, pyqtSignal, QPointF
-from PyQt5.QtGui import QCursor, QKeySequence
-from PyQt5.QtWidgets import QDialog
+from qt_api import pyqtSlot, Qt, QCoreApplication, QTimer, pyqtSignal, QPointF
+from qt_api import QCursor, QKeySequence
+from qt_api import QDialog
 
 from classes import info, updates
 from classes.app import get_app

@@ -29,9 +29,9 @@ import os
 import functools
 import json
 
-from PyQt5.QtCore import pyqtSignal, QTimer
-from PyQt5.QtWidgets import QDialog, QMessageBox, QSizePolicy, QSlider
-from PyQt5.QtCore import Qt, QEvent
+from qt_api import pyqtSignal, QTimer
+from qt_api import QDialog, QMessageBox, QSizePolicy, QSlider
+from qt_api import Qt, QEvent
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes import info, ui_util, time_parts

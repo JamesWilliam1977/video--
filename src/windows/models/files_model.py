@@ -33,14 +33,14 @@ import glob
 import functools
 import uuid
 
-from PyQt5.QtCore import (
+from qt_api import (
     QMimeData, Qt, pyqtSignal, QEventLoop, QObject,
     QSortFilterProxyModel, QItemSelectionModel, QPersistentModelIndex, QModelIndex
 )
-from PyQt5.QtGui import (
+from qt_api import (
     QIcon, QStandardItem, QStandardItemModel
 )
-from PyQt5.QtWidgets import QAbstractItemView
+from qt_api import QAbstractItemView
 from classes import updates
 from classes import info
 from classes.image_types import get_media_type
@@ -653,7 +653,7 @@ class FilesModel(QObject, updates.UpdateInterface):
         if info.MODEL_TEST:
             try:
                 # Create model tester objects
-                from PyQt5.QtTest import QAbstractItemModelTester
+                from qt_api import QAbstractItemModelTester
                 self.model_tests = []
                 for m in [self.proxy_model, self.model]:
                     self.model_tests.append(

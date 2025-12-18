@@ -31,7 +31,7 @@ import os
 import re
 import fnmatch
 import sys
-from PyQt5.QtCore import QLocale, QLibraryInfo, QTranslator, QCoreApplication
+from qt_api import QLocale, QLibraryInfo, QTranslator, QCoreApplication
 
 
 # Get the absolute path of this project

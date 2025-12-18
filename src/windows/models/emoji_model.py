@@ -27,9 +27,8 @@
 
 import os
 
-from PyQt5.QtCore import QMimeData, Qt, QSortFilterProxyModel
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QIcon
-from PyQt5.QtWidgets import QMessageBox
+from qt_api import QMimeData, Qt, QSortFilterProxyModel, Signal, QRegularExpression, QMessageBox
+from qt_api import QStandardItemModel, QStandardItem, QIcon
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes import info
@@ -60,7 +59,33 @@ class EmojiStandardItemModel(QStandardItemModel):
         return data
 
 
-class EmojisModel():
+class EmojisModel(QSortFilterProxyModel):
+    ModelRefreshed = Signal()
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.model = EmojiStandardItemModel()
+        self.model.setColumnCount(3)
+        self.setSourceModel(self.model)
+        self.emoji_groups = []
+        self.model_paths = {}
+        # Configure proxy filtering/sorting
+        self.setDynamicSortFilter(True)
+        self.setFilterCaseSensitivity(Qt.CaseInsensitive)
+        self.setSortCaseSensitivity(Qt.CaseSensitive)
+        self.setSortLocaleAware(True)
+        self.setFilterKeyColumn(0)
+        self.group_filter = ""
+        self.text_regex = QRegularExpression()
+
+    def set_group_filter(self, group_id: str):
+        self.group_filter = group_id or ""
+        self.invalidateFilter()
+
+    def set_text_filter(self, pattern: str):
+        self.text_regex = QRegularExpression(pattern, QRegularExpression.CaseInsensitiveOption)
+        self.setFilterRegularExpression(self.text_regex)
+
     def update_model(self, clear=True):
         log.info("updating emoji model.")
         app = get_app()
@@ -172,43 +197,18 @@ class EmojisModel():
                     self.model.appendRow(row)
                     self.model_paths[path] = path
 
-    def __init__(self, *args):
+        self.ModelRefreshed.emit()
 
-        # Create standard model
-        self.app = get_app()
-        self.model = EmojiStandardItemModel()
-        self.model.setColumnCount(3)
-        self.model_paths = {}
-        self.emoji_groups = []
+    def filterAcceptsRow(self, source_row, source_parent):
+        if self.group_filter:
+            group_idx = self.sourceModel().index(source_row, 2, source_parent)
+            if self.sourceModel().data(group_idx) != self.group_filter:
+                return False
 
-        # Create proxy models (for grouping, sorting and filtering)
-        self.group_model = QSortFilterProxyModel()
-        self.group_model.setDynamicSortFilter(True)
-        self.group_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        self.group_model.setSortCaseSensitivity(Qt.CaseSensitive)
-        self.group_model.setSourceModel(self.model)
-        self.group_model.setSortLocaleAware(True)
-        self.group_model.setFilterKeyColumn(1)
+        regex = self.filterRegularExpression()
+        if regex.pattern():
+            name_idx = self.sourceModel().index(source_row, 0, source_parent)
+            value = self.sourceModel().data(name_idx)
+            return regex.match(value).hasMatch()
 
-        self.proxy_model = QSortFilterProxyModel()
-        self.proxy_model.setDynamicSortFilter(True)
-        self.proxy_model.setFilterCaseSensitivity(Qt.CaseInsensitive)
-        self.proxy_model.setSortCaseSensitivity(Qt.CaseSensitive)
-        self.proxy_model.setSourceModel(self.group_model)
-        self.proxy_model.setSortLocaleAware(True)
-
-        # Attempt to load model testing interface, if requested
-        # (will only succeed with Qt 5.11+)
-        if info.MODEL_TEST:
-            try:
-                # Create model tester objects
-                from PyQt5.QtTest import QAbstractItemModelTester
-                self.model_tests = []
-                for m in [self.proxy_model, self.group_model, self.model]:
-                    self.model_tests.append(
-                        QAbstractItemModelTester(
-                            m, QAbstractItemModelTester.FailureReportingMode.Warning)
-                    )
-                log.info("Enabled {} model tests for emoji data".format(len(self.model_tests)))
-            except ImportError:
-                pass
+        return True

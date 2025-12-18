@@ -28,7 +28,7 @@
 import os
 
 import openshot
-from PyQt5.QtWidgets import QDialog, QMessageBox
+from qt_api import QDialog, QMessageBox
 from classes import ui_util, info
 from classes.app import get_app
 from classes.logger import log

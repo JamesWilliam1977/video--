@@ -31,8 +31,8 @@ import uuid
 from operator import itemgetter
 from random import shuffle, randint, uniform
 
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtGui import QIcon
+from qt_api import QDialog
+from qt_api import QIcon
 
 from classes import info, ui_util, time_parts
 from classes.logger import log

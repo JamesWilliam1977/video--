@@ -29,9 +29,9 @@
 
 import os
 
-from PyQt5.QtCore import QSize, Qt, QPoint
-from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon
-from PyQt5.QtWidgets import QTreeView, QAbstractItemView, QSizePolicy, QHeaderView
+from qt_api import QSize, Qt, QPoint
+from qt_api import QDrag, QCursor, QPixmap, QPainter, QIcon
+from qt_api import QTreeView, QAbstractItemView, QSizePolicy, QHeaderView
 
 from classes import info
 from classes.app import get_app

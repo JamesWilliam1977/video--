@@ -27,11 +27,11 @@
 
 import functools
 
-from PyQt5.QtCore import Qt, QPoint, QRectF, QTimer, QObject, QRect
-from PyQt5.QtGui import (
+from qt_api import Qt, QPoint, QRectF, QTimer, QObject, QRect
+from qt_api import (
     QColor, QPalette, QPen, QPainter, QPainterPath, QKeySequence,
 )
-from PyQt5.QtWidgets import (
+from qt_api import (
     QAction, QLabel, QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QToolButton, QCheckBox,
 )

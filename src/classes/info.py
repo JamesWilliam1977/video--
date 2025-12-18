@@ -80,7 +80,7 @@ _path_defaults = {
 }
 
 try:
-    from PyQt5.QtCore import QSize
+    from qt_api import QSize
 
     # UI Thumbnail settings
     LIST_ICON_SIZE = QSize(100, 65)
@@ -88,6 +88,10 @@ try:
     TREE_ICON_SIZE = QSize(75, 49)
     EMOJI_ICON_SIZE = QSize(75, 75)
     EMOJI_GRID_SIZE = EMOJI_ICON_SIZE + QSize(5, 25)
+    # Runtime emoji selections
+    EMOJI_FILES = {}
+    EMOJI_PATH = ""
+    EMOJI_ICON = ""
 except ImportError:
     # Fail gracefully if we're running without PyQt5 (e.g. CI tasks)
     print("Failed to import `PyQt5.QtCore.QSize` (ignoring exception)")
@@ -143,7 +147,7 @@ except ImportError:
 
 # Compile language list from :/locale resource
 try:
-    from PyQt5.QtCore import QDir
+    from qt_api import QDir
     langdir = QDir(language_path)
     trpaths = langdir.entryList(
         ['OpenShot_*.qm'],

@@ -26,9 +26,9 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import QSize, Qt, QPoint, QRegularExpression
-from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon
-from PyQt5.QtWidgets import QListView, QAbstractItemView
+from qt_api import QSize, Qt, QPoint, QRegularExpression
+from qt_api import QDrag, QCursor, QPixmap, QPainter, QIcon
+from qt_api import QListView, QAbstractItemView
 
 from classes import info
 from classes.app import get_app

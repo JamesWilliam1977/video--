@@ -26,11 +26,19 @@
  """
 
 import time
-import sip
 import math
+try:
+    import sip  # PyQt5
+except ImportError:
+    try:
+        from PyQt5 import sip  # type: ignore
+    except Exception:
+        try:
+            from PyQt6 import sip  # type: ignore
+        except Exception:
+            sip = None
 
-from PyQt5.QtCore import QObject, QThread, QTimer, pyqtSlot, pyqtSignal, QCoreApplication
-from PyQt5.QtWidgets import QMessageBox
+from qt_api import QObject, QThread, QTimer, pyqtSlot, pyqtSignal, QCoreApplication
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes.app import get_app

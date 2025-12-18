@@ -26,8 +26,8 @@
  """
 
 import uuid
-from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtWidgets import QApplication
+from qt_api import Qt, QRectF
+from qt_api import QApplication
 from classes.app import get_app
 from classes.query import Clip, Transition
 from classes.waveform import SAMPLES_PER_SECOND as WAVEFORM_SAMPLES_PER_SECOND

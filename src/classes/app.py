@@ -34,8 +34,8 @@ import platform
 import traceback
 import json
 
-from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, pyqtSlot
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from qt_api import QT_API, QT_VERSION_STR, BINDING_VERSION_STR, Slot
+from qt_api import QApplication, QMessageBox
 
 # Disable sandbox support for QtWebEngine (required on some Linux distros
 # for the QtWebEngineWidgets to be rendered, otherwise no timeline is visible).
@@ -169,8 +169,7 @@ class OpenShotApp(QApplication):
             log.info("processor: %s" % platform.processor())
             log.info("machine: %s" % platform.machine())
             log.info("python version: %s" % platform.python_version())
-            log.info("qt5 version: %s" % QT_VERSION_STR)
-            log.info("pyqt5 version: %s" % PYQT_VERSION_STR)
+            log.info("qt binding: %s (Qt %s, binding %s)" % (QT_API, QT_VERSION_STR, BINDING_VERSION_STR))
 
             # Look for frozen version info
             version_path = os.path.join(info.PATH, "settings", "version.json")
@@ -335,7 +334,7 @@ class OpenShotApp(QApplication):
     def _tr(self, message):
         return self.translate("", message)
 
-    @pyqtSlot()
+    @Slot()
     def cleanup(self):
         """aboutToQuit signal handler for application exit"""
         self.log.debug("Saving settings in app.cleanup")

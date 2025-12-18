@@ -30,14 +30,14 @@ import math
 import time
 import uuid
 
-from PyQt5.QtCore import (
+from qt_api import (
     Qt, QCoreApplication, QMutex, QTimer,
     QPoint, QPointF, QSize, QSizeF, QRect, QRectF,
 )
-from PyQt5.QtGui import (
+from qt_api import (
     QTransform, QPainter, QIcon, QColor, QPen, QBrush, QCursor, QImage, QRegion
 )
-from PyQt5.QtWidgets import QSizePolicy, QWidget, QPushButton
+from qt_api import QSizePolicy, QWidget, QPushButton
 
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 

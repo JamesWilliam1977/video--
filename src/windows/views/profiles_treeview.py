@@ -25,9 +25,9 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import Qt, QItemSelectionModel, QRegularExpression, pyqtSignal, QTimer
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QListView, QTreeView, QAbstractItemView, QSizePolicy, QAction
+from qt_api import Qt, QItemSelectionModel, QRegularExpression, pyqtSignal, QTimer
+from qt_api import QIcon
+from qt_api import QListView, QTreeView, QAbstractItemView, QSizePolicy, QAction
 
 from classes.app import get_app
 from windows.models.profiles_model import ProfilesModel

@@ -72,8 +72,10 @@ scale = max(1.0, min(3.0, scale))
 if scale != 1.0:
     os.environ["QT_SCALE_FACTOR"] = str(scale)
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
+from qt_api import QtCore, QtWidgets, QtWebEngineWidgets, QT_API
+
+Qt = QtCore.Qt
+QApplication = QtWidgets.QApplication
 
 try:
     # This apparently has to be done before loading QtQuick
@@ -86,8 +88,8 @@ except (ImportError, AttributeError):
 try:
     # QtWebEngineWidgets must be loaded prior to creating a QApplication
     # But on systems with only WebKit, this will fail (and we ignore the failure)
-    from PyQt5 import QtWebEngineWidgets
-    WebEngineView = QtWebEngineWidgets.QWebEngineView
+    if QtWebEngineWidgets:
+        WebEngineView = QtWebEngineWidgets.QWebEngineView
 except ImportError:
     pass
 

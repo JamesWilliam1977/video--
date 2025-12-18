@@ -25,8 +25,8 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import Qt, QSortFilterProxyModel
-from PyQt5.QtGui import QStandardItemModel, QStandardItem
+from qt_api import Qt, QSortFilterProxyModel
+from qt_api import QStandardItemModel, QStandardItem
 
 from classes.logger import log
 from classes.app import get_app

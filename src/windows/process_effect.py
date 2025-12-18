@@ -31,9 +31,9 @@ import json
 import functools
 import webbrowser
 
-from PyQt5.QtCore import Qt, pyqtSignal, QCoreApplication
-from PyQt5.QtGui import QPainter
-from PyQt5.QtWidgets import QPushButton, QDialog, QLabel, QDoubleSpinBox, QSpinBox, QLineEdit, QCheckBox, QComboBox, QDialogButtonBox, QSizePolicy
+from qt_api import Qt, pyqtSignal, QCoreApplication
+from qt_api import QPainter
+from qt_api import QPushButton, QDialog, QLabel, QDoubleSpinBox, QSpinBox, QLineEdit, QCheckBox, QComboBox, QDialogButtonBox, QSizePolicy
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes import info

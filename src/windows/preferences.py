@@ -31,14 +31,14 @@ import operator
 import functools
 import platform
 
-from PyQt5.QtCore import Qt, QSize, QDir
-from PyQt5.QtWidgets import (
+from qt_api import Qt, QSize, QDir
+from qt_api import (
     QWidget, QDialog, QMessageBox, QFileDialog,
     QVBoxLayout, QHBoxLayout, QSizePolicy,
     QScrollArea, QLabel, QLineEdit, QPushButton,
     QDoubleSpinBox, QComboBox, QCheckBox, QSpinBox, QStyle,
 )
-from PyQt5.QtGui import QKeySequence, QIcon
+from qt_api import QKeySequence, QIcon
 
 from classes import info, ui_util
 from classes import openshot_rc  # noqa

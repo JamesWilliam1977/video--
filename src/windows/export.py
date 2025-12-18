@@ -42,11 +42,11 @@ except ImportError:
 
 from xml.parsers.expat import ExpatError
 
-from PyQt5.QtCore import Qt, QCoreApplication, QTimer, QSize, pyqtSignal, pyqtSlot
-from PyQt5.QtWidgets import (
+from qt_api import Qt, QCoreApplication, QTimer, QSize, pyqtSignal, pyqtSlot
+from qt_api import (
     QMessageBox, QDialog, QFileDialog, QDialogButtonBox, QPushButton, QWidget, QLineEdit, QComboBox, QSpinBox, QCheckBox
 )
-from PyQt5.QtGui import QIcon
+from qt_api import QIcon
 from functools import partial
 from classes import info
 from classes import ui_util
@@ -1207,7 +1207,7 @@ class Export(QDialog):
             self.close_button.setVisible(True)
 
             # Make progress bar green (to indicate we are done)
-            from PyQt5.QtGui import QPalette
+            from qt_api import QPalette
             p = QPalette()
             p.setColor(QPalette.Highlight, Qt.green)
             self.progressExportVideo.setPalette(p)

@@ -36,11 +36,11 @@ try:
 except ImportError:
     from xml.etree import ElementTree
 
-from PyQt5.QtCore import Qt, QDir, QLocale
-from PyQt5.QtGui import QIcon, QPalette, QColor
-from PyQt5.QtWidgets import (
+from qt_api import Qt, QDir, QLocale
+from qt_api import QIcon, QPalette, QColor
+from qt_api import (
     QApplication, QWidget, QTabWidget, QAction)
-from PyQt5 import uic
+from qt_api import uic
 
 from classes.app import get_app
 from classes.logger import log

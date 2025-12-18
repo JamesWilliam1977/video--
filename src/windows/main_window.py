@@ -41,11 +41,11 @@ import zipfile
 import threading
 
 import openshot  # Python module for libopenshot (required video editing module installed separately)
-from PyQt5.QtCore import (
+from qt_api import (
     Qt, pyqtSignal, pyqtSlot, QCoreApplication, QTimer, QDateTime, QFileInfo, QEvent, QUrl
 )
-from PyQt5.QtGui import QIcon, QCursor, QKeySequence, QTextCursor
-from PyQt5.QtWidgets import (
+from qt_api import QIcon, QCursor, QKeySequence, QTextCursor
+from qt_api import (
     QMainWindow, QWidget, QDockWidget,
     QMessageBox, QDialog, QFileDialog, QInputDialog,
     QAction, QActionGroup, QSizePolicy,

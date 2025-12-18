@@ -28,25 +28,16 @@
 import json
 from functools import partial
 
-from PyQt5.QtCore import (
-    Qt,
-    QRectF,
-    QSize,
-    QTimer,
-    QPointF,
-    QSignalTransition,
-    QByteArray,
-    pyqtSignal,
-    QObject,
-    QMetaMethod,
-)
-from PyQt5.QtGui import (
+from qt_api import Qt, QRectF, QSize, QTimer, QPointF, QByteArray, pyqtSignal, QObject, QMetaMethod
+from qt_api import QtCore
+from qt_api import QtCore
+from qt_api import (
     QPainter,
     QCursor,
     QIcon,
     QColor,
 )
-from PyQt5.QtWidgets import QSizePolicy, QWidget
+from qt_api import QSizePolicy, QWidget
 
 from ..geometry import Geometry
 from ..paint import (
@@ -104,7 +95,7 @@ def _collect_signal_signatures(qobject_type):
 _TIMELINE_EVENT_SIGNATURES = _collect_signal_signatures(TimelineEvents)
 
 
-class _ConditionalTransition(QSignalTransition):
+class _ConditionalTransition(QtCore.QSignalTransition):
     def __init__(self, sender, signal_bytes, source_state, target_state, condition):
         """Create a QSignalTransition that evaluates a condition before firing."""
 
@@ -480,7 +471,7 @@ class TimelineWidgetBase(QWidget):
         return self.events, self._event_signal_bytes(name)
 
     def _add_simple_transition(self, source_state, sender, sig_bytes, target_state):
-        t = QSignalTransition(source_state)
+        t = QtCore.QSignalTransition(source_state)
         normalized = _normalize_signal_bytes(sig_bytes)
         t.setSenderObject(sender)
         t.setSignal(QByteArray(normalized))

@@ -30,8 +30,8 @@ import functools
 
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
-from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QDialog, QSizePolicy, QDialogButtonBox
+from qt_api import QTimer
+from qt_api import QDialog, QSizePolicy, QDialogButtonBox
 
 from classes import info, ui_util
 from classes.app import get_app

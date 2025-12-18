@@ -28,7 +28,7 @@
 import os
 import json
 
-from PyQt5.QtWidgets import (
+from qt_api import (
     QDialog, QFileDialog, QDialogButtonBox, QPushButton,
     )
 

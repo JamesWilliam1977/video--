@@ -40,9 +40,9 @@ import time
 # Is one even necessary, or is it safe to use xml.dom.minidom for that?
 from xml.dom import minidom
 
-from PyQt5.QtCore import Qt, pyqtSlot, QTimer, pyqtSignal, QRect, QPoint, QSize, QEvent
-from PyQt5.QtGui import QFontDatabase, QColor, QIcon, QFont, QFontInfo, QPixmap, QPainter
-from PyQt5.QtWidgets import (
+from qt_api import Qt, pyqtSlot, QTimer, pyqtSignal, QRect, QPoint, QSize, QEvent
+from qt_api import QFontDatabase, QColor, QIcon, QFont, QFontInfo, QPixmap, QPainter
+from qt_api import (
     QWidget,
     QMessageBox, QDialog, QColorDialog, QFontDialog,
     QPushButton, QLineEdit, QLabel, QDialogButtonBox

@@ -25,10 +25,9 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import QMimeData, QSize, QPoint, Qt, pyqtSlot, QRegularExpression
-from PyQt5.QtGui import QDrag
-from PyQt5.QtWidgets import QListView
-
+import os
+from qt_api import QMimeData, QSize, QPoint, Qt, pyqtSlot, QRegularExpression
+from qt_api import QDrag, QListView
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 from classes import info
 from classes.query import File
@@ -64,6 +63,9 @@ class EmojisListView(QListView):
         # Create emoji file before drag starts
         data = json.loads(drag.mimeData().text())
         file = self.add_file(data[0])
+        if not file:
+            log.warning("Failed to add emoji file for drag: %s", data[0])
+            return
 
         # Update mimedata for emoji
         data = QMimeData()
@@ -110,83 +112,75 @@ class EmojisListView(QListView):
             # Log exception
             log.warning("Failed to import file: {}".format(str(ex)))
 
-    @pyqtSlot(int)
-    def group_changed(self, index=-1):
-        emoji_group_name = get_app().window.emojiFilterGroup.itemText(index)
-        emoji_group_id = get_app().window.emojiFilterGroup.itemData(index)
-        self.group_model.setFilterFixedString(emoji_group_id)
-        self.group_model.setFilterKeyColumn(2)
 
-        # Save current emoji filter to settings
-        s = get_app().get_settings()
-        setting_emoji_group_id = s.get('emoji_group_filter') or 'smileys-emotion'
-        if setting_emoji_group_id != emoji_group_id:
-            s.set('emoji_group_filter', emoji_group_id)
+    def filter_changed(self, text):
+        self.model.set_text_filter(text)
 
-        self.refresh_view()
-
-    @pyqtSlot(str)
-    def filter_changed(self, filter_text=None):
-        """Filter emoji with proxy class"""
-
-        self.model.setFilterRegularExpression(QRegularExpression(filter_text, QRegularExpression.CaseInsensitiveOption))
-        self.model.setFilterKeyColumn(0)
-        self.refresh_view()
+    def group_changed(self, index):
+        group_id = self.win.emojiFilterGroup.itemData(index)
+        self.model.set_group_filter(group_id or "")
 
     def refresh_view(self):
-        # Sort by column 0
-        self.model.sort(0)
+        """Filter emojis with proxy class"""
 
-    def __init__(self, model):
+        col = self.model.sortColumn()
+        self.model.sort(col)
+
+    def resize_contents(self):
+        pass
+
+    @pyqtSlot()
+    def clicked(self, index):
+        """If any emoji clicked, set that emoji on the project"""
+        # Get selected emoji file_path
+        index = index.sibling(index.row(), 5)
+        file_path = self.model.data(index, Qt.DisplayRole)
+
+        # Add emoji to project (after checking if not found in project)
+        if file_path not in info.EMOJI_FILES:
+            self.add_file(file_path)
+
+        # Set emoji file in preferences (displayed on project actions)
+        info.PREFERENCES.set("emoji", file_path)
+        info.EMOJI_PATH = file_path
+        info.EMOJI_ICON = file_path
+
+    def __init__(self, model, *args):
         # Invoke parent init
-        QListView.__init__(self)
+        super().__init__(*args)
 
-        # Get external references
-        app = get_app()
-        _ = app._tr
-        self.win = app.window
+        # Get a reference to the window object
+        self.win = get_app().window
 
-        # Get Model data
-        self.emojis_model = model
-        self.group_model = self.emojis_model.group_model
-        self.model = self.emojis_model.proxy_model
+        # Set model (expects a proxy model)
+        self.model = model
+        self.setModel(self.model)
+
+        # Configure selection behavior
+        self.setSelectionMode(QListView.ExtendedSelection)
+        self.setSelectionBehavior(QListView.SelectRows)
 
         # Keep track of mouse press start position to determine when to start drag
         self.setAcceptDrops(True)
         self.setDragEnabled(True)
         self.setDropIndicatorShown(True)
 
-        # Setup header columns
-        self.setModel(self.model)
-        self.setIconSize(info.EMOJI_ICON_SIZE)
-        self.setGridSize(info.EMOJI_GRID_SIZE)
+        # Setup header columns and layout
+        self.setIconSize(info.LIST_ICON_SIZE)
+        self.setGridSize(info.LIST_GRID_SIZE)
         self.setViewMode(QListView.IconMode)
         self.setResizeMode(QListView.Adjust)
         self.setUniformItemSizes(True)
-        self.setWordWrap(False)
         self.setStyleSheet('QListView::item { padding-top: 2px; }')
+        self.setWordWrap(False)
+        self.setTextElideMode(Qt.ElideRight)
 
-        # Initialize sort
-        self.refresh_view()
-
-        # Get default emoji filter group
-        s = get_app().get_settings()
-        default_group_id = s.get('emoji_group_filter') or 'smileys-emotion'
-
-        # setup filter events
+        self.model.ModelRefreshed.connect(self.refresh_view)
+        # Activate filter and group selection
+        _ = get_app()._tr
         self.win.emojisFilter.textChanged.connect(self.filter_changed)
-
-        # Loop through emoji groups, and populate emoji filter drop-down
         self.win.emojiFilterGroup.clear()
-        self.win.emojiFilterGroup.addItem(_("Show All"), "")
-        dropdown_index = 0
-        for index, emoji_group_tuple in enumerate(sorted(self.emojis_model.emoji_groups)):
-            emoji_group_name, emoji_group_id = emoji_group_tuple
-            self.win.emojiFilterGroup.addItem(emoji_group_name, emoji_group_id)
-            if emoji_group_id == default_group_id:
-                # Initialize emoji filter group to settings
-                # Off by one, due to 'show all' choice above
-                dropdown_index = index + 1
-
+        self.win.emojiFilterGroup.addItem(_("All"), "")
+        for name, group_id in sorted(self.model.emoji_groups, key=lambda g: g[0]):
+            self.win.emojiFilterGroup.addItem(name, group_id)
         self.win.emojiFilterGroup.currentIndexChanged.connect(self.group_changed)
-        self.win.emojiFilterGroup.setCurrentIndex(dropdown_index)

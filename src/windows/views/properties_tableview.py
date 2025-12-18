@@ -29,15 +29,25 @@ import os
 import json
 import functools
 from operator import itemgetter
-import sip
 import uuid
+try:
+    import sip  # PyQt5
+except ImportError:
+    try:
+        from PyQt5 import sip  # type: ignore
+    except Exception:
+        try:
+            from PyQt6 import sip  # type: ignore
+        except Exception:
+            # Defer failure to later use-sites for clearer traceback
+            sip = None
 
-from PyQt5.QtCore import Qt, QRectF, QLocale, pyqtSignal, pyqtSlot, QEvent, QPoint
-from PyQt5.QtGui import (
+from qt_api import Qt, QRectF, QLocale, pyqtSignal, pyqtSlot, QEvent, QPoint
+from qt_api import (
     QIcon, QColor, QBrush, QPen, QPalette, QPixmap,
     QPainter, QPainterPath, QLinearGradient, QFont, QFontInfo, QCursor,
 )
-from PyQt5.QtWidgets import (
+from qt_api import (
     QTableView, QAbstractItemView, QSizePolicy,
     QHeaderView, QItemDelegate, QStyle, QLabel,
     QPushButton, QHBoxLayout, QFrame, QFontDialog

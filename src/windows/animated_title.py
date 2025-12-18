@@ -29,7 +29,7 @@
 import os
 import uuid
 
-from PyQt5.QtWidgets import (
+from qt_api import (
     QApplication, QDialog, QDialogButtonBox, QPushButton
 )
 

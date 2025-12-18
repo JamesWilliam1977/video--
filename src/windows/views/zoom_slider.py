@@ -27,13 +27,13 @@
 import copy
 import math
 
-from PyQt5.QtCore import (
+from qt_api import (
     Qt, QCoreApplication, QRectF, QTimer, QSize
 )
-from PyQt5.QtGui import (
+from qt_api import (
     QPainter, QColor, QPen, QBrush, QCursor, QPainterPath, QIcon
 )
-from PyQt5.QtWidgets import QSizePolicy, QWidget
+from qt_api import QSizePolicy, QWidget
 
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 

@@ -28,7 +28,7 @@
 
 import os
 
-from PyQt5.QtWidgets import QDialog
+from qt_api import QDialog
 
 from classes import info, ui_util
 from classes.app import get_app

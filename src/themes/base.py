@@ -27,10 +27,10 @@
 import os
 import re
 
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QColor, QIcon, QPixmap, QPainter
-from PyQt5.QtSvg import QSvgRenderer
-from PyQt5.QtWidgets import QTabWidget, QWidget, QSizePolicy
+from qt_api import Qt, QSize
+from qt_api import QColor, QIcon, QPixmap, QPainter
+from qt_api import QSvgRenderer
+from qt_api import QTabWidget, QWidget, QSizePolicy
 
 from classes import ui_util
 from classes.info import PATH
@@ -194,7 +194,7 @@ class BaseTheme:
         # Apply the stylesheet to the entire application
         from classes import info
         from classes.logger import log
-        from PyQt5.QtGui import QFont, QFontDatabase
+        from qt_api import QFont, QFontDatabase
 
         if not self.app.theme_manager:
             log.warning("ThemeManager not initialized yet. Skip applying a theme.")

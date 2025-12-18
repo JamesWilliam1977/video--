@@ -33,11 +33,11 @@ import unittest
 
 import openshot
 
-from PyQt5.QtGui import QGuiApplication
+from qt_api import QGuiApplication
 try:
     # QtWebEngineWidgets must be loaded prior to creating a QApplication
     # But on systems with only WebKit, this will fail (and we ignore the failure)
-    from PyQt5.QtWebEngineWidgets import QWebEngineView  # noqa
+    from qt_api import QWebEngineView  # noqa
 except ImportError:
     pass
 

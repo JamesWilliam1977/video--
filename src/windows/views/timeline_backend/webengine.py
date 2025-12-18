@@ -33,10 +33,10 @@ from functools import partial
 from classes import info
 from classes.logger import log
 
-from PyQt5.QtCore import QFileInfo, QUrl, Qt, QTimer
-from PyQt5.QtGui import QColor
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
-from PyQt5.QtWebChannel import QWebChannel
+from qt_api import QFileInfo, QUrl, Qt, QTimer
+from qt_api import QColor
+from qt_api import QWebEngineView, QWebEnginePage
+from qt_api import QWebChannel
 
 
 class LoggingWebEnginePage(QWebEnginePage):

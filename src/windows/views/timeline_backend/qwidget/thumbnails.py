@@ -27,7 +27,7 @@
 
 from collections import deque
 
-from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
+from qt_api import QObject, QThread, pyqtSignal, pyqtSlot
 
 from classes.logger import log
 from classes.thumbnail import GetThumbPath

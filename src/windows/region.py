@@ -30,8 +30,8 @@ import sys
 import functools
 import math
 
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from qt_api import *
+from qt_api import *
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes import info, ui_util, time_parts, qt_types, updates

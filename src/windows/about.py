@@ -30,8 +30,8 @@ import os
 import codecs
 import re
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QDialog
+from qt_api import Qt, pyqtSignal
+from qt_api import QDialog
 
 from classes import info, ui_util
 from classes.logger import log
