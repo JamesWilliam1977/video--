@@ -25,7 +25,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import QSize, QPoint, Qt, QRegExp
+from PyQt5.QtCore import QSize, QPoint, Qt, QRegularExpression
 from PyQt5.QtGui import QDrag
 from PyQt5.QtWidgets import QListView, QAbstractItemView
 
@@ -81,7 +81,7 @@ class EffectsListView(QListView):
     def refresh_view(self):
         """Filter transitions with proxy class"""
         filter_text = self.win.effectsFilter.text()
-        self.model().setFilterRegExp(QRegExp(filter_text.replace(' ', '.*')))
+        self.model().setFilterRegularExpression(QRegularExpression(filter_text.replace(' ', '.*')))
         self.model().setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.model().sort(Qt.AscendingOrder)
 

@@ -26,7 +26,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import QSize, Qt, QPoint, QRegExp
+from PyQt5.QtCore import QSize, Qt, QPoint, QRegularExpression
 from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon
 from PyQt5.QtWidgets import QListView, QAbstractItemView
 
@@ -214,7 +214,11 @@ class FilesListView(QListView):
         """Filter files with proxy class"""
         model = self.model()
         filter_text = self.win.filesFilter.text()
-        model.setFilterRegExp(QRegExp(filter_text.replace(' ', '.*'), Qt.CaseInsensitive))
+        regex = QRegularExpression(
+            filter_text.replace(' ', '.*'),
+            QRegularExpression.CaseInsensitiveOption,
+        )
+        model.setFilterRegularExpression(regex)
 
         col = model.sortColumn()
         model.sort(col)

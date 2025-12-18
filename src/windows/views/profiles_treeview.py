@@ -25,7 +25,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import Qt, QItemSelectionModel, QRegExp, pyqtSignal, QTimer
+from PyQt5.QtCore import Qt, QItemSelectionModel, QRegularExpression, pyqtSignal, QTimer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QListView, QTreeView, QAbstractItemView, QSizePolicy, QAction
 
@@ -59,7 +59,7 @@ class ProfilesTreeView(QTreeView):
         """Filter transitions with proxy class"""
         self.is_filter_running = True
         self.model().setFilterCaseSensitivity(Qt.CaseInsensitive)
-        self.model().setFilterRegExp(QRegExp(filter_text.lower()))
+        self.model().setFilterRegularExpression(QRegularExpression(filter_text.lower()))
         self.model().sort(Qt.DescendingOrder)
 
         # Format columns

@@ -79,8 +79,11 @@ class FileFilterProxyModel(QSortFilterProxyModel):
             ]):
                 return False
 
-            # Match against regex pattern
-            return self.filterRegExp().indexIn(file_name) >= 0 or self.filterRegExp().indexIn(tags) >= 0
+            # Match against regex pattern (Qt6-compatible)
+            regex = self.filterRegularExpression()
+            if regex.pattern():
+                return regex.match(file_name).hasMatch() or regex.match(tags).hasMatch()
+            return True
 
         # Continue running built-in parent filter logic
         return super().filterAcceptsRow(sourceRow, sourceParent)

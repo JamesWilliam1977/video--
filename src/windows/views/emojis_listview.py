@@ -25,7 +25,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import QMimeData, QSize, QPoint, Qt, pyqtSlot, QRegExp
+from PyQt5.QtCore import QMimeData, QSize, QPoint, Qt, pyqtSlot, QRegularExpression
 from PyQt5.QtGui import QDrag
 from PyQt5.QtWidgets import QListView
 
@@ -129,7 +129,7 @@ class EmojisListView(QListView):
     def filter_changed(self, filter_text=None):
         """Filter emoji with proxy class"""
 
-        self.model.setFilterRegExp(QRegExp(filter_text, Qt.CaseInsensitive))
+        self.model.setFilterRegularExpression(QRegularExpression(filter_text, QRegularExpression.CaseInsensitiveOption))
         self.model.setFilterKeyColumn(0)
         self.refresh_view()
 

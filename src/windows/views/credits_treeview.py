@@ -27,7 +27,7 @@
  """
 
 import webbrowser
-from PyQt5.QtCore import Qt, QRegExp
+from PyQt5.QtCore import Qt, QRegularExpression
 from PyQt5.QtWidgets import QListView, QTreeView, QAbstractItemView, QSizePolicy, QHeaderView, QApplication
 from PyQt5.QtGui import QCursor
 from functools import partial
@@ -64,7 +64,7 @@ class CreditsTreeView(QTreeView):
 
     def filter_changed(self, text=""):
         """Apply filter text to proxy model"""
-        self.model().setFilterRegExp(QRegExp(text, Qt.CaseInsensitive))
+        self.model().setFilterRegularExpression(QRegularExpression(text, QRegularExpression.CaseInsensitiveOption))
         self.model().setFilterKeyColumn(-1)
         self.model().sort(2, Qt.AscendingOrder)
 
