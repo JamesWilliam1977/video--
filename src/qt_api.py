@@ -1,9 +1,9 @@
 """
 Centralized Qt binding loader for OpenShot.
 
-Selects an available binding (PyQt6/PySide6/PyQt5/PySide2) using the
+Selects an available binding (PyQt6/PySide6/PyQt5) using the
 `OPENSHOT_QT_API` env var (`auto` default, otherwise one of
-`pyqt6|pyside6|pyqt5|pyside2`). Logs the selection attempts, failures,
+`pyqt6|pyside6|pyqt5`). Logs the selection attempts, failures,
 and final choice to help diagnose environment issues.
 """
 
@@ -48,12 +48,6 @@ def _load_sip_like():
     if QT_API == "pyside6":
         try:
             import shiboken6 as shiboken_mod  # type: ignore
-        except Exception:
-            shiboken_mod = None
-        return ("shiboken", shiboken_mod)
-    if QT_API == "pyside2":
-        try:
-            import shiboken2 as shiboken_mod  # type: ignore
         except Exception:
             shiboken_mod = None
         return ("shiboken", shiboken_mod)
@@ -1106,9 +1100,9 @@ def _patch_enums_for_qt6():
 def _binding_order(env_value: str) -> List[str]:
     """Compute binding preference order based on env."""
     value = (env_value or "auto").strip().lower()
-    if value in ("pyqt6", "pyside6", "pyqt5", "pyside2"):
+    if value in ("pyqt6", "pyside6", "pyqt5"):
         return [value]
-    return ["pyqt6", "pyside6", "pyqt5", "pyside2"]
+    return ["pyqt6", "pyside6", "pyqt5"]
 
 
 def _import_binding(name: str) -> Tuple:
@@ -1273,63 +1267,6 @@ def _import_binding(name: str) -> Tuple:
             QtCoreMod.PYQT_VERSION_STR,
         )
 
-    if name == "pyside2":
-        import PySide2.QtCore as QtCoreMod
-        import PySide2.QtGui as QtGuiMod
-        import PySide2.QtWidgets as QtWidgetsMod
-        QtUiToolsMod = None
-        try:
-            import PySide2.QtStateMachine as QtStateMachineMod  # type: ignore
-            q_state = getattr(QtStateMachineMod, "QState", None)
-            q_state_machine = getattr(QtStateMachineMod, "QStateMachine", None)
-        except Exception:
-            QtStateMachineMod = None
-            q_state = getattr(QtCoreMod, "QState", None)
-            q_state_machine = getattr(QtCoreMod, "QStateMachine", None)
-        if q_state is None or q_state_machine is None:
-            raise ImportError("PySide2 QtStateMachine module not available (QState/QStateMachine missing)")
-
-        QtSvgMod = None
-        QtWebEngineCoreMod = None
-        QtWebEngineWidgetsMod = None
-        QtWebChannelMod = None
-        QtWebKitWidgetsMod = None
-        try:
-            import PySide2.QtSvg as QtSvgMod  # type: ignore
-        except Exception:
-            pass
-        try:
-            import PySide2.QtWebEngineCore as QtWebEngineCoreMod  # type: ignore
-            import PySide2.QtWebEngineWidgets as QtWebEngineWidgetsMod  # type: ignore
-            import PySide2.QtWebChannel as QtWebChannelMod  # type: ignore
-        except Exception:
-            pass
-        try:
-            import PySide2.QtWebKitWidgets as QtWebKitWidgetsMod  # type: ignore
-        except Exception:
-            pass
-        return (
-            "pyside2",
-            QtCoreMod,
-            QtGuiMod,
-            QtWidgetsMod,
-            QtSvgMod,
-            QtWebEngineCoreMod,
-            QtWebEngineWidgetsMod,
-            QtWebChannelMod,
-            QtWebKitWidgetsMod,
-            QtCoreMod.Signal,
-            QtCoreMod.Slot,
-            QtCoreMod.Property,
-            QtCoreMod.QRegularExpression,
-            q_state,
-            q_state_machine,
-            QtUiToolsMod,
-            QtCoreMod.__version__,
-            QtCoreMod.__version__,
-            QtCoreMod.__version__,
-        )
-
     raise ImportError(f"Unknown binding '{name}'")
 
 
@@ -1425,7 +1362,9 @@ def load_ui(path: str, baseinstance=None):
     # PySide
     from importlib import import_module
 
-    QtUiTools = import_module("PySide6.QtUiTools" if QT_API == "pyside6" else "PySide2.QtUiTools")  # type: ignore
+    if QT_API != "pyside6":
+        raise RuntimeError(f"Unsupported Qt binding for load_ui(): {QT_API}")
+    QtUiTools = import_module("PySide6.QtUiTools")  # type: ignore
     if baseinstance is not None:
         class UiLoader(QtUiTools.QUiLoader):
             def __init__(self, base):
@@ -1561,7 +1500,7 @@ def __getattr__(name):
                 elif QT_API == "pyqt5":
                     QtStateMachine = QtCore
                 else:
-                    import PySide2.QtStateMachine as QtStateMachine  # type: ignore
+                    QtStateMachine = QtCore
                 QState = getattr(QtStateMachine, "QState", None)
                 QStateMachine = getattr(QtStateMachine, "QStateMachine", None)
             except Exception:

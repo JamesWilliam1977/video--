@@ -86,7 +86,7 @@ else:
         finally:
             if not ViewClass:
                 raise RuntimeError(
-                    "Need QtWebEngine for the active Qt binding (PyQt6/PyQt5 or PySide6/PySide2)."
+                    "Need QtWebEngine for the active Qt binding (PyQt6/PyQt5 or PySide6)."
                 ) from ex
 
 log.info("Timeline backend: %s (%s)", info.WEB_BACKEND, getattr(ViewClass, "__name__", "unknown"))
