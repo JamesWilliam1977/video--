@@ -60,7 +60,7 @@ class ProfilesTreeView(QTreeView):
         self.is_filter_running = True
         self.model().setFilterCaseSensitivity(Qt.CaseInsensitive)
         self.model().setFilterRegularExpression(QRegularExpression(filter_text.lower()))
-        self.model().sort(Qt.DescendingOrder)
+        self.model().sort(0, Qt.DescendingOrder)
 
         # Format columns
         self.sortByColumn(0, Qt.DescendingOrder)

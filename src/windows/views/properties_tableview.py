@@ -30,19 +30,9 @@ import json
 import functools
 from operator import itemgetter
 import uuid
-try:
-    import sip  # PyQt5
-except ImportError:
-    try:
-        from PyQt5 import sip  # type: ignore
-    except Exception:
-        try:
-            from PyQt6 import sip  # type: ignore
-        except Exception:
-            # Defer failure to later use-sites for clearer traceback
-            sip = None
 
-from qt_api import Qt, QRectF, QLocale, pyqtSignal, pyqtSlot, QEvent, QPoint
+from qt_api import Qt, QRectF, QLocale, pyqtSignal, pyqtSlot, QEvent, QPoint, QPointF
+from qt_api import isdeleted
 from qt_api import (
     QIcon, QColor, QBrush, QPen, QPalette, QPixmap,
     QPainter, QPainterPath, QLinearGradient, QFont, QFontInfo, QCursor,
@@ -140,7 +130,12 @@ class PropertyDelegate(QItemDelegate):
             painter.setBrush(QColor(red, green, blue))
         else:
             # Normal Keyframe
-            if option.state & QStyle.State_Selected:
+            state_selected = getattr(QStyle, "State_Selected", None)
+            if state_selected is None:
+                state_flag = getattr(QStyle, "StateFlag", None)
+                if state_flag:
+                    state_selected = getattr(state_flag, "State_Selected", None)
+            if state_selected and option.state & state_selected:
                 painter.setBrush(background_color)
             else:
                 painter.setBrush(background_color)
@@ -161,7 +156,7 @@ class PropertyDelegate(QItemDelegate):
             painter.setClipRect(mask_rect, Qt.IntersectClip)
 
             # gradient for value box
-            gradient = QLinearGradient(option.rect.topLeft(), option.rect.topRight())
+            gradient = QLinearGradient(QPointF(option.rect.topLeft()), QPointF(option.rect.topRight()))
             gradient.setColorAt(0, foreground_color)
             gradient.setColorAt(1, foreground_color)
 
@@ -189,6 +184,12 @@ class PropertyDelegate(QItemDelegate):
             painter.drawText(option.rect, Qt.AlignCenter, value)
 
         painter.restore()
+
+
+def _event_posf(event):
+    if hasattr(event, "position"):
+        return event.position()
+    return QPointF(event.pos())
 
 
 class PropertiesTableView(QTableView):
@@ -285,7 +286,8 @@ class PropertiesTableView(QTableView):
 
     def mousePressEvent(self, event):
         self.mouse_pressed = True
-        row = self.indexAt(event.pos()).row()
+        pos = _event_posf(event).toPoint()
+        row = self.indexAt(pos).row()
         model = self.clip_properties_model.model
         if model.item(row, 1):
             self.selected_item = model.item(row, 1)
@@ -296,12 +298,14 @@ class PropertiesTableView(QTableView):
     def mouseMoveEvent(self, event):
         # Get data model and selection
         model = self.clip_properties_model.model
+        posf = _event_posf(event)
 
         # Do not change selected row during mouse move
         if self.lock_selection and self.prev_row:
             row = self.prev_row
         else:
-            row = self.indexAt(event.pos()).row()
+            pos = _event_posf(event).toPoint()
+            row = self.indexAt(pos).row()
             self.prev_row = row
             self.lock_selection = True
 
@@ -315,8 +319,8 @@ class PropertiesTableView(QTableView):
             self.selected_item = model.item(row, 1)
 
         # Verify label has not been deleted
-        if (self.selected_label and sip.isdeleted(self.selected_label)) or \
-                (self.selected_item and sip.isdeleted(self.selected_item)):
+        if (self.selected_label and isdeleted(self.selected_label)) or \
+                (self.selected_item and isdeleted(self.selected_item)):
             log.debug("Property has been deleted, skipping")
             self.selected_label = None
             self.selected_item = None
@@ -333,7 +337,7 @@ class PropertiesTableView(QTableView):
 
             # Get the position of the cursor and % value
             value_column_x = self.columnViewportPosition(1)
-            cursor_value = event.x() - value_column_x
+            cursor_value = posf.x() - value_column_x
             cursor_value_percent = cursor_value / self.columnWidth(1)
 
             # Get data from selected item
@@ -372,13 +376,13 @@ class PropertiesTableView(QTableView):
                 if self.previous_x == -1:
                     # Start tracking movement (init diff_length and previous_x)
                     self.diff_length = 10
-                    self.previous_x = event.x()
+                    self.previous_x = posf.x()
 
                 # Calculate # of pixels dragged
-                drag_diff = self.previous_x - event.x()
+                drag_diff = self.previous_x - posf.x()
 
                 # update previous x
-                self.previous_x = event.x()
+                self.previous_x = posf.x()
 
                 # Ignore small initial movements
                 if abs(drag_diff) < self.diff_length:
@@ -433,7 +437,8 @@ class PropertiesTableView(QTableView):
 
         # Get data model and selection
         model = self.clip_properties_model.model
-        row = self.indexAt(event.pos()).row()
+        pos = _event_posf(event).toPoint()
+        row = self.indexAt(pos).row()
         if model.item(row, 0):
             self.selected_label = model.item(row, 0)
             self.selected_item = model.item(row, 1)
@@ -524,8 +529,8 @@ class PropertiesTableView(QTableView):
         caption_model_value = caption_model_row[1]
 
         # Verify label has not been deleted
-        if (caption_model_label and sip.isdeleted(caption_model_label)) or \
-                (caption_model_value and sip.isdeleted(caption_model_value)):
+        if (caption_model_label and isdeleted(caption_model_label)) or \
+                (caption_model_value and isdeleted(caption_model_value)):
             log.debug("Property has been deleted, skipping")
             return
 
@@ -566,13 +571,14 @@ class PropertiesTableView(QTableView):
     def contextMenuEvent(self, event):
         """ Display context menu """
         # Get property being acted on
-        index = self.indexAt(event.pos())
+        pos = _event_posf(event).toPoint()
+        index = self.indexAt(pos)
         if not index.isValid():
             event.ignore()
             return
 
         # Get data model and selection
-        idx = self.indexAt(event.pos())
+        idx = self.indexAt(pos)
         row = idx.row()
         selected_label = idx.model().item(row, 0)
         selected_value = idx.model().item(row, 1)
@@ -1044,8 +1050,8 @@ class PropertiesTableView(QTableView):
         log.info("Insert_Action_Triggered")
 
         # Verify label has not been deleted
-        if (self.selected_label and sip.isdeleted(self.selected_label)) or \
-                (self.selected_item and sip.isdeleted(self.selected_item)):
+        if (self.selected_label and isdeleted(self.selected_label)) or \
+                (self.selected_item and isdeleted(self.selected_item)):
             log.debug("Property has been deleted, skipping")
             self.selected_label = None
             self.selected_item = None

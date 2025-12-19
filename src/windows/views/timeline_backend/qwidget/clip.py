@@ -26,7 +26,7 @@
  """
 
 import uuid
-from qt_api import Qt, QRectF
+from qt_api import Qt, QRectF, QPointF
 from qt_api import QApplication
 from classes.app import get_app
 from classes.query import Clip, Transition
@@ -206,13 +206,13 @@ class ClipInteractionMixin:
 
         self.snap.reset()
         self._drag_moved = False
-        self._drag_press_pos = e.pos() if e else None
+        self._drag_press_pos = e.position() if (e and hasattr(e, "position")) else (QPointF(e.pos()) if e else None)
         self._drag_threshold_met = False
 
         # Identify the item under the cursor (include clips and transitions)
         clicked_item = None
         for rect, item, _selected, _type in self.geometry.iter_items(reverse=True):
-            if rect.contains(e.pos()):
+            if rect.contains(self._drag_press_pos):
                 clicked_item = item
                 break
         if clicked_item is None:
@@ -297,11 +297,12 @@ class ClipInteractionMixin:
         self.drag_bbox = self._compute_selected_bounding()
 
         # Horizontal offset from cursor to bbox-left
-        self.drag_clip_offset = e.pos().x() - self.drag_bbox.x()
+        self.drag_clip_offset = e.position().x() if hasattr(e, "position") else e.pos().x()
+        self.drag_clip_offset -= self.drag_bbox.x()
 
         # Starting track index
         self._drag_layer_idx_start = int(
-            (e.pos().y() - self.ruler_height) / self.vertical_factor
+            ((e.position().y() if hasattr(e, "position") else e.pos().y()) - self.ruler_height) / self.vertical_factor
         )
 
     def _dragMove(self):
@@ -313,7 +314,7 @@ class ClipInteractionMixin:
         if not getattr(self, "_drag_threshold_met", True):
             anchor = getattr(self, "_drag_press_pos", None)
             if anchor is not None and e is not None:
-                delta = e.pos() - anchor
+                delta = (e.position() if hasattr(e, "position") else QPointF(e.pos())) - anchor
                 if delta.manhattanLength() < QApplication.startDragDistance():
                     return
             self._drag_threshold_met = True
@@ -323,7 +324,7 @@ class ClipInteractionMixin:
         if pps <= 0.0:
             return
 
-        new_bbox_x = e.pos().x() - self.drag_clip_offset
+        new_bbox_x = (e.position().x() if hasattr(e, "position") else e.pos().x()) - self.drag_clip_offset
         delta_sec = (new_bbox_x - self.drag_bbox.x()) / pps
 
         # Snap horizontally ±1.5 s (pure x-axis)
@@ -332,7 +333,7 @@ class ClipInteractionMixin:
 
         # -------- Vertical delta (track indexes) ----
         new_idx_under_cursor = int(
-            (e.pos().y() - self.ruler_height) / self.vertical_factor
+            ((e.position().y() if hasattr(e, "position") else e.pos().y()) - self.ruler_height) / self.vertical_factor
         )
         delta_idx = new_idx_under_cursor - self._drag_layer_idx_start
 
@@ -510,7 +511,8 @@ class ClipInteractionMixin:
         self.update()
         self._release_cursor()
         if self._last_event:
-            self._updateCursor(self._last_event.pos())
+            posf = self._last_event.position() if hasattr(self._last_event, "position") else QPointF(self._last_event.pos())
+            self._updateCursor(posf)
         self._drag_moved = False
         self._drag_press_pos = None
         self._drag_threshold_met = False
@@ -592,7 +594,7 @@ class ClipInteractionMixin:
         elif self._press_hit == "timeline-handle":
             self._projectResizeMove()
         else:
-            new_width = max(40, self._last_event.pos().x())
+            new_width = max(40, (self._last_event.position().x() if hasattr(self._last_event, "position") else self._last_event.pos().x()))
             if new_width != self.track_name_width:
                 self.track_name_width = new_width
                 self.changed(None)
@@ -619,7 +621,7 @@ class ClipInteractionMixin:
         event = self._last_event
         if not event:
             return
-        new_duration = self._seconds_from_x(event.pos().x())
+        new_duration = self._seconds_from_x(event.position().x() if hasattr(event, "position") else event.pos().x())
         new_duration = max(self._project_resize_min_duration, new_duration)
         snapped = self._snap_time(new_duration)
         if snapped < self._project_resize_min_duration:
@@ -753,7 +755,7 @@ class ClipInteractionMixin:
         pos = self._resize_initial["position"]
 
         if self._resize_edge == "left":
-            delta_sec = (event.pos().x() - rect.left()) / pps
+            delta_sec = ((event.position().x() if hasattr(event, "position") else event.pos().x()) - rect.left()) / pps
             if self.enable_snapping:
                 delta_sec = self.snap.snap_edge(pos, delta_sec)
             max_delta = width - min_len
@@ -766,7 +768,7 @@ class ClipInteractionMixin:
                 new_end = (pos + width) - new_position
             rect_left = self.track_name_width + new_position * pps
         else:
-            delta_sec = (event.pos().x() - rect.right()) / pps
+            delta_sec = ((event.position().x() if hasattr(event, "position") else event.pos().x()) - rect.right()) / pps
             if self.enable_snapping:
                 delta_sec = self.snap.snap_edge(pos + width, delta_sec)
             min_delta = -(width - min_len)
@@ -800,7 +802,7 @@ class ClipInteractionMixin:
             geom_rect = QRectF(world_rect)
             return geom_rect, start, end, pos
 
-        cursor_sec = self._seconds_from_x(event.pos().x())
+        cursor_sec = self._seconds_from_x(event.position().x() if hasattr(event, "position") else event.pos().x())
         clip_span = max(end - start, min_len)
 
         if self._resize_edge == "left":
@@ -904,7 +906,8 @@ class ClipInteractionMixin:
         self.changed(None)
         self._release_cursor()
         if self._last_event:
-            self._updateCursor(self._last_event.pos())
+            posf = self._last_event.position() if hasattr(self._last_event, "position") else QPointF(self._last_event.pos())
+            self._updateCursor(posf)
         if hasattr(self, "_resize_initial_world_rect"):
             del self._resize_initial_world_rect
         self._resize_clip_max_duration = None
@@ -914,7 +917,7 @@ class ClipInteractionMixin:
     def _startBoxSelect(self):
         e = self._last_event
         ctrl_down = bool(e.modifiers() & Qt.ControlModifier)
-        self.box_start = e.pos()
+        self.box_start = e.position() if hasattr(e, "position") else QPointF(e.pos())
         panel_lane = self._panel_lane_at(self.box_start)
         if panel_lane:
             self._panel_box_track = panel_lane.get("track")
@@ -930,7 +933,10 @@ class ClipInteractionMixin:
         self.selection_rect = QRectF()
 
     def _boxMove(self):
-        rect = QRectF(self.box_start, self._last_event.pos()).normalized()
+        rect = QRectF(
+            self.box_start,
+            self._last_event.position() if hasattr(self._last_event, "position") else QPointF(self._last_event.pos())
+        ).normalized()
         if self._panel_box_track is not None:
             bounds = self._panel_box_bounds
             if isinstance(bounds, QRectF) and not bounds.isNull():

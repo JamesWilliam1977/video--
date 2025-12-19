@@ -26,6 +26,7 @@
  """
 
 from qt_api import Qt, QSize, QPoint, QRegularExpression
+from qt_api import clear_override_cursor
 from qt_api import QDrag
 from qt_api import QListView, QAbstractItemView
 
@@ -74,7 +75,11 @@ class TransitionsListView(QListView):
         drag.setMimeData(self.model().mimeData(selected))
         drag.setPixmap(icon.pixmap(self.drag_item_size))
         drag.setHotSpot(self.drag_item_center)
-        drag.exec_()
+        exec_fn = getattr(drag, "exec", None) or getattr(drag, "exec_", None)
+        if exec_fn is None:
+            raise AttributeError("QDrag has no exec_/exec method")
+        exec_fn()
+        clear_override_cursor()
 
     def filter_changed(self):
         self.refresh_view()

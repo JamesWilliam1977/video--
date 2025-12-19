@@ -27,18 +27,9 @@
 
 import time
 import math
-try:
-    import sip  # PyQt5
-except ImportError:
-    try:
-        from PyQt5 import sip  # type: ignore
-    except Exception:
-        try:
-            from PyQt6 import sip  # type: ignore
-        except Exception:
-            sip = None
 
 from qt_api import QObject, QThread, QTimer, pyqtSlot, pyqtSignal, QCoreApplication
+from qt_api import unwrapinstance, wrapinstance
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes.app import get_app
@@ -283,8 +274,8 @@ class PlayerWorker(QObject):
 
         # Get the address of the player's renderer (a QObject that emits signals when frames are ready)
         self.renderer_address = self.player.GetRendererQObject()
-        self.player.SetQWidget(sip.unwrapinstance(self.videoPreview))
-        self.renderer = sip.wrapinstance(self.renderer_address, QObject)
+        self.player.SetQWidget(unwrapinstance(self.videoPreview))
+        self.renderer = wrapinstance(self.renderer_address, QObject)
         self.videoPreview.connectSignals(self.renderer)
 
     def kill(self):

@@ -42,6 +42,12 @@ from classes.time_parts import secondsToTime
 from .base import BasePainter
 
 
+def _text_width(metrics, text):
+    if hasattr(metrics, "horizontalAdvance"):
+        return metrics.horizontalAdvance(text)
+    return metrics.width(text)
+
+
 class RulerPainter(BasePainter):
     def update_theme(self):
         self.bg = self.w.theme.ruler.background
@@ -185,7 +191,7 @@ class RulerPainter(BasePainter):
                 tt = secondsToTime(t, fps_info["num"], fps_info["den"])
                 if frame == 0:
                     lbl = f"{int(tt['min'])}:{tt['sec']}"
-                    text_w = tick_metrics.width(lbl)
+                    text_w = _text_width(tick_metrics, lbl)
                     text_rect = QRectF(
                         x + 2,
                         label_top,
@@ -197,7 +203,7 @@ class RulerPainter(BasePainter):
                     lbl = f"{tt['hour']}:{tt['min']}:{tt['sec']}"
                     if fpt < round(fps_float):
                         lbl += f",{tt['frame']}"
-                    text_w = tick_metrics.width(lbl)
+                    text_w = _text_width(tick_metrics, lbl)
                     text_rect = QRectF(
                         x - text_w / 2,
                         label_top,

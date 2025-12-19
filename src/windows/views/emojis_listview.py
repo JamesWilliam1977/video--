@@ -27,6 +27,7 @@
 
 import os
 from qt_api import QMimeData, QSize, QPoint, Qt, pyqtSlot, QRegularExpression
+from qt_api import clear_override_cursor
 from qt_api import QDrag, QListView
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 from classes import info
@@ -74,7 +75,11 @@ class EmojisListView(QListView):
         drag.setMimeData(data)
 
         # Start drag
-        drag.exec_()
+        exec_fn = getattr(drag, "exec", None) or getattr(drag, "exec_", None)
+        if exec_fn is None:
+            raise AttributeError("QDrag has no exec_/exec method")
+        exec_fn()
+        clear_override_cursor()
 
     def add_file(self, filepath):
         # Add file into project

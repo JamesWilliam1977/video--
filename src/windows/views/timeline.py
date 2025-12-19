@@ -39,6 +39,7 @@ from random import uniform
 
 import openshot
 from qt_api import pyqtSlot, Qt, QCoreApplication, QTimer, pyqtSignal, QPointF
+from qt_api import modifiers_has
 from qt_api import QCursor, QKeySequence
 from qt_api import QDialog
 
@@ -84,7 +85,15 @@ else:
             log.error("Import failure loading WebKit backend", exc_info=1)
         finally:
             if not ViewClass:
-                raise RuntimeError("Need PyQt5.QtWebEngine (or PyQt5.QtWebView on Win32)") from ex
+                raise RuntimeError(
+                    "Need QtWebEngine for the active Qt binding (PyQt6/PyQt5 or PySide6/PySide2)."
+                ) from ex
+
+
+def _event_posf(event):
+    if hasattr(event, "posF"):
+        return event.posF()
+    return event.position()
 
 
 class TimelineView(updates.UpdateInterface, ViewClass):
@@ -2444,9 +2453,9 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
         # Determine slice mode (keep both [default], keep left [shift], keep right [ctrl]
         slice_mode = MenuSlice.KEEP_BOTH
-        if int(QCoreApplication.instance().keyboardModifiers() & Qt.ControlModifier) > 0:
+        if modifiers_has(QCoreApplication.instance().keyboardModifiers(), Qt.ControlModifier):
             slice_mode = MenuSlice.KEEP_RIGHT
-        elif int(QCoreApplication.instance().keyboardModifiers() & Qt.ShiftModifier) > 0:
+        elif modifiers_has(QCoreApplication.instance().keyboardModifiers(), Qt.ShiftModifier):
             slice_mode = MenuSlice.KEEP_LEFT
 
         if clip_id:
@@ -3628,7 +3637,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
         # Initialize a list to hold file data (either from mime data or newly created files)
         data_list = []
-        initial_pos = event.posF()
+        initial_pos = _event_posf(event)
 
         # Get FPS and scaling information
         fps_float = float(get_app().project.get("fps")["num"]) / float(get_app().project.get("fps")["den"])
@@ -4002,7 +4011,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         event.accept()
 
         # Get cursor position
-        pos = event.posF()
+        pos = _event_posf(event)
 
         # Move clip on timeline
         if self.item_type in ["clip", "transition"]:
@@ -4020,7 +4029,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         event.accept()
 
         if self.item_type == "effect":
-            pos = event.posF()
+            pos = _event_posf(event)
             data = json.loads(event.mimeData().text())
             self.addEffect(data, pos)
 

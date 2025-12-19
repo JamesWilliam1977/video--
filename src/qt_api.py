@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 # Public exports filled in after binding selection
-QtCore = QtGui = QtWidgets = QtSvg = QtWebEngineWidgets = QtWebChannel = QtWebKitWidgets = None
+QtCore = QtGui = QtWidgets = QtSvg = QtWebEngineCore = QtWebEngineWidgets = QtWebChannel = QtWebKitWidgets = None
 Signal = Slot = Property = None
 QRegularExpression = None
 QState = QStateMachine = None
@@ -26,6 +26,87 @@ BINDING_VERSION_STR: Optional[str] = None
 _MODULES = []
 _FAILED_IMPORT: Optional[Exception] = None
 _SELECTING = False
+
+
+def _load_sip_like():
+    """Return ('sip'|'shiboken', module) for the active binding."""
+    if QT_API is None:
+        _select_binding()
+    if QT_API == "pyqt6":
+        try:
+            from PyQt6 import sip as sip_mod  # type: ignore
+        except Exception:
+            sip_mod = None
+        return ("sip", sip_mod)
+    if QT_API == "pyqt5":
+        try:
+            from PyQt5 import sip as sip_mod  # type: ignore
+        except Exception:
+            sip_mod = None
+        return ("sip", sip_mod)
+    if QT_API == "pyside6":
+        try:
+            import shiboken6 as shiboken_mod  # type: ignore
+        except Exception:
+            shiboken_mod = None
+        return ("shiboken", shiboken_mod)
+    if QT_API == "pyside2":
+        try:
+            import shiboken2 as shiboken_mod  # type: ignore
+        except Exception:
+            shiboken_mod = None
+        return ("shiboken", shiboken_mod)
+    return ("sip", None)
+
+
+def unwrapinstance(obj):
+    """Return the underlying C++ pointer for a Qt object."""
+    backend, mod = _load_sip_like()
+    if mod is None:
+        raise RuntimeError("No SIP/shiboken module available for unwrapinstance()")
+    if backend == "sip":
+        return mod.unwrapinstance(obj)
+    return mod.getCppPointer(obj)[0]
+
+
+def wrapinstance(ptr, base_type):
+    """Wrap a C++ pointer into a Qt object."""
+    backend, mod = _load_sip_like()
+    if mod is None:
+        raise RuntimeError("No SIP/shiboken module available for wrapinstance()")
+    if backend == "sip":
+        return mod.wrapinstance(ptr, base_type)
+    return mod.wrapInstance(int(ptr), base_type)
+
+
+def isdeleted(obj):
+    """Return True if the Qt object has been deleted."""
+    backend, mod = _load_sip_like()
+    if mod is None:
+        return False
+    if backend == "sip":
+        return mod.isdeleted(obj)
+    return not mod.isValid(obj)
+
+
+def modifiers_has(modifiers, flag):
+    """Return True if a modifier flag is set on a modifiers bitmask."""
+    try:
+        return bool(modifiers & flag)
+    except Exception:
+        try:
+            return bool(int(modifiers) & int(flag))
+        except Exception:
+            return False
+
+
+def clear_override_cursor():
+    """Clear any active QApplication override cursors."""
+    try:
+        while QtWidgets.QApplication.overrideCursor():
+            QtWidgets.QApplication.restoreOverrideCursor()
+    except Exception:
+        pass
 
 
 def _patch_enums_for_qt6():
@@ -72,6 +153,954 @@ def _patch_enums_for_qt6():
                     except Exception:
                         pass
 
+    QMetaMethod = getattr(QtCore, "QMetaMethod", None)
+    if QMetaMethod and not hasattr(QMetaMethod, "Signal"):
+        method_type = getattr(QMetaMethod, "MethodType", None)
+        if method_type and hasattr(method_type, "Signal"):
+            try:
+                setattr(QMetaMethod, "Signal", method_type.Signal)
+            except Exception:
+                pass
+
+    QEvent = getattr(QtCore, "QEvent", None)
+    if QEvent:
+        event_type = getattr(QEvent, "Type", None)
+        if event_type:
+            for name in ("ShortcutOverride", "Resize", "Paint"):
+                if hasattr(event_type, name) and not hasattr(QEvent, name):
+                    try:
+                        setattr(QEvent, name, getattr(event_type, name))
+                    except Exception:
+                        pass
+
+    if QtCore and not hasattr(QtCore, "Qt"):
+        return
+    if not hasattr(QtCore.Qt, "WA_OpaquePaintEvent"):
+        widget_attr = getattr(QtCore.Qt, "WidgetAttribute", None)
+        if widget_attr and hasattr(widget_attr, "WA_OpaquePaintEvent"):
+            try:
+                setattr(QtCore.Qt, "WA_OpaquePaintEvent", widget_attr.WA_OpaquePaintEvent)
+            except Exception:
+                pass
+    if not hasattr(QtCore.Qt, "WA_DeleteOnClose"):
+        widget_attr = getattr(QtCore.Qt, "WidgetAttribute", None)
+        if widget_attr and hasattr(widget_attr, "WA_DeleteOnClose"):
+            try:
+                setattr(QtCore.Qt, "WA_DeleteOnClose", widget_attr.WA_DeleteOnClose)
+            except Exception:
+                pass
+    if not hasattr(QtCore.Qt, "WA_NoSystemBackground"):
+        widget_attr = getattr(QtCore.Qt, "WidgetAttribute", None)
+        if widget_attr and hasattr(widget_attr, "WA_NoSystemBackground"):
+            try:
+                setattr(QtCore.Qt, "WA_NoSystemBackground", widget_attr.WA_NoSystemBackground)
+            except Exception:
+                pass
+    if not hasattr(QtCore.Qt, "WA_TranslucentBackground"):
+        widget_attr = getattr(QtCore.Qt, "WidgetAttribute", None)
+        if widget_attr and hasattr(widget_attr, "WA_TranslucentBackground"):
+            try:
+                setattr(QtCore.Qt, "WA_TranslucentBackground", widget_attr.WA_TranslucentBackground)
+            except Exception:
+                pass
+
+    corner_enum = getattr(QtCore.Qt, "Corner", None)
+    if corner_enum:
+        for name in ("TopLeftCorner", "TopRightCorner", "BottomLeftCorner", "BottomRightCorner"):
+            if hasattr(corner_enum, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(corner_enum, name))
+                except Exception:
+                    pass
+
+    dock_enum = getattr(QtCore.Qt, "DockWidgetArea", None)
+    if dock_enum:
+        for name in (
+            "LeftDockWidgetArea",
+            "RightDockWidgetArea",
+            "TopDockWidgetArea",
+            "BottomDockWidgetArea",
+            "AllDockWidgetAreas",
+            "NoDockWidgetArea",
+        ):
+            if hasattr(dock_enum, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(dock_enum, name))
+                except Exception:
+                    pass
+
+    case_enum = getattr(QtCore.Qt, "CaseSensitivity", None)
+    if case_enum:
+        for name in ("CaseSensitive", "CaseInsensitive"):
+            if hasattr(case_enum, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(case_enum, name))
+                except Exception:
+                    pass
+
+    elide_enum = getattr(QtCore.Qt, "TextElideMode", None)
+    if elide_enum:
+        for name in ("ElideLeft", "ElideRight", "ElideMiddle", "ElideNone"):
+            if hasattr(elide_enum, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(elide_enum, name))
+                except Exception:
+                    pass
+
+    sort_enum = getattr(QtCore.Qt, "SortOrder", None)
+    if sort_enum:
+        for name in ("AscendingOrder", "DescendingOrder"):
+            if hasattr(sort_enum, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(sort_enum, name))
+                except Exception:
+                    pass
+
+    item_flag = getattr(QtCore.Qt, "ItemFlag", None)
+    if item_flag:
+        for name in (
+            "NoItemFlags",
+            "ItemIsSelectable",
+            "ItemIsEditable",
+            "ItemIsDragEnabled",
+            "ItemIsDropEnabled",
+            "ItemIsUserCheckable",
+            "ItemIsEnabled",
+            "ItemIsAutoTristate",
+            "ItemIsTristate",
+            "ItemNeverHasChildren",
+        ):
+            if hasattr(item_flag, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(item_flag, name))
+                except Exception:
+                    pass
+
+    check_state = getattr(QtCore.Qt, "CheckState", None)
+    if check_state:
+        for name in ("Unchecked", "PartiallyChecked", "Checked"):
+            if hasattr(check_state, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(check_state, name))
+                except Exception:
+                    pass
+
+    size_mode = getattr(QtCore.Qt, "SizeMode", None)
+    if size_mode:
+        for name in ("AbsoluteSize", "RelativeSize"):
+            if hasattr(size_mode, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(size_mode, name))
+                except Exception:
+                    pass
+
+    keyboard_modifier = getattr(QtCore.Qt, "KeyboardModifier", None)
+    if keyboard_modifier:
+        for name in ("NoModifier", "ShiftModifier", "ControlModifier", "AltModifier", "MetaModifier", "KeypadModifier", "GroupSwitchModifier"):
+            if hasattr(keyboard_modifier, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(keyboard_modifier, name))
+                except Exception:
+                    pass
+
+    mouse_button = getattr(QtCore.Qt, "MouseButton", None)
+    if mouse_button:
+        for name in ("NoButton", "LeftButton", "RightButton", "MiddleButton", "BackButton", "ForwardButton", "TaskButton"):
+            if hasattr(mouse_button, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(mouse_button, name))
+                except Exception:
+                    pass
+
+    clip_operation = getattr(QtCore.Qt, "ClipOperation", None)
+    if clip_operation:
+        for name in ("NoClip", "ReplaceClip", "IntersectClip"):
+            if hasattr(clip_operation, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(clip_operation, name))
+                except Exception:
+                    pass
+
+    item_data_role = getattr(QtCore.Qt, "ItemDataRole", None)
+    if item_data_role:
+        for name in (
+            "DisplayRole",
+            "DecorationRole",
+            "EditRole",
+            "ToolTipRole",
+            "StatusTipRole",
+            "WhatsThisRole",
+            "FontRole",
+            "TextAlignmentRole",
+            "BackgroundRole",
+            "ForegroundRole",
+            "CheckStateRole",
+            "InitialSortOrderRole",
+            "AccessibleTextRole",
+            "AccessibleDescriptionRole",
+            "SizeHintRole",
+            "UserRole",
+        ):
+            if hasattr(item_data_role, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(item_data_role, name))
+                except Exception:
+                    pass
+
+    alignment_flag = getattr(QtCore.Qt, "AlignmentFlag", None)
+    if alignment_flag:
+        for name in (
+            "AlignLeft",
+            "AlignRight",
+            "AlignHCenter",
+            "AlignJustify",
+            "AlignTop",
+            "AlignBottom",
+            "AlignVCenter",
+            "AlignBaseline",
+            "AlignCenter",
+            "AlignLeading",
+            "AlignTrailing",
+            "AlignAbsolute",
+        ):
+            if hasattr(alignment_flag, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(alignment_flag, name))
+                except Exception:
+                    pass
+
+    pen_style = getattr(QtCore.Qt, "PenStyle", None)
+    if pen_style:
+        for name in (
+            "NoPen",
+            "SolidLine",
+            "DashLine",
+            "DotLine",
+            "DashDotLine",
+            "DashDotDotLine",
+            "CustomDashLine",
+        ):
+            if hasattr(pen_style, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(pen_style, name))
+                except Exception:
+                    pass
+
+    brush_style = getattr(QtCore.Qt, "BrushStyle", None)
+    if brush_style:
+        for name in (
+            "NoBrush",
+            "SolidPattern",
+            "Dense1Pattern",
+            "Dense2Pattern",
+            "Dense3Pattern",
+            "Dense4Pattern",
+            "Dense5Pattern",
+            "Dense6Pattern",
+            "Dense7Pattern",
+            "HorPattern",
+            "VerPattern",
+            "CrossPattern",
+            "BDiagPattern",
+            "FDiagPattern",
+            "DiagCrossPattern",
+        ):
+            if hasattr(brush_style, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(brush_style, name))
+                except Exception:
+                    pass
+
+    text_format = getattr(QtCore.Qt, "TextFormat", None)
+    if text_format:
+        for name in ("PlainText", "RichText", "AutoText", "MarkdownText"):
+            if hasattr(text_format, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(text_format, name))
+                except Exception:
+                    pass
+
+    cursor_shape = getattr(QtCore.Qt, "CursorShape", None)
+    if cursor_shape:
+        for name in (
+            "ArrowCursor",
+            "UpArrowCursor",
+            "CrossCursor",
+            "WaitCursor",
+            "IBeamCursor",
+            "SizeVerCursor",
+            "SizeHorCursor",
+            "SizeBDiagCursor",
+            "SizeFDiagCursor",
+            "SizeAllCursor",
+            "BlankCursor",
+            "SplitVCursor",
+            "SplitHCursor",
+            "PointingHandCursor",
+            "ForbiddenCursor",
+            "WhatsThisCursor",
+            "BusyCursor",
+            "OpenHandCursor",
+            "ClosedHandCursor",
+            "DragCopyCursor",
+            "DragMoveCursor",
+            "DragLinkCursor",
+        ):
+            if hasattr(cursor_shape, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(cursor_shape, name))
+                except Exception:
+                    pass
+
+    connection_type = getattr(QtCore.Qt, "ConnectionType", None)
+    if connection_type:
+        for name in ("AutoConnection", "DirectConnection", "QueuedConnection", "BlockingQueuedConnection", "UniqueConnection"):
+            if hasattr(connection_type, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(connection_type, name))
+                except Exception:
+                    pass
+
+    window_type = getattr(QtCore.Qt, "WindowType", None)
+    if window_type:
+        for name in (
+            "Widget",
+            "Window",
+            "Dialog",
+            "Sheet",
+            "Drawer",
+            "Popup",
+            "Tool",
+            "ToolTip",
+            "SplashScreen",
+            "Desktop",
+            "SubWindow",
+            "ForeignWindow",
+            "CoverWindow",
+            "WindowTitleHint",
+            "WindowSystemMenuHint",
+            "WindowMinimizeButtonHint",
+            "WindowMaximizeButtonHint",
+            "WindowCloseButtonHint",
+            "WindowContextHelpButtonHint",
+            "MacWindowToolBarButtonHint",
+            "WindowFullscreenButtonHint",
+            "BypassWindowManagerHint",
+            "CustomizeWindowHint",
+            "WindowStaysOnTopHint",
+            "WindowStaysOnBottomHint",
+            "WindowTransparentForInput",
+            "WindowOverridesSystemGestures",
+            "WindowDoesNotAcceptFocus",
+            "WindowType_Mask",
+            "FramelessWindowHint",
+        ):
+            if hasattr(window_type, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(window_type, name))
+                except Exception:
+                    pass
+
+    tool_button_style = getattr(QtCore.Qt, "ToolButtonStyle", None)
+    if tool_button_style:
+        for name in (
+            "ToolButtonIconOnly",
+            "ToolButtonTextOnly",
+            "ToolButtonTextBesideIcon",
+            "ToolButtonTextUnderIcon",
+            "ToolButtonFollowStyle",
+        ):
+            if hasattr(tool_button_style, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(tool_button_style, name))
+                except Exception:
+                    pass
+
+    shortcut_context = getattr(QtCore.Qt, "ShortcutContext", None)
+    if shortcut_context:
+        for name in ("WidgetShortcut", "WindowShortcut", "ApplicationShortcut", "WidgetWithChildrenShortcut"):
+            if hasattr(shortcut_context, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(shortcut_context, name))
+                except Exception:
+                    pass
+
+    aspect_ratio_mode = getattr(QtCore.Qt, "AspectRatioMode", None)
+    if aspect_ratio_mode:
+        for name in ("IgnoreAspectRatio", "KeepAspectRatio", "KeepAspectRatioByExpanding"):
+            if hasattr(aspect_ratio_mode, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(aspect_ratio_mode, name))
+                except Exception:
+                    pass
+
+    scroll_bar_policy = getattr(QtCore.Qt, "ScrollBarPolicy", None)
+    if scroll_bar_policy:
+        for name in ("ScrollBarAsNeeded", "ScrollBarAlwaysOff", "ScrollBarAlwaysOn"):
+            if hasattr(scroll_bar_policy, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(scroll_bar_policy, name))
+                except Exception:
+                    pass
+
+    transformation_mode = getattr(QtCore.Qt, "TransformationMode", None)
+    if transformation_mode:
+        for name in ("FastTransformation", "SmoothTransformation"):
+            if hasattr(transformation_mode, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(transformation_mode, name))
+                except Exception:
+                    pass
+
+    fill_rule = getattr(QtCore.Qt, "FillRule", None)
+    if fill_rule:
+        for name in ("OddEvenFill", "WindingFill"):
+            if hasattr(fill_rule, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(fill_rule, name))
+                except Exception:
+                    pass
+
+    QPainter = getattr(QtGui, "QPainter", None)
+    if QPainter and not hasattr(QPainter, "Antialiasing"):
+        render_hint = getattr(QPainter, "RenderHint", None)
+        if render_hint:
+            for name in (
+                "Antialiasing",
+                "TextAntialiasing",
+                "SmoothPixmapTransform",
+                "HighQualityAntialiasing",
+                "NonCosmeticDefaultPen",
+                "LosslessImageRendering",
+            ):
+                if hasattr(render_hint, name) and not hasattr(QPainter, name):
+                    try:
+                        setattr(QPainter, name, getattr(render_hint, name))
+                    except Exception:
+                        pass
+    if QPainter and not hasattr(QPainter, "CompositionMode_SourceOver"):
+        composition_mode = getattr(QPainter, "CompositionMode", None)
+        if composition_mode:
+            for name in (
+                "CompositionMode_SourceOver",
+                "CompositionMode_DestinationOver",
+                "CompositionMode_Clear",
+                "CompositionMode_Source",
+                "CompositionMode_Destination",
+                "CompositionMode_SourceIn",
+                "CompositionMode_DestinationIn",
+                "CompositionMode_SourceOut",
+                "CompositionMode_DestinationOut",
+                "CompositionMode_SourceAtop",
+                "CompositionMode_DestinationAtop",
+                "CompositionMode_Xor",
+                "CompositionMode_Plus",
+                "CompositionMode_Multiply",
+                "CompositionMode_Screen",
+                "CompositionMode_Overlay",
+                "CompositionMode_Darken",
+                "CompositionMode_Lighten",
+                "CompositionMode_ColorDodge",
+                "CompositionMode_ColorBurn",
+                "CompositionMode_HardLight",
+                "CompositionMode_SoftLight",
+                "CompositionMode_Difference",
+                "CompositionMode_Exclusion",
+            ):
+                if hasattr(composition_mode, name) and not hasattr(QPainter, name):
+                    try:
+                        setattr(QPainter, name, getattr(composition_mode, name))
+                    except Exception:
+                        pass
+
+    global_color = getattr(QtCore.Qt, "GlobalColor", None)
+    if global_color:
+        for name in (
+            "transparent",
+            "black",
+            "white",
+            "red",
+            "darkRed",
+            "green",
+            "darkGreen",
+            "blue",
+            "darkBlue",
+            "cyan",
+            "darkCyan",
+            "magenta",
+            "darkMagenta",
+            "yellow",
+            "darkYellow",
+            "gray",
+            "darkGray",
+            "lightGray",
+            "color0",
+            "color1",
+        ):
+            if hasattr(global_color, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(global_color, name))
+                except Exception:
+                    pass
+
+    QSizePolicy = getattr(QtWidgets, "QSizePolicy", None)
+    if QSizePolicy and not hasattr(QSizePolicy, "Expanding"):
+        policy = getattr(QSizePolicy, "Policy", None)
+        if policy:
+            for name in ("Fixed", "Minimum", "Maximum", "Preferred", "Expanding", "MinimumExpanding", "Ignored"):
+                if hasattr(policy, name) and not hasattr(QSizePolicy, name):
+                    try:
+                        setattr(QSizePolicy, name, getattr(policy, name))
+                    except Exception:
+                        pass
+
+    QAbstractItemView = getattr(QtWidgets, "QAbstractItemView", None)
+    if QAbstractItemView and not hasattr(QAbstractItemView, "ExtendedSelection"):
+        selection_mode = getattr(QAbstractItemView, "SelectionMode", None)
+        if selection_mode:
+            for name in (
+                "NoSelection",
+                "SingleSelection",
+                "MultiSelection",
+                "ExtendedSelection",
+                "ContiguousSelection",
+            ):
+                if hasattr(selection_mode, name) and not hasattr(QAbstractItemView, name):
+                    try:
+                        setattr(QAbstractItemView, name, getattr(selection_mode, name))
+                    except Exception:
+                        pass
+        selection_behavior = getattr(QAbstractItemView, "SelectionBehavior", None)
+        if selection_behavior:
+            for name in ("SelectItems", "SelectRows", "SelectColumns"):
+                if hasattr(selection_behavior, name) and not hasattr(QAbstractItemView, name):
+                    try:
+                        setattr(QAbstractItemView, name, getattr(selection_behavior, name))
+                    except Exception:
+                        pass
+        scroll_hint = getattr(QAbstractItemView, "ScrollHint", None)
+        if scroll_hint:
+            for name in ("EnsureVisible", "PositionAtTop", "PositionAtBottom", "PositionAtCenter"):
+                if hasattr(scroll_hint, name) and not hasattr(QAbstractItemView, name):
+                    try:
+                        setattr(QAbstractItemView, name, getattr(scroll_hint, name))
+                    except Exception:
+                        pass
+
+    QListView = getattr(QtWidgets, "QListView", None)
+    if QListView and not hasattr(QListView, "IconMode"):
+        view_mode = getattr(QListView, "ViewMode", None)
+        if view_mode:
+            for name in ("ListMode", "IconMode"):
+                if hasattr(view_mode, name) and not hasattr(QListView, name):
+                    try:
+                        setattr(QListView, name, getattr(view_mode, name))
+                    except Exception:
+                        pass
+        flow = getattr(QListView, "Flow", None)
+        if flow:
+            for name in ("LeftToRight", "TopToBottom"):
+                if hasattr(flow, name) and not hasattr(QListView, name):
+                    try:
+                        setattr(QListView, name, getattr(flow, name))
+                    except Exception:
+                        pass
+        layout_mode = getattr(QListView, "LayoutMode", None)
+        if layout_mode:
+            for name in ("SinglePass", "Batched"):
+                if hasattr(layout_mode, name) and not hasattr(QListView, name):
+                    try:
+                        setattr(QListView, name, getattr(layout_mode, name))
+                    except Exception:
+                        pass
+        resize_mode = getattr(QListView, "ResizeMode", None)
+        if resize_mode:
+            for name in ("Fixed", "Adjust"):
+                if hasattr(resize_mode, name) and not hasattr(QListView, name):
+                    try:
+                        setattr(QListView, name, getattr(resize_mode, name))
+                    except Exception:
+                        pass
+
+    QHeaderView = getattr(QtWidgets, "QHeaderView", None)
+    if QHeaderView and not hasattr(QHeaderView, "Stretch"):
+        resize_mode = getattr(QHeaderView, "ResizeMode", None)
+        if resize_mode:
+            for name in ("Interactive", "Stretch", "Fixed", "ResizeToContents", "Custom"):
+                if hasattr(resize_mode, name) and not hasattr(QHeaderView, name):
+                    try:
+                        setattr(QHeaderView, name, getattr(resize_mode, name))
+                    except Exception:
+                        pass
+
+    QDockWidget = getattr(QtWidgets, "QDockWidget", None)
+    if QDockWidget and not hasattr(QDockWidget, "DockWidgetClosable"):
+        dock_feature = getattr(QDockWidget, "DockWidgetFeature", None)
+        if dock_feature:
+            for name in (
+                "DockWidgetClosable",
+                "DockWidgetMovable",
+                "DockWidgetFloatable",
+                "DockWidgetVerticalTitleBar",
+                "DockWidgetFeatureMask",
+                "NoDockWidgetFeatures",
+            ):
+                if hasattr(dock_feature, name) and not hasattr(QDockWidget, name):
+                    try:
+                        setattr(QDockWidget, name, getattr(dock_feature, name))
+                    except Exception:
+                        pass
+
+    QTabWidget = getattr(QtWidgets, "QTabWidget", None)
+    if QTabWidget and not hasattr(QTabWidget, "South"):
+        tab_position = getattr(QTabWidget, "TabPosition", None)
+        if tab_position:
+            for name in ("North", "South", "West", "East"):
+                if hasattr(tab_position, name) and not hasattr(QTabWidget, name):
+                    try:
+                        setattr(QTabWidget, name, getattr(tab_position, name))
+                    except Exception:
+                        pass
+
+    QPalette = getattr(QtGui, "QPalette", None)
+    if QPalette and not hasattr(QPalette, "Window"):
+        color_role = getattr(QPalette, "ColorRole", None)
+        if color_role:
+            for name in (
+                "WindowText",
+                "Button",
+                "Light",
+                "Midlight",
+                "Dark",
+                "Mid",
+                "Text",
+                "BrightText",
+                "ButtonText",
+                "Base",
+                "Window",
+                "Shadow",
+                "Highlight",
+                "HighlightedText",
+                "Link",
+                "LinkVisited",
+                "AlternateBase",
+                "NoRole",
+                "ToolTipBase",
+                "ToolTipText",
+                "PlaceholderText",
+            ):
+                if hasattr(color_role, name) and not hasattr(QPalette, name):
+                    try:
+                        setattr(QPalette, name, getattr(color_role, name))
+                    except Exception:
+                        pass
+
+    QDialogButtonBox = getattr(QtWidgets, "QDialogButtonBox", None)
+    if QDialogButtonBox:
+        if not hasattr(QDialogButtonBox, "RejectRole"):
+            button_role = getattr(QDialogButtonBox, "ButtonRole", None)
+            if button_role:
+                for name in (
+                    "InvalidRole",
+                    "AcceptRole",
+                    "RejectRole",
+                    "DestructiveRole",
+                    "ActionRole",
+                    "HelpRole",
+                    "YesRole",
+                    "NoRole",
+                    "ResetRole",
+                    "ApplyRole",
+                    "NRoles",
+                ):
+                    if hasattr(button_role, name) and not hasattr(QDialogButtonBox, name):
+                        try:
+                            setattr(QDialogButtonBox, name, getattr(button_role, name))
+                        except Exception:
+                            pass
+        if not hasattr(QDialogButtonBox, "Ok"):
+            std_button = getattr(QDialogButtonBox, "StandardButton", None)
+            if std_button:
+                for name in (
+                    "NoButton",
+                    "Ok",
+                    "Save",
+                    "SaveAll",
+                    "Open",
+                    "Yes",
+                    "YesToAll",
+                    "No",
+                    "NoToAll",
+                    "Abort",
+                    "Retry",
+                    "Ignore",
+                    "Close",
+                    "Cancel",
+                    "Discard",
+                    "Help",
+                    "Apply",
+                    "Reset",
+                    "RestoreDefaults",
+                ):
+                    if hasattr(std_button, name) and not hasattr(QDialogButtonBox, name):
+                        try:
+                            setattr(QDialogButtonBox, name, getattr(std_button, name))
+                        except Exception:
+                            pass
+
+    QDialog = getattr(QtWidgets, "QDialog", None)
+    if QDialog and not hasattr(QDialog, "Accepted"):
+        dialog_code = getattr(QDialog, "DialogCode", None)
+        if dialog_code:
+            for name in ("Rejected", "Accepted"):
+                if hasattr(dialog_code, name) and not hasattr(QDialog, name):
+                    try:
+                        setattr(QDialog, name, getattr(dialog_code, name))
+                    except Exception:
+                        pass
+
+    QImage = getattr(QtGui, "QImage", None)
+    if QImage and not hasattr(QImage, "Format_ARGB32_Premultiplied"):
+        image_format = getattr(QImage, "Format", None)
+        if image_format:
+            for name in (
+                "Format_Invalid",
+                "Format_Mono",
+                "Format_MonoLSB",
+                "Format_Indexed8",
+                "Format_RGB32",
+                "Format_ARGB32",
+                "Format_ARGB32_Premultiplied",
+                "Format_RGB16",
+                "Format_ARGB8565_Premultiplied",
+                "Format_RGB666",
+                "Format_ARGB6666_Premultiplied",
+                "Format_RGB555",
+                "Format_ARGB8555_Premultiplied",
+                "Format_RGB888",
+                "Format_RGB444",
+                "Format_ARGB4444_Premultiplied",
+                "Format_RGBX8888",
+                "Format_RGBA8888",
+                "Format_RGBA8888_Premultiplied",
+                "Format_BGR30",
+                "Format_A2BGR30_Premultiplied",
+                "Format_RGB30",
+                "Format_A2RGB30_Premultiplied",
+                "Format_Alpha8",
+                "Format_Grayscale8",
+            ):
+                if hasattr(image_format, name) and not hasattr(QImage, name):
+                    try:
+                        setattr(QImage, name, getattr(image_format, name))
+                    except Exception:
+                        pass
+
+    QStyle = getattr(QtWidgets, "QStyle", None)
+    if QStyle and not hasattr(QStyle, "State_Selected"):
+        state_flag = getattr(QStyle, "StateFlag", None)
+        if state_flag:
+            for name in (
+                "State_None",
+                "State_Enabled",
+                "State_Raised",
+                "State_Sunken",
+                "State_Off",
+                "State_NoChange",
+                "State_On",
+                "State_DownArrow",
+                "State_Horizontal",
+                "State_HasFocus",
+                "State_Top",
+                "State_Bottom",
+                "State_FocusAtBorder",
+                "State_AutoRaise",
+                "State_MouseOver",
+                "State_UpArrow",
+                "State_Selected",
+                "State_Active",
+                "State_Window",
+                "State_Open",
+                "State_Children",
+                "State_Item",
+                "State_Sibling",
+                "State_Editing",
+                "State_KeyboardFocusChange",
+                "State_ReadOnly",
+                "State_Small",
+                "State_Mini",
+            ):
+                if hasattr(state_flag, name) and not hasattr(QStyle, name):
+                    try:
+                        setattr(QStyle, name, getattr(state_flag, name))
+                    except Exception:
+                        pass
+
+    QComboBox = getattr(QtWidgets, "QComboBox", None)
+    if QComboBox and not hasattr(QComboBox, "AdjustToMinimumContentsLengthWithIcon"):
+        size_adjust = getattr(QComboBox, "SizeAdjustPolicy", None)
+        if size_adjust:
+            for name in (
+                "AdjustToContents",
+                "AdjustToContentsOnFirstShow",
+                "AdjustToMinimumContentsLength",
+                "AdjustToMinimumContentsLengthWithIcon",
+            ):
+                if hasattr(size_adjust, name) and not hasattr(QComboBox, name):
+                    try:
+                        setattr(QComboBox, name, getattr(size_adjust, name))
+                    except Exception:
+                        pass
+
+    QColorDialog = getattr(QtWidgets, "QColorDialog", None)
+    if QColorDialog and not hasattr(QColorDialog, "DontUseNativeDialog"):
+        option = getattr(QColorDialog, "ColorDialogOption", None)
+        if option:
+            for name in (
+                "ShowAlphaChannel",
+                "NoButtons",
+                "DontUseNativeDialog",
+            ):
+                if hasattr(option, name) and not hasattr(QColorDialog, name):
+                    try:
+                        setattr(QColorDialog, name, getattr(option, name))
+                    except Exception:
+                        pass
+
+    QItemSelectionModel = getattr(QtCore, "QItemSelectionModel", None)
+    if QItemSelectionModel and not hasattr(QItemSelectionModel, "Select"):
+        selection_flag = getattr(QItemSelectionModel, "SelectionFlag", None)
+        if selection_flag:
+            for name in (
+                "NoUpdate",
+                "Clear",
+                "Select",
+                "Deselect",
+                "Toggle",
+                "Current",
+                "Rows",
+                "Columns",
+                "SelectCurrent",
+                "ToggleCurrent",
+                "ClearAndSelect",
+            ):
+                if hasattr(selection_flag, name) and not hasattr(QItemSelectionModel, name):
+                    try:
+                        setattr(QItemSelectionModel, name, getattr(selection_flag, name))
+                    except Exception:
+                        pass
+
+    QMessageBox = getattr(QtWidgets, "QMessageBox", None)
+    if QMessageBox and not hasattr(QMessageBox, "Cancel"):
+        std_button = getattr(QMessageBox, "StandardButton", None)
+        if std_button:
+            for name in (
+                "NoButton",
+                "Ok",
+                "Save",
+                "SaveAll",
+                "Open",
+                "Yes",
+                "YesToAll",
+                "No",
+                "NoToAll",
+                "Abort",
+                "Retry",
+                "Ignore",
+                "Close",
+                "Cancel",
+                "Discard",
+                "Help",
+                "Apply",
+                "Reset",
+                "RestoreDefaults",
+            ):
+                if hasattr(std_button, name) and not hasattr(QMessageBox, name):
+                    try:
+                        setattr(QMessageBox, name, getattr(std_button, name))
+                    except Exception:
+                        pass
+        icon = getattr(QMessageBox, "Icon", None)
+        if icon:
+            for name in ("NoIcon", "Information", "Warning", "Critical", "Question"):
+                if hasattr(icon, name) and not hasattr(QMessageBox, name):
+                    try:
+                        setattr(QMessageBox, name, getattr(icon, name))
+                    except Exception:
+                        pass
+        color_group = getattr(QPalette, "ColorGroup", None)
+        if color_group:
+            for name in ("Disabled", "Active", "Inactive", "Normal", "All"):
+                if hasattr(color_group, name) and not hasattr(QPalette, name):
+                    try:
+                        setattr(QPalette, name, getattr(color_group, name))
+                    except Exception:
+                        pass
+
+    if QRegularExpression and not hasattr(QRegularExpression, "CaseInsensitiveOption"):
+        pattern_option = getattr(QRegularExpression, "PatternOption", None)
+        if pattern_option:
+            for name in ("NoPatternOption", "CaseInsensitiveOption", "DotMatchesEverythingOption", "MultilineOption"):
+                if hasattr(pattern_option, name) and not hasattr(QRegularExpression, name):
+                    try:
+                        setattr(QRegularExpression, name, getattr(pattern_option, name))
+                    except Exception:
+                        pass
+
+    QWebEngineSettings = None
+    if QtWebEngineCore:
+        QWebEngineSettings = getattr(QtWebEngineCore, "QWebEngineSettings", None)
+    if QWebEngineSettings is None and QtWebEngineWidgets:
+        QWebEngineSettings = getattr(QtWebEngineWidgets, "QWebEngineSettings", None)
+    if QWebEngineSettings and not hasattr(QWebEngineSettings, "ScrollAnimatorEnabled"):
+        web_attr = getattr(QWebEngineSettings, "WebAttribute", None)
+        if web_attr and hasattr(web_attr, "ScrollAnimatorEnabled"):
+            try:
+                setattr(QWebEngineSettings, "ScrollAnimatorEnabled", web_attr.ScrollAnimatorEnabled)
+            except Exception:
+                pass
+
+    # Qt6 renamed exec_() -> exec(); backfill exec_ on common classes.
+    def _exec_wrapper(self, *args, **kwargs):
+        return self.exec(*args, **kwargs)
+
+    if QtWidgets:
+        for name in (
+            "QDialog",
+            "QMessageBox",
+            "QMenu",
+            "QInputDialog",
+            "QFileDialog",
+            "QColorDialog",
+            "QFontDialog",
+            "QProgressDialog",
+        ):
+            cls = getattr(QtWidgets, name, None)
+            if cls and hasattr(cls, "exec") and not hasattr(cls, "exec_"):
+                try:
+                    setattr(cls, "exec_", _exec_wrapper)
+                except Exception:
+                    pass
+    if QtGui:
+        cls = getattr(QtGui, "QDrag", None)
+        if cls and hasattr(cls, "exec") and not hasattr(cls, "exec_"):
+            try:
+                setattr(cls, "exec_", _exec_wrapper)
+            except Exception:
+                pass
+
+    if not hasattr(QtCore, "QSignalTransition"):
+        try:
+            if QT_API == "pyqt6":
+                import PyQt6.QtStateMachine as QtStateMachineMod  # type: ignore
+            else:
+                import PySide6.QtStateMachine as QtStateMachineMod  # type: ignore
+            q_signal_transition = getattr(QtStateMachineMod, "QSignalTransition", None)
+            if q_signal_transition is not None:
+                setattr(QtCore, "QSignalTransition", q_signal_transition)
+        except Exception:
+            pass
+
 
 def _binding_order(env_value: str) -> List[str]:
     """Compute binding preference order based on env."""
@@ -103,6 +1132,7 @@ def _import_binding(name: str) -> Tuple:
         if q_state is None or q_state_machine is None:
             raise ImportError("PyQt6 QtStateMachine module not available (QState/QStateMachine missing)")
         QtSvgMod = None
+        QtWebEngineCoreMod = None
         QtWebEngineWidgetsMod = None
         QtWebChannelMod = None
         QtWebKitWidgetsMod = None
@@ -111,6 +1141,7 @@ def _import_binding(name: str) -> Tuple:
         except Exception:
             pass
         try:
+            import PyQt6.QtWebEngineCore as QtWebEngineCoreMod  # type: ignore
             import PyQt6.QtWebEngineWidgets as QtWebEngineWidgetsMod  # type: ignore
             import PyQt6.QtWebChannel as QtWebChannelMod  # type: ignore
         except Exception:
@@ -121,6 +1152,7 @@ def _import_binding(name: str) -> Tuple:
             QtGuiMod,
             QtWidgetsMod,
             QtSvgMod,
+            QtWebEngineCoreMod,
             QtWebEngineWidgetsMod,
             QtWebChannelMod,
             QtWebKitWidgetsMod,
@@ -152,6 +1184,7 @@ def _import_binding(name: str) -> Tuple:
         if q_state is None or q_state_machine is None:
             raise ImportError("PySide6 QtStateMachine module not available (QState/QStateMachine missing)")
         QtSvgMod = None
+        QtWebEngineCoreMod = None
         QtWebEngineWidgetsMod = None
         QtWebChannelMod = None
         QtWebKitWidgetsMod = None
@@ -160,6 +1193,7 @@ def _import_binding(name: str) -> Tuple:
         except Exception:
             pass
         try:
+            import PySide6.QtWebEngineCore as QtWebEngineCoreMod  # type: ignore
             import PySide6.QtWebEngineWidgets as QtWebEngineWidgetsMod  # type: ignore
             import PySide6.QtWebChannel as QtWebChannelMod  # type: ignore
         except Exception:
@@ -170,6 +1204,7 @@ def _import_binding(name: str) -> Tuple:
             QtGuiMod,
             QtWidgetsMod,
             QtSvgMod,
+            QtWebEngineCoreMod,
             QtWebEngineWidgetsMod,
             QtWebChannelMod,
             QtWebKitWidgetsMod,
@@ -195,6 +1230,7 @@ def _import_binding(name: str) -> Tuple:
             raise ImportError("PyQt5 missing QState/QStateMachine in QtCore")
 
         QtSvgMod = None
+        QtWebEngineCoreMod = None
         QtWebEngineWidgetsMod = None
         QtWebChannelMod = None
         QtWebKitWidgetsMod = None
@@ -203,6 +1239,7 @@ def _import_binding(name: str) -> Tuple:
         except Exception:
             pass
         try:
+            import PyQt5.QtWebEngineCore as QtWebEngineCoreMod  # type: ignore
             import PyQt5.QtWebEngineWidgets as QtWebEngineWidgetsMod  # type: ignore
             import PyQt5.QtWebChannel as QtWebChannelMod  # type: ignore
         except Exception:
@@ -217,6 +1254,7 @@ def _import_binding(name: str) -> Tuple:
             QtGuiMod,
             QtWidgetsMod,
             QtSvgMod,
+            QtWebEngineCoreMod,
             QtWebEngineWidgetsMod,
             QtWebChannelMod,
             QtWebKitWidgetsMod,
@@ -248,6 +1286,7 @@ def _import_binding(name: str) -> Tuple:
             raise ImportError("PySide2 QtStateMachine module not available (QState/QStateMachine missing)")
 
         QtSvgMod = None
+        QtWebEngineCoreMod = None
         QtWebEngineWidgetsMod = None
         QtWebChannelMod = None
         QtWebKitWidgetsMod = None
@@ -256,6 +1295,7 @@ def _import_binding(name: str) -> Tuple:
         except Exception:
             pass
         try:
+            import PySide2.QtWebEngineCore as QtWebEngineCoreMod  # type: ignore
             import PySide2.QtWebEngineWidgets as QtWebEngineWidgetsMod  # type: ignore
             import PySide2.QtWebChannel as QtWebChannelMod  # type: ignore
         except Exception:
@@ -270,6 +1310,7 @@ def _import_binding(name: str) -> Tuple:
             QtGuiMod,
             QtWidgetsMod,
             QtSvgMod,
+            QtWebEngineCoreMod,
             QtWebEngineWidgetsMod,
             QtWebChannelMod,
             QtWebKitWidgetsMod,
@@ -289,7 +1330,7 @@ def _import_binding(name: str) -> Tuple:
 
 def _select_binding() -> str:
     """Select and load the first available binding."""
-    global QtCore, QtGui, QtWidgets, QtSvg, QtWebEngineWidgets, QtWebChannel, QtWebKitWidgets
+    global QtCore, QtGui, QtWidgets, QtSvg, QtWebEngineCore, QtWebEngineWidgets, QtWebChannel, QtWebKitWidgets
     global Signal, Slot, Property, QRegularExpression, QState, QStateMachine, uic, QT_API, QT_VERSION_STR, BINDING_VERSION_STR, _MODULES
     global _FAILED_IMPORT, _SELECTING
 
@@ -313,6 +1354,7 @@ def _select_binding() -> str:
                 QtGui,
                 QtWidgets,
                 QtSvg,
+                QtWebEngineCore,
                 QtWebEngineWidgets,
                 QtWebChannel,
                 QtWebKitWidgets,
@@ -339,6 +1381,7 @@ def _select_binding() -> str:
                     QtGui,
                     QtWidgets,
                     QtSvg,
+                    QtWebEngineCore,
                     QtWebEngineWidgets,
                     QtWebChannel,
                     QtWebKitWidgets,
@@ -438,6 +1481,7 @@ __all__ = [
     "QtGui",
     "QtWidgets",
     "QtSvg",
+    "QtWebEngineCore",
     "QtWebEngineWidgets",
     "QtWebChannel",
     "QtWebKitWidgets",
@@ -459,4 +1503,9 @@ __all__ = [
     "BINDING_VERSION_STR",
     "ensure_binding",
     "load_ui",
+    "unwrapinstance",
+    "wrapinstance",
+    "isdeleted",
+    "modifiers_has",
+    "clear_override_cursor",
 ]

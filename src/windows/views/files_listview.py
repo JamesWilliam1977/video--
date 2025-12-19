@@ -27,6 +27,8 @@
  """
 
 from qt_api import QSize, Qt, QPoint, QRegularExpression
+from qt_api import clear_override_cursor
+from qt_api import modifiers_has
 from qt_api import QDrag, QCursor, QPixmap, QPainter, QIcon
 from qt_api import QListView, QAbstractItemView
 
@@ -110,9 +112,9 @@ class FilesListView(QListView):
     def mouseDoubleClickEvent(self, event):
         super(FilesListView, self).mouseDoubleClickEvent(event)
         # Preview File, File Properties, or Split File (depending on Shift/Ctrl)
-        if int(get_app().keyboardModifiers() & Qt.ShiftModifier) > 0:
+        if modifiers_has(get_app().keyboardModifiers(), Qt.ShiftModifier):
             get_app().window.actionSplitFile.trigger()
-        elif int(get_app().keyboardModifiers() & Qt.ControlModifier) > 0:
+        elif modifiers_has(get_app().keyboardModifiers(), Qt.ControlModifier):
             get_app().window.actionFile_Properties.trigger()
         else:
             get_app().window.actionPreview_File.trigger()
@@ -178,7 +180,11 @@ class FilesListView(QListView):
         drag.setHotSpot(composite_pixmap.rect().center())
 
         # Execute the drag operation
-        drag.exec_(supportedActions)
+        exec_fn = getattr(drag, "exec", None) or getattr(drag, "exec_", None)
+        if exec_fn is None:
+            raise AttributeError("QDrag has no exec_/exec method")
+        exec_fn(supportedActions)
+        clear_override_cursor()
 
     # Without defining this method, the 'copy' action doesn't show with cursor
     def dragMoveEvent(self, event):

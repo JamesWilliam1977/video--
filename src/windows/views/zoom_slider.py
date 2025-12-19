@@ -28,8 +28,9 @@ import copy
 import math
 
 from qt_api import (
-    Qt, QCoreApplication, QRectF, QTimer, QSize
+    Qt, QCoreApplication, QRectF, QTimer, QSize, QPointF
 )
+from qt_api import modifiers_has
 from qt_api import (
     QPainter, QColor, QPen, QBrush, QCursor, QPainterPath, QIcon
 )
@@ -38,6 +39,12 @@ from qt_api import QSizePolicy, QWidget
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes import updates
+
+
+def _event_posf(event):
+    if hasattr(event, "position"):
+        return event.position()
+    return QPointF(event.pos())
 from classes.app import get_app
 from classes.query import Clip, Track, Transition, Marker
 from classes.logger import log
@@ -264,17 +271,18 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         event.accept()
         self.mouse_pressed = True
         self.mouse_dragging = False
-        self.mouse_position = event.pos().x()
+        self.mouse_position = _event_posf(event).x()
         self.scrollbar_position_previous = list(self.scrollbar_position)  # copy, don't alias
 
     def mouseReleaseEvent(self, event):
         """Capture mouse release event"""
         event.accept()
+        posf = _event_posf(event)
 
         # Handle the case where no dragging occurred (single click)
-        if not self.mouse_dragging and not self.scroll_bar_rect.contains(event.pos()):
+        if not self.mouse_dragging and not self.scroll_bar_rect.contains(posf):
             # Center the scroll region at the click position (if outside the selection)
-            click_pos = event.pos().x() / self.width()
+            click_pos = posf.x() / self.width()
             selection_width = self.scrollbar_position[1] - self.scrollbar_position[0]
             half_width = selection_width / 2
 
@@ -333,9 +341,10 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
     def mouseMoveEvent(self, event):
         """Capture mouse events"""
         event.accept()
+        posf = _event_posf(event)
 
         # Get current mouse position
-        mouse_pos = event.pos().x()
+        mouse_pos = posf.x()
         if mouse_pos < 0:
             mouse_pos = 0
         elif mouse_pos > self.width():
@@ -344,11 +353,11 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         # Set cursor (based on current mouse position)
         drag_threshold = 5
         if not self.mouse_dragging:
-            if self.left_handle_rect.contains(event.pos()):
+            if self.left_handle_rect.contains(posf):
                 self.setCursor(self.cursors.get('resize_x'))
-            elif self.right_handle_rect.contains(event.pos()):
+            elif self.right_handle_rect.contains(posf):
                 self.setCursor(self.cursors.get('resize_x'))
-            elif self.scroll_bar_rect.contains(event.pos()):
+            elif self.scroll_bar_rect.contains(posf):
                 self.setCursor(self.cursors.get('move'))
             else:
                 self.setCursor(Qt.ArrowCursor)
@@ -356,11 +365,11 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         # Detect dragging (only if the user clicked and started dragging beyond the threshold)
         if self.mouse_pressed and not self.mouse_dragging:
             self.mouse_dragging = True
-            if self.left_handle_rect.contains(event.pos()):
+            if self.left_handle_rect.contains(posf):
                 self.left_handle_dragging = True
-            elif self.right_handle_rect.contains(event.pos()):
+            elif self.right_handle_rect.contains(posf):
                 self.right_handle_dragging = True
-            elif self.scroll_bar_rect.contains(event.pos()):
+            elif self.scroll_bar_rect.contains(posf):
                 self.scroll_bar_dragging = True
             elif abs(self.mouse_position - mouse_pos) > drag_threshold:
                 # If clicking outside the current selection, initiate drag to create a new selection
@@ -376,7 +385,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
                 new_left_pos = self.scrollbar_position_previous[0] - delta
                 is_left = True
 
-                if int(QCoreApplication.instance().keyboardModifiers() & Qt.ShiftModifier) > 0:
+                if modifiers_has(QCoreApplication.instance().keyboardModifiers(), Qt.ShiftModifier):
                     # SHIFT key pressed, move both handles
                     if (self.scrollbar_position_previous[1] + delta) - new_left_pos > self.min_distance:
                         new_right_pos = self.scrollbar_position_previous[1] + delta
@@ -399,7 +408,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
                 new_right_pos = self.scrollbar_position_previous[1] - delta
                 is_left = False
 
-                if int(QCoreApplication.instance().keyboardModifiers() & Qt.ShiftModifier) > 0:
+                if modifiers_has(QCoreApplication.instance().keyboardModifiers(), Qt.ShiftModifier):
                     # SHIFT key pressed, move both handles
                     if new_right_pos - (self.scrollbar_position_previous[0] + delta) > self.min_distance:
                         new_left_pos = self.scrollbar_position_previous[0] + delta

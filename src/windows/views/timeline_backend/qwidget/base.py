@@ -29,6 +29,7 @@ import json
 from functools import partial
 
 from qt_api import Qt, QRectF, QSize, QTimer, QPointF, QByteArray, pyqtSignal, QObject, QMetaMethod
+from qt_api import QT_API
 from qt_api import QtCore
 from qt_api import QtCore
 from qt_api import (
@@ -93,6 +94,12 @@ def _collect_signal_signatures(qobject_type):
 
 
 _TIMELINE_EVENT_SIGNATURES = _collect_signal_signatures(TimelineEvents)
+
+
+def _event_posf(event):
+    if hasattr(event, "position"):
+        return event.position()
+    return QPointF(event.pos())
 
 
 class _ConditionalTransition(QtCore.QSignalTransition):
@@ -312,9 +319,21 @@ class TimelineWidgetBase(QWidget):
 
         # Load icon (using display DPI)
         self.cursors = {}
+        cursor_fallbacks = {
+            "move": Qt.SizeAllCursor,
+            "resize_x": Qt.SizeHorCursor,
+            "hand": Qt.OpenHandCursor,
+        }
         for cursor_name in ["move", "resize_x", "hand"]:
+            if QT_API == "pyqt5":
+                self.cursors[cursor_name] = QCursor(cursor_fallbacks[cursor_name])
+                continue
             icon = QIcon(":/cursors/cursor_%s.png" % cursor_name)
-            self.cursors[cursor_name] = QCursor(icon.pixmap(24, 24))
+            pixmap = icon.pixmap(24, 24)
+            if pixmap.isNull() or pixmap.size().isEmpty():
+                self.cursors[cursor_name] = QCursor(cursor_fallbacks[cursor_name])
+            else:
+                self.cursors[cursor_name] = QCursor(pixmap)
 
         # Init Qt widget's properties (background repainting, etc...)
         super().setAttribute(Qt.WA_OpaquePaintEvent)
@@ -1037,7 +1056,7 @@ class TimelineWidgetBase(QWidget):
         return h_offset, v_offset
 
     def _event_seconds_track(self, event):
-        pos = event.pos()
+        pos = _event_posf(event)
         if pos.x() < self.track_name_width or pos.y() < self.ruler_height:
             return None
         if not self.track_list:
@@ -1997,30 +2016,31 @@ class TimelineWidgetBase(QWidget):
 
     def mousePressEvent(self, event):
         self._press_marker = None
+        posf = _event_posf(event)
+        pos = posf
         if event.button() == Qt.RightButton:
             self._last_event = event
-            if self._panel_show_property_menu_at(event.pos()):
+            if self._panel_show_property_menu_at(posf):
                 event.accept()
                 return
-            icon_entry = self._effect_icon_at(event.pos())
+            icon_entry = self._effect_icon_at(posf)
             if icon_entry and self._trigger_effect_context_menu(
                 icon_entry, event.modifiers() if hasattr(event, "modifiers") else None
             ):
                 event.accept()
                 return
-            if self._showContextMenu(event.pos()):
+            if self._showContextMenu(posf):
                 event.accept()
             else:
                 event.ignore()
             return
 
         if event.button() == Qt.MiddleButton:
-            if self._startMiddlePan(event.pos()):
+            if self._startMiddlePan(posf):
                 event.accept()
                 return
 
         self.geometry.ensure()
-        pos = event.pos()
 
         if event.button() == Qt.LeftButton:
             toolbar_button = self._track_toolbar_button_at(pos)
@@ -2102,7 +2122,7 @@ class TimelineWidgetBase(QWidget):
         return False
 
     def _assign_press_target(self, event):
-        pos = event.pos()
+        pos = _event_posf(event)
         modifiers = event.modifiers() if hasattr(event, "modifiers") else Qt.NoModifier
         ctrl = bool(modifiers & Qt.ControlModifier)
         marker_entry = self._marker_at(pos)
@@ -2180,13 +2200,14 @@ class TimelineWidgetBase(QWidget):
 
     def mouseMoveEvent(self, event):
         self._last_event = event
+        posf = _event_posf(event)
 
         if self.scroll_bar_dragging:
             view_w = self.scrollbar_position[3] or 1.0
             width_norm = self.scrollbar_position_previous[1] - self.scrollbar_position_previous[0]
             handle_w = width_norm * view_w
             avail = view_w - handle_w
-            delta_px = self.mouse_position - event.pos().x()
+            delta_px = self.mouse_position - posf.x()
             delta = 0.0
             if avail > 0:
                 delta = (delta_px / avail) * (1.0 - width_norm)
@@ -2206,7 +2227,7 @@ class TimelineWidgetBase(QWidget):
             height_norm = self.v_scrollbar_position_previous[1] - self.v_scrollbar_position_previous[0]
             handle_h = height_norm * view_h
             avail = view_h - handle_h
-            delta_py = self.mouse_position - event.pos().y()
+            delta_py = self.mouse_position - posf.y()
             delta = 0.0
             if avail > 0:
                 delta = (delta_py / avail) * (1.0 - height_norm)
@@ -2219,33 +2240,33 @@ class TimelineWidgetBase(QWidget):
             return
 
         if self._middle_panning:
-            self._updateMiddlePan(event.pos())
+            self._updateMiddlePan(posf)
             return
 
-        pos = event.pos()
         if self._toolbar_pressed_key:
-            self._update_toolbar_pressed_state(pos)
-        self._update_toolbar_hover(pos)
+            self._update_toolbar_pressed_state(posf)
+        self._update_toolbar_hover(posf)
 
-        self._updateCursor(pos)
+        self._updateCursor(posf)
         self.events.moved.emit(event)
 
     def mouseReleaseEvent(self, event):
         self._last_event = event
+        posf = _event_posf(event)
 
         if event.button() == Qt.LeftButton and self._toolbar_pressed_key:
             button = self._get_toolbar_button(*self._toolbar_pressed_key)
             inside = bool(
                 button
                 and button.get("rect")
-                and button["rect"].contains(event.pos())
+                and button["rect"].contains(posf)
                 and self._toolbar_pressed_inside
             )
             self._toolbar_pressed_key = None
             self._toolbar_pressed_inside = False
             if inside and button:
                 self._activate_track_toolbar_button(button)
-            self._update_toolbar_hover(event.pos())
+            self._update_toolbar_hover(posf)
             self.update()
             event.accept()
             return
@@ -2313,7 +2334,7 @@ class TimelineWidgetBase(QWidget):
             marker_entry = self._press_marker
             self._press_marker = None
             if event.button() == Qt.LeftButton and isinstance(marker_entry, dict):
-                current = self._marker_at(event.pos())
+                current = self._marker_at(posf)
                 if self._marker_same(marker_entry, current):
                     self._handle_marker_click(marker_entry)
                     self._press_hit = None
@@ -2325,17 +2346,18 @@ class TimelineWidgetBase(QWidget):
         self._press_hit = None
 
     def contextMenuEvent(self, event):
-        if self._panel_show_property_menu_at(event.pos()):
+        posf = _event_posf(event)
+        if self._panel_show_property_menu_at(posf):
             event.accept()
             return
-        icon_entry = self._effect_icon_at(event.pos())
+        icon_entry = self._effect_icon_at(posf)
         if icon_entry:
             if self._trigger_effect_context_menu(
                 icon_entry, event.modifiers() if hasattr(event, "modifiers") else None
             ):
                 event.accept()
                 return
-        if not self._showContextMenu(event.pos()):
+        if not self._showContextMenu(posf):
             event.ignore()
 
     def _panel_show_property_menu_at(self, pos):

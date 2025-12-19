@@ -34,6 +34,8 @@ from qt_api import (
     Qt, QCoreApplication, QMutex, QTimer,
     QPoint, QPointF, QSize, QSizeF, QRect, QRectF,
 )
+from qt_api import QT_API
+from qt_api import modifiers_has
 from qt_api import (
     QTransform, QPainter, QIcon, QColor, QPen, QBrush, QCursor, QImage, QRegion
 )
@@ -828,6 +830,13 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
     def rotateCursor(self, pixmap, rotation, shear_x, shear_y):
         """Rotate cursor based on the current transform"""
+        fallback = None
+        if isinstance(pixmap, tuple):
+            pixmap, fallback = pixmap
+        if pixmap is None or pixmap.isNull():
+            if fallback is None:
+                fallback = Qt.ArrowCursor
+            return QCursor(fallback)
         rotated_pixmap = pixmap.transformed(
             QTransform().rotate(rotation).shear(shear_x, shear_y).scale(0.8, 0.8),
             Qt.SmoothTransformation)
@@ -1148,7 +1157,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                     elif self.transform_mode == 'scale_right':
                         scale_x += x_motion / half_w
 
-                    if int(QCoreApplication.instance().keyboardModifiers() & Qt.ControlModifier) > 0:
+                    if modifiers_has(QCoreApplication.instance().keyboardModifiers(), Qt.ControlModifier):
                         # If CTRL key is pressed, fix the scale_y to the correct aspect ratio
                         if scale_x:
                             scale_y = scale_x
@@ -1353,7 +1362,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                         elif self.transform_mode == 'scale_right':
                             scale_x += x_motion / half_w
 
-                        if int(QCoreApplication.instance().keyboardModifiers() & Qt.ControlModifier) > 0:
+                        if modifiers_has(QCoreApplication.instance().keyboardModifiers(), Qt.ControlModifier):
                             # If CTRL key is pressed, fix the scale_y to the correct aspect ratio
                             if scale_x:
                                 scale_y = scale_x
@@ -2028,6 +2037,17 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
         # Load icon (using display DPI)
         self.cursors = {}
+        cursor_fallbacks = {
+            "move": Qt.SizeAllCursor,
+            "resize_x": Qt.SizeHorCursor,
+            "resize_y": Qt.SizeVerCursor,
+            "resize_bdiag": Qt.SizeBDiagCursor,
+            "resize_fdiag": Qt.SizeFDiagCursor,
+            "rotate": Qt.CrossCursor,
+            "shear_x": Qt.SizeHorCursor,
+            "shear_y": Qt.SizeVerCursor,
+            "hand": Qt.OpenHandCursor,
+        }
         for cursor_name in ["move",
                             "resize_x",
                             "resize_y",
@@ -2038,7 +2058,10 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                             "shear_y",
                             "hand"]:
             icon = QIcon(":/cursors/cursor_%s.png" % cursor_name)
-            self.cursors[cursor_name] = icon.pixmap(32, 32)
+            pixmap = icon.pixmap(32, 32)
+            if QT_API == "pyqt5" or pixmap.isNull() or pixmap.size().isEmpty():
+                pixmap = None
+            self.cursors[cursor_name] = (pixmap, cursor_fallbacks[cursor_name])
 
         # Mutex lock
         self.mutex = QMutex()

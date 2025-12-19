@@ -71,8 +71,11 @@ class TitleEditor(QDialog):
         # Create dialog class
         super().__init__(*args, **kwargs)
 
-        # Init font DB
-        self.font_db = QFontDatabase()
+        # Init font DB (Qt6 removes the default constructor)
+        try:
+            self.font_db = QFontDatabase()
+        except TypeError:
+            self.font_db = QFontDatabase
 
         # A timer to pause until user input stops before updating the svg
         self.update_timer = QTimer(self)

@@ -121,6 +121,12 @@ class OpenShotApp(QApplication):
 
         # Log some basic system info
         self.log = log
+        # Clear any stale override cursor (can suppress widget cursors in PyQt5)
+        try:
+            while QApplication.overrideCursor():
+                QApplication.restoreOverrideCursor()
+        except Exception:
+            pass
         self.show_environment(info, openshot)
         if self.mode != "unittest":
             self.check_libopenshot_version(info, openshot)
