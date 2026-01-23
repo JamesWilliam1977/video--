@@ -16,87 +16,176 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
 msgid "Troubleshooting"
-msgstr ""
+msgstr "عیب‌یابی"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:25
-msgid "If you are experiencing an issue with OpenShot, such as a freeze, crash, or error message, there are many different techniques which can be useful for troubleshooting the issue."
+msgid ""
+"If you are experiencing an issue with OpenShot, such as a freeze, crash, or "
+"error message, there are many different techniques which can be useful for "
+"troubleshooting the issue."
 msgstr ""
+"اگر با OpenShot مشکلی مانند توقف ناگهانی، کرش یا پیام خطا مواجه هستید، "
+"روش‌های مختلفی برای عیب‌یابی این مشکل وجود دارد."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:29
 msgid "Windows 11 Unresponsive"
-msgstr ""
+msgstr "عدم پاسخگویی در ویندوز ۱۱"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:31
-msgid "If you experience a freeze on Windows 11, this is a known issue with PyQt5 and Windows 11, related to the accessibility features in Qt. This is triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). OpenShot will become unresponsive and a memory leak is also present (i.e. the longer OpenShot is unresponsive, the larger your memory leak will become until OpenShot finally crashes or the user kills the process)."
+msgid ""
+"If you experience a freeze on Windows 11, this is a known issue with PyQt5 "
+"and Windows 11, related to the accessibility features in Qt. This is "
+"triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). "
+"OpenShot will become unresponsive and a memory leak is also present (i.e. "
+"the longer OpenShot is unresponsive, the larger your memory leak will become "
+"until OpenShot finally crashes or the user kills the process)."
 msgstr ""
+"اگر در ویندوز ۱۱ با توقف برنامه مواجه شدید، این یک مشکل شناخته‌شده در PyQt5 و "
+"ویندوز ۱۱ است که به ویژگی‌های دسترسی در Qt مربوط می‌شود. این مشکل با فشردن :"
+"kbd:`Ctrl+C` در OpenShot ایجاد می‌شود (*فقط در ویندوز ۱۱*). در این حالت "
+"OpenShot پاسخگو نخواهد بود و نشت حافظه نیز رخ می‌دهد (یعنی هرچه OpenShot "
+"بیشتر پاسخگو نباشد، نشت حافظه بزرگ‌تر می‌شود تا اینکه OpenShot کرش کند یا "
+"کاربر فرآیند را متوقف کند)."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:36
-msgid "A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead use the right-click Copy/Paste menus. Another work-around is to remap your \"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You can change your keyboard mappings in the OpenShot Preferences. See :ref:`preferences_keyboard_ref`."
+msgid ""
+"A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead "
+"use the right-click Copy/Paste menus. Another work-around is to remap your "
+"\"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You "
+"can change your keyboard mappings in the OpenShot Preferences. See :ref:"
+"`preferences_keyboard_ref`."
 msgstr ""
+"راه‌حل ساده این است که در ویندوز ۱۱ از :kbd:`Ctrl+C` استفاده نکنید و به جای "
+"آن از منوی راست‌کلیک کپی/پیست استفاده کنید. راه‌حل دیگر این است که کلید «کپی» "
+"را از :kbd:`Ctrl+C` به کلید دیگری مانند :kbd:`Alt+C` تغییر دهید. می‌توانید "
+"تنظیمات صفحه‌کلید را در تنظیمات OpenShot تغییر دهید. به :ref:"
+"`preferences_keyboard_ref` مراجعه کنید."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:41
 msgid "Windows Debugging with GDB"
-msgstr ""
+msgstr "اشکال‌زدایی ویندوز با GDB"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:43
-msgid "If you are experiencing a crash or freeze with OpenShot in Windows 10/11, the following step by step instructions will help you determine the cause of the crash. These instructions will display a stack trace of OpenShot's source code, at the location of the crash. This information can be extremely useful for our development team, and very useful to attach to bug reports (for a quicker resolution)."
+msgid ""
+"If you are experiencing a crash or freeze with OpenShot in Windows 10/11, "
+"the following step by step instructions will help you determine the cause of "
+"the crash. These instructions will display a stack trace of OpenShot's "
+"source code, at the location of the crash. This information can be extremely "
+"useful for our development team, and very useful to attach to bug reports "
+"(for a quicker resolution)."
 msgstr ""
+"اگر در ویندوز ۱۰/۱۱ با کرش یا توقف OpenShot مواجه هستید، دستورالعمل‌های گام "
+"به گام زیر به شما کمک می‌کند علت کرش را پیدا کنید. این دستورالعمل‌ها یک ردپای "
+"پشته از کد منبع OpenShot در محل کرش نمایش می‌دهند. این اطلاعات برای تیم توسعه "
+"ما بسیار مفید است و برای پیوست به گزارش‌های باگ (برای حل سریع‌تر) بسیار "
+"کاربردی است."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:49
 msgid "Install the Latest Daily Build"
-msgstr ""
+msgstr "نصب آخرین نسخه روزانه"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:51
-msgid "Before attaching a debugger, please download the **latest version** of OpenShot: https://www.openshot.org/download#daily. Install this version of OpenShot to the default location: ``C:\\Program Files\\OpenShot Video Editor\\``. For details instructions on debugging OpenShot on Windows, please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-Debugging-with-GDB>`_."
+msgid ""
+"Before attaching a debugger, please download the **latest version** of "
+"OpenShot: https://www.openshot.org/download#daily. Install this version of "
+"OpenShot to the default location: ``C:\\Program Files\\OpenShot Video "
+"Editor\\``. For details instructions on debugging OpenShot on Windows, "
+"please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-"
+"Debugging-with-GDB>`_."
 msgstr ""
+"قبل از اتصال اشکال‌زدای برنامه، لطفاً **جدیدترین نسخه** OpenShot را از https://"
+"www.openshot.org/download#daily دانلود کنید. این نسخه را در محل پیش‌فرض نصب "
+"کنید: ``C:\\Program Files\\OpenShot Video Editor\\``. برای دستورالعمل‌های "
+"دقیق درباره اشکال‌زدایی OpenShot در ویندوز، به `این ویکی <https://github.com/"
+"OpenShot/openshot-qt/wiki/Windows-Debugging-with-GDB>`_ مراجعه کنید."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:56
 msgid "Install MSYS2"
-msgstr ""
+msgstr "نصب MSYS2"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:58
-msgid "The Windows version of OpenShot is compiled using an environment called MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt.exe``, you must first install MSYS2. This step is only required once."
+msgid ""
+"The Windows version of OpenShot is compiled using an environment called "
+"MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt."
+"exe``, you must first install MSYS2. This step is only required once."
 msgstr ""
+"نسخه ویندوز OpenShot با استفاده از محیطی به نام MSYS2 کامپایل شده است. برای "
+"اتصال اشکال‌زدای GDB به فایل اجرایی ما، ``openshot-qt.exe``, ابتدا باید MSYS2 "
+"را نصب کنید. این مرحله فقط یک بار لازم است."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:61
 msgid "Download & Install MSYS2: `<http://www.msys2.org/>`_"
-msgstr ""
+msgstr "دانلود و نصب MSYS2: `<http://www.msys2.org/>`_"
 
-#: ../troubleshoot.rst:62
-#: ../troubleshoot.rst:78
-msgid "Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:\\msys64\\msys2_shell.cmd -mingw64``)"
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:62 ../troubleshoot.rst:78
+msgid ""
+"Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:"
+"\\msys64\\msys2_shell.cmd -mingw64``)"
 msgstr ""
+"اجرای خط فرمان ``MSYS2 MinGW x64`` (برای مثال: ``C:\\msys64\\msys2_shell.cmd "
+"-mingw64``)"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:63
 msgid "Update all packages (*Copy/Paste the following command*):"
-msgstr ""
+msgstr "به‌روزرسانی همه بسته‌ها (*دستور زیر را کپی/پیست کنید*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:69
 msgid "Install GDB debugger (*Copy/Paste the following command*):"
-msgstr ""
+msgstr "نصب اشکال‌زدای GDB (*دستور زیر را کپی/پیست کنید*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:76
 msgid "Launch OpenShot with GDB Debugger"
-msgstr ""
+msgstr "اجرای OpenShot با اشکال‌زدای GDB"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:80
 msgid "Update the PATH (*Copy/Paste the following commands*):"
-msgstr ""
+msgstr "به‌روزرسانی PATH (*دستورات زیر را کپی/پیست کنید*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:87
-msgid "Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
-msgstr ""
+msgid ""
+"Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
+msgstr "بارگذاری OpenShot در اشکال‌زدای GDB (*دستورات زیر را کپی/پیست کنید*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:94
 msgid "Launch OpenShot from GDB prompt (*Copy/Paste the following command*):"
-msgstr ""
+msgstr "اجرای OpenShot از خط فرمان GDB (*دستور زیر را کپی/پیست کنید*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:101
 msgid "Print Debugging Info"
-msgstr ""
+msgstr "نمایش اطلاعات اشکال‌زدایی"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:103
-msgid "Once OpenShot has launched successfully with GDB attached, all you need to do is trigger a crash or freeze in OpenShot. When a crash occurs, switch back to the MSYS2 MinGW64 terminal and run one of the following commands (by typing it and pressing ENTER). Usually, the first command to enter is ``bt``, which stands for ``backtrace``. More commands are listed below."
+msgid ""
+"Once OpenShot has launched successfully with GDB attached, all you need to "
+"do is trigger a crash or freeze in OpenShot. When a crash occurs, switch "
+"back to the MSYS2 MinGW64 terminal and run one of the following commands (by "
+"typing it and pressing ENTER). Usually, the first command to enter is "
+"``bt``, which stands for ``backtrace``. More commands are listed below."
 msgstr ""
+"پس از اجرای موفق OpenShot با اتصال GDB، کافی است یک کرش یا توقف در OpenShot "
+"ایجاد کنید. وقتی کرش رخ داد، به ترمینال MSYS2 MinGW64 بازگردید و یکی از "
+"دستورات زیر را اجرا کنید (با تایپ و زدن ENTER). معمولاً اولین دستور ``bt`` "
+"است که به معنی ``backtrace`` می‌باشد. دستورات بیشتری در ادامه آمده است."
