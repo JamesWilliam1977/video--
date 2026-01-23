@@ -16,421 +16,761 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:23
 msgid "Files"
-msgstr ""
+msgstr "Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:25
-msgid "To create a video, we need to make media files available to our project by importing files into OpenShot. Most media file types are recognized, such as videos, images, and audio files. Files can be viewed and managed in the **Project Files** panel."
+msgid ""
+"To create a video, we need to make media files available to our project by "
+"importing files into OpenShot. Most media file types are recognized, such as "
+"videos, images, and audio files. Files can be viewed and managed in the "
+"**Project Files** panel."
 msgstr ""
+"Untuk membuat video, kita perlu menyediakan berkas media ke proyek kita "
+"dengan mengimpor berkas ke OpenShot. Sebagian besar jenis berkas media "
+"dikenali, seperti video, gambar, dan berkas audio. Berkas dapat dilihat dan "
+"dikelola di panel **Berkas Proyek**."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:29
-msgid "Note that imported files are not copied anywhere, they remain in the physical location they were before and are simply being made available to your video project. So, they must not be deleted, renamed, or moved after adding them to your project. The \"Show All\", \"Video\", \"Audio\", \"Image\" filters above the files allows you to only see the file types you are interested in. You can also toggle the view between :guilabel:`details` and :guilabel:`thumbnails` view of your files."
+msgid ""
+"Note that imported files are not copied anywhere, they remain in the "
+"physical location they were before and are simply being made available to "
+"your video project. So, they must not be deleted, renamed, or moved after "
+"adding them to your project. The \"Show All\", \"Video\", \"Audio\", "
+"\"Image\" filters above the files allows you to only see the file types you "
+"are interested in. You can also toggle the view between :guilabel:`details` "
+"and :guilabel:`thumbnails` view of your files."
 msgstr ""
+"Perlu dicatat bahwa berkas yang diimpor tidak disalin ke mana pun, mereka "
+"tetap berada di lokasi fisik sebelumnya dan hanya dibuat tersedia untuk "
+"proyek video Anda. Jadi, berkas tersebut tidak boleh dihapus, diganti nama, "
+"atau dipindahkan setelah ditambahkan ke proyek Anda. Filter \"Tampilkan "
+"Semua\", \"Video\", \"Audio\", \"Gambar\" di atas berkas memungkinkan Anda "
+"hanya melihat jenis berkas yang Anda minati. Anda juga dapat mengubah "
+"tampilan antara :guilabel:`detail` dan :guilabel:`thumbnail` dari berkas "
+"Anda."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:39
 msgid "Import Files"
-msgstr ""
+msgstr "Impor Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:40
-msgid "There are many different ways to import media files into an OpenShot project. When a file is imported successfully, it will be automatically selected and scrolled into view (in the **Project Files** panel). Also, if the **Project Files** panel is not currently visible, OpenShot will automatically display the panel."
+msgid ""
+"There are many different ways to import media files into an OpenShot "
+"project. When a file is imported successfully, it will be automatically "
+"selected and scrolled into view (in the **Project Files** panel). Also, if "
+"the **Project Files** panel is not currently visible, OpenShot will "
+"automatically display the panel."
 msgstr ""
+"Ada banyak cara berbeda untuk mengimpor berkas media ke dalam proyek "
+"OpenShot. Ketika sebuah berkas berhasil diimpor, berkas tersebut akan "
+"otomatis dipilih dan digulirkan ke tampilan (di panel **Berkas Proyek**). "
+"Selain itu, jika panel **Berkas Proyek** tidak terlihat saat ini, OpenShot "
+"akan secara otomatis menampilkan panel tersebut."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:48
 msgid "Import File Method"
-msgstr ""
+msgstr "Metode Impor Berkas"
 
-#: ../files.rst:48
-#: ../files.rst:81
-#: ../files.rst:110
-#: ../files.rst:146
+# Translated with gpt-4.1-mini
+#: ../files.rst:48 ../files.rst:81 ../files.rst:110 ../files.rst:146
 #: ../files.rst:170
 msgid "Description"
-msgstr ""
+msgstr "Deskripsi"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:50
 msgid "Drag and Drop"
-msgstr ""
+msgstr "Seret dan Lepas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:50
-msgid "Drag and drop the files from your file manager (file explorer, finder, etc...)."
+msgid ""
+"Drag and drop the files from your file manager (file explorer, finder, "
+"etc...)."
 msgstr ""
+"Seret dan lepas berkas dari pengelola berkas Anda (penjelajah berkas, "
+"finder, dll...)."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:51
 msgid "Context menu (`File Menu`_)"
-msgstr ""
+msgstr "Menu konteks (`Menu Berkas`_)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:51
-msgid "Right click anywhere in the **Project Files** panel and choose :guilabel:`Import Files`."
+msgid ""
+"Right click anywhere in the **Project Files** panel and choose :guilabel:"
+"`Import Files`."
 msgstr ""
+"Klik kanan di mana saja di panel **Berkas Proyek** dan pilih :guilabel:"
+"`Impor Berkas`."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:52
 msgid "Main Menu"
-msgstr ""
+msgstr "Menu Utama"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:52
 msgid "In the main menu choose: :guilabel:`File\\→Import Files`."
-msgstr ""
+msgstr "Di menu utama pilih: :guilabel:`Berkas\\→Impor Berkas`."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:53
 msgid "Toolbar button"
-msgstr ""
+msgstr "Tombol toolbar"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:53
 msgid "Click the :guilabel:`+` toolbar button in the main toolbar."
-msgstr ""
+msgstr "Klik tombol toolbar :guilabel:`+` di toolbar utama."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:54
 msgid "Keyboard shortcut"
-msgstr ""
+msgstr "Pintasan keyboard"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:54
 msgid "Press :kbd:`Ctrl-F` (:kbd:`Cmd-F` on Mac)."
-msgstr ""
+msgstr "Tekan :kbd:`Ctrl-F` (:kbd:`Cmd-F` di Mac)."
 
-#: ../files.rst:55
-#: ../files.rst:63
+# Translated with gpt-4.1-mini
+#: ../files.rst:55 ../files.rst:63
 msgid "Paste from Clipboard"
-msgstr ""
+msgstr "Tempel dari Clipboard"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:55
-msgid "Press :kbd:`Ctrl-V` (:kbd:`Cmd-V` on Mac) to paste copied files from your clipboard. See :ref:`paste_from_clipboard_ref`."
+msgid ""
+"Press :kbd:`Ctrl-V` (:kbd:`Cmd-V` on Mac) to paste copied files from your "
+"clipboard. See :ref:`paste_from_clipboard_ref`."
 msgstr ""
+"Tekan :kbd:`Ctrl-V` (:kbd:`Cmd-V` di Mac) untuk menempel berkas yang disalin "
+"dari clipboard Anda. Lihat :ref:`paste_from_clipboard_ref`."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:64
-msgid "You can paste files and clipboard media straight into OpenShot. If you copied one or more files in your file manager, switch to OpenShot and press :kbd:`Ctrl-V` in the **Project Files** panel to add them, just like importing."
+msgid ""
+"You can paste files and clipboard media straight into OpenShot. If you "
+"copied one or more files in your file manager, switch to OpenShot and press :"
+"kbd:`Ctrl-V` in the **Project Files** panel to add them, just like importing."
 msgstr ""
+"Anda dapat menempel berkas dan media clipboard langsung ke OpenShot. Jika "
+"Anda menyalin satu atau lebih berkas di pengelola berkas Anda, beralih ke "
+"OpenShot dan tekan :kbd:`Ctrl-V` di panel **Berkas Proyek** untuk "
+"menambahkannya, sama seperti mengimpor."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:67
-msgid "If you copied media **data** (for example, **Copy Image** in a web browser, a pasted frame from another app, or other image/audio/video clipboard data), press :kbd:`Ctrl-V` in OpenShot to create a file for that clipboard content. OpenShot saves a copy in a temporary folder: ``.openshot_qt/clipboard/``. The new file is then added to your project and appears in **Project Files**."
+msgid ""
+"If you copied media **data** (for example, **Copy Image** in a web browser, "
+"a pasted frame from another app, or other image/audio/video clipboard data), "
+"press :kbd:`Ctrl-V` in OpenShot to create a file for that clipboard content. "
+"OpenShot saves a copy in a temporary folder: ``.openshot_qt/clipboard/``. "
+"The new file is then added to your project and appears in **Project Files**."
 msgstr ""
+"Jika Anda menyalin data media **(data)** (misalnya, **Salin Gambar** di "
+"peramban web, frame yang ditempel dari aplikasi lain, atau data clipboard "
+"gambar/audio/video lainnya), tekan :kbd:`Ctrl-V` di OpenShot untuk membuat "
+"berkas dari konten clipboard tersebut. OpenShot menyimpan salinan di folder "
+"sementara: ``.openshot_qt/clipboard/``. Berkas baru kemudian ditambahkan ke "
+"proyek Anda dan muncul di **Berkas Proyek**."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:74
 msgid "File Menu"
-msgstr ""
+msgstr "Menu Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:75
-msgid "To view the file menu, right click on a file (in the **Project Files** panel). Here are the actions you can use from the file menu."
+msgid ""
+"To view the file menu, right click on a file (in the **Project Files** "
+"panel). Here are the actions you can use from the file menu."
 msgstr ""
+"Untuk melihat menu berkas, klik kanan pada sebuah berkas (di panel **Berkas "
+"Proyek**). Berikut adalah tindakan yang dapat Anda gunakan dari menu berkas."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:81
 msgid "File Context Option"
-msgstr ""
+msgstr "Opsi Konteks Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:83
 msgid "Import Files..."
-msgstr ""
+msgstr "Impor Berkas..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:83
 msgid "Import files into your project"
-msgstr ""
+msgstr "Impor berkas ke dalam proyek Anda"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:84
 msgid "Thumbnail/Detail"
-msgstr ""
+msgstr "Thumbnail/Detail"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:84
 msgid "Toggle the view between details and thumbnails"
-msgstr ""
+msgstr "Beralih tampilan antara detail dan thumbnail"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:85
 msgid "Preview File"
-msgstr ""
+msgstr "Pratinjau Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:85
 msgid "Preview a media file"
-msgstr ""
+msgstr "Pratinjau berkas media"
 
-#: ../files.rst:86
-#: ../files.rst:98
+# Translated with gpt-4.1-mini
+#: ../files.rst:86 ../files.rst:98
 msgid "Split File"
-msgstr ""
+msgstr "Pisah Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:86
-msgid "Split a file into many smaller files. The new trimmed files appear in the Project Files list."
+msgid ""
+"Split a file into many smaller files. The new trimmed files appear in the "
+"Project Files list."
 msgstr ""
+"Pisahkan sebuah berkas menjadi banyak berkas yang lebih kecil. Berkas yang "
+"dipangkas baru akan muncul di daftar Berkas Proyek."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:87
 msgid "Edit Title"
-msgstr ""
+msgstr "Sunting Judul"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:87
 msgid "Edit an existing title SVG file"
-msgstr ""
+msgstr "Sunting berkas judul SVG yang sudah ada"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:88
 msgid "Duplicate Title"
-msgstr ""
+msgstr "Duplikat Judul"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:88
 msgid "Make a copy, and then edit the copied title SVG file"
-msgstr ""
+msgstr "Buat salinan, lalu sunting berkas judul SVG yang disalin"
 
-#: ../files.rst:89
-#: ../files.rst:135
+# Translated with gpt-4.1-mini
+#: ../files.rst:89 ../files.rst:135
 msgid "Add to Timeline"
-msgstr ""
+msgstr "Tambahkan ke Timeline"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:89
-msgid "Add many files to the timeline in one step, including transitions or alternating tracks."
+msgid ""
+"Add many files to the timeline in one step, including transitions or "
+"alternating tracks."
 msgstr ""
+"Tambahkan banyak berkas ke timeline dalam satu langkah, termasuk transisi "
+"atau trek bergantian."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:90
 msgid "Choose Profile"
-msgstr ""
+msgstr "Pilih Profil"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:90
-msgid "Change the current project profile to match the selected file. If the file's profile does not match a known profile, it will give you the option to create a custom profile."
+msgid ""
+"Change the current project profile to match the selected file. If the file's "
+"profile does not match a known profile, it will give you the option to "
+"create a custom profile."
 msgstr ""
+"Ubah profil proyek saat ini agar sesuai dengan berkas yang dipilih. Jika "
+"profil berkas tidak cocok dengan profil yang dikenal, Anda akan diberi opsi "
+"untuk membuat profil kustom."
 
-#: ../files.rst:91
-#: ../files.rst:172
+# Translated with gpt-4.1-mini
+#: ../files.rst:91 ../files.rst:172
 msgid "File Properties"
-msgstr ""
+msgstr "Properti Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:91
 msgid "View the properties of a file, such as frame rate, size, etc..."
-msgstr ""
+msgstr "Lihat properti berkas, seperti laju bingkai, ukuran, dll..."
 
-#: ../files.rst:92
-#: ../files.rst:180
+# Translated with gpt-4.1-mini
+#: ../files.rst:92 ../files.rst:180
 msgid "Remove from Project"
-msgstr ""
+msgstr "Hapus dari Proyek"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:92
 msgid "Remove a file from the project"
-msgstr ""
+msgstr "Hapus sebuah berkas dari proyek"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:99
-msgid "If you need to cut a large video file into many smaller files before editing, the **Split File** dialog is built exactly for this purpose. Right click on a file, and choose :guilabel:`Split File`. Use this dialog to quickly separate a large file into many smaller segments. For each segment, you can select the starting and ending frame, and a title. Each segment appears as a new file in the Project Files dialog."
+msgid ""
+"If you need to cut a large video file into many smaller files before "
+"editing, the **Split File** dialog is built exactly for this purpose. Right "
+"click on a file, and choose :guilabel:`Split File`. Use this dialog to "
+"quickly separate a large file into many smaller segments. For each segment, "
+"you can select the starting and ending frame, and a title. Each segment "
+"appears as a new file in the Project Files dialog."
 msgstr ""
+"Jika Anda perlu memotong berkas video besar menjadi banyak berkas kecil "
+"sebelum mengedit, dialog **Pisah Berkas** dibuat khusus untuk tujuan ini. "
+"Klik kanan pada sebuah berkas, dan pilih :guilabel:`Pisah Berkas`. Gunakan "
+"dialog ini untuk dengan cepat memisahkan berkas besar menjadi banyak segmen "
+"kecil. Untuk setiap segmen, Anda dapat memilih bingkai awal dan akhir, serta "
+"judul. Setiap segmen muncul sebagai berkas baru di dialog Berkas Proyek."
 
-#: ../files.rst:110
-#: ../files.rst:146
-#: ../files.rst:170
+# Translated with gpt-4.1-mini
+#: ../files.rst:110 ../files.rst:146 ../files.rst:170
 msgid "#"
-msgstr ""
+msgstr "No."
 
-#: ../files.rst:110
-#: ../files.rst:146
-#: ../files.rst:170
+# Translated with gpt-4.1-mini
+#: ../files.rst:110 ../files.rst:146 ../files.rst:170
 msgid "Name"
-msgstr ""
+msgstr "Nama"
 
-#: ../files.rst:112
-#: ../files.rst:148
-#: ../files.rst:172
+# Translated with gpt-4.1-mini
+#: ../files.rst:112 ../files.rst:148 ../files.rst:172
 msgid "1"
-msgstr ""
+msgstr "1"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:112
 msgid "Start of File"
-msgstr ""
+msgstr "Awal Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:112
 msgid "Choose the starting frame of your file by clicking this button"
-msgstr ""
+msgstr "Pilih bingkai awal berkas Anda dengan mengklik tombol ini"
 
-#: ../files.rst:113
-#: ../files.rst:149
-#: ../files.rst:173
+# Translated with gpt-4.1-mini
+#: ../files.rst:113 ../files.rst:149 ../files.rst:173
 msgid "2"
-msgstr ""
+msgstr "2"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:113
 msgid "End of File"
-msgstr ""
+msgstr "Akhir Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:113
 msgid "Choose the ending frame of your file by clicking this button"
-msgstr ""
+msgstr "Pilih frame akhir dari berkas Anda dengan mengklik tombol ini"
 
-#: ../files.rst:114
-#: ../files.rst:150
+# Translated with gpt-4.1-mini
+#: ../files.rst:114 ../files.rst:150
 msgid "3"
-msgstr ""
+msgstr "3"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:114
 msgid "Name of File"
-msgstr ""
+msgstr "Nama Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:114
 msgid "Enter an optional name"
-msgstr ""
+msgstr "Masukkan nama opsional"
 
-#: ../files.rst:115
-#: ../files.rst:151
+# Translated with gpt-4.1-mini
+#: ../files.rst:115 ../files.rst:151
 msgid "4"
-msgstr ""
+msgstr "4"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:115
 msgid "Create Button"
-msgstr ""
+msgstr "Tombol Buat"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:115
-msgid "Create the file (which resets this dialog, so you can repeat these steps for each segment)"
+msgid ""
+"Create the file (which resets this dialog, so you can repeat these steps for "
+"each segment)"
 msgstr ""
+"Buat berkas (yang akan mengatur ulang dialog ini, sehingga Anda dapat "
+"mengulangi langkah ini untuk setiap segmen)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:118
-msgid "Please refer to the section :ref:`clips_cutting_slicing_ref` for more ways to cut and slice clips directly in the timeline."
+msgid ""
+"Please refer to the section :ref:`clips_cutting_slicing_ref` for more ways "
+"to cut and slice clips directly in the timeline."
 msgstr ""
+"Silakan lihat bagian :ref:`clips_cutting_slicing_ref` untuk cara lain "
+"memotong dan membagi klip langsung di timeline."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:121
 msgid "Export Files"
-msgstr ""
+msgstr "Ekspor Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:122
-msgid "If you want your split file segments available outside of your OpenShot project, or want to copy all your video assets to one place, you can do this with the **Export Files** dialog. Simply :kbd:`Ctrl+Click` to select all the files you like, then :kbd:`Right Click` and choose :guilabel:`Export Files`. In the dialog that appears, choose a destination folder, and click :guilabel:`Export`."
+msgid ""
+"If you want your split file segments available outside of your OpenShot "
+"project, or want to copy all your video assets to one place, you can do this "
+"with the **Export Files** dialog. Simply :kbd:`Ctrl+Click` to select all the "
+"files you like, then :kbd:`Right Click` and choose :guilabel:`Export Files`. "
+"In the dialog that appears, choose a destination folder, and click :guilabel:"
+"`Export`."
 msgstr ""
+"Jika Anda ingin segmen berkas yang dipisah tersedia di luar proyek OpenShot "
+"Anda, atau ingin menyalin semua aset video ke satu tempat, Anda dapat "
+"melakukannya dengan dialog **Ekspor Berkas**. Cukup :kbd:`Ctrl+Klik` untuk "
+"memilih semua berkas yang Anda inginkan, lalu :kbd:`Klik Kanan` dan pilih :"
+"guilabel:`Ekspor Berkas`. Dalam dialog yang muncul, pilih folder tujuan, dan "
+"klik :guilabel:`Ekspor`."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:127
-msgid "NOTE: This will export each file or file segment using its **original video profile** (width, height, framerate, aspect ratio, etc...). It also supports any :ref:`split_clip_ref` (described above). For example, if you have split a long video file into many different segments (and named them), you can now export all the segments as separate video files (using the original file's video profile)."
+msgid ""
+"NOTE: This will export each file or file segment using its **original video "
+"profile** (width, height, framerate, aspect ratio, etc...). It also supports "
+"any :ref:`split_clip_ref` (described above). For example, if you have split "
+"a long video file into many different segments (and named them), you can now "
+"export all the segments as separate video files (using the original file's "
+"video profile)."
 msgstr ""
+"CATATAN: Ini akan mengekspor setiap berkas atau segmen berkas menggunakan "
+"**profil video asli** (lebar, tinggi, frame rate, rasio aspek, dll...). Ini "
+"juga mendukung :ref:`split_clip_ref` (dijelaskan di atas). Misalnya, jika "
+"Anda telah memisah berkas video panjang menjadi banyak segmen berbeda (dan "
+"menamainya), Anda sekarang dapat mengekspor semua segmen sebagai berkas "
+"video terpisah (menggunakan profil video berkas asli)."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:136
-msgid "In certain cases, you might need to add many files to the timeline at the same time. For example, a photo slideshow, or a large number of short video clips. The **Add to Timeline** dialog can automate this task for you. First, select all files you need to add, right click, and choose Add to Timeline."
+msgid ""
+"In certain cases, you might need to add many files to the timeline at the "
+"same time. For example, a photo slideshow, or a large number of short video "
+"clips. The **Add to Timeline** dialog can automate this task for you. First, "
+"select all files you need to add, right click, and choose Add to Timeline."
 msgstr ""
+"Dalam beberapa kasus, Anda mungkin perlu menambahkan banyak berkas ke "
+"timeline sekaligus. Misalnya, slideshow foto, atau sejumlah besar klip video "
+"pendek. Dialog **Tambahkan ke Timeline** dapat mengotomatisasi tugas ini "
+"untuk Anda. Pertama, pilih semua berkas yang perlu ditambahkan, klik kanan, "
+"dan pilih Tambahkan ke Timeline."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid "Selected Files"
-msgstr ""
+msgstr "Berkas Terpilih"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid "The list of selected files that need to be added to the timeline"
-msgstr ""
+msgstr "Daftar berkas terpilih yang perlu ditambahkan ke timeline"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Order of Files"
-msgstr ""
+msgstr "Urutan Berkas"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
-msgid "Use these buttons to reorder the list of files (move up, move down, randomize, remove)"
+msgid ""
+"Use these buttons to reorder the list of files (move up, move down, "
+"randomize, remove)"
 msgstr ""
+"Gunakan tombol ini untuk mengatur ulang daftar berkas (pindah ke atas, "
+"pindah ke bawah, acak, hapus)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid "Timeline Position"
-msgstr ""
+msgstr "Posisi Timeline"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
-msgid "Choose the starting position and track where these files need to be inserted on the timeline"
+msgid ""
+"Choose the starting position and track where these files need to be inserted "
+"on the timeline"
 msgstr ""
+"Pilih posisi awal dan trek tempat berkas-berkas ini harus disisipkan di "
+"timeline"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:151
 msgid "Fade Options"
-msgstr ""
+msgstr "Opsi Fade"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:151
-msgid "Fade in, fade out, both, or none (only affects the image, and not audio)"
+msgid ""
+"Fade in, fade out, both, or none (only affects the image, and not audio)"
 msgstr ""
+"Fade in, fade out, keduanya, atau tidak sama sekali (hanya memengaruhi "
+"gambar, bukan audio)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid "5"
-msgstr ""
+msgstr "5"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid "Zoom Options"
-msgstr ""
+msgstr "Opsi Zoom"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid "Zoom in, zoom out, or none"
-msgstr ""
+msgstr "Perbesar, perkecil, atau tidak sama sekali"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:153
 msgid "6"
-msgstr ""
+msgstr "6"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:153
 msgid "Transitions"
-msgstr ""
+msgstr "Transisi"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:153
-msgid "Choose a specific transition to use between files, random, or none (only affects the image, and not the audio)"
+msgid ""
+"Choose a specific transition to use between files, random, or none (only "
+"affects the image, and not the audio)"
 msgstr ""
+"Pilih transisi spesifik untuk digunakan antar berkas, acak, atau tidak sama "
+"sekali (hanya memengaruhi gambar, bukan audio)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:159
 msgid "Properties"
-msgstr ""
+msgstr "Properti"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:160
-msgid "To view the properties of any imported file in your video project, right click on the file, and choose **File Properties**. This will launch the file properties dialog, which displays information about your media file. For certain types of images (i.e. image sequences), you can adjust the frame rate on this dialog also."
+msgid ""
+"To view the properties of any imported file in your video project, right "
+"click on the file, and choose **File Properties**. This will launch the file "
+"properties dialog, which displays information about your media file. For "
+"certain types of images (i.e. image sequences), you can adjust the frame "
+"rate on this dialog also."
 msgstr ""
+"Untuk melihat properti berkas yang diimpor dalam proyek video Anda, klik "
+"kanan pada berkas tersebut, dan pilih **Properti Berkas**. Ini akan membuka "
+"dialog properti berkas, yang menampilkan informasi tentang berkas media "
+"Anda. Untuk jenis gambar tertentu (misalnya urutan gambar), Anda juga dapat "
+"mengatur frame rate di dialog ini."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:172
-msgid "Select an image sequence in the **Project Files** panel, right click and choose **File Properties**"
+msgid ""
+"Select an image sequence in the **Project Files** panel, right click and "
+"choose **File Properties**"
 msgstr ""
+"Pilih urutan gambar di panel **Berkas Proyek**, klik kanan dan pilih "
+"**Properti Berkas**"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:173
 msgid "Frame Rate"
-msgstr ""
+msgstr "Frame Rate"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:173
-msgid "For image sequences, you can also adjust the frame rate of the animation"
-msgstr ""
+msgid ""
+"For image sequences, you can also adjust the frame rate of the animation"
+msgstr "Untuk urutan gambar, Anda juga dapat mengatur frame rate animasi"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:182
-msgid "This will remove a file from the project. It will not delete the underlying physical file though, so removing a file from the project merely makes it unavailable for this video project."
+msgid ""
+"This will remove a file from the project. It will not delete the underlying "
+"physical file though, so removing a file from the project merely makes it "
+"unavailable for this video project."
 msgstr ""
+"Ini akan menghapus berkas dari proyek. Namun, berkas fisik yang mendasarinya "
+"tidak akan dihapus, jadi menghapus berkas dari proyek hanya membuatnya tidak "
+"tersedia untuk proyek video ini."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:187
 msgid "Project Assets Folder"
-msgstr ""
+msgstr "Folder Aset Proyek"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:188
-msgid "OpenShot creates and uses a few **temporary working folders** while you edit. These live under ``.openshot_qt/`` in your user profile and hold project-specific files that OpenShot generates for you:"
+msgid ""
+"OpenShot creates and uses a few **temporary working folders** while you "
+"edit. These live under ``.openshot_qt/`` in your user profile and hold "
+"project-specific files that OpenShot generates for you:"
 msgstr ""
+"OpenShot membuat dan menggunakan beberapa **folder kerja sementara** saat "
+"Anda mengedit. Folder ini berada di bawah ``.openshot_qt/`` dalam profil "
+"pengguna Anda dan menyimpan berkas spesifik proyek yang dihasilkan OpenShot "
+"untuk Anda:"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:191
-msgid "``.openshot_qt/blender/`` - Blender animation renders created by the Animated Title dialog"
+msgid ""
+"``.openshot_qt/blender/`` - Blender animation renders created by the "
+"Animated Title dialog"
 msgstr ""
+"``.openshot_qt/blender/`` - Render animasi Blender yang dibuat oleh dialog "
+"Judul Animasi"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:192
 msgid "``.openshot_qt/title/`` - SVG title files created by the Title dialog"
 msgstr ""
+"``.openshot_qt/title/`` - Berkas judul SVG yang dibuat oleh dialog Judul"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:193
-msgid "``.openshot_qt/thumbnail/`` - Thumbnails generated for Project Files and Timeline"
+msgid ""
+"``.openshot_qt/thumbnail/`` - Thumbnails generated for Project Files and "
+"Timeline"
 msgstr ""
+"``.openshot_qt/thumbnail/`` - Thumbnail yang dihasilkan untuk Berkas Proyek "
+"dan Timeline"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:194
-msgid "``.openshot_qt/clipboard/`` - Media created from clipboard pastes (images, audio, or video that must be saved to disk first)"
+msgid ""
+"``.openshot_qt/clipboard/`` - Media created from clipboard pastes (images, "
+"audio, or video that must be saved to disk first)"
 msgstr ""
+"``.openshot_qt/clipboard/`` - Media yang dibuat dari tempelan clipboard "
+"(gambar, audio, atau video yang harus disimpan ke disk terlebih dahulu)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:195
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
-msgstr ""
+msgstr "``.openshot_qt/protobuf_data`` - Data pelacakan dan deteksi objek"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:197
-msgid "When you choose **File→Save As**, OpenShot copies these folders into your project directory, inside a single folder named ``PROJECTNAME_Assets``. For example: ``MyProject_Assets/clipboard`` will contain any media you pasted from the clipboard."
+msgid ""
+"When you choose **File→Save As**, OpenShot copies these folders into your "
+"project directory, inside a single folder named ``PROJECTNAME_Assets``. For "
+"example: ``MyProject_Assets/clipboard`` will contain any media you pasted "
+"from the clipboard."
 msgstr ""
+"Saat Anda memilih **File→Save As**, OpenShot menyalin folder-folder ini ke "
+"direktori proyek Anda, di dalam satu folder bernama ``PROJECTNAME_Assets``. "
+"Misalnya: ``MyProject_Assets/clipboard`` akan berisi media apa pun yang Anda "
+"tempel dari clipboard."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:200
-msgid "As part of this process, all paths inside your ``*.osp`` project file are updated to be **relative** to your project folder. This keeps everything self-contained and easy to move or back up as one folder."
+msgid ""
+"As part of this process, all paths inside your ``*.osp`` project file are "
+"updated to be **relative** to your project folder. This keeps everything "
+"self-contained and easy to move or back up as one folder."
 msgstr ""
+"Sebagai bagian dari proses ini, semua jalur di dalam berkas proyek ``*.osp`` "
+"Anda diperbarui menjadi **relatif** terhadap folder proyek Anda. Ini menjaga "
+"semuanya tetap mandiri dan mudah dipindahkan atau dicadangkan sebagai satu "
+"folder."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:204
 msgid "Cleanup behavior"
-msgstr ""
+msgstr "Perilaku pembersihan"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:205
-msgid "Starting a **new project** or opening an **existing project** clears the temporary ``.openshot_qt`` working folders so you begin with a clean slate. Your saved projects are not affected, and any assets previously copied into a ``PROJECTNAME_Assets`` folder remain in that project's directory."
+msgid ""
+"Starting a **new project** or opening an **existing project** clears the "
+"temporary ``.openshot_qt`` working folders so you begin with a clean slate. "
+"Your saved projects are not affected, and any assets previously copied into "
+"a ``PROJECTNAME_Assets`` folder remain in that project's directory."
 msgstr ""
+"Memulai **proyek baru** atau membuka **proyek yang sudah ada** akan "
+"membersihkan folder kerja sementara ``.openshot_qt`` sehingga Anda memulai "
+"dengan kondisi bersih. Proyek yang disimpan tidak terpengaruh, dan aset apa "
+"pun yang sebelumnya disalin ke folder ``PROJECTNAME_Assets`` tetap berada di "
+"direktori proyek tersebut."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:210
 msgid "Missing Files"
-msgstr ""
+msgstr "Berkas Hilang"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:212
-msgid "When you create and save a project in OpenShot, any files imported into the software (such as videos, audio, and images) must remain accessible throughout the project's duration. This means that these imported files should not be renamed, deleted, or moved to different folders. Additionally, the full path where these files are located should not be renamed either. This principle applies to other video editing software as well."
+msgid ""
+"When you create and save a project in OpenShot, any files imported into the "
+"software (such as videos, audio, and images) must remain accessible "
+"throughout the project's duration. This means that these imported files "
+"should not be renamed, deleted, or moved to different folders. Additionally, "
+"the full path where these files are located should not be renamed either. "
+"This principle applies to other video editing software as well."
 msgstr ""
+"Saat Anda membuat dan menyimpan proyek di OpenShot, semua file yang diimpor "
+"ke perangkat lunak (seperti video, audio, dan gambar) harus tetap dapat "
+"diakses selama durasi proyek. Ini berarti file yang diimpor tersebut tidak "
+"boleh diubah namanya, dihapus, atau dipindahkan ke folder lain. Selain itu, "
+"jalur lengkap tempat file-file ini berada juga tidak boleh diubah namanya. "
+"Prinsip ini juga berlaku untuk perangkat lunak pengedit video lainnya."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:217
-msgid "For example, users might move or delete folders, unplug their USB devices, or move or delete their project files. Any of these examples cause a :guilabel:`Missing File` message, in which OpenShot prompts you to locate the folder of the missing file(s). Depending on the number of files you added to your project, OpenShot could prompt you many times to find the missing files."
+msgid ""
+"For example, users might move or delete folders, unplug their USB devices, "
+"or move or delete their project files. Any of these examples cause a :"
+"guilabel:`Missing File` message, in which OpenShot prompts you to locate the "
+"folder of the missing file(s). Depending on the number of files you added to "
+"your project, OpenShot could prompt you many times to find the missing files."
 msgstr ""
+"Misalnya, pengguna mungkin memindahkan atau menghapus folder, mencabut "
+"perangkat USB mereka, atau memindahkan atau menghapus file proyek mereka. "
+"Salah satu dari contoh ini akan menyebabkan pesan :guilabel:`Missing File`, "
+"di mana OpenShot akan meminta Anda untuk mencari folder file yang hilang. "
+"Tergantung pada jumlah file yang Anda tambahkan ke proyek, OpenShot bisa "
+"meminta Anda berkali-kali untuk menemukan file yang hilang."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:221
-msgid "When OpenShot saves a project, all file paths are converted to **relative** file paths. As long as you keep all assets organized in the same parent folder (including the \\*.osp project file), you will be able to move your project folder without triggering any missing file(s) prompts. You can even move a self-contained project folder to another computer without any issues."
+msgid ""
+"When OpenShot saves a project, all file paths are converted to **relative** "
+"file paths. As long as you keep all assets organized in the same parent "
+"folder (including the \\*.osp project file), you will be able to move your "
+"project folder without triggering any missing file(s) prompts. You can even "
+"move a self-contained project folder to another computer without any issues."
 msgstr ""
+"Saat OpenShot menyimpan proyek, semua jalur file diubah menjadi jalur file "
+"**relatif**. Selama Anda menjaga semua aset terorganisir dalam folder induk "
+"yang sama (termasuk file proyek \\*.osp), Anda dapat memindahkan folder "
+"proyek tanpa memicu peringatan file yang hilang. Anda bahkan dapat "
+"memindahkan folder proyek yang mandiri ke komputer lain tanpa masalah."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:225
-msgid "Everyone has their unique way of organizing files, and it's crucial to remember not to make changes to file paths, rename files, or delete files when working with video editors, as it can lead to missing file issues. For a detailed guide on missing file(s), see `The Case of “Missing Files”! <https://github.com/OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_"
+msgid ""
+"Everyone has their unique way of organizing files, and it's crucial to "
+"remember not to make changes to file paths, rename files, or delete files "
+"when working with video editors, as it can lead to missing file issues. For "
+"a detailed guide on missing file(s), see `The Case of “Missing Files”! "
+"<https://github.com/OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_"
 msgstr ""
+"Setiap orang memiliki cara unik dalam mengatur file, dan sangat penting "
+"untuk diingat agar tidak mengubah jalur file, mengganti nama file, atau "
+"menghapus file saat bekerja dengan editor video, karena hal ini dapat "
+"menyebabkan masalah file yang hilang. Untuk panduan rinci tentang file yang "
+"hilang, lihat `The Case of “Missing Files”! <https://github.com/OpenShot/"
+"openshot-qt/wiki/Missing-File-Prompt>`_"

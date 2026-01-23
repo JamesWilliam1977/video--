@@ -16,87 +16,181 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Vandræsing"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:25
-msgid "If you are experiencing an issue with OpenShot, such as a freeze, crash, or error message, there are many different techniques which can be useful for troubleshooting the issue."
+msgid ""
+"If you are experiencing an issue with OpenShot, such as a freeze, crash, or "
+"error message, there are many different techniques which can be useful for "
+"troubleshooting the issue."
 msgstr ""
+"Ef þú lendir í vandræðum með OpenShot, eins og að forritið frjósi, hrynni "
+"eða sýni villuskilaboð, eru margar aðferðir sem geta hjálpað við að greina "
+"og leysa vandamálið."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:29
 msgid "Windows 11 Unresponsive"
-msgstr ""
+msgstr "Windows 11 svarar ekki"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:31
-msgid "If you experience a freeze on Windows 11, this is a known issue with PyQt5 and Windows 11, related to the accessibility features in Qt. This is triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). OpenShot will become unresponsive and a memory leak is also present (i.e. the longer OpenShot is unresponsive, the larger your memory leak will become until OpenShot finally crashes or the user kills the process)."
+msgid ""
+"If you experience a freeze on Windows 11, this is a known issue with PyQt5 "
+"and Windows 11, related to the accessibility features in Qt. This is "
+"triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). "
+"OpenShot will become unresponsive and a memory leak is also present (i.e. "
+"the longer OpenShot is unresponsive, the larger your memory leak will become "
+"until OpenShot finally crashes or the user kills the process)."
 msgstr ""
+"Ef OpenShot frýs á Windows 11, er þetta þekkt vandamál tengt PyQt5 og "
+"aðgengisstillingum í Qt. Þetta gerist þegar ýtt er á :kbd:`Ctrl+C` í "
+"OpenShot (*aðeins á Windows 11*). OpenShot hættir að svara og minni leka "
+"verður vart (þ.e. því lengur sem OpenShot svarar ekki, því stærri verður "
+"minni lekinn þar til forritið hrynur eða notandi lokar því)."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:36
-msgid "A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead use the right-click Copy/Paste menus. Another work-around is to remap your \"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You can change your keyboard mappings in the OpenShot Preferences. See :ref:`preferences_keyboard_ref`."
+msgid ""
+"A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead "
+"use the right-click Copy/Paste menus. Another work-around is to remap your "
+"\"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You "
+"can change your keyboard mappings in the OpenShot Preferences. See :ref:"
+"`preferences_keyboard_ref`."
 msgstr ""
+"Ein einföld lausn er að forðast :kbd:`Ctrl+C` á Windows 11 og nota í staðinn "
+"hægri-smelltu afritunar/innsetningarvalmyndirnar. Önnur lausn er að "
+"endurúthluta \"Afrita\" frá :kbd:`Ctrl+C` í eitthvað annað, til dæmis :kbd:"
+"`Alt+C`. Þú getur breytt lyklaborðsstillingum í OpenShot valkostunum. Sjá :"
+"ref:`preferences_keyboard_ref`."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:41
 msgid "Windows Debugging with GDB"
-msgstr ""
+msgstr "Villuleit á Windows með GDB"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:43
-msgid "If you are experiencing a crash or freeze with OpenShot in Windows 10/11, the following step by step instructions will help you determine the cause of the crash. These instructions will display a stack trace of OpenShot's source code, at the location of the crash. This information can be extremely useful for our development team, and very useful to attach to bug reports (for a quicker resolution)."
+msgid ""
+"If you are experiencing a crash or freeze with OpenShot in Windows 10/11, "
+"the following step by step instructions will help you determine the cause of "
+"the crash. These instructions will display a stack trace of OpenShot's "
+"source code, at the location of the crash. This information can be extremely "
+"useful for our development team, and very useful to attach to bug reports "
+"(for a quicker resolution)."
 msgstr ""
+"Ef OpenShot hrynur eða frýs á Windows 10/11, munu eftirfarandi skref hjálpa "
+"þér að finna orsök hrunsins. Leiðbeiningarnar sýna stack trace úr kóðanum "
+"þar sem hrunið á sér stað. Þessar upplýsingar eru mjög gagnlegar fyrir "
+"þróunarteymið og mikilvægar til að fylgja með villuskýrslum (fyrir hraðari "
+"lausn)."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:49
 msgid "Install the Latest Daily Build"
-msgstr ""
+msgstr "Settu upp nýjustu daglegu útgáfuna"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:51
-msgid "Before attaching a debugger, please download the **latest version** of OpenShot: https://www.openshot.org/download#daily. Install this version of OpenShot to the default location: ``C:\\Program Files\\OpenShot Video Editor\\``. For details instructions on debugging OpenShot on Windows, please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-Debugging-with-GDB>`_."
+msgid ""
+"Before attaching a debugger, please download the **latest version** of "
+"OpenShot: https://www.openshot.org/download#daily. Install this version of "
+"OpenShot to the default location: ``C:\\Program Files\\OpenShot Video "
+"Editor\\``. For details instructions on debugging OpenShot on Windows, "
+"please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-"
+"Debugging-with-GDB>`_."
 msgstr ""
+"Áður en þú tengir villuleitarforrit, vinsamlegast sæktu **nýjustu útgáfuna** "
+"af OpenShot: https://www.openshot.org/download#daily. Settu upp þessa útgáfu "
+"á sjálfgefna staðsetningu: ``C:\\Program Files\\OpenShot Video Editor\\``. "
+"Fyrir nákvæmar leiðbeiningar um villuleit á Windows, sjáðu `þessa wiki "
+"<https://github.com/OpenShot/openshot-qt/wiki/Windows-Debugging-with-GDB>`_."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:56
 msgid "Install MSYS2"
-msgstr ""
+msgstr "Settu upp MSYS2"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:58
-msgid "The Windows version of OpenShot is compiled using an environment called MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt.exe``, you must first install MSYS2. This step is only required once."
+msgid ""
+"The Windows version of OpenShot is compiled using an environment called "
+"MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt."
+"exe``, you must first install MSYS2. This step is only required once."
 msgstr ""
+"Windows útgáfa OpenShot er þýdd með umhverfi sem kallast MSYS2. Til að "
+"tengja GDB villuleitarforritið við keyrsluskrána ``openshot-qt.exe``, verður "
+"þú fyrst að setja upp MSYS2. Þessi aðgerð þarf aðeins að gera einu sinni."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:61
 msgid "Download & Install MSYS2: `<http://www.msys2.org/>`_"
-msgstr ""
+msgstr "Sæktu og settu upp MSYS2: `<http://www.msys2.org/>`_"
 
-#: ../troubleshoot.rst:62
-#: ../troubleshoot.rst:78
-msgid "Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:\\msys64\\msys2_shell.cmd -mingw64``)"
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:62 ../troubleshoot.rst:78
+msgid ""
+"Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:"
+"\\msys64\\msys2_shell.cmd -mingw64``)"
 msgstr ""
+"Keyrðu skipanalínu ``MSYS2 MinGW x64`` (til dæmis: ``C:\\msys64\\msys2_shell."
+"cmd -mingw64``)"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:63
 msgid "Update all packages (*Copy/Paste the following command*):"
-msgstr ""
+msgstr "Uppfærðu öll pakkana (*Afritaðu og límdu eftirfarandi skipun*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:69
 msgid "Install GDB debugger (*Copy/Paste the following command*):"
 msgstr ""
+"Settu upp GDB villuleitarforritið (*Afritaðu og límdu eftirfarandi skipun*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:76
 msgid "Launch OpenShot with GDB Debugger"
-msgstr ""
+msgstr "Ræstu OpenShot með GDB villuleitarforriti"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:80
 msgid "Update the PATH (*Copy/Paste the following commands*):"
-msgstr ""
+msgstr "Uppfærðu PATH (*Afritaðu og límdu eftirfarandi skipanir*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:87
-msgid "Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
+msgid ""
+"Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
 msgstr ""
+"Hlaððu OpenShot inn í GDB villuleitarforritið (*Afritaðu og límdu "
+"eftirfarandi skipanir*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:94
 msgid "Launch OpenShot from GDB prompt (*Copy/Paste the following command*):"
 msgstr ""
+"Ræstu OpenShot úr GDB skipanalínu (*Afritaðu og límdu eftirfarandi skipun*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:101
 msgid "Print Debugging Info"
-msgstr ""
+msgstr "Prenta villuleitarupplýsingar"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:103
-msgid "Once OpenShot has launched successfully with GDB attached, all you need to do is trigger a crash or freeze in OpenShot. When a crash occurs, switch back to the MSYS2 MinGW64 terminal and run one of the following commands (by typing it and pressing ENTER). Usually, the first command to enter is ``bt``, which stands for ``backtrace``. More commands are listed below."
+msgid ""
+"Once OpenShot has launched successfully with GDB attached, all you need to "
+"do is trigger a crash or freeze in OpenShot. When a crash occurs, switch "
+"back to the MSYS2 MinGW64 terminal and run one of the following commands (by "
+"typing it and pressing ENTER). Usually, the first command to enter is "
+"``bt``, which stands for ``backtrace``. More commands are listed below."
 msgstr ""
+"Þegar OpenShot hefur ræst með GDB tengt, þarftu bara að valda hruni eða "
+"frystingu í OpenShot. Þegar hrunið á sér stað, skaltu fara aftur í MSYS2 "
+"MinGW64 gluggann og keyra eina af eftirfarandi skipunum (sláðu inn og ýttu á "
+"ENTER). Venjulega er fyrsta skipunin ``bt``, sem stendur fyrir "
+"``backtrace``. Fleiri skipanir eru taldar upp hér að neðan."
