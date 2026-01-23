@@ -3,31 +3,9 @@
 This documentation uses Sphinx gettext catalogs. We keep doc translations in
 `doc/locale/` so they stay separate from the app UI translations in `src/`.
 
-## Generate POT files
+## Generate and update translations
 
-From the repository root:
-
-```bash
-make -C doc gettext
-```
-
-This writes POT files into `doc/locale/` (e.g. `doc/locale/getting_started.pot`).
-
-## Create PO files for a language
-
-Create a language catalog directory and copy POTs into it as PO files:
-
-```bash
-mkdir -p doc/locale/<lang>/LC_MESSAGES
-cp doc/locale/*.pot doc/locale/<lang>/LC_MESSAGES/
-for f in doc/locale/<lang>/LC_MESSAGES/*.pot; do mv "$f" "${f%.pot}.po"; done
-```
-
-Replace `<lang>` with a Sphinx language code (e.g. `es`, `fr`, `pt_BR`).
-
-## Use sphinx-intl (optional)
-
-If you install `sphinx-intl`, it can manage PO files for you:
+Install `sphinx-intl` once, then use it for all PO management:
 
 ```bash
 pip install sphinx-intl
@@ -37,8 +15,22 @@ make gettext
 sphinx-intl update -p locale -l <lang>
 ```
 
-This creates/updates `doc/locale/<lang>/LC_MESSAGES/*.po` based on the POT
-files.
+This writes POT files into `doc/locale/` and creates/updates
+`doc/locale/<lang>/LC_MESSAGES/*.po`. Replace `<lang>` with a Sphinx language
+code (e.g. `es`, `fr`, `pt_BR`).
+
+Translator note: do not translate Sphinx substitution tokens like
+`|icon_echo|`. Keep the `|...|` text unchanged in `msgid`/`msgstr`.
+
+## Manual PO creation (if you are not using sphinx-intl)
+
+```bash
+cd doc
+make gettext
+mkdir -p locale/<lang>/LC_MESSAGES
+cp locale/*.pot locale/<lang>/LC_MESSAGES/
+for f in locale/<lang>/LC_MESSAGES/*.pot; do mv "$f" "${f%.pot}.po"; done
+```
 
 ## Build localized docs
 
