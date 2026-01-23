@@ -43,7 +43,8 @@ files.
 ## Build localized docs
 
 ```bash
-make -C doc html SPHINXOPTS="-D language=<lang>"
+cd doc
+make html SPHINXOPTS="-D language=<lang>"
 ```
 
 Sphinx will load PO files from `doc/locale/` via `locale_dirs` in `doc/conf.py`.
