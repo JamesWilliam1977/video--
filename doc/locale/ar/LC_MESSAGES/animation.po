@@ -238,13 +238,14 @@ msgstr ""
 "الجديدة. الأيقونة: :guilabel:`Square`."
 
 # Translated with gpt-4.1-mini
+# Updated/fixed translation with gpt-4.1-mini
 #: ../animation.rst:72
 msgid ""
 "For more info on creating key frames for location, rotation, scale, shear, "
 "and location, see :ref:`clip_transform_ref`."
 msgstr ""
 "لمزيد من المعلومات حول إنشاء الإطارات الرئيسية للموقع، الدوران، المقياس، "
-"القص، والموقع، راجع :ref:`clip_transform_ref`."
+"القص، والميل، راجع :ref:`clip_transform_ref`."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:73
@@ -371,6 +372,7 @@ msgid "Image Sequences"
 msgstr "تسلسلات الصور"
 
 # Translated with gpt-4.1-mini
+# Updated/fixed translation with gpt-4.1-mini
 #: ../animation.rst:111
 msgid ""
 "If you have a sequence of similarly named images (such as, cat001.png, "
@@ -383,7 +385,7 @@ msgstr ""
 "إذا كان لديك تسلسل من الصور ذات أسماء متشابهة (مثل cat001.png، cat002.png، "
 "cat003.png، إلخ...)، يمكنك ببساطة سحب وإفلات واحدة منها في OpenShot، وسيُطلب "
 "منك استيراد التسلسل بأكمله. سيقوم OpenShot بتشغيل هذه الصور المتتالية بسرعة، "
-"كما لو كانت إطارات في فيديو. معدل أو سرعة عرض هذه الصور تعتمد على معدل "
+"كما لو كانت إطارات في فيديو. معدل أو سرعة عرض هذه الصور يعتمد على معدل "
 "الإطارات الخاص بها."
 
 # Translated with gpt-4.1-mini
