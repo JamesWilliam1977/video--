@@ -942,7 +942,7 @@ msgid ""
 "Counts are **finite** (2x, 3x, 4x, 5x, 8x, 10x, or a custom number). "
 "Example: “Forward then Back and stop” = :guilabel:`Ping-Pong → Forward → 2x`."
 msgstr ""
-"As contagens são **finita**s (2x, 3x, 4x, 5x, 8x, 10x ou um número "
+"As contagens são **finitas** (2x, 3x, 4x, 5x, 8x, 10x ou um número "
 "personalizado). Exemplo: “Para frente, depois para trás e para” = :guilabel:"
 "`Ping-Pong → Forward → 2x`."
 

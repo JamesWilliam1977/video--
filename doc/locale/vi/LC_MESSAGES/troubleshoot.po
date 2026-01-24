@@ -16,87 +16,177 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Khắc phục sự cố"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:25
-msgid "If you are experiencing an issue with OpenShot, such as a freeze, crash, or error message, there are many different techniques which can be useful for troubleshooting the issue."
+msgid ""
+"If you are experiencing an issue with OpenShot, such as a freeze, crash, or "
+"error message, there are many different techniques which can be useful for "
+"troubleshooting the issue."
 msgstr ""
+"Nếu bạn gặp sự cố với OpenShot, chẳng hạn như bị treo, bị lỗi hoặc thông báo "
+"lỗi, có nhiều kỹ thuật khác nhau có thể hữu ích để khắc phục sự cố."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:29
 msgid "Windows 11 Unresponsive"
-msgstr ""
+msgstr "Windows 11 không phản hồi"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:31
-msgid "If you experience a freeze on Windows 11, this is a known issue with PyQt5 and Windows 11, related to the accessibility features in Qt. This is triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). OpenShot will become unresponsive and a memory leak is also present (i.e. the longer OpenShot is unresponsive, the larger your memory leak will become until OpenShot finally crashes or the user kills the process)."
+msgid ""
+"If you experience a freeze on Windows 11, this is a known issue with PyQt5 "
+"and Windows 11, related to the accessibility features in Qt. This is "
+"triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). "
+"OpenShot will become unresponsive and a memory leak is also present (i.e. "
+"the longer OpenShot is unresponsive, the larger your memory leak will become "
+"until OpenShot finally crashes or the user kills the process)."
 msgstr ""
+"Nếu bạn gặp hiện tượng treo trên Windows 11, đây là một vấn đề đã biết với "
+"PyQt5 và Windows 11, liên quan đến các tính năng trợ năng trong Qt. Điều này "
+"xảy ra khi nhấn :kbd:`Ctrl+C` trong OpenShot (*chỉ trên Windows 11*). "
+"OpenShot sẽ không phản hồi và có hiện tượng rò rỉ bộ nhớ (tức là càng lâu "
+"OpenShot không phản hồi, rò rỉ bộ nhớ càng lớn cho đến khi OpenShot cuối "
+"cùng bị lỗi hoặc người dùng kết thúc tiến trình)."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:36
-msgid "A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead use the right-click Copy/Paste menus. Another work-around is to remap your \"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You can change your keyboard mappings in the OpenShot Preferences. See :ref:`preferences_keyboard_ref`."
+msgid ""
+"A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead "
+"use the right-click Copy/Paste menus. Another work-around is to remap your "
+"\"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You "
+"can change your keyboard mappings in the OpenShot Preferences. See :ref:"
+"`preferences_keyboard_ref`."
 msgstr ""
+"Một cách khắc phục đơn giản là tránh sử dụng :kbd:`Ctrl+C` trên Windows 11, "
+"thay vào đó sử dụng menu sao chép/dán khi nhấp chuột phải. Cách khác là đổi "
+"phím tắt \"Sao chép\" từ :kbd:`Ctrl+C` sang phím khác, ví dụ :kbd:`Alt+C`. "
+"Bạn có thể thay đổi phím tắt trong phần Cài đặt của OpenShot. Xem :ref:"
+"`preferences_keyboard_ref`."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:41
 msgid "Windows Debugging with GDB"
-msgstr ""
+msgstr "Gỡ lỗi Windows với GDB"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:43
-msgid "If you are experiencing a crash or freeze with OpenShot in Windows 10/11, the following step by step instructions will help you determine the cause of the crash. These instructions will display a stack trace of OpenShot's source code, at the location of the crash. This information can be extremely useful for our development team, and very useful to attach to bug reports (for a quicker resolution)."
+msgid ""
+"If you are experiencing a crash or freeze with OpenShot in Windows 10/11, "
+"the following step by step instructions will help you determine the cause of "
+"the crash. These instructions will display a stack trace of OpenShot's "
+"source code, at the location of the crash. This information can be extremely "
+"useful for our development team, and very useful to attach to bug reports "
+"(for a quicker resolution)."
 msgstr ""
+"Nếu bạn gặp sự cố treo hoặc lỗi với OpenShot trên Windows 10/11, các hướng "
+"dẫn từng bước dưới đây sẽ giúp bạn xác định nguyên nhân gây lỗi. Các hướng "
+"dẫn này sẽ hiển thị ngăn xếp lỗi của mã nguồn OpenShot tại vị trí xảy ra "
+"lỗi. Thông tin này rất hữu ích cho nhóm phát triển của chúng tôi và rất cần "
+"thiết để đính kèm vào báo cáo lỗi (để giải quyết nhanh hơn)."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:49
 msgid "Install the Latest Daily Build"
-msgstr ""
+msgstr "Cài đặt Phiên bản Daily Build Mới nhất"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:51
-msgid "Before attaching a debugger, please download the **latest version** of OpenShot: https://www.openshot.org/download#daily. Install this version of OpenShot to the default location: ``C:\\Program Files\\OpenShot Video Editor\\``. For details instructions on debugging OpenShot on Windows, please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-Debugging-with-GDB>`_."
+msgid ""
+"Before attaching a debugger, please download the **latest version** of "
+"OpenShot: https://www.openshot.org/download#daily. Install this version of "
+"OpenShot to the default location: ``C:\\Program Files\\OpenShot Video "
+"Editor\\``. For details instructions on debugging OpenShot on Windows, "
+"please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-"
+"Debugging-with-GDB>`_."
 msgstr ""
+"Trước khi gắn trình gỡ lỗi, vui lòng tải xuống **phiên bản mới nhất** của "
+"OpenShot: https://www.openshot.org/download#daily. Cài đặt phiên bản này vào "
+"vị trí mặc định: ``C:\\Program Files\\OpenShot Video Editor\\``. Để biết "
+"hướng dẫn chi tiết về gỡ lỗi OpenShot trên Windows, vui lòng xem `wiki này "
+"<https://github.com/OpenShot/openshot-qt/wiki/Windows-Debugging-with-GDB>`_."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:56
 msgid "Install MSYS2"
-msgstr ""
+msgstr "Cài đặt MSYS2"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:58
-msgid "The Windows version of OpenShot is compiled using an environment called MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt.exe``, you must first install MSYS2. This step is only required once."
+msgid ""
+"The Windows version of OpenShot is compiled using an environment called "
+"MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt."
+"exe``, you must first install MSYS2. This step is only required once."
 msgstr ""
+"Phiên bản OpenShot trên Windows được biên dịch sử dụng môi trường gọi là "
+"MSYS2. Để gắn trình gỡ lỗi GDB vào tệp thực thi của chúng tôi, ``openshot-qt."
+"exe``, bạn phải cài đặt MSYS2 trước. Bước này chỉ cần thực hiện một lần."
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:61
 msgid "Download & Install MSYS2: `<http://www.msys2.org/>`_"
-msgstr ""
+msgstr "Tải xuống & Cài đặt MSYS2: `<http://www.msys2.org/>`_"
 
-#: ../troubleshoot.rst:62
-#: ../troubleshoot.rst:78
-msgid "Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:\\msys64\\msys2_shell.cmd -mingw64``)"
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:62 ../troubleshoot.rst:78
+msgid ""
+"Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:"
+"\\msys64\\msys2_shell.cmd -mingw64``)"
 msgstr ""
+"Chạy cửa sổ lệnh ``MSYS2 MinGW x64`` (ví dụ: ``C:\\msys64\\msys2_shell.cmd -"
+"mingw64``)"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:63
 msgid "Update all packages (*Copy/Paste the following command*):"
-msgstr ""
+msgstr "Cập nhật tất cả các gói (*Sao chép/Dán lệnh sau*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:69
 msgid "Install GDB debugger (*Copy/Paste the following command*):"
-msgstr ""
+msgstr "Cài đặt trình gỡ lỗi GDB (*Sao chép/Dán lệnh sau*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:76
 msgid "Launch OpenShot with GDB Debugger"
-msgstr ""
+msgstr "Khởi chạy OpenShot với trình gỡ lỗi GDB"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:80
 msgid "Update the PATH (*Copy/Paste the following commands*):"
-msgstr ""
+msgstr "Cập nhật PATH (*Sao chép/Dán các lệnh sau*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:87
-msgid "Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
-msgstr ""
+msgid ""
+"Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
+msgstr "Nạp OpenShot vào trình gỡ lỗi GDB (*Sao chép/Dán các lệnh sau*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:94
 msgid "Launch OpenShot from GDB prompt (*Copy/Paste the following command*):"
-msgstr ""
+msgstr "Khởi chạy OpenShot từ dấu nhắc GDB (*Sao chép/Dán lệnh sau*):"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:101
 msgid "Print Debugging Info"
-msgstr ""
+msgstr "In thông tin gỡ lỗi"
 
+# Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:103
-msgid "Once OpenShot has launched successfully with GDB attached, all you need to do is trigger a crash or freeze in OpenShot. When a crash occurs, switch back to the MSYS2 MinGW64 terminal and run one of the following commands (by typing it and pressing ENTER). Usually, the first command to enter is ``bt``, which stands for ``backtrace``. More commands are listed below."
+msgid ""
+"Once OpenShot has launched successfully with GDB attached, all you need to "
+"do is trigger a crash or freeze in OpenShot. When a crash occurs, switch "
+"back to the MSYS2 MinGW64 terminal and run one of the following commands (by "
+"typing it and pressing ENTER). Usually, the first command to enter is "
+"``bt``, which stands for ``backtrace``. More commands are listed below."
 msgstr ""
+"Khi OpenShot đã khởi chạy thành công với GDB được gắn, bạn chỉ cần gây ra "
+"lỗi hoặc treo trong OpenShot. Khi lỗi xảy ra, chuyển lại terminal MSYS2 "
+"MinGW64 và chạy một trong các lệnh sau (gõ lệnh và nhấn ENTER). Thông "
+"thường, lệnh đầu tiên nhập là ``bt``, viết tắt của ``backtrace``. Các lệnh "
+"khác được liệt kê bên dưới."
