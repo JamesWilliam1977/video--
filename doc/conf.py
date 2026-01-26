@@ -155,6 +155,9 @@ todo_include_todos = False
 #
 html_theme = 'sphinx_rtd_theme'
 
+# Optional GA4 measurement ID for HTML builds (set via -D ga4_measurement_id=G-XXXX).
+ga4_measurement_id = None
+
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
@@ -339,6 +342,13 @@ def _configure_latex_fonts(app, config):
     latex_elements["fontpkg"] = fontpkg
     latex_elements["preamble"] = preamble
     config.latex_elements = latex_elements
+
+
+def _configure_html_context(app, config):
+    # Ensure custom values are available to templates after -D overrides.
+    html_context = dict(config.html_context or {})
+    html_context["ga4_measurement_id"] = config.ga4_measurement_id
+    config.html_context = html_context
 
 
 def _rewrite_shared_assets(app, exception):
@@ -549,5 +559,7 @@ epub_exclude_files = ['search.html']
 # epub_use_index = True
 
 def setup(app):
+    app.add_config_value("ga4_measurement_id", None, "env")
     app.connect("config-inited", _configure_latex_fonts)
+    app.connect("config-inited", _configure_html_context)
     app.connect("build-finished", _rewrite_shared_assets)

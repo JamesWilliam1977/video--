@@ -36,7 +36,7 @@ for f in locale/<lang>/LC_MESSAGES/*.pot; do mv "$f" "${f%.pot}.po"; done
 
 ```bash
 cd doc
-make html SPHINXOPTS="-D language=<lang>"
+make html SPHINXOPTS="-D language=<lang> -D ga4_measurement_id=G-XXXX"
 ```
 
 Sphinx will load PO files from `doc/locale/` via `locale_dirs` in `doc/conf.py`.
@@ -45,7 +45,7 @@ Sphinx will load PO files from `doc/locale/` via `locale_dirs` in `doc/conf.py`.
 
 ```bash
   cd doc
-  make html
+  make html SPHINXOPTS="-D ga4_measurement_id=G-W2VHM9Y8QH"
 
  # languages from locale folders
   langs=$(find locale -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
@@ -53,7 +53,7 @@ Sphinx will load PO files from `doc/locale/` via `locale_dirs` in `doc/conf.py`.
   mkdir -p _build/html
   for lang in $langs; do
     rm -rf "_build/html/$lang"
-    sphinx-build -b html -D language="$lang" . "_build/html/$lang"
+    sphinx-build -b html -D language="$lang" -D ga4_measurement_id=G-W2VHM9Y8QH . "_build/html/$lang"
 
     # rewrite asset URLs to point to parent shared dirs
     find "_build/html/$lang" -name "*.html" -print0 | xargs -0 perl -pi -e '
