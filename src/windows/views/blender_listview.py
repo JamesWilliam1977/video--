@@ -49,7 +49,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QColor, QImage, QPixmap, QIcon
 
-from classes import info
+from classes import info, tabstops
 from classes.logger import log
 from classes.query import File
 from classes.app import get_app
@@ -194,6 +194,9 @@ class BlenderListView(QListView):
 
         self.end_processing()
         self.init_slider_values()
+
+        if hasattr(self.win, "_apply_tab_order"):
+            self.win._apply_tab_order()
 
     def spinner_value_changed(self, param, value):
         self.params[param["name"]] = value
@@ -457,11 +460,25 @@ class BlenderListView(QListView):
         event.ignore()
         super().mousePressEvent(event)
 
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        # Select first item when user tabs into the listview.
+        if not self.selectionModel().hasSelection() and self.model().rowCount() > 0:
+            first = self.model().index(0, 0)
+            if first.isValid():
+                self.setCurrentIndex(first)
+
     def refresh_view(self):
         self.blender_model.update_model()
 
         # Sort by column 0
         self.blender_model.proxy_model.sort(0)
+
+        # Ensure a default selection (top item) to enable controls.
+        if not self.selectionModel().hasSelection() and self.model().rowCount() > 0:
+            first = self.model().index(0, 0)
+            if first.isValid():
+                self.setCurrentIndex(first)
 
     def get_project_params(self, is_preview=True):
         """ Return a dictionary of project related settings, needed by the Blender python script. """

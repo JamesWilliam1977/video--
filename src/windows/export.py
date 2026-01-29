@@ -48,7 +48,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QIcon
 from functools import partial
-from classes import info
+from classes import info, tabstops
 from classes import ui_util
 from classes import openshot_rc  # noqa
 from classes.logger import log
@@ -294,6 +294,53 @@ class Export(QDialog):
 
         # Load previous settings (if any)
         self.load_settings()
+
+        self.exportTabs.currentChanged.connect(self._apply_tab_order)
+        self._apply_tab_order()
+        self.txtFileName.setFocus()
+
+    def _apply_tab_order(self):
+        current_tab = self.exportTabs.currentWidget()
+        if not current_tab:
+            tabstops.apply_auto_tab_order_later(self)
+            return
+
+        ordered = [
+            self.txtFileName,
+            self.txtExportFolder,
+            self.btnBrowse,
+            self.exportTabs,
+        ]
+
+        ordered.extend(
+            tabstops.collect_focusable_from_layout(
+                current_tab.layout(), self, include_hidden=True
+            )
+        )
+
+        ordered.extend(
+            [
+                self.restore_defaults_button,
+                self.cancel_button,
+                self.export_button,
+                self.close_button,
+            ]
+        )
+
+        tabstops.apply_explicit_tab_order_later(
+            ordered, root=self, include_hidden=True
+        )
+
+        # Wrap back to the first field after the last visible button.
+        first = ordered[0] if ordered else None
+        for last in reversed(ordered):
+            if last.isVisibleTo(self) and last.isEnabled():
+                break
+        else:
+            last = None
+
+        if first and last:
+            QWidget.setTabOrder(last, first)
 
     def restore_defaults(self):
         """

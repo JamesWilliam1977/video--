@@ -315,7 +315,7 @@ QLineEdit#filesFilter, QLineEdit#effectsFilter, QLineEdit#transitionsFilter, QLi
 QLineEdit#filesFilter:focus, QLineEdit#effectsFilter:focus, QLineEdit#transitionsFilter:focus, QLineEdit#emojisFilter:focus, QLineEdit#txtPropertyFilter:focus {
     border-width: 1.2px;
     border-style: solid;
-    border-color: #0078FF;
+    border-color: #53a0ed;
 }
 
 QScrollBar:vertical {
@@ -365,11 +365,16 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 QComboBox {
     background-color: #121212;
     color: #FFFFFF;
+    border: 1.2px solid transparent;
     border-radius: 4px;
     padding: 6px;
     padding-left: 8px;
     padding-right: 8px;
     combobox-popup: 0;
+}
+
+QComboBox:focus {
+    border-color: #53a0ed;
 }
 
 QComboBox::drop-down {

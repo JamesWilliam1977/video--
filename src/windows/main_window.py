@@ -53,7 +53,7 @@ from PyQt5.QtWidgets import (
     QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar
 )
 
-from classes import exceptions, info, qt_types, sentry, ui_util, updates
+from classes import exceptions, info, qt_types, sentry, ui_util, updates, tabstops
 from classes.app import get_app
 from classes.exporters.edl import export_edl
 from classes.exporters.final_cut_pro import export_xml
@@ -4126,3 +4126,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Init all Keyboard shortcuts
         self.initShortcuts()
+
+        # Apply accessibility-friendly tab order after layout settles
+        tabstops.apply_auto_tab_order_later(self, include_hidden=True)

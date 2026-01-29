@@ -29,11 +29,12 @@
 import os
 import uuid
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QApplication, QDialog, QDialogButtonBox, QPushButton
 )
 
-from classes import info, ui_util, metrics
+from classes import info, ui_util, metrics, tabstops
 from classes.app import get_app
 from classes.logger import log
 from windows.views.blender_listview import BlenderListView
@@ -72,6 +73,9 @@ class AnimatedTitle(QDialog):
         self.blenderView = BlenderListView(self)
         self.verticalLayout.addWidget(self.blenderView)
 
+        self.imgPreview.setFocusPolicy(Qt.NoFocus)
+        self.scrollArea.setFocusPolicy(Qt.NoFocus)
+
         # Init variables
         self.unique_folder_name = str(uuid.uuid1())
         self.output_dir = os.path.join(info.USER_PATH, "blender")
@@ -81,6 +85,25 @@ class AnimatedTitle(QDialog):
 
         # Clear all child controls
         self.clear_effect_controls()
+
+        self._apply_tab_order()
+
+    def _apply_tab_order(self):
+        """Apply explicit tab order for animated title dialog."""
+        ordered = []
+        if getattr(self, "blenderView", None):
+            ordered.append(self.blenderView)
+        ordered.extend([self.sliderPreview, self.btnRefresh])
+        ordered.extend(
+            tabstops.collect_focusable_from_layout(
+                self.settingsContainer.layout(), self, include_hidden=True
+            )
+        )
+        ordered.extend([self.btnRender, self.btnCancel])
+
+        tabstops.apply_explicit_tab_order_later(
+            ordered, root=self, include_hidden=True
+        )
 
     def accept(self):
         """ Start rendering animation, but don't close window """

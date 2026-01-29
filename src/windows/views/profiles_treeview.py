@@ -73,6 +73,12 @@ class ProfilesTreeView(QTreeView):
         if self.selectionModel().hasSelection():
             current = self.selectionModel().currentIndex()
             self.scrollTo(current)
+        else:
+            first_index = self.model().index(0, 1)
+            if not first_index.isValid():
+                first_index = self.model().index(0, 0)
+            if first_index.isValid():
+                self.select_profile(first_index)
 
     def select_profile(self, profile_index):
         """Select a specific profile Key"""
