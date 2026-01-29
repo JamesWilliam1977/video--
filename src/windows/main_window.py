@@ -50,7 +50,8 @@ from PyQt5.QtWidgets import (
     QMessageBox, QDialog, QFileDialog, QInputDialog,
     QAction, QActionGroup, QSizePolicy,
     QStatusBar, QToolBar, QToolButton,
-    QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar
+    QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar,
+    QPlainTextEdit, QSpinBox, QDoubleSpinBox
 )
 
 from classes import exceptions, info, qt_types, sentry, ui_util, updates, tabstops
@@ -2470,6 +2471,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         ])
         self.restoreState(qt_types.str_to_bytes(simple_state))
         QCoreApplication.processEvents()
+        self._schedule_tab_order_update()
 
     def actionAdvanced_View_trigger(self):
         """ Switch to an alternative view """
@@ -2512,6 +2514,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             ])
         self.restoreState(qt_types.str_to_bytes(advanced_state))
         QCoreApplication.processEvents()
+        self._schedule_tab_order_update()
 
     def actionFreeze_View_trigger(self):
         """ Freeze all dockable widgets on the main screen """
@@ -3715,6 +3718,19 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Check if event type is a shortcut override (keyboard shortcut triggered)
         if event.type() == QEvent.ShortcutOverride:
+            focused_widget = self.focusWidget()
+            if self._blocks_timeline_shortcuts(focused_widget):
+                for action_name in ignored_actions:
+                    try:
+                        sequences = get_app().window.getShortcutByName(action_name)
+                        for sequence in sequences:
+                            if (sequence == QKeySequence(event.modifiers() | event.key())):
+                                event.accept()
+                                return True
+                    except KeyError:
+                        pass
+
+                return super(MainWindow, self).eventFilter(obj, event)
 
             # If any of these dock widgets have focus, we want to block specific actions
             if self.emojiListView.hasFocus() or self.filesView.hasFocus() or \
@@ -3740,6 +3756,41 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Allow all other events to propagate normally
         return super(MainWindow, self).eventFilter(obj, event)
+
+    def _blocks_timeline_shortcuts(self, widget):
+        """Return True when focus should block timeline shortcuts like seek/play."""
+        if widget is None:
+            return False
+
+        if hasattr(self, "propertyTableView") and self.propertyTableView:
+            if widget is self.propertyTableView or self.propertyTableView.isAncestorOf(widget):
+                return False
+
+        if isinstance(widget, (QLineEdit, QTextEdit, QPlainTextEdit, QComboBox, QSpinBox, QDoubleSpinBox)):
+            return True
+
+        if isinstance(widget, (QToolButton, QTabBar)):
+            return True
+
+        menubar = self.menuBar()
+        if menubar and (widget is menubar or menubar.isAncestorOf(widget)):
+            return True
+
+        toolbars = [
+            getattr(self, "toolBar", None),
+            getattr(self, "timelineToolbar", None),
+            getattr(self, "videoToolbar", None),
+            getattr(self, "filesToolbar", None),
+            getattr(self, "transitionsToolbar", None),
+            getattr(self, "effectsToolbar", None),
+            getattr(self, "emojisToolbar", None),
+            getattr(self, "captionToolbar", None),
+        ]
+        for toolbar in toolbars:
+            if toolbar and toolbar.isAncestorOf(widget):
+                return True
+
+        return False
 
     def ignore_updates_callback(self, ignore, show_wait=True):
         """Ignore updates callback - used to stop updating this widget during batch updates"""
@@ -3806,6 +3857,18 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Set tab drawBase property
         self.set_tab_drawbase()
+        self._schedule_tab_order_update()
+
+    def _schedule_tab_order_update(self):
+        if not hasattr(self, "_tab_order_timer"):
+            self._tab_order_timer = QTimer(self)
+            self._tab_order_timer.setSingleShot(True)
+            self._tab_order_timer.timeout.connect(
+                lambda: tabstops.apply_auto_tab_order(
+                    self, include_hidden=True, include_disabled=True
+                )
+            )
+        self._tab_order_timer.start(50)
 
     def set_tab_drawbase(self):
         """Set the drawBase property on all QTabBar objects. This draws a line
@@ -3948,6 +4011,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Setup properties table
         self.txtPropertyFilter.setPlaceholderText(_("Filter"))
         self.propertyTableView = PropertiesTableView(self)
+        self.propertyTableView.setTabKeyNavigation(False)
         self.selectionLabel = SelectionLabel(self)
         self.dockPropertiesContents.layout().addWidget(self.selectionLabel, 0, 1)
         self.dockPropertiesContents.layout().addWidget(self.propertyTableView, 2, 1)
@@ -4102,6 +4166,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Connect the signals for each dock widget from self.getDocks()
         for dock_widget in self.getDocks():
             dock_widget.dockLocationChanged.connect(self.style_dock_widgets)
+            dock_widget.topLevelChanged.connect(self._schedule_tab_order_update)
+            dock_widget.visibilityChanged.connect(lambda _=None: self._schedule_tab_order_update())
 
         # Ensure toolbar is movable when floated (even with docks frozen)
         self.toolBar.topLevelChanged.connect(
@@ -4128,4 +4194,70 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.initShortcuts()
 
         # Apply accessibility-friendly tab order after layout settles
-        tabstops.apply_auto_tab_order_later(self, include_hidden=True)
+        self._schedule_tab_order_update()
+        self._schedule_initial_focus()
+        self._install_focus_debugger()
+
+    def _schedule_initial_focus(self):
+        QTimer.singleShot(0, self._set_initial_focus)
+
+    def _set_initial_focus(self):
+        button = None
+        if getattr(self, "toolBar", None):
+            button = self.toolBar.widgetForAction(getattr(self, "actionNew", None))
+        if button:
+            button.setFocus(Qt.TabFocusReason)
+
+    def _install_focus_debugger(self):
+        if not os.environ.get("OPENSHOT_DEBUG_FOCUS"):
+            return
+        if hasattr(self, "_focus_debug_installed") and self._focus_debug_installed:
+            return
+        self._focus_debug_installed = True
+        qapp = get_app()
+        qapp.focusChanged.connect(self._log_focus_change)
+        self._log_tab_chain()
+
+    def _log_focus_change(self, old, new):
+        def _describe(widget):
+            if widget is None:
+                return "None"
+            name = widget.objectName() or widget.__class__.__name__
+            cls_name = widget.__class__.__name__
+            focus_policy = widget.focusPolicy()
+            dock = getattr(tabstops, "_parent_dock_widget", lambda w: None)(widget)
+            dock_name = dock.objectName() if dock else ""
+            dock_title = dock.windowTitle() if dock else ""
+            dock_visible = ""
+            dock_content_visible = ""
+            if dock:
+                dock_visible = f"dockVisible={dock.isVisible()}"
+                content = dock.widget()
+                if content:
+                    dock_content_visible = f"contentVisible={content.isVisible()}"
+            parts = [name, f"class={cls_name}", f"policy={int(focus_policy)}"]
+            if dock_name:
+                parts.append(f"dock={dock_name}")
+            if dock_title:
+                parts.append(f"title={dock_title}")
+            if dock_visible:
+                parts.append(dock_visible)
+            if dock_content_visible:
+                parts.append(dock_content_visible)
+            return " ".join(parts)
+
+        log.info("Focus changed: %s -> %s", _describe(old), _describe(new))
+
+    def _log_tab_chain(self):
+        chain = []
+        root = self
+        for widget in self.findChildren(QWidget):
+            if widget.focusPolicy() == Qt.NoFocus:
+                continue
+            if not widget.isVisibleTo(root):
+                continue
+            chain.append(widget)
+        chain.sort(key=lambda w: getattr(w, "_tab_order_key", (0, 0, 0, 0)))
+        log.info("Tab chain (debug): %s", " | ".join(
+            [w.objectName() or w.__class__.__name__ for w in chain]
+        ))

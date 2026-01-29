@@ -1389,6 +1389,8 @@ class SelectionLabel(QFrame):
         self.lblSelection = QLabel()
         self.lblSelection.setText("<strong>%s</strong>" % _("No Selection"))
         self.btnSelectionName = QPushButton()
+        self.setObjectName("selectionLabel")
+        self.btnSelectionName.setObjectName("btnSelectionName")
         self.btnSelectionName.setVisible(False)
         self.btnSelectionName.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.btnSelectionName.clicked.connect(self.open_menu)

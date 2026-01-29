@@ -4,13 +4,71 @@
 """
 
 from PyQt5.QtCore import Qt, QPoint, QTimer
-from PyQt5.QtWidgets import QWidget, QLayout
+from PyQt5.QtWidgets import (
+    QWidget,
+    QLayout,
+    QToolBar,
+    QToolButton,
+    QMenuBar,
+    QMainWindow,
+    QTabBar,
+    QDockWidget,
+    QLineEdit,
+    QTextEdit,
+    QPlainTextEdit,
+    QComboBox,
+    QSpinBox,
+    QDoubleSpinBox,
+    QPushButton,
+)
+
+
+def _parent_dock_widget(widget):
+    parent = widget.parentWidget()
+    while parent is not None:
+        if isinstance(parent, QDockWidget):
+            return parent
+        parent = parent.parentWidget()
+    return None
+
+
+def _dock_is_active(root, dock):
+    if dock is None:
+        return True
+    if not isinstance(root, QMainWindow):
+        return dock.isVisibleTo(root)
+
+    if dock.isFloating():
+        return dock.isVisibleTo(root)
+
+    tabified = root.tabifiedDockWidgets(dock)
+    if not tabified:
+        return dock.isVisibleTo(root)
+
+    dock_title = dock.windowTitle()
+    group_titles = [dock_title] + [d.windowTitle() for d in tabified]
+
+    for tab_bar in root.findChildren(QTabBar):
+        if tab_bar.count() == 0:
+            continue
+        tabs = [tab_bar.tabText(i) for i in range(tab_bar.count())]
+        if dock_title not in tabs:
+            continue
+        if not any(title in tabs for title in group_titles):
+            continue
+        active_title = tab_bar.tabText(tab_bar.currentIndex())
+        return active_title == dock_title
+
+    return False
 
 
 def _is_focusable(widget, root, include_hidden, include_disabled):
     if widget is root:
         return False
     if widget.focusPolicy() == Qt.NoFocus:
+        return False
+    dock = _parent_dock_widget(widget)
+    if dock is not None and not _dock_is_active(root, dock):
         return False
     if not include_hidden and not widget.isVisibleTo(root):
         return False
@@ -43,19 +101,276 @@ def _position_key(widget, root, fallback_index, row_tolerance):
     return (row, x, y, fallback_index)
 
 
+def _prepare_focusable_containers(root):
+    """Ensure menubars/toolbars/actions are eligible for focus and tab order."""
+    if root is None:
+        return
+
+    if isinstance(root, QMainWindow):
+        menubar = root.menuBar()
+        if menubar is not None and menubar.focusPolicy() == Qt.NoFocus:
+            menubar.setFocusPolicy(Qt.StrongFocus)
+
+    focusable_types = (
+        QToolButton,
+        QLineEdit,
+        QTextEdit,
+        QPlainTextEdit,
+        QComboBox,
+        QSpinBox,
+        QDoubleSpinBox,
+    )
+
+    for toolbar in root.findChildren(QToolBar):
+        if toolbar.focusPolicy() == Qt.NoFocus:
+            toolbar.setFocusPolicy(Qt.StrongFocus)
+
+        for action in toolbar.actions():
+            widget = toolbar.widgetForAction(action)
+            if widget is None:
+                continue
+            if isinstance(widget, focusable_types):
+                if widget.focusPolicy() == Qt.NoFocus:
+                    widget.setFocusPolicy(Qt.StrongFocus)
+
+        for button in toolbar.findChildren(QToolButton):
+            if button.focusPolicy() == Qt.NoFocus:
+                button.setFocusPolicy(Qt.StrongFocus)
+
+    for menubar in root.findChildren(QMenuBar):
+        if menubar.focusPolicy() == Qt.NoFocus:
+            menubar.setFocusPolicy(Qt.StrongFocus)
+
+    for tab_bar in root.findChildren(QTabBar):
+        if tab_bar.focusPolicy() == Qt.NoFocus:
+            tab_bar.setFocusPolicy(Qt.StrongFocus)
+
+
+def _collect_toolbar_button_groups(root, scope=None):
+    groups = []
+    if root is None:
+        return groups
+
+    focusable_types = (
+        QToolButton,
+        QLineEdit,
+        QTextEdit,
+        QPlainTextEdit,
+        QComboBox,
+        QSpinBox,
+        QDoubleSpinBox,
+    )
+
+    if scope is None:
+        toolbars = []
+        for toolbar in root.findChildren(QToolBar):
+            if _parent_dock_widget(toolbar) is not None:
+                continue
+            toolbars.append(toolbar)
+    else:
+        toolbars = scope.findChildren(QToolBar)
+
+    for index, toolbar in enumerate(toolbars):
+        widgets = []
+        overflow_buttons = []
+        for action in toolbar.actions():
+            widget = toolbar.widgetForAction(action)
+            if widget is None:
+                continue
+            if isinstance(widget, focusable_types):
+                if widget.focusPolicy() == Qt.NoFocus:
+                    widget.setFocusPolicy(Qt.StrongFocus)
+            elif widget.focusPolicy() == Qt.NoFocus:
+                continue
+            if isinstance(widget, QToolButton) and widget.objectName() == "qt_toolbar_ext_button":
+                overflow_buttons.append(widget)
+            else:
+                widgets.append(widget)
+        # Ensure overflow button is last (sometimes not in actions list)
+        for ext_button in toolbar.findChildren(QToolButton):
+            if ext_button.objectName() != "qt_toolbar_ext_button":
+                continue
+            if ext_button in widgets or ext_button in overflow_buttons:
+                continue
+            if ext_button.focusPolicy() == Qt.NoFocus:
+                ext_button.setFocusPolicy(Qt.StrongFocus)
+            overflow_buttons.append(ext_button)
+        widgets.extend(overflow_buttons)
+        if widgets:
+            groups.append((_position_key(toolbar, root, index, 8), widgets))
+    groups.sort(key=lambda item: item[0])
+    return [group[1] for group in groups]
+
+
+def _collect_menu_bars(root):
+    if root is None:
+        return []
+    menubars = []
+    if isinstance(root, QMainWindow):
+        menubar = root.menuBar()
+        if menubar is not None:
+            menubars.append(menubar)
+    menubars.extend(root.findChildren(QMenuBar))
+    return [m for m in menubars if m is not None]
+
+def _dock_tab_bar(root, dock, tabified):
+    if root is None or dock is None:
+        return None
+    if not tabified:
+        return None
+    dock_title = dock.windowTitle()
+    group_titles = [dock_title] + [d.windowTitle() for d in tabified]
+    for tab_bar in root.findChildren(QTabBar):
+        if tab_bar.count() == 0:
+            continue
+        tabs = [tab_bar.tabText(i) for i in range(tab_bar.count())]
+        if dock_title not in tabs:
+            continue
+        if not any(title in tabs for title in group_titles):
+            continue
+        return tab_bar
+    return None
+
+
+def _collect_dock_groups(root, include_hidden, include_disabled):
+    groups = []
+    if not isinstance(root, QMainWindow):
+        return groups, set()
+
+    seen_tab_bars = set()
+    excluded_widgets = set()
+
+    for index, dock in enumerate(root.findChildren(QDockWidget)):
+        if not _dock_is_active(root, dock):
+            continue
+
+        titlebar_widgets = []
+        titlebar = dock.titleBarWidget()
+        if titlebar is not None:
+            for widget in titlebar.findChildren(QWidget):
+                if widget.focusPolicy() == Qt.NoFocus:
+                    continue
+                titlebar_widgets.append(widget)
+                excluded_widgets.add(widget)
+
+        tabified = root.tabifiedDockWidgets(dock)
+        tab_bar = _dock_tab_bar(root, dock, tabified)
+        if tab_bar is not None and tab_bar not in seen_tab_bars:
+            seen_tab_bars.add(tab_bar)
+            if tab_bar.focusPolicy() == Qt.NoFocus:
+                tab_bar.setFocusPolicy(Qt.StrongFocus)
+            titlebar_widgets.insert(0, tab_bar)
+            excluded_widgets.add(tab_bar)
+
+        content_widgets = []
+        content = dock.widget()
+        toolbar_groups = _collect_toolbar_button_groups(root, scope=dock)
+        toolbar_widgets = [w for group in toolbar_groups for w in group]
+        for widget in toolbar_widgets:
+            excluded_widgets.add(widget)
+
+        if content is not None:
+            all_focusables = [
+                w for w in content.findChildren(QWidget)
+                if _is_focusable(w, root, include_hidden, include_disabled)
+            ]
+            for widget in all_focusables:
+                excluded_widgets.add(widget)
+
+            content_layout = content.layout()
+            ordered_content = []
+            ordered_content.extend(toolbar_widgets)
+
+            if dock.objectName() == "dockProperties":
+                selection_button = dock.findChild(QPushButton, "btnSelectionName")
+                txt_filter = dock.findChild(QLineEdit, "txtPropertyFilter")
+                table_view = dock.findChild(QWidget, "propertyTableView")
+                for widget in (selection_button, txt_filter, table_view):
+                    if widget and widget not in ordered_content:
+                        ordered_content.append(widget)
+
+            if content_layout is not None:
+                layout_widgets = collect_focusable_from_layout(
+                    content_layout,
+                    root,
+                    include_hidden=include_hidden,
+                    include_disabled=include_disabled,
+                )
+            else:
+                layout_widgets = []
+
+            for widget in layout_widgets:
+                if widget in ordered_content:
+                    continue
+                ordered_content.append(widget)
+                # Include focusable descendants of composite widgets
+                for child in widget.findChildren(QWidget):
+                    if child in ordered_content:
+                        continue
+                    if _is_focusable(child, root, include_hidden, include_disabled):
+                        ordered_content.append(child)
+
+            # Append any remaining focusables in geometry order
+            remaining = [w for w in all_focusables if w not in ordered_content]
+            remaining.sort(key=lambda w: _position_key(w, root, 0, 8))
+            ordered_content.extend(remaining)
+
+            seen = set()
+            for widget in ordered_content:
+                if widget in seen:
+                    continue
+                seen.add(widget)
+                if widget in toolbar_widgets or _is_focusable(
+                    widget, root, include_hidden, include_disabled
+                ):
+                    content_widgets.append(widget)
+
+        group_widgets = titlebar_widgets + content_widgets
+        if group_widgets:
+            groups.append((_position_key(dock, root, index, 8), group_widgets))
+
+    groups.sort(key=lambda item: item[0])
+    return [group[1] for group in groups], excluded_widgets
+
 def apply_auto_tab_order(root, include_hidden=False, include_disabled=False, row_tolerance=8):
     """Apply top-to-bottom, left-to-right tab order on a widget tree."""
     if root is None:
         return
 
+    _prepare_focusable_containers(root)
+
+    menu_bars = _collect_menu_bars(root)
+    toolbar_groups = _collect_toolbar_button_groups(root)
+    toolbar_widgets = [w for group in toolbar_groups for w in group]
+    dock_groups, dock_excluded = _collect_dock_groups(
+        root, include_hidden, include_disabled
+    )
+
     widgets = []
     for index, widget in enumerate(root.findChildren(QWidget)):
+        if widget in toolbar_widgets or widget in menu_bars or widget in dock_excluded:
+            continue
         if _is_focusable(widget, root, include_hidden, include_disabled):
             widgets.append((widget, index))
 
     widgets.sort(key=lambda item: _position_key(item[0], root, item[1], row_tolerance))
 
-    ordered_widgets = [item[0] for item in widgets]
+    ordered_widgets = []
+    for menubar in menu_bars:
+        if _is_focusable(menubar, root, include_hidden, include_disabled):
+            ordered_widgets.append(menubar)
+    ordered_widgets.extend(
+        [w for w in toolbar_widgets if _is_focusable(w, root, include_hidden, include_disabled)]
+    )
+    for group in dock_groups:
+        ordered_widgets.extend(group)
+    ordered_widgets.extend([item[0] for item in widgets])
+    for index, widget in enumerate(ordered_widgets):
+        try:
+            widget._tab_order_key = (index, 0, 0, 0)
+        except Exception:
+            pass
+
     for first, second in zip(ordered_widgets, ordered_widgets[1:]):
         QWidget.setTabOrder(first, second)
 

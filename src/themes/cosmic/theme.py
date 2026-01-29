@@ -534,7 +534,7 @@ QMessageBox QPushButton[text="&{_('Cancel')}"] {{
         self.set_dock_margins([0, 0, 0, 0], [0, 10, 0, 0], "dockTimelineContents")
 
         # Apply new stylesheet
-        self.app.setStyleSheet(self.style_sheet)
+        self.app.setStyleSheet(self.compose_stylesheet())
 
         # Create a transparent spacer widget
         spacer = QWidget(self.app.window)
