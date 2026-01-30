@@ -185,16 +185,50 @@ class PropertiesTableView(QTableView):
     """ A Properties Table QWidget used on the main window """
     loadProperties = pyqtSignal(list)
 
+    def _is_edit_text(self, event):
+        if event.modifiers() & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier):
+            return False
+
+        text = event.text()
+        if not text or text.isspace():
+            return False
+
+        return text in "0123456789.,-+"
+
+    def _start_edit_on_key(self, event):
+        key = event.key()
+        if key not in (Qt.Key_Return, Qt.Key_Enter, Qt.Key_Space) and not self._is_edit_text(event):
+            return False
+
+        index = self.currentIndex()
+        if not index.isValid():
+            return False
+
+        if index.column() != 1:
+            index = index.sibling(index.row(), 1)
+            self.setCurrentIndex(index)
+
+        if not (index.flags() & Qt.ItemIsEditable):
+            return False
+
+        return self.edit(index, QAbstractItemView.EditKeyPressed, event)
+
     def event(self, event):
         # intercept the ShortcutOverride so our "." and "," keys
         # never reach the global QShortcuts when this view has focus
         if event.type() == QEvent.ShortcutOverride and self.hasFocus():
             key = event.key()
-            if key in (Qt.Key_Period, Qt.Key_Comma):
+            if key in (Qt.Key_Period, Qt.Key_Comma, Qt.Key_Up, Qt.Key_Down):
                 event.accept()
                 return True
         # otherwise, default processing
         return super().event(event)
+
+    def keyPressEvent(self, event):
+        if self._start_edit_on_key(event):
+            return
+
+        super().keyPressEvent(event)
 
     def start_transaction(self, item):
         """Start a new undo/redo transaction and cache original values."""

@@ -50,7 +50,7 @@ from PyQt5.QtWidgets import (
     QMessageBox, QDialog, QFileDialog, QInputDialog,
     QAction, QActionGroup, QSizePolicy,
     QStatusBar, QToolBar, QToolButton,
-    QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar,
+    QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar, QAbstractButton,
     QPlainTextEdit, QSpinBox, QDoubleSpinBox
 )
 
@@ -3769,7 +3769,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if isinstance(widget, (QLineEdit, QTextEdit, QPlainTextEdit, QComboBox, QSpinBox, QDoubleSpinBox)):
             return True
 
-        if isinstance(widget, (QToolButton, QTabBar)):
+        if isinstance(widget, (QAbstractButton, QTabBar)):
             return True
 
         menubar = self.menuBar()
