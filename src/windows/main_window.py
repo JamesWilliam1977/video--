@@ -2322,21 +2322,28 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             s.set("file_view", "details")
             self.filesListView.hide()
             self.filesView = self.filesTreeView
+            self.files_model.proxy_model.set_single_column(False)
+            self.files_model.proxy_model.set_hide_thumbnail_text(True)
             self.filesView.show()
+            self.filesTreeView.refresh_view()
 
         # Transitions
         elif app.context_menu_object == "transitions":
             s.set("transitions_view", "details")
             self.transitionsListView.hide()
             self.transitionsView = self.transitionsTreeView
+            self.transition_model.proxy_model.set_single_column(False)
             self.transitionsView.show()
+            self.transitionsTreeView.refresh_columns()
 
         # Effects
         elif app.context_menu_object == "effects":
             s.set("effects_view", "details")
             self.effectsListView.hide()
             self.effectsView = self.effectsTreeView
+            self.effects_model.proxy_model.set_single_column(False)
             self.effectsView.show()
+            self.effectsTreeView.refresh_columns()
 
     def actionThumbnailView_trigger(self):
         log.info("Switch to Thumbnail View")
@@ -2350,6 +2357,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             s.set("file_view", "thumbnail")
             self.filesTreeView.hide()
             self.filesView = self.filesListView
+            self.files_model.proxy_model.set_single_column(True)
+            self.files_model.proxy_model.set_hide_thumbnail_text(False)
             self.filesView.show()
 
         # Transitions
@@ -2357,6 +2366,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             s.set("transitions_view", "thumbnail")
             self.transitionsTreeView.hide()
             self.transitionsView = self.transitionsListView
+            self.transition_model.proxy_model.set_single_column(True)
             self.transitionsView.show()
 
         # Effects
@@ -2364,6 +2374,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             s.set("effects_view", "thumbnail")
             self.effectsTreeView.hide()
             self.effectsView = self.effectsListView
+            self.effects_model.proxy_model.set_single_column(True)
             self.effectsView.show()
 
     def resize_contents(self):
@@ -3353,9 +3364,17 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         else:
             self.filesView = self.filesListView
             self.filesTreeView.hide()
+        self.files_model.proxy_model.set_single_column(
+            self.filesView == self.filesListView
+        )
+        self.files_model.proxy_model.set_hide_thumbnail_text(
+            self.filesView == self.filesTreeView
+        )
         # Show our currently-enabled project files view
         self.filesView.show()
         self.filesView.setFocus()
+        if self.filesView == self.filesTreeView:
+            self.filesTreeView.refresh_view()
 
         # Setup transitions tree and list views
         self.transition_model = TransitionsModel()
@@ -3370,9 +3389,14 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         else:
             self.transitionsView = self.transitionsListView
             self.transitionsTreeView.hide()
+        self.transition_model.proxy_model.set_single_column(
+            self.transitionsView == self.transitionsListView
+        )
         # Show our currently-enabled transitions view
         self.transitionsView.show()
         self.transitionsView.setFocus()
+        if self.transitionsView == self.transitionsTreeView:
+            self.transitionsTreeView.refresh_columns()
 
         # Setup effects tree
         self.effects_model = EffectsModel()
@@ -3387,9 +3411,14 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         else:
             self.effectsView = self.effectsListView
             self.effectsTreeView.hide()
+        self.effects_model.proxy_model.set_single_column(
+            self.effectsView == self.effectsListView
+        )
         # Show our currently-enabled effects view
         self.effectsView.show()
         self.effectsView.setFocus()
+        if self.effectsView == self.effectsTreeView:
+            self.effectsTreeView.refresh_columns()
 
         # Setup emojis view
         self.emojis_model = EmojisModel()

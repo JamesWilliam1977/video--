@@ -65,6 +65,8 @@ def _dock_is_active(root, dock):
 def _is_focusable(widget, root, include_hidden, include_disabled):
     if widget is root:
         return False
+    if isinstance(widget, QToolBar):
+        return False
     if widget.focusPolicy() == Qt.NoFocus:
         return False
     dock = _parent_dock_widget(widget)
@@ -122,9 +124,6 @@ def _prepare_focusable_containers(root):
     )
 
     for toolbar in root.findChildren(QToolBar):
-        if toolbar.focusPolicy() == Qt.NoFocus:
-            toolbar.setFocusPolicy(Qt.StrongFocus)
-
         for action in toolbar.actions():
             widget = toolbar.widgetForAction(action)
             if widget is None:

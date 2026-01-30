@@ -91,7 +91,8 @@ class TransitionsListView(QListView):
         QListView.__init__(self)
 
         # Get a reference to the window object
-        self.win = get_app().window
+        app = get_app()
+        self.win = app.window
 
         # Get Model data
         self.transition_model = model
@@ -120,6 +121,5 @@ class TransitionsListView(QListView):
         self.setStyleSheet('QListView::item { padding-top: 2px; }')
 
         # setup filter events
-        app = get_app()
         app.window.transitionsFilter.textChanged.connect(self.filter_changed)
         app.window.refreshTransitionsSignal.connect(self.refresh_view)

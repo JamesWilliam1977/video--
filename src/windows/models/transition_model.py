@@ -29,7 +29,7 @@ import os
 
 from PyQt5.QtCore import (
     QObject, QMimeData, Qt, pyqtSignal,
-    QSortFilterProxyModel, QPersistentModelIndex, QItemSelectionModel,
+    QSortFilterProxyModel, QPersistentModelIndex, QItemSelectionModel, QModelIndex,
 )
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
 from PyQt5.QtWidgets import QMessageBox
@@ -44,6 +44,25 @@ import json
 
 class TransitionFilterProxyModel(QSortFilterProxyModel):
     """Proxy class used for sorting and filtering model data"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self._single_column = False
+
+    def set_single_column(self, enabled):
+        enabled = bool(enabled)
+        current = getattr(self, "_single_column", False)
+        if enabled == current:
+            return
+        self.beginResetModel()
+        self._single_column = enabled
+        self.endResetModel()
+        self.invalidate()
+
+    def columnCount(self, parent=QModelIndex()):
+        if getattr(self, "_single_column", False):
+            return 1
+        return super().columnCount(parent)
 
     def filterAcceptsRow(self, sourceRow, sourceParent):
         """Filter for common transitions and text filter"""
@@ -77,7 +96,10 @@ class TransitionFilterProxyModel(QSortFilterProxyModel):
         data = QMimeData()
 
         # Create list from requested transition indexes
-        items = [i.sibling(i.row(), 3).data() for i in indexes]
+        items = []
+        for proxy_index in indexes:
+            source_index = self.mapToSource(proxy_index)
+            items.append(source_index.sibling(source_index.row(), 3).data())
         data.setText(json.dumps(items))
         data.setHtml("transition")
 

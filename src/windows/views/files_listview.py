@@ -61,10 +61,11 @@ class FilesListView(QListView):
         if index.isValid():
             # Look up the model item and our unique ID
             model = self.model()
+            source_index = model.mapToSource(index)
 
             # Look up file_id from 5th column of row
-            id_index = index.sibling(index.row(), 5)
-            file_id = model.data(id_index, Qt.DisplayRole)
+            id_index = source_index.sibling(source_index.row(), 5)
+            file_id = model.sourceModel().data(id_index, Qt.DisplayRole)
 
             # If a valid file selected, show file related options
             menu.addSeparator()
@@ -227,7 +228,8 @@ class FilesListView(QListView):
         super().__init__(*args)
 
         # Get a reference to the window object
-        self.win = get_app().window
+        app = get_app()
+        self.win = app.window
 
         # Get Model data
         self.files_model = model

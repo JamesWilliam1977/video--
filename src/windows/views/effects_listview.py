@@ -90,7 +90,8 @@ class EffectsListView(QListView):
         QListView.__init__(self)
 
         # Get a reference to the window object
-        self.win = get_app().window
+        app = get_app()
+        self.win = app.window
 
         # Get Model data
         self.effects_model = model
@@ -119,6 +120,5 @@ class EffectsListView(QListView):
         self.setStyleSheet('QListView::item { padding-top: 2px; }')
 
         # setup filter events
-        app = get_app()
         app.window.effectsFilter.textChanged.connect(self.filter_changed)
         app.window.refreshEffectsSignal.connect(self.refresh_view)

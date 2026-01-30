@@ -55,6 +55,51 @@ import openshot
 class FileFilterProxyModel(QSortFilterProxyModel):
     """Proxy class used for sorting and filtering model data"""
 
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self._single_column = False
+        self._hide_thumbnail_text = False
+
+    def set_single_column(self, enabled):
+        enabled = bool(enabled)
+        current = getattr(self, "_single_column", False)
+        if enabled == current:
+            return
+        self.beginResetModel()
+        self._single_column = enabled
+        self.endResetModel()
+        self.invalidate()
+
+    def set_hide_thumbnail_text(self, enabled):
+        enabled = bool(enabled)
+        current = getattr(self, "_hide_thumbnail_text", False)
+        if enabled == current:
+            return
+        self.beginResetModel()
+        self._hide_thumbnail_text = enabled
+        self.endResetModel()
+        self.invalidate()
+
+    def columnCount(self, parent=QModelIndex()):
+        if getattr(self, "_single_column", False):
+            return 1
+        return super().columnCount(parent)
+
+    def data(self, index, role=Qt.DisplayRole):
+        if (
+            role == Qt.DisplayRole
+            and getattr(self, "_hide_thumbnail_text", False)
+            and index.column() == 0
+        ):
+            return ""
+        if (
+            role == Qt.DecorationRole
+            and getattr(self, "_hide_thumbnail_text", False)
+            and index.column() == 0
+        ):
+            return self.sourceModel().data(self.mapToSource(index), role)
+        return super().data(index, role)
+
     def filterAcceptsRow(self, sourceRow, sourceParent):
         """Filter for text"""
         if get_app().window.actionFilesShowVideo.isChecked() \
