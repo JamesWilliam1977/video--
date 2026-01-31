@@ -76,6 +76,7 @@ class Export(QDialog):
         ui_util.load_ui(self, self.ui_path)
         ui_util.init_ui(self)
         self._setup_toolbox_tab_order()
+        self.exportTabs.tabBar().setFocusPolicy(Qt.StrongFocus)
 
         # get translations & settings
         _ = get_app()._tr
@@ -303,8 +304,9 @@ class Export(QDialog):
 
     def _apply_tab_order(self):
         current_tab = self.exportTabs.currentWidget()
-        if not current_tab:
-            tabstops.apply_auto_tab_order_later(self)
+        if current_tab is None:
+            current_tab = self.exportTabs.widget(self.exportTabs.currentIndex())
+        if current_tab is None:
             return
 
         ordered = [
@@ -315,13 +317,13 @@ class Export(QDialog):
         ]
 
         if current_tab is self.Advanced:
-            ordered.extend(self._collect_toolbox_tab_order(self.toolBox))
+            tab_widgets = self._collect_toolbox_tab_order(self.toolBox)
         else:
-            ordered.extend(
-                tabstops.collect_focusable_from_layout(
-                    current_tab.layout(), self, include_hidden=True
-                )
+            tab_widgets = tabstops.collect_focusable_from_layout(
+                current_tab.layout(), self, include_hidden=True
             )
+
+        ordered.extend(tab_widgets)
 
         ordered.extend(
             [
@@ -332,20 +334,35 @@ class Export(QDialog):
             ]
         )
 
-        tabstops.apply_explicit_tab_order_later(
-            ordered, root=self, include_hidden=True
-        )
+        def _apply_and_wrap():
+            ordered_unique = []
+            seen = set()
+            for widget in ordered:
+                if widget is None or widget in seen:
+                    continue
+                ordered_unique.append(widget)
+                seen.add(widget)
 
-        # Wrap back to the first field after the last visible button.
-        first = ordered[0] if ordered else None
-        for last in reversed(ordered):
-            if last.isVisibleTo(self) and last.isEnabled():
-                break
-        else:
-            last = None
+            for first, second in zip(ordered_unique, ordered_unique[1:]):
+                QWidget.setTabOrder(first, second)
 
-        if first and last:
-            QWidget.setTabOrder(last, first)
+            # Wrap back to the first field after the last visible button.
+            first_visible = ordered_unique[0] if ordered_unique else None
+            for last_visible in reversed(ordered_unique):
+                if last_visible.isVisibleTo(self) and last_visible.isEnabled():
+                    break
+            else:
+                last_visible = None
+
+            if first_visible and last_visible:
+                QWidget.setTabOrder(last_visible, first_visible)
+
+            self._tab_order_list = [
+                w for w in ordered_unique
+                if w.isVisibleTo(self) and w.isEnabled() and w.focusPolicy() != Qt.NoFocus
+            ]
+
+        QTimer.singleShot(0, _apply_and_wrap)
 
     def restore_defaults(self):
         """
@@ -886,6 +903,35 @@ class Export(QDialog):
         for child in toolbox.findChildren(QWidget):
             if child.metaObject().className() == "QToolBoxButton":
                 child.setFocusPolicy(Qt.TabFocus)
+
+    def focusNextPrevChild(self, next):
+        tab_list = getattr(self, "_tab_order_list", None)
+        if not tab_list:
+            return super().focusNextPrevChild(next)
+
+        current = self.focusWidget()
+        if current is self.exportTabs.tabBar():
+            current = self.exportTabs
+
+        if current not in tab_list:
+            target = tab_list[0] if next else tab_list[-1]
+            if target is self.exportTabs:
+                self.exportTabs.tabBar().setFocus()
+            else:
+                target.setFocus()
+            return True
+
+        index = tab_list.index(current)
+        if next:
+            index = (index + 1) % len(tab_list)
+        else:
+            index = (index - 1) % len(tab_list)
+        target = tab_list[index]
+        if target is self.exportTabs:
+            self.exportTabs.tabBar().setFocus()
+        else:
+            target.setFocus()
+        return True
 
     def _collect_toolbox_tab_order(self, toolbox):
         if toolbox is None:
