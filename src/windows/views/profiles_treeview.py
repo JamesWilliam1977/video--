@@ -149,7 +149,6 @@ class ProfilesTreeView(QTreeView):
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setWordWrap(True)
-        self.setStyleSheet('QTreeView::item { padding-top: 2px; }')
         self.columns = 7
         self.selected_profile_object = None
         self.last_inserted_row_index = None

@@ -43,6 +43,9 @@ class BaseTheme:
     foreground-color: #b3b3b3;
     background-color: #343434;
 }
+QTreeView::item, QListView::item {
+    padding-top: 2px;
+}
         """
         self.app = app
 
@@ -55,14 +58,30 @@ QToolBar#timelineToolbar QToolButton:focus, QPushButton:focus,
 QLineEdit:focus, QTextEdit:focus, QComboBox:focus,
 QSpinBox:focus, QDoubleSpinBox:focus, QSlider:focus,
 QMenuBar:focus, QMenuBar::item:focus,
-QTabBar:focus, QTabBar::tab:focus, QMenu::item:focus {
+QTabBar:focus, QTabBar::tab:focus, QMenu::item:focus,
+QCheckBox:focus, QRadioButton:focus {
     border: 2px solid #ff00ff;
 }
 QToolButton:focus, QToolBar QToolButton:focus {
     border-style: solid;
     border-width: 2px;
 }
-QListView::item:focus, QListWidget::item:focus, QTreeView::item:focus {
+QListView::item:focus, QListWidget::item:focus,
+QTreeView::item:focus, QTableView::item:focus {
+    border: 2px solid #ff00ff;
+}
+QListView::item:selected:focus, QListWidget::item:selected:focus,
+QTreeView::item:selected:focus, QTableView::item:selected:focus {
+    border: 2px solid #ff00ff;
+    background: palette(highlight);
+    color: palette(highlighted-text);
+}
+QLineEdit#filesFilter:focus, QLineEdit#effectsFilter:focus,
+QLineEdit#transitionsFilter:focus, QLineEdit#emojisFilter:focus,
+QLineEdit#txtPropertyFilter:focus, QLineEdit#txtProfileFilter:focus,
+QLineEdit#txtDeveloperFilter:focus, QLineEdit#txtTranslatorFilter:focus,
+QLineEdit#txtSupporterFilter:focus, QLineEdit#txtChangeLogFilter_openshot_qt:focus,
+QLineEdit#txtChangeLogFilter_libopenshot:focus, QLineEdit#txtChangeLogFilter_libopenshot_audio:focus {
     border: 2px solid #ff00ff;
 }
         """
