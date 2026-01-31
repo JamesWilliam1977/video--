@@ -53,13 +53,17 @@ class BaseTheme:
 QToolButton:focus, QToolBar QToolButton:focus, QToolBar#toolBar QToolButton:focus,
 QToolBar#timelineToolbar QToolButton:focus, QPushButton:focus,
 QLineEdit:focus, QTextEdit:focus, QComboBox:focus,
-QMenuBar:focus, QMenuBar::item:focus, QMenuBar::item:selected,
-QTabBar:focus, QTabBar::tab:focus, QMenu::item:focus, QMenu::item:selected {
+QSpinBox:focus, QDoubleSpinBox:focus, QSlider:focus,
+QMenuBar:focus, QMenuBar::item:focus,
+QTabBar:focus, QTabBar::tab:focus, QMenu::item:focus {
     border: 2px solid #ff00ff;
 }
 QToolButton:focus, QToolBar QToolButton:focus {
     border-style: solid;
     border-width: 2px;
+}
+QListView::item:focus, QListWidget::item:focus, QTreeView::item:focus {
+    border: 2px solid #ff00ff;
 }
         """
 
