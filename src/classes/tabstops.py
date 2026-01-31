@@ -32,7 +32,31 @@ def _parent_dock_widget(widget):
     return None
 
 
-def _dock_is_active(root, dock):
+def _find_dock_tab_bars(root):
+    """Find tab bars that contain dock widget titles and return mapping of dock titles to active status."""
+    if not isinstance(root, QMainWindow):
+        return {}
+
+    dock_titles = {dock.windowTitle() for dock in root.findChildren(QDockWidget)}
+    active_tabs = {}  # dock_title -> is_active
+
+    for tab_bar in root.findChildren(QTabBar):
+        if tab_bar.count() < 2:
+            continue
+        tabs = [tab_bar.tabText(i) for i in range(tab_bar.count())]
+        # Check if this tab bar contains dock titles
+        matching_titles = [t for t in tabs if t in dock_titles]
+        if len(matching_titles) < 2:
+            continue
+        # This is a dock tab bar - mark which dock is active
+        active_title = tab_bar.tabText(tab_bar.currentIndex())
+        for title in matching_titles:
+            active_tabs[title] = (title == active_title)
+
+    return active_tabs
+
+
+def _dock_is_active(root, dock, active_tabs=None):
     if dock is None:
         return True
     if not isinstance(root, QMainWindow):
@@ -41,25 +65,26 @@ def _dock_is_active(root, dock):
     if dock.isFloating():
         return dock.isVisibleTo(root)
 
-    tabified = root.tabifiedDockWidgets(dock)
-    if not tabified:
-        return dock.isVisibleTo(root)
+    if not dock.isVisibleTo(root):
+        return False
 
     dock_title = dock.windowTitle()
-    group_titles = [dock_title] + [d.windowTitle() for d in tabified]
 
+    # If we have pre-computed active tabs info, use it
+    if active_tabs is not None and dock_title in active_tabs:
+        return active_tabs[dock_title]
+
+    # Fallback: check tab bars directly
     for tab_bar in root.findChildren(QTabBar):
-        if tab_bar.count() == 0:
+        if tab_bar.count() < 2:
             continue
         tabs = [tab_bar.tabText(i) for i in range(tab_bar.count())]
         if dock_title not in tabs:
             continue
-        if not any(title in tabs for title in group_titles):
-            continue
         active_title = tab_bar.tabText(tab_bar.currentIndex())
         return active_title == dock_title
 
-    return False
+    return dock.isVisibleTo(root)
 
 
 def _is_focusable(widget, root, include_hidden, include_disabled):
@@ -109,9 +134,17 @@ def _prepare_focusable_containers(root):
         return
 
     if isinstance(root, QMainWindow):
+        # MainWindow itself should not accept Tab focus
+        if root.focusPolicy() != Qt.NoFocus:
+            root.setFocusPolicy(Qt.NoFocus)
         menubar = root.menuBar()
         if menubar is not None and menubar.focusPolicy() == Qt.NoFocus:
             menubar.setFocusPolicy(Qt.StrongFocus)
+
+    # Skip Tab focus for empty tab bars only - dock tab bars should be focusable
+    for tab_bar in root.findChildren(QTabBar):
+        if tab_bar.count() < 2:
+            tab_bar.setFocusPolicy(Qt.NoFocus)
 
     focusable_types = (
         QToolButton,
@@ -261,6 +294,7 @@ def _process_dock_tab_bar(root, dock, titlebar_widgets, seen_tab_bars, excluded_
     if tab_bar is None or tab_bar in seen_tab_bars:
         return
     seen_tab_bars.add(tab_bar)
+    # Include dock tab bar in tab order so users can switch tabs with arrow keys
     if tab_bar.focusPolicy() == Qt.NoFocus:
         tab_bar.setFocusPolicy(Qt.StrongFocus)
     titlebar_widgets.insert(0, tab_bar)
@@ -328,9 +362,26 @@ def _collect_dock_groups(root, include_hidden, include_disabled):
     seen_tab_bars = set()
     excluded_widgets = set()
 
+    # Pre-compute which docks are active in tab bars
+    active_tabs = _find_dock_tab_bars(root)
+
     for index, dock in enumerate(root.findChildren(QDockWidget)):
-        if not _dock_is_active(root, dock):
+        if not _dock_is_active(root, dock, active_tabs):
+            # Exclude all widgets from inactive docks and disable their focus
+            for widget in dock.findChildren(QWidget):
+                excluded_widgets.add(widget)
+                # Store original focus policy and set to NoFocus so Tab skips them
+                if widget.focusPolicy() != Qt.NoFocus:
+                    widget.setProperty("_original_focus_policy", widget.focusPolicy())
+                    widget.setFocusPolicy(Qt.NoFocus)
             continue
+        else:
+            # Restore focus policy for widgets in active docks
+            for widget in dock.findChildren(QWidget):
+                original_policy = widget.property("_original_focus_policy")
+                if original_policy is not None:
+                    widget.setFocusPolicy(Qt.FocusPolicy(original_policy))
+                    widget.setProperty("_original_focus_policy", None)
 
         titlebar_widgets = _collect_titlebar_widgets(dock, excluded_widgets)
         _process_dock_tab_bar(root, dock, titlebar_widgets, seen_tab_bars, excluded_widgets)
@@ -350,7 +401,9 @@ def _collect_dock_groups(root, include_hidden, include_disabled):
 
         group_widgets = titlebar_widgets + content_widgets
         if group_widgets:
-            groups.append((_position_key(dock, root, index, 8), group_widgets))
+            # Use larger row tolerance for docks (100px) so docks on same visual row
+            # are grouped together regardless of tab bar height differences
+            groups.append((_position_key(dock, root, index, 100), group_widgets))
 
     groups.sort(key=lambda item: item[0])
     return [group[1] for group in groups], excluded_widgets

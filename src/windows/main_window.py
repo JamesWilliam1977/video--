@@ -3899,12 +3899,31 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if not hasattr(self, "_tab_order_timer"):
             self._tab_order_timer = QTimer(self)
             self._tab_order_timer.setSingleShot(True)
-            self._tab_order_timer.timeout.connect(
-                lambda: tabstops.apply_auto_tab_order(
-                    self, include_hidden=True, include_disabled=True
-                )
-            )
+            self._tab_order_timer.timeout.connect(self._apply_tab_order_and_connect_dock_tabs)
         self._tab_order_timer.start(50)
+
+    def _apply_tab_order_and_connect_dock_tabs(self):
+        """Apply tab order and connect dock tab bar signals."""
+        tabstops.apply_auto_tab_order(self, include_hidden=True, include_disabled=True)
+        self._connect_dock_tab_bar_signals()
+
+    def _connect_dock_tab_bar_signals(self):
+        """Connect currentChanged signals on dock tab bars to update tab order."""
+        if not hasattr(self, "_connected_dock_tab_bars"):
+            self._connected_dock_tab_bars = set()
+
+        dock_titles = {dock.windowTitle() for dock in self.getDocks()}
+
+        for tab_bar in self.findChildren(QTabBar):
+            if tab_bar in self._connected_dock_tab_bars:
+                continue
+            if tab_bar.count() == 0:
+                continue
+            # Check if this tab bar contains dock titles
+            tabs = [tab_bar.tabText(i) for i in range(tab_bar.count())]
+            if any(title in dock_titles for title in tabs):
+                tab_bar.currentChanged.connect(self._schedule_tab_order_update)
+                self._connected_dock_tab_bars.add(tab_bar)
 
     def set_tab_drawbase(self):
         """Set the drawBase property on all QTabBar objects. This draws a line
@@ -4201,6 +4220,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Connect the signals for each dock widget from self.getDocks()
         for dock_widget in self.getDocks():
             dock_widget.dockLocationChanged.connect(self.style_dock_widgets)
+            dock_widget.dockLocationChanged.connect(self._schedule_tab_order_update)
             dock_widget.topLevelChanged.connect(self._schedule_tab_order_update)
             dock_widget.visibilityChanged.connect(lambda _=None: self._schedule_tab_order_update())
 
