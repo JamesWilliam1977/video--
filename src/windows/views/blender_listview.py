@@ -50,7 +50,7 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QColor, QImage, QPixmap, QIcon
 
-from classes import info, tabstops
+from classes import info
 from classes.logger import log
 from classes.query import File
 from classes.app import get_app
@@ -811,8 +811,8 @@ class Worker(QObject):
                     os.killpg(self.process.pid, signal.SIGTERM)
                 else:
                     self.process.terminate()
-            except Exception:
-                pass
+            except (OSError, ProcessLookupError):
+                pass  # Process already terminated
             for _ in range(30):
                 if not self.process or self.process.poll() is not None:
                     break
