@@ -3054,6 +3054,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Add files toolbar
         self.filesToolbar = QToolBar("Files Toolbar")
+        self.filesToolbar.setObjectName("filesToolbar")
         self.filesActionGroup = QActionGroup(self)
         self.filesActionGroup.setExclusive(True)
         self.filesActionGroup.addAction(self.actionFilesShowAll)
@@ -3074,6 +3075,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Add transitions toolbar
         self.transitionsToolbar = QToolBar("Transitions Toolbar")
+        self.transitionsToolbar.setObjectName("transitionsToolbar")
         self.transitionsActionGroup = QActionGroup(self)
         self.transitionsActionGroup.setExclusive(True)
         self.transitionsActionGroup.addAction(self.actionTransitionsShowAll)
@@ -3090,6 +3092,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Add effects toolbar
         self.effectsToolbar = QToolBar("Effects Toolbar")
+        self.effectsToolbar.setObjectName("effectsToolbar")
         self.effectsFilter = QLineEdit()
         self.effectsActionGroup = QActionGroup(self)
         self.effectsActionGroup.setExclusive(True)
@@ -3108,6 +3111,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Add emojis toolbar
         self.emojisToolbar = QToolBar("Emojis Toolbar")
+        self.emojisToolbar.setObjectName("emojisToolbar")
         self.emojiFilterGroup = QComboBox()
         self.emojisFilter = QLineEdit()
         self.emojisFilter.setObjectName("emojisFilter")
@@ -3119,6 +3123,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Add Video Preview toolbar
         self.videoToolbar = QToolBar("Video Toolbar")
+        self.videoToolbar.setObjectName("videoToolbar")
         self.tabVideo.layout().addWidget(self.videoToolbar)
 
         # Add Timeline toolbar

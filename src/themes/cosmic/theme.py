@@ -148,10 +148,6 @@ QToolBar#toolBar QToolButton:hover {
     background-color: #323C50;
 }
 
-QToolBar#toolBar QToolButton:pressed {
-    background-color: #323C50;
-}
-
 QToolBar QToolButton:hover {
     background-color: #192332;
 }
@@ -159,6 +155,43 @@ QToolBar QToolButton:hover {
 QToolBar QToolButton:pressed {
     background-color: #192332;
 }
+
+QToolBar#filesToolbar,
+QToolBar#transitionsToolbar,
+QToolBar#effectsToolbar {
+    background-color: transparent;
+    spacing: 4px;
+    padding: 2px;
+    border: none;
+}
+
+QToolBar#filesToolbar QToolButton,
+QToolBar#transitionsToolbar QToolButton,
+QToolBar#effectsToolbar QToolButton {
+    background-color: #141923;
+    color: #91C3FF;
+    border-radius: 3px;
+    padding: 3px 6px;
+}
+
+QToolBar#filesToolbar QToolButton:hover,
+QToolBar#transitionsToolbar QToolButton:hover,
+QToolBar#effectsToolbar QToolButton:hover {
+    background-color: #192332;
+}
+
+QToolBar#filesToolbar QToolButton:checked,
+QToolBar#transitionsToolbar QToolButton:checked,
+QToolBar#effectsToolbar QToolButton:checked {
+    background-color: #202b3a;
+}
+
+QToolBar#filesToolbar QToolButton:focus,
+QToolBar#transitionsToolbar QToolButton:focus,
+QToolBar#effectsToolbar QToolButton:focus {
+    background-color: #202b3a;
+}
+
 
 QToolBar#timelineToolbar {
     background-color: #192332;
@@ -175,9 +208,23 @@ QToolBar#timelineToolbar QToolButton {
     margin-right: 5px;
     margin-left: 5px;
     border-radius: 4px;
+    border: none;
 }
 
 QToolBar#timelineToolbar QToolButton:hover {
+    background-color: #283241;
+}
+
+
+QToolBar#timelineToolbar QToolButton:checked {
+    background-color: #283241;
+}
+
+QToolBar#toolBar QToolButton:focus {
+    background-color: #323C50;
+}
+
+QToolBar#timelineToolbar QToolButton:focus:!checked {
     background-color: #283241;
 }
 
@@ -185,8 +232,26 @@ QToolBar#timelineToolbar QToolButton:pressed {
     background-color: #353f4e;
 }
 
-QToolBar#timelineToolbar QToolButton:checked {
-    background-color: #283241;
+QToolBar#toolBar QToolButton:pressed {
+    background-color: #2b3445;
+}
+
+QToolBar#filesToolbar QToolButton:pressed,
+QToolBar#transitionsToolbar QToolButton:pressed,
+QToolBar#effectsToolbar QToolButton:pressed {
+    background-color: #1b2433;
+}
+
+QToolBar#toolBar QToolButton:hover {
+    background-color: #323C50;
+}
+
+QToolBar#videoToolbar QToolButton:focus {
+    background-color: #202b3a;
+}
+
+QToolBar#videoToolbar QToolButton:pressed {
+    background-color: #1b2433;
 }
 
 QPushButton#acceptButton {
@@ -198,6 +263,11 @@ QPushButton#acceptButton {
 
 QPushButton#acceptButton:hover {
     background-color: #006EE6;
+}
+
+QPushButton#acceptButton:focus,
+QPushButton#acceptButton:default {
+    background-color: #1a86ff;
 }
 
 QPushButton {
@@ -550,7 +620,7 @@ QMessageBox QPushButton[text="&{_('Cancel')}"] {{
             {"expand": True},
             {"action": self.app.window.actionSave, "icon": "themes/cosmic/images/tool-save-project.svg", "style": Qt.ToolButtonTextBesideIcon},
             {"action": self.app.window.actionExportVideo, "icon": "themes/cosmic/images/tool-export.svg",
-             "style": Qt.ToolButtonTextBesideIcon, "stylesheet": "QToolButton { background-color: #0078FF; color: #FFFFFF; border: none; } QToolButton:hover, QToolButton:pressed { background-color: #006EE6; }"},
+             "style": Qt.ToolButtonTextBesideIcon, "stylesheet": "QToolButton { background-color: #0078FF; color: #FFFFFF; border: none; } QToolButton:hover, QToolButton:pressed { background-color: #006EE6; } QToolButton:focus { background-color: #1a86ff; }"},
             {"action": self.app.window.actionUpdate, "icon": "themes/cosmic/images/warning.svg", "visible": False, "style": Qt.ToolButtonTextBesideIcon, "stylesheet": "QToolButton {  background-color: #141923; color: #FABE0A; }"}
         ]
         self.set_toolbar_buttons(self.app.window.toolBar, icon_size=20, settings=toolbar_buttons)
