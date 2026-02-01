@@ -59,6 +59,26 @@ from classes.style_tools import style_to_dict, dict_to_style, set_if_existing
 from windows.views.titles_listview import TitlesListView
 
 
+def get_svg_title_translations():
+    """Return translatable strings used in SVG title templates.
+
+    These are placeholder texts that appear in title SVG files.
+    Listed here so xgettext can discover them for translation.
+    """
+    _ = get_app()._tr
+    return {
+        "The Title": _("The Title"),
+        "Sub-Title": _("Sub-Title"),
+        "Title": _("Title"),
+        "Header Text": _("Header Text"),
+        "Footer Text": _("Footer Text"),
+        "Line 1": _("Line 1"),
+        "Line 2": _("Line 2"),
+        "Line 3": _("Line 3"),
+        "Line 4": _("Line 4"),
+    }
+
+
 class TitleEditor(QDialog):
     """ Title Editor Dialog """
 
@@ -405,13 +425,24 @@ class TitleEditor(QDialog):
         self.txtFileName.setFixedHeight(28)
         layout.addRow(label, self.txtFileName)
 
+        # Get SVG title translations for placeholder text
+        svg_translations = get_svg_title_translations()
+
         # Get text values
         title_text = []
         for i, node in enumerate(self.tspan_nodes):
             if len(node.childNodes) < 1:
                 continue
             text = node.childNodes[0].data
-            title_text.append(text)
+            # Translate SVG placeholder text (if translation exists)
+            translated_text = svg_translations.get(text, text)
+            title_text.append(translated_text)
+            # Update the SVG node with translated text
+            if translated_text != text:
+                new_text_node = self.xmldoc.createTextNode(translated_text)
+                old_text_node = node.childNodes[0]
+                node.removeChild(old_text_node)
+                node.appendChild(new_text_node)
 
             # Create Label
             label_line_text = _("Line %s:") % str(i + 1)
@@ -419,7 +450,7 @@ class TitleEditor(QDialog):
             label.setToolTip(label_line_text)
 
             # create text editor for each text element in title
-            widget = QLineEdit(text)
+            widget = QLineEdit(translated_text)
             widget.setFixedHeight(28)
             widget.textChanged.connect(functools.partial(self.txtLine_changed, widget))
             layout.addRow(label, widget)
