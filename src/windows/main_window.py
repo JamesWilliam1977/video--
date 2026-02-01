@@ -42,7 +42,7 @@ import threading
 
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 from PyQt5.QtCore import (
-    Qt, pyqtSignal, pyqtSlot, QCoreApplication, QTimer, QDateTime, QFileInfo, QEvent, QUrl
+    Qt, pyqtSignal, pyqtSlot, QCoreApplication, QTimer, QDateTime, QFileInfo, QEvent, QUrl, QLocale
 )
 from PyQt5.QtGui import QIcon, QCursor, QKeySequence, QTextCursor
 from PyQt5.QtWidgets import (
@@ -2251,7 +2251,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 break
             display_count -= 1
 
-        track_name = selected_track.data["label"] or _("Track %s") % display_count
+        track_name = selected_track.data["label"] or _("Track %s") % QLocale().toString(display_count)
 
         text, ok = QInputDialog.getText(self, _('Rename Track'), _('Track Name:'), text=track_name)
         if ok:

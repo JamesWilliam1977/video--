@@ -28,7 +28,7 @@
 import os
 
 from PyQt5.QtCore import (
-    QObject, QMimeData, Qt, pyqtSignal,
+    QObject, QMimeData, Qt, pyqtSignal, QLocale,
     QSortFilterProxyModel, QPersistentModelIndex, QItemSelectionModel,
 )
 from PyQt5.QtGui import QIcon, QStandardItemModel, QStandardItem
@@ -149,7 +149,7 @@ class TransitionsModel(QObject):
                 # replace suffix number with placeholder (if any)
                 if suffix_number:
                     trans_name = trans_name.replace(suffix_number, "%s")
-                    trans_name = self.app._tr(trans_name) % suffix_number
+                    trans_name = self.app._tr(trans_name) % QLocale().toString(int(suffix_number))
                 else:
                     trans_name = self.app._tr(trans_name)
 

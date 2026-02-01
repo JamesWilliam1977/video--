@@ -858,7 +858,7 @@ class PropertiesTableView(QTableView):
                 display_count = len(all_tracks)
                 for track in reversed(sorted(all_tracks, key=itemgetter('number'))):
                     # Append track choice
-                    track_name = track.get("label") or _("Track %s") % display_count
+                    track_name = track.get("label") or _("Track %s") % QLocale().toString(display_count)
                     self.choices.append({"name": track_name, "value": track.get("number"), "selected": False, "icon": None})
                     display_count -= 1
 

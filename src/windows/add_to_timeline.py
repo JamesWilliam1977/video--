@@ -31,6 +31,7 @@ import uuid
 from operator import itemgetter
 from random import shuffle, randint, uniform
 
+from PyQt5.QtCore import QLocale
 from PyQt5.QtWidgets import QDialog
 from PyQt5.QtGui import QIcon
 
@@ -477,7 +478,7 @@ class AddToTimeline(QDialog):
         display_count = len(all_tracks)
         for track in reversed(sorted(all_tracks, key=itemgetter('number'))):
             # Add to dropdown
-            track_name = track.get('label') or _("Track %s") % display_count
+            track_name = track.get('label') or _("Track %s") % QLocale().toString(display_count)
             self.cmbTrack.addItem(track_name, track.get('number'))
             display_count -= 1
 
@@ -527,7 +528,7 @@ class AddToTimeline(QDialog):
                 # replace suffix number with placeholder (if any)
                 if suffix_number:
                     trans_name = trans_name.replace(suffix_number, "%s")
-                    trans_name = _(trans_name) % suffix_number
+                    trans_name = _(trans_name) % QLocale().toString(int(suffix_number))
                 else:
                     trans_name = _(trans_name)
 
