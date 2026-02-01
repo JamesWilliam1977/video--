@@ -98,6 +98,16 @@ QMenuBar {
     border: none;
 }
 
+QMenuBar::item {
+    padding: 6px 10px;
+    background: transparent;
+}
+
+QMenuBar::item:selected {
+    background-color: #323C50;
+    color: #ffffff;
+}
+
 QMenu {
     background-color: #141923;
     color: #91C3FF;
