@@ -264,6 +264,13 @@ def _patch_enums_for_qt6():
                 setattr(QtCore.Qt, "WA_TranslucentBackground", widget_attr.WA_TranslucentBackground)
             except Exception:
                 pass
+    if not hasattr(QtCore.Qt, "WA_TransparentForMouseEvents"):
+        widget_attr = getattr(QtCore.Qt, "WidgetAttribute", None)
+        if widget_attr and hasattr(widget_attr, "WA_TransparentForMouseEvents"):
+            try:
+                setattr(QtCore.Qt, "WA_TransparentForMouseEvents", widget_attr.WA_TransparentForMouseEvents)
+            except Exception:
+                pass
 
     corner_enum = getattr(QtCore.Qt, "Corner", None)
     if corner_enum:
@@ -583,6 +590,89 @@ def _patch_enums_for_qt6():
             if hasattr(shortcut_context, name) and not hasattr(QtCore.Qt, name):
                 try:
                     setattr(QtCore.Qt, name, getattr(shortcut_context, name))
+                except Exception:
+                    pass
+
+    focus_policy = getattr(QtCore.Qt, "FocusPolicy", None)
+    if focus_policy:
+        for name in ("NoFocus", "TabFocus", "ClickFocus", "StrongFocus", "WheelFocus"):
+            if hasattr(focus_policy, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(focus_policy, name))
+                except Exception:
+                    pass
+
+    focus_reason = getattr(QtCore.Qt, "FocusReason", None)
+    if focus_reason:
+        for name in ("MouseFocusReason", "TabFocusReason", "BacktabFocusReason", "ActiveWindowFocusReason", "ShortcutFocusReason", "OtherFocusReason"):
+            if hasattr(focus_reason, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(focus_reason, name))
+                except Exception:
+                    pass
+
+    orientation = getattr(QtCore.Qt, "Orientation", None)
+    if orientation:
+        for name in ("Horizontal", "Vertical"):
+            if hasattr(orientation, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(orientation, name))
+                except Exception:
+                    pass
+
+    drop_action = getattr(QtCore.Qt, "DropAction", None)
+    if drop_action:
+        for name in ("CopyAction", "MoveAction", "LinkAction", "ActionMask", "IgnoreAction"):
+            if hasattr(drop_action, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(drop_action, name))
+                except Exception:
+                    pass
+
+    text_interaction = getattr(QtCore.Qt, "TextInteractionFlag", None)
+    if text_interaction:
+        for name in ("TextBrowserInteraction", "TextSelectableByKeyboard", "TextSelectableByMouse", "LinksAccessibleByMouse", "LinksAccessibleByKeyboard"):
+            if hasattr(text_interaction, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(text_interaction, name))
+                except Exception:
+                    pass
+
+    window_modality = getattr(QtCore.Qt, "WindowModality", None)
+    if window_modality:
+        for name in ("NonModal", "WindowModal", "ApplicationModal"):
+            if hasattr(window_modality, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(window_modality, name))
+                except Exception:
+                    pass
+
+    window_state = getattr(QtCore.Qt, "WindowState", None)
+    if window_state:
+        for name in ("WindowNoState", "WindowMinimized", "WindowMaximized", "WindowFullScreen", "WindowActive"):
+            if hasattr(window_state, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(window_state, name))
+                except Exception:
+                    pass
+
+    app_attr = getattr(QtCore.Qt, "ApplicationAttribute", None)
+    if app_attr:
+        for name in ("AA_EnableHighDpiScaling", "AA_ShareOpenGLContexts", "AA_UseHighDpiPixmaps"):
+            if hasattr(app_attr, name) and not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, getattr(app_attr, name))
+                except Exception:
+                    pass
+
+    key_enum = getattr(QtCore.Qt, "Key", None)
+    if key_enum:
+        for name, val in vars(key_enum).items():
+            if name.startswith("_"):
+                continue
+            if not hasattr(QtCore.Qt, name):
+                try:
+                    setattr(QtCore.Qt, name, val)
                 except Exception:
                     pass
 
