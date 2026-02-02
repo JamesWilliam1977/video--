@@ -33,7 +33,7 @@ import platform
 
 from qt_api import Qt, QSize, QDir
 from qt_api import (
-    QWidget, QDialog, QMessageBox, QFileDialog,
+    QWidget, QDialog, QMessageBox, QFileDialog, QDialogButtonBox,
     QVBoxLayout, QHBoxLayout, QSizePolicy,
     QScrollArea, QLabel, QLineEdit, QPushButton,
     QDoubleSpinBox, QComboBox, QCheckBox, QSpinBox, QStyle,
@@ -102,7 +102,7 @@ class Preferences(QDialog):
         self.btnRestoreDefaults.setDefault(False)
 
         # Make Close button the default so ENTER closes the dialog
-        close_button = self.buttonBox.button(self.buttonBox.Close)
+        close_button = self.buttonBox.button(QDialogButtonBox.Close)
         if close_button:
             close_button.setDefault(True)
 
