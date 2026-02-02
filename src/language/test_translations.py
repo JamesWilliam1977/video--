@@ -40,6 +40,9 @@ LANG_PATH = os.path.dirname(os.path.abspath(__file__))
 # Match '%(name)x' format placeholders
 TAG_RE = re.compile(r'%\(([^\)]*)\)(.)')
 
+# Match numbers in strings (for detecting number-embedded strings like "Line 1")
+NUMBER_RE = re.compile(r'\d+')
+
 
 class BadTranslationsError(Exception):
     pass
@@ -95,13 +98,27 @@ def check_trans(strings: List) -> List[Tuple[str, str]]:
         for source in strings
     }
     # Check for replacements with mismatched number of % escapes
-    errors = {
-        s: t for s, t in translations.items()
-        if any([
-            s.count('%s') != t.count('%s'),
-            s.count('%d') != t.count('%d'),
-            s.count('%f') != t.count('%f')])
-    }
+    errors = {}
+    for s, t in translations.items():
+        # Count placeholders in source and translation
+        s_count = s.count('%s') + s.count('%d') + s.count('%f')
+        t_count = t.count('%s') + t.count('%d') + t.count('%f')
+
+        # If counts match, no error
+        if s.count('%s') == t.count('%s') and \
+           s.count('%d') == t.count('%d') and \
+           s.count('%f') == t.count('%f'):
+            continue
+
+        # Special case: source has embedded numbers but no placeholders,
+        # and translation has %s placeholders instead.
+        # This is valid when translators use a placeholder pattern
+        # (e.g., "Line 1" translated as "Linia %s" where %s = "1")
+        source_numbers = NUMBER_RE.findall(s)
+        if source_numbers and s_count == 0 and t_count == len(source_numbers):
+            continue
+
+        errors[s] = t
     # Check for missing/added variable names
     # e.g.: "%(clip_id)s %(value)d" changed to "%(clip)s %(value)d"
     # or mismatched types
