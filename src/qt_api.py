@@ -233,6 +233,20 @@ def _patch_enums_for_qt6():
                         setattr(QEvent, name, getattr(event_type, name))
                     except Exception:
                         pass
+    QEventLoop = getattr(QtCore, "QEventLoop", None)
+    if QEventLoop and not hasattr(QEventLoop, "ExcludeUserInputEvents"):
+        process_flag = getattr(QEventLoop, "ProcessEventsFlag", None)
+        if process_flag and hasattr(process_flag, "ExcludeUserInputEvents"):
+            try:
+                setattr(QEventLoop, "ExcludeUserInputEvents", process_flag.ExcludeUserInputEvents)
+            except Exception:
+                pass
+        if process_flag and hasattr(process_flag, "ExcludeSocketNotifiers"):
+            if not hasattr(QEventLoop, "ExcludeSocketNotifiers"):
+                try:
+                    setattr(QEventLoop, "ExcludeSocketNotifiers", process_flag.ExcludeSocketNotifiers)
+                except Exception:
+                    pass
 
     if QtCore and not hasattr(QtCore, "Qt"):
         return

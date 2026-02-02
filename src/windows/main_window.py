@@ -3763,7 +3763,13 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                     try:
                         sequences = get_app().window.getShortcutByName(action_name)
                         for sequence in sequences:
-                            if (sequence == QKeySequence(int(event.modifiers()) | int(event.key()))):
+                            try:
+                                modifiers = event.modifiers()
+                                key = event.key()
+                                combo = int(modifiers.value) | int(key) if hasattr(modifiers, "value") else int(modifiers) | int(key)
+                            except Exception:
+                                combo = event.modifiers() | event.key()
+                            if (sequence == QKeySequence(combo)):
                                 event.accept()
                                 return True
                     except KeyError:
