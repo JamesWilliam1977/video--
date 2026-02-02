@@ -27,7 +27,7 @@
 
 import functools
 
-from qt_api import Qt, QPoint, QRectF, QTimer, QObject, QRect
+from qt_api import Qt, QPoint, QPointF, QRectF, QTimer, QObject, QRect
 from qt_api import (
     QColor, QPalette, QPen, QPainter, QPainterPath, QKeySequence,
 )
@@ -47,67 +47,72 @@ class TutorialDialog(QWidget):
     def paintEvent(self, event):
         """ Custom paint event """
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
+        try:
+            painter.setRenderHint(QPainter.Antialiasing)
 
-        # Set correct margins based on left/right arrow
-        arrow_width = 15
-        if not self.draw_arrow_on_right:
-            self.vbox.setContentsMargins(45, 10, 20, 10)
-        else:
-            self.vbox.setContentsMargins(20, 10, 45, 10)
-
-        # Define rounded rectangle geometry
-        corner_radius = 10
-        if self.draw_arrow_on_right:
-            # Rectangle starts at left edge; arrow is on the right
-            rounded_rect = QRectF(0, 0, self.width() - arrow_width, self.height())
-        else:
-            # Rectangle shifted to the right; arrow is on the left
-            rounded_rect = QRectF(arrow_width, 0, self.width() - arrow_width, self.height())
-
-        # Clip to the rounded rectangle
-        path = QPainterPath()
-        path.addRoundedRect(rounded_rect, corner_radius, corner_radius)
-        painter.setClipPath(path)
-
-        # Fill background
-        frameColor = QColor("#53a0ed")
-        painter.setPen(QPen(frameColor, 1.2))
-        painter.setBrush(self.palette().color(QPalette.Window))
-        painter.drawRoundedRect(rounded_rect, corner_radius, corner_radius)
-
-        # Disable clipping temporarily for the arrow
-        painter.setClipping(False)
-
-        # Draw arrow if needed
-        if self.arrow:
-            arrow_height = 15
-            arrow_offset = 35
-
-            if self.draw_arrow_on_right:
-                # Arrow on the right side
-                arrow_point = rounded_rect.topRight().toPoint() + QPoint(arrow_width, arrow_offset)
-                arrow_top_corner = rounded_rect.topRight().toPoint() + QPoint(-1, arrow_offset - arrow_height)
-                arrow_bottom_corner = rounded_rect.topRight().toPoint() + QPoint(-1, arrow_offset + arrow_height)
+            # Set correct margins based on left/right arrow
+            arrow_width = 15
+            if not self.draw_arrow_on_right:
+                self.vbox.setContentsMargins(45, 10, 20, 10)
             else:
-                # Arrow on the left side
-                arrow_point = rounded_rect.topLeft().toPoint() + QPoint(-arrow_width, arrow_offset)
-                arrow_top_corner = rounded_rect.topLeft().toPoint() + QPoint(1, arrow_offset - arrow_height)
-                arrow_bottom_corner = rounded_rect.topLeft().toPoint() + QPoint(1, arrow_offset + arrow_height)
+                self.vbox.setContentsMargins(20, 10, 45, 10)
 
-            # Draw triangle (filled with the same background color as the window)
+            # Define rounded rectangle geometry
+            corner_radius = 10
+            if self.draw_arrow_on_right:
+                # Rectangle starts at left edge; arrow is on the right
+                rounded_rect = QRectF(0, 0, self.width() - arrow_width, self.height())
+            else:
+                # Rectangle shifted to the right; arrow is on the left
+                rounded_rect = QRectF(arrow_width, 0, self.width() - arrow_width, self.height())
+
+            # Clip to the rounded rectangle
             path = QPainterPath()
-            path.moveTo(arrow_point)  # Arrow tip
-            path.lineTo(arrow_top_corner)  # Top corner of the triangle
-            path.lineTo(arrow_bottom_corner)  # Bottom corner of the triangle
-            path.closeSubpath()
-            painter.fillPath(path, self.palette().color(QPalette.Window))
+            path.addRoundedRect(rounded_rect, corner_radius, corner_radius)
+            painter.setClipPath(path)
 
-            # Draw the triangle's borders
-            border_pen = QPen(frameColor, 1)
-            painter.setPen(border_pen)
-            painter.drawLine(arrow_point, arrow_top_corner)  # Top triangle border
-            painter.drawLine(arrow_point, arrow_bottom_corner)  # Bottom triangle border
+            # Fill background
+            frameColor = QColor("#53a0ed")
+            painter.setPen(QPen(frameColor, 1.2))
+            painter.setBrush(self.palette().color(QPalette.Window))
+            painter.drawRoundedRect(rounded_rect, corner_radius, corner_radius)
+
+            # Disable clipping temporarily for the arrow
+            painter.setClipping(False)
+
+            # Draw arrow if needed
+            if self.arrow:
+                arrow_height = 15
+                arrow_offset = 35
+
+                if self.draw_arrow_on_right:
+                    # Arrow on the right side (use QPointF for Qt6 compatibility)
+                    base_point = rounded_rect.topRight()
+                    arrow_point = QPointF(base_point.x() + arrow_width, base_point.y() + arrow_offset)
+                    arrow_top_corner = QPointF(base_point.x() - 1, base_point.y() + arrow_offset - arrow_height)
+                    arrow_bottom_corner = QPointF(base_point.x() - 1, base_point.y() + arrow_offset + arrow_height)
+                else:
+                    # Arrow on the left side (use QPointF for Qt6 compatibility)
+                    base_point = rounded_rect.topLeft()
+                    arrow_point = QPointF(base_point.x() - arrow_width, base_point.y() + arrow_offset)
+                    arrow_top_corner = QPointF(base_point.x() + 1, base_point.y() + arrow_offset - arrow_height)
+                    arrow_bottom_corner = QPointF(base_point.x() + 1, base_point.y() + arrow_offset + arrow_height)
+
+                # Draw triangle (filled with the same background color as the window)
+                path = QPainterPath()
+                path.moveTo(arrow_point)  # Arrow tip
+                path.lineTo(arrow_top_corner)  # Top corner of the triangle
+                path.lineTo(arrow_bottom_corner)  # Bottom corner of the triangle
+                path.closeSubpath()
+                painter.fillPath(path, self.palette().color(QPalette.Window))
+
+                # Draw the triangle's borders (convert QPointF to QPoint for drawLine)
+                border_pen = QPen(frameColor, 1)
+                painter.setPen(border_pen)
+                painter.drawLine(arrow_point, arrow_top_corner)  # Top triangle border
+                painter.drawLine(arrow_point, arrow_bottom_corner)  # Bottom triangle border
+        finally:
+            painter.end()
 
     def checkbox_metrics_callback(self, state):
         """ Callback for error and anonymous usage checkbox"""
