@@ -1214,6 +1214,15 @@ def _patch_enums_for_qt6():
                         setattr(QRegularExpression, name, getattr(pattern_option, name))
                     except Exception:
                         pass
+    if QRegularExpression and not hasattr(QRegularExpression, "indexIn"):
+        def _index_in(self, text):
+            if text is None:
+                text = ""
+            return 0 if self.match(text).hasMatch() else -1
+        try:
+            setattr(QRegularExpression, "indexIn", _index_in)
+        except Exception:
+            pass
 
     QWebEngineSettings = None
     if QtWebEngineCore:
