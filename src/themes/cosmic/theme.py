@@ -514,6 +514,11 @@ QTableView {
     gridline-color: #141923;
 }
 
+QTableView#propertyTableView::item:selected {
+    background-color: #192332;
+    border: 1.2px solid #0078FF;
+}
+
 QTreeView {
     background-color: #141923;
 }

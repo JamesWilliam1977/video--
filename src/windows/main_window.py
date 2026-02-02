@@ -3771,9 +3771,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                         pass
 
             # Special handling for propertyTableView with playToggle shortcut
+            # Let SPACE propagate to the property table for dropdown/edit activation
             elif self.propertyTableView.hasFocus() and event.key() == get_app().window.getShortcutByName("playToggle"):
-                event.accept()
-                return True
+                return False
 
         # Allow all other events to propagate normally
         return super(MainWindow, self).eventFilter(obj, event)
