@@ -1,0 +1,198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) OpenShot Studios, LLC
+# This file is distributed under the same license as the OpenShot Video Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenShot Video Editor 3.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:23
+msgid "Troubleshooting"
+msgstr "Rozwiązywanie problemów"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:25
+msgid ""
+"If you are experiencing an issue with OpenShot, such as a freeze, crash, or "
+"error message, there are many different techniques which can be useful for "
+"troubleshooting the issue."
+msgstr ""
+"Jeśli masz problem z OpenShot, taki jak zawieszenie, awaria lub komunikat o "
+"błędzie, istnieje wiele różnych technik, które mogą pomóc w rozwiązaniu "
+"problemu."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:29
+msgid "Windows 11 Unresponsive"
+msgstr "Brak reakcji Windows 11"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:31
+msgid ""
+"If you experience a freeze on Windows 11, this is a known issue with PyQt5 "
+"and Windows 11, related to the accessibility features in Qt. This is "
+"triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). "
+"OpenShot will become unresponsive and a memory leak is also present (i.e. "
+"the longer OpenShot is unresponsive, the larger your memory leak will become "
+"until OpenShot finally crashes or the user kills the process)."
+msgstr ""
+"Jeśli doświadczasz zawieszenia na Windows 11, jest to znany problem z PyQt5 "
+"i Windows 11, związany z funkcjami dostępności w Qt. Problem wywołuje "
+"naciśnięcie :kbd:`Ctrl+C` w OpenShot (*tylko na Windows 11*). OpenShot "
+"przestaje reagować, a także występuje wyciek pamięci (im dłużej OpenShot nie "
+"reaguje, tym większy jest wyciek pamięci, aż do momentu awarii programu lub "
+"zakończenia procesu przez użytkownika)."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:36
+msgid ""
+"A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead "
+"use the right-click Copy/Paste menus. Another work-around is to remap your "
+"\"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You "
+"can change your keyboard mappings in the OpenShot Preferences. See :ref:"
+"`preferences_keyboard_ref`."
+msgstr ""
+"Prostym obejściem jest unikanie używania :kbd:`Ctrl+C` na Windows 11 i "
+"zamiast tego korzystanie z menu kopiowania/wklejania dostępnego po "
+"kliknięciu prawym przyciskiem myszy. Innym rozwiązaniem jest zmiana "
+"przypisania skrótu \"Kopiuj\" z :kbd:`Ctrl+C` na inny, na przykład :kbd:"
+"`Alt+C`. Możesz zmienić przypisania klawiszy w Preferencjach OpenShot. "
+"Zobacz :ref:`preferences_keyboard_ref`."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:41
+msgid "Windows Debugging with GDB"
+msgstr "Debugowanie Windows za pomocą GDB"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:43
+msgid ""
+"If you are experiencing a crash or freeze with OpenShot in Windows 10/11, "
+"the following step by step instructions will help you determine the cause of "
+"the crash. These instructions will display a stack trace of OpenShot's "
+"source code, at the location of the crash. This information can be extremely "
+"useful for our development team, and very useful to attach to bug reports "
+"(for a quicker resolution)."
+msgstr ""
+"Jeśli doświadczasz awarii lub zawieszenia OpenShot na Windows 10/11, "
+"poniższe instrukcje krok po kroku pomogą Ci ustalić przyczynę awarii. "
+"Instrukcje te wyświetlą ślad stosu kodu źródłowego OpenShot w miejscu "
+"awarii. Informacje te są niezwykle przydatne dla naszego zespołu "
+"deweloperskiego i warto dołączyć je do zgłoszeń błędów (dla szybszego "
+"rozwiązania)."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:49
+msgid "Install the Latest Daily Build"
+msgstr "Zainstaluj najnowszą wersję dzienną"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:51
+msgid ""
+"Before attaching a debugger, please download the **latest version** of "
+"OpenShot: https://www.openshot.org/download#daily. Install this version of "
+"OpenShot to the default location: ``C:\\Program Files\\OpenShot Video "
+"Editor\\``. For details instructions on debugging OpenShot on Windows, "
+"please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-"
+"Debugging-with-GDB>`_."
+msgstr ""
+"Przed dołączeniem debugera, pobierz **najnowszą wersję** OpenShot: https://"
+"www.openshot.org/download#daily. Zainstaluj tę wersję OpenShot w domyślnej "
+"lokalizacji: ``C:\\Program Files\\OpenShot Video Editor\\``. Szczegółowe "
+"instrukcje dotyczące debugowania OpenShot na Windows znajdziesz w `tej wiki "
+"<https://github.com/OpenShot/openshot-qt/wiki/Windows-Debugging-with-GDB>`_."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:56
+msgid "Install MSYS2"
+msgstr "Zainstaluj MSYS2"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:58
+msgid ""
+"The Windows version of OpenShot is compiled using an environment called "
+"MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt."
+"exe``, you must first install MSYS2. This step is only required once."
+msgstr ""
+"Wersja OpenShot na Windows jest kompilowana przy użyciu środowiska o nazwie "
+"MSYS2. Aby dołączyć debuger GDB do naszego pliku wykonywalnego ``openshot-qt."
+"exe``, musisz najpierw zainstalować MSYS2. Ten krok jest wymagany tylko raz."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:61
+msgid "Download & Install MSYS2: `<http://www.msys2.org/>`_"
+msgstr "Pobierz i zainstaluj MSYS2: `<http://www.msys2.org/>`_"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:62 ../troubleshoot.rst:78
+msgid ""
+"Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:"
+"\\msys64\\msys2_shell.cmd -mingw64``)"
+msgstr ""
+"Uruchom wiersz poleceń ``MSYS2 MinGW x64`` (na przykład: ``C:"
+"\\msys64\\msys2_shell.cmd -mingw64``)"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:63
+msgid "Update all packages (*Copy/Paste the following command*):"
+msgstr "Zaktualizuj wszystkie pakiety (*skopiuj/wklej następujące polecenie*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:69
+msgid "Install GDB debugger (*Copy/Paste the following command*):"
+msgstr "Zainstaluj debuger GDB (*skopiuj/wklej następujące polecenie*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:76
+msgid "Launch OpenShot with GDB Debugger"
+msgstr "Uruchom OpenShot z debugerem GDB"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:80
+msgid "Update the PATH (*Copy/Paste the following commands*):"
+msgstr "Zaktualizuj zmienną PATH (*skopiuj/wklej następujące polecenia*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:87
+msgid ""
+"Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
+msgstr ""
+"Załaduj OpenShot do debugera GDB (*skopiuj/wklej następujące polecenia*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:94
+msgid "Launch OpenShot from GDB prompt (*Copy/Paste the following command*):"
+msgstr ""
+"Uruchom OpenShot z poziomu konsoli GDB (*skopiuj/wklej następujące "
+"polecenie*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:101
+msgid "Print Debugging Info"
+msgstr "Wyświetl informacje debugowania"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:103
+msgid ""
+"Once OpenShot has launched successfully with GDB attached, all you need to "
+"do is trigger a crash or freeze in OpenShot. When a crash occurs, switch "
+"back to the MSYS2 MinGW64 terminal and run one of the following commands (by "
+"typing it and pressing ENTER). Usually, the first command to enter is "
+"``bt``, which stands for ``backtrace``. More commands are listed below."
+msgstr ""
+"Gdy OpenShot zostanie pomyślnie uruchomiony z dołączonym GDB, wystarczy "
+"wywołać awarię lub zawieszenie w OpenShot. Po wystąpieniu awarii wróć do "
+"terminala MSYS2 MinGW64 i uruchom jedno z poniższych poleceń (wpisując je i "
+"naciskając ENTER). Zazwyczaj pierwszym poleceniem jest ``bt``, co oznacza "
+"``backtrace``. Więcej poleceń znajduje się poniżej."

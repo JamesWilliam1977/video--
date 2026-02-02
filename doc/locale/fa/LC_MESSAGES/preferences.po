@@ -1,0 +1,914 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) OpenShot Studios, LLC
+# This file is distributed under the same license as the OpenShot Video Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenShot Video Editor 3.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:23
+msgid "Preferences"
+msgstr "تنظیمات"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:25
+msgid ""
+"The Preferences window contains many important settings and configuration "
+"options for OpenShot. They can be found in the top menu under :guilabel:"
+"`Edit→Preferences`. Many settings will require OpenShot to be restarted "
+"after your changes are applied."
+msgstr ""
+"پنجره تنظیمات شامل بسیاری از گزینه‌ها و تنظیمات مهم برای OpenShot است. این "
+"تنظیمات را می‌توانید در منوی بالا تحت :guilabel:`ویرایش→تنظیمات` پیدا کنید. "
+"بسیاری از تنظیمات پس از اعمال تغییرات نیاز به راه‌اندازی مجدد OpenShot دارند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:29
+msgid ""
+"NOTE: Some features such as `Animated Titles` and `external SVG editing` "
+"require setting the paths for **Blender** and **Inkscape** under the General "
+"tab. And if you notice audio playback issues, such as audio drift, you may "
+"need to adjust the audio settings under the Preview tab."
+msgstr ""
+"توجه: برخی ویژگی‌ها مانند `عناوین متحرک` و `ویرایش SVG خارجی` نیاز به تنظیم "
+"مسیرهای **Blender** و **Inkscape** در تب عمومی دارند. همچنین اگر مشکلاتی در "
+"پخش صدا مانند جابجایی صدا مشاهده کردید، ممکن است نیاز باشد تنظیمات صدا را در "
+"تب پیش‌نمایش تنظیم کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:36
+msgid "General"
+msgstr "عمومی"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:40
+msgid ""
+"The General tab of the Preferences window allows you to modify the settings "
+"that apply to OpenShot as a whole."
+msgstr ""
+"تب عمومی در پنجره تنظیمات به شما امکان می‌دهد تنظیماتی را که به کل OpenShot "
+"اعمال می‌شود، تغییر دهید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:123
+#: ../preferences.rst:170 ../preferences.rst:246
+msgid "Setting"
+msgstr "تنظیم"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:48 ../preferences.rst:101
+#: ../preferences.rst:105 ../preferences.rst:123
+msgid "Default"
+msgstr "پیش‌فرض"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:170
+#: ../preferences.rst:246 ../preferences.rst:257
+msgid "Description"
+msgstr "توضیح"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:48
+msgid "Language"
+msgstr "زبان"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:48
+msgid "Choose your preferred language for OpenShot menus and windows"
+msgstr "زبان مورد نظر خود را برای منوها و پنجره‌های OpenShot انتخاب کنید"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Default Theme"
+msgstr "قالب پیش‌فرض"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Humanity:Dark"
+msgstr "Humanity:Dark"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Choose your theme for OpenShot, either Light, Dark or None"
+msgstr ""
+"قالب مورد نظر خود را برای OpenShot انتخاب کنید: روشن، تاریک یا بدون قالب"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid "User Interface Scale"
+msgstr "مقیاس رابط کاربری"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid "1.0"
+msgstr "1.0"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid ""
+"Adjust the size of OpenShot's interface (restart required; range 1–3; known "
+"issues on Windows)"
+msgstr ""
+"اندازه رابط کاربری OpenShot را تنظیم کنید (نیاز به راه‌اندازی مجدد؛ بازه ۱ تا "
+"۳؛ مشکلات شناخته شده در ویندوز)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "Image Length (seconds)"
+msgstr "طول تصویر (ثانیه)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "10.00"
+msgstr "۱۰.۰۰"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "How long the image displays on the screen when added to the timeline"
+msgstr "مدت زمان نمایش تصویر روی صفحه هنگام اضافه شدن به جدول زمانی"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "Volume"
+msgstr "صدا"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "75.00"
+msgstr "۷۵.۰۰"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "The percentage of the volume of the clip when added to the timeline"
+msgstr "درصد حجم صدای کلیپ هنگام اضافه شدن به جدول زمانی"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53
+msgid "Blender Command (path)"
+msgstr "دستور Blender (مسیر)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53 ../preferences.rst:54
+msgid "*<blank>*"
+msgstr "*<خالی>*"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53
+msgid "The path to the binary for Blender (version 5.0+)"
+msgstr "مسیر فایل اجرایی Blender (نسخه ۵.۰ به بالا)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:54
+msgid "Advanced Title Editor (path)"
+msgstr "ویرایشگر پیشرفته عنوان (مسیر)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:54
+msgid "The path to the binary for Inkscape"
+msgstr "مسیر فایل اجرایی Inkscape"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "Show Export Dialog when Finished"
+msgstr "نمایش پنجره صادرات پس از اتمام"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "*<checked>*"
+msgstr "*<انتخاب شده>*"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "Displays the Export Video windows after the export is finished"
+msgstr "پس از اتمام صادرات، پنجره ویدیو صادرات را نمایش می‌دهد"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:59
+msgid "Themes"
+msgstr "قالب‌ها"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:60
+msgid ""
+"OpenShot comes with 3 standard themes, which change the look and feel of the "
+"program."
+msgstr ""
+"OpenShot با ۳ قالب استاندارد عرضه می‌شود که ظاهر و حس برنامه را تغییر می‌دهند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:62
+msgid ""
+"**Retro:** A light theme that offers a classic and clean appearance. This "
+"theme uses light gray and white tones, making it ideal for users who prefer "
+"a bright and high-contrast interface. It provides a traditional look that is "
+"easy on the eyes, especially in well-lit environments."
+msgstr ""
+"**Retro:** یک قالب روشن با ظاهر کلاسیک و تمیز. این قالب از رنگ‌های خاکستری "
+"روشن و سفید استفاده می‌کند و برای کاربرانی که رابطی روشن و با کنتراست بالا "
+"می‌پسندند، ایده‌آل است. ظاهر سنتی و چشم‌نواز، به‌ویژه در محیط‌های پرنور."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:63
+msgid ""
+"**Humanity Dark:** [Default Theme] A dark theme with dark gray tones, "
+"providing a modern and sleek look. This theme is designed for users who "
+"prefer working in low-light conditions or who enjoy a more subdued and "
+"professional appearance. The dark gray background reduces glare and eye "
+"strain, making it suitable for extended editing sessions."
+msgstr ""
+"**Humanity Dark:** [قالب پیش‌فرض] یک قالب تاریک با رنگ‌های خاکستری تیره که "
+"ظاهری مدرن و شیک ارائه می‌دهد. این قالب برای کاربرانی طراحی شده که ترجیح "
+"می‌دهند در شرایط نور کم کار کنند یا ظاهر حرفه‌ای و ملایم‌تری را می‌پسندند. "
+"پس‌زمینه خاکستری تیره از خیرگی و خستگی چشم می‌کاهد و برای جلسات طولانی ویرایش "
+"مناسب است."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:64
+msgid ""
+"**Cosmic Dusk:** A bluish theme with a more modern UI design, enhancing the "
+"visual aesthetics of the editor. This theme features shades of blue and "
+"purple, giving the interface a contemporary and dynamic feel. It combines "
+"modern aesthetics with functionality, offering a fresh and visually "
+"appealing workspace for video editing."
+msgstr ""
+"**Cosmic Dusk:** یک قالب آبی‌رنگ با طراحی رابط کاربری مدرن‌تر که زیبایی بصری "
+"ویرایشگر را افزایش می‌دهد. این قالب شامل سایه‌های آبی و بنفش است و به رابط "
+"کاربری حس معاصر و پویا می‌بخشد. ترکیبی از زیبایی‌شناسی مدرن و کارایی، فضای "
+"کاری تازه و جذابی برای ویرایش ویدیو فراهم می‌کند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:69
+msgid "Restoring Defaults"
+msgstr "بازنشانی به پیش‌فرض‌ها"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:70
+msgid ""
+"In OpenShot, each preferences category (or tab) in the Preferences window "
+"has a **Restore Defaults** button that allows you to easily reset the values "
+"for that specific category. This feature is particularly useful if you want "
+"to reset only certain parts of your preferences, like keyboard shortcuts, "
+"without affecting the rest of your custom settings."
+msgstr ""
+"در OpenShot، هر دسته تنظیمات (یا تب) در پنجره تنظیمات دارای دکمه **بازنشانی "
+"به پیش‌فرض‌ها** است که به شما امکان می‌دهد به‌راحتی مقادیر آن دسته خاص را "
+"بازنشانی کنید. این ویژگی به‌ویژه زمانی مفید است که بخواهید فقط بخش‌هایی از "
+"تنظیمات خود مانند کلیدهای میانبر را بدون تأثیر بر سایر تنظیمات سفارشی "
+"بازنشانی کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:74
+msgid ""
+"**Where to Find the Restore Defaults Button:** Each category or tab in the "
+"Preferences window has a **Restore Defaults** button located in the bottom "
+"left corner of the screen. The name of the button updates based on the "
+"category you’re viewing. For example, if you're in the \"Keyboard\" tab, the "
+"button will say **Restore Defaults: Keyboard**."
+msgstr ""
+"**محل دکمه بازنشانی به پیش‌فرض‌ها:** هر دسته یا تب در پنجره تنظیمات دارای دکمه "
+"**بازنشانی به پیش‌فرض‌ها** در گوشه پایین سمت چپ صفحه است. نام دکمه بر اساس "
+"دسته‌ای که مشاهده می‌کنید به‌روزرسانی می‌شود. برای مثال، اگر در تب «صفحه‌کلید» "
+"باشید، دکمه به صورت **بازنشانی به پیش‌فرض‌ها: صفحه‌کلید** نمایش داده می‌شود."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:79
+msgid ""
+"**How It Works:** Only the settings in the currently selected category will "
+"be restored to their default values. This selective restoration makes it "
+"easy to reset certain preferences without affecting others."
+msgstr ""
+"**نحوه عملکرد:** فقط تنظیمات دسته انتخاب شده فعلی به مقادیر پیش‌فرض بازنشانی "
+"می‌شوند. این بازنشانی انتخابی باعث می‌شود بتوانید برخی تنظیمات را بدون تأثیر "
+"بر سایر موارد بازنشانی کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:83
+msgid ""
+"**Tip for Beginners:** - If you're not sure about a change you've made in a "
+"particular category, don’t hesitate to use the **Restore Defaults** button. "
+"It’s a simple way to undo changes and get back to the default settings for "
+"that specific category without affecting your overall setup."
+msgstr ""
+"**نکته برای مبتدیان:** اگر درباره تغییراتی که در یک دسته خاص ایجاد کرده‌اید "
+"مطمئن نیستید، از دکمه **بازنشانی به پیش‌فرض‌ها** استفاده کنید. این روش ساده‌ای "
+"برای بازگرداندن تغییرات و بازگشت به تنظیمات پیش‌فرض آن دسته خاص بدون تأثیر بر "
+"کل تنظیمات شما است."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:89
+msgid "Preview"
+msgstr "پیش‌نمایش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:93
+msgid ""
+"The Preview tab of the Preferences window allows you to set a **Default "
+"Video Profile** for your project, if you have a preference for a specific "
+"editing profile. More about :ref:`profiles_ref`. Also, you can adjust the "
+"real-time preview audio settings, for example, which audio device and sample "
+"rate to use."
+msgstr ""
+"زبانه پیش‌نمایش در پنجره تنظیمات به شما امکان می‌دهد یک **پروفایل ویدیویی "
+"پیش‌فرض** برای پروژه خود تنظیم کنید، اگر ترجیح خاصی برای یک پروفایل ویرایش "
+"دارید. اطلاعات بیشتر در :ref:`profiles_ref`. همچنین می‌توانید تنظیمات صوتی "
+"پیش‌نمایش زمان واقعی را تنظیم کنید، مثلاً دستگاه صوتی و نرخ نمونه‌برداری را "
+"انتخاب کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "Default Video Profile"
+msgstr "پروفایل ویدیویی پیش‌فرض"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "HD 720P 30 fps"
+msgstr "HD 720P 30 فریم بر ثانیه"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "Select the profile for Preview and Export defaults"
+msgstr "پروفایل پیش‌فرض برای پیش‌نمایش و خروجی را انتخاب کنید"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid "Playback Audio Buffer Size"
+msgstr "اندازه بافر صوتی پخش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid "512"
+msgstr "۵۱۲"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid ""
+"Adjust how many audio samples must be buffered before audio playback begins. "
+"Allowed range of values is 128 to 4096. NOTE: If you are experiencing a "
+"large drift or delay in audio playback, try setting this value lower."
+msgstr ""
+"تعداد نمونه‌های صوتی که باید قبل از شروع پخش صوتی در بافر ذخیره شوند را تنظیم "
+"کنید. محدوده مجاز مقادیر از ۱۲۸ تا ۴۰۹۶ است. توجه: اگر در پخش صوتی تأخیر یا "
+"انحراف زیادی مشاهده می‌کنید، سعی کنید این مقدار را کمتر تنظیم کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:105
+msgid "Playback Audio Device"
+msgstr "دستگاه صوتی پخش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:106
+msgid "Default Audio Sample Rate"
+msgstr "نرخ نمونه‌برداری صوتی پیش‌فرض"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:106
+msgid "44100"
+msgstr "۴۴۱۰۰"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:107
+msgid "Default Audio Channels"
+msgstr "کانال‌های صوتی پیش‌فرض"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:107
+msgid "Stereo (2 Channel)"
+msgstr "استریو (۲ کانال)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:111
+msgid "Autosave"
+msgstr "ذخیره خودکار"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115
+msgid ""
+"Autosave is a feature in OpenShot which automatically saves the current "
+"changes to your project after a specific number of minutes, helping to "
+"reduce the risk or impact of data loss in case of a crash, freeze or user "
+"error."
+msgstr ""
+"ذخیره خودکار ویژگی‌ای در OpenShot است که تغییرات جاری پروژه شما را پس از "
+"تعداد مشخصی دقیقه به‌طور خودکار ذخیره می‌کند و به کاهش خطر یا تأثیر از دست "
+"رفتن داده‌ها در صورت کرش، فریز یا خطای کاربر کمک می‌کند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:125
+msgid "Enable Autosave"
+msgstr "فعال‌سازی ذخیره خودکار"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:125
+msgid "Enabled"
+msgstr "فعال"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:126
+msgid "Autosave Interval (minutes)"
+msgstr "فاصله ذخیره خودکار (دقیقه)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:126
+msgid "3"
+msgstr "۳"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:127
+msgid "History Limit (# of undo/redo)"
+msgstr "حداکثر تاریخچه (تعداد بازگردانی/انجام مجدد)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:127
+msgid "15"
+msgstr "۱۵"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:128
+msgid "Recovery Limit (# of project copies)"
+msgstr "حداکثر بازیابی (تعداد نسخه‌های پروژه)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:128
+msgid "30"
+msgstr "۳۰"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:132
+msgid "Recovery"
+msgstr "بازیابی"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:134
+msgid ""
+"**Before each save**, a compressed ``*.zip`` copy of the current project is "
+"saved in the recovery folder, to further reduce the risk of data loss. The "
+"recovery folder is located at ``~/.openshot_qt/recovery/`` or ``C:"
+"\\Users\\USERNAME\\.openshot_qt\\recovery``."
+msgstr ""
+"**قبل از هر ذخیره‌سازی**، یک نسخه فشرده ``*.zip`` از پروژه جاری در پوشه "
+"بازیابی ذخیره می‌شود تا خطر از دست رفتن داده‌ها بیشتر کاهش یابد. پوشه بازیابی "
+"در ``~/.openshot_qt/recovery/`` یا ``C:\\Users\\USERNAME\\."
+"openshot_qt\\recovery`` قرار دارد."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid ""
+"To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:"
+"`File->Recovery` menu on the main window after opening your project. If "
+"available, a list of matching project versions from the recovery folder are "
+"listed in chronological order (most recent one at the top). This will "
+"automatically rename your current project file to ``{project-name}-{time}-"
+"backup.osp``, and replace it with the recovery project file. You can repeat "
+"this process until you find the correct recovery project. NOTE: If for some "
+"unexpected reason the recovery process fails, you can always rename the \"-"
+"backup.osp\" file to the original project file name to restore it."
+msgstr ""
+"برای بازیابی یک فایل پروژه ``*.osp`` خراب یا معیوب، پس از باز کردن پروژه "
+"خود، از منوی :guilabel:`File->Recovery` در پنجره اصلی استفاده کنید. در صورت "
+"وجود، فهرستی از نسخه‌های پروژه مطابق از پوشه بازیابی به ترتیب زمانی (جدیدترین "
+"در بالا) نمایش داده می‌شود. این کار به‌طور خودکار فایل پروژه فعلی شما را به "
+"``{project-name}-{time}-backup.osp`` تغییر نام می‌دهد و آن را با فایل پروژه "
+"بازیابی جایگزین می‌کند. می‌توانید این فرایند را تکرار کنید تا پروژه بازیابی "
+"صحیح را پیدا کنید. توجه: اگر به هر دلیل غیرمنتظره فرایند بازیابی شکست خورد، "
+"همیشه می‌توانید فایل \"-backup.osp\" را به نام اصلی فایل پروژه تغییر نام دهید "
+"تا آن را بازیابی کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:146
+msgid ""
+"To **manually** recover a corrupt or broken ``*.osp`` project file, please "
+"find the most recent copy in the recovery folder, and copy/paste the file "
+"into your original project folder location (i.e. the folder that contains "
+"your broken project). If the recovery file has been zipped (``*.zip``), you "
+"must first extract the ``*.osp``, and then copy it into your project folder. "
+"Recovery files are named ``{time}-{project-name}``. You can also use the "
+"**Date Modified** on the file to select the version you are interested in "
+"recovering."
+msgstr ""
+"برای بازیابی **دستی** یک فایل پروژه ``*.osp`` خراب یا معیوب، لطفاً جدیدترین "
+"نسخه را در پوشه بازیابی پیدا کنید و فایل را در محل پوشه پروژه اصلی خود (یعنی "
+"پوشه‌ای که پروژه خراب شما در آن است) کپی و جای‌گذاری کنید. اگر فایل بازیابی "
+"فشرده شده است (``*.zip``)، ابتدا باید فایل ``*.osp`` را استخراج کنید و سپس "
+"آن را در پوشه پروژه خود کپی کنید. فایل‌های بازیابی با نام ``{time}-{project-"
+"name}`` نام‌گذاری شده‌اند. همچنین می‌توانید از **تاریخ تغییر** فایل برای انتخاب "
+"نسخه مورد نظر برای بازیابی استفاده کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:156
+msgid "Cache"
+msgstr "کش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:160
+msgid ""
+"Cache settings can be adjusted to make real-time playback faster or less CPU "
+"intensive. The cache is used to store image and audio data for each frame of "
+"video requested. The more frames that are cached, the smoother the real-time "
+"playback will be. However, the more that needs to be cached requires more "
+"CPU to generate the cache. There is a balance, and the default settings "
+"provide a generally sane set of cache values, which should allow most "
+"computers to playback video and audio smoothly. See :ref:`playback_ref`."
+msgstr ""
+"تنظیمات کش می‌تواند برای سریع‌تر کردن پخش زمان واقعی یا کاهش مصرف CPU تنظیم "
+"شود. کش برای ذخیره داده‌های تصویر و صوت برای هر فریم ویدیوی درخواست شده "
+"استفاده می‌شود. هرچه فریم‌های بیشتری کش شوند، پخش زمان واقعی روان‌تر خواهد بود. "
+"با این حال، هرچه مقدار بیشتری کش شود، نیاز به CPU بیشتری برای تولید کش دارد. "
+"یک تعادل وجود دارد و تنظیمات پیش‌فرض مجموعه‌ای معقول از مقادیر کش را فراهم "
+"می‌کند که باید به اکثر کامپیوترها اجازه دهد ویدیو و صدا را به‌صورت روان پخش "
+"کنند. مراجعه کنید به :ref:`playback_ref`."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:172
+msgid "Cache Mode"
+msgstr "حالت کش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:172
+msgid ""
+"Choose between Memory or Disk caching (memory caching is preferred). Disk "
+"caching writes image data to the hard disk for later retrieving, and works "
+"best with an SSD."
+msgstr ""
+"انتخاب کنید بین کش حافظه یا دیسک (کش حافظه ترجیح داده می‌شود). کش دیسک "
+"داده‌های تصویری را روی هارد دیسک برای بازیابی بعدی می‌نویسد و بهترین عملکرد را "
+"با SSD دارد."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:173
+msgid "Cache Limit (MB)"
+msgstr "حداکثر کش (مگابایت)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:173
+msgid ""
+"How many MB are set aside for cache related data. Larger numbers are not "
+"always better, since it takes more CPU to generate more frames to fill the "
+"cache."
+msgstr ""
+"چند مگابایت برای داده‌های مرتبط با کش اختصاص داده شده است. اعداد بزرگ‌تر همیشه "
+"بهتر نیستند، زیرا تولید فریم‌های بیشتر برای پر کردن کش نیاز به CPU بیشتری "
+"دارد."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:174
+msgid "Image Format (Disk Only)"
+msgstr "فرمت تصویر (فقط دیسک)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:174
+msgid "Image format to store disk cache image data"
+msgstr "فرمت تصویر برای ذخیره داده‌های کش دیسک"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:175
+msgid "Scale Factor (Disk Only)"
+msgstr "ضریب مقیاس (فقط دیسک)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:175
+msgid ""
+"Percentage (0.1 to 1.0) to reduce the size of disk based image files stored "
+"in the disk cache. Smaller numbers make writing and reading cached image "
+"files faster."
+msgstr ""
+"درصد (۰.۱ تا ۱.۰) برای کاهش اندازه فایل‌های تصویری مبتنی بر دیسک ذخیره شده در "
+"کش دیسک. اعداد کوچکتر نوشتن و خواندن فایل‌های تصویری کش شده را سریع‌تر می‌کند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:176
+msgid "Image Quality (Disk Only)"
+msgstr "کیفیت تصویر (فقط دیسک)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:176
+msgid ""
+"Quality of the image files used in disk cache. The higher compression can "
+"cause more slowness, but results in smaller file sizes."
+msgstr ""
+"کیفیت فایل‌های تصویری استفاده شده در کش دیسک. فشرده‌سازی بیشتر ممکن است باعث "
+"کندی بیشتر شود، اما منجر به اندازه فایل‌های کوچکتر می‌شود."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:177
+msgid "Cache Pre-roll: Min Frames:"
+msgstr "پیش‌بارگذاری کش: حداقل فریم‌ها:"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:177
+msgid ""
+"Minimum # of frames that must be cached before playback begins. The larger "
+"the #, the larger the wait before playback begins."
+msgstr ""
+"حداقل تعداد فریم‌هایی که باید قبل از شروع پخش کش شوند. هرچه این عدد بزرگ‌تر "
+"باشد، مدت انتظار قبل از شروع پخش بیشتر خواهد بود."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:178
+msgid "Cache Pre-roll: Max Frames:"
+msgstr "پیش‌بارگذاری کش: حداکثر فریم‌ها:"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:178
+msgid ""
+"Maximum # of frames that can be cached during playback (in front of the "
+"playhead). The larger the #, the more CPU is required to cache ahead - vs "
+"display the already cached frames."
+msgstr ""
+"حداکثر تعداد فریم‌هایی که می‌توان در هنگام پخش (در جلوی نشانگر پخش) کش کرد. "
+"هرچه این عدد بزرگ‌تر باشد، پردازنده بیشتری برای کش کردن جلو لازم است تا نمایش "
+"فریم‌های کش شده قبلی."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:179
+msgid "Cache Ahead (Percent):"
+msgstr "کش جلو (درصد):"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:179
+msgid ""
+"Between 0.0 and 1.0. This represents how much % we cache ahead of the "
+"playhead. For example, 0.5 would cache 50% behind and 50% ahead of the "
+"playhead. 0.8 would cache 20% behind and 80% ahead of the playhead."
+msgstr ""
+"بین ۰.۰ تا ۱.۰. این مقدار نشان‌دهنده درصد کش جلو نسبت به نشانگر پخش است. برای "
+"مثال، ۰.۵ به معنی کش ۵۰٪ پشت و ۵۰٪ جلوتر از نشانگر پخش است. ۰.۸ به معنی کش "
+"۲۰٪ پشت و ۸۰٪ جلوتر از نشانگر پخش است."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:180
+msgid "Cache Max Frames:"
+msgstr "حداکثر فریم‌های کش شده:"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:180
+msgid ""
+"This is an override on the total allowed frames that can be cached by our "
+"caching thread. It is defaulted to 600 frames, but even if you give a huge "
+"amount of RAM to OpenShot's cache size, this will override the max # of "
+"frames cached. The reason is... sometimes when the preview window is very "
+"small, and the cache size is set very high, OpenShot might calculate that we "
+"can cache 30,000 frames, or something silly which will take a huge amount of "
+"CPU, lagging the system. This setting is designed to clamp the upper limit "
+"of the cache to something reasonable... even on systems that give OpenShot "
+"huge amounts of RAM to work with."
+msgstr ""
+"این تنظیم، حداکثر تعداد فریم‌هایی که توسط رشته کش ما می‌توان کش کرد را محدود "
+"می‌کند. مقدار پیش‌فرض ۶۰۰ فریم است، اما حتی اگر حافظه زیادی به کش OpenShot "
+"اختصاص دهید، این مقدار حداکثر فریم‌های کش شده را محدود می‌کند. دلیل این است که "
+"گاهی وقتی پنجره پیش‌نمایش بسیار کوچک است و اندازه کش بسیار بزرگ تنظیم شده، "
+"OpenShot ممکن است محاسبه کند که می‌تواند ۳۰٬۰۰۰ فریم یا بیشتر کش کند که باعث "
+"مصرف زیاد پردازنده و کندی سیستم می‌شود. این تنظیم برای محدود کردن حداکثر کش "
+"به مقدار معقول طراحی شده است، حتی در سیستم‌هایی که حافظه زیادی به OpenShot "
+"اختصاص می‌دهند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:184
+msgid "Debug"
+msgstr "اشکال‌زدایی"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:188
+msgid ""
+"Here you can modify how much data should be logged. Normally, *Debug Mode "
+"(verbose)* is off. The default port is 5556. If you want to help improve "
+"OpenShot you can enable **Send Anonymous Metrics and Errors**."
+msgstr ""
+"در اینجا می‌توانید میزان داده‌های ثبت شده را تنظیم کنید. معمولاً *حالت "
+"اشکال‌زدایی (جزئی)* خاموش است. پورت پیش‌فرض ۵۵۵۶ است. اگر می‌خواهید به بهبود "
+"OpenShot کمک کنید، می‌توانید گزینه **ارسال معیارها و خطاهای ناشناس** را فعال "
+"کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:192
+msgid "Performance"
+msgstr "عملکرد"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:195
+msgid ""
+"Please keep in mind that GPU hardware acceleration is experimental at the "
+"moment. OpenShot supports both decoding and encoding acceleration. For more "
+"information take a look at our `Github HW-ACCEL Doc <https://github.com/"
+"OpenShot/libopenshot/blob/develop/doc/HW-ACCEL.md>`_. NOTE: On systems with "
+"older graphics cards, hardware acceleration may not always be faster than "
+"CPU encoding."
+msgstr ""
+"لطفاً توجه داشته باشید که شتاب‌دهی سخت‌افزاری GPU در حال حاضر آزمایشی است. "
+"OpenShot از شتاب‌دهی در رمزگشایی و رمزگذاری پشتیبانی می‌کند. برای اطلاعات "
+"بیشتر به مستندات `Github HW-ACCEL <https://github.com/OpenShot/libopenshot/"
+"blob/develop/doc/HW-ACCEL.md>`_ مراجعه کنید. توجه: در سیستم‌هایی با کارت "
+"گرافیک قدیمی‌تر، شتاب‌دهی سخت‌افزاری همیشه سریع‌تر از رمزگذاری با CPU نیست."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:212
+msgid "Keyboard"
+msgstr "صفحه‌کلید"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:215
+msgid ""
+"This section allows you to view and customize hotkeys for various actions in "
+"the application. Here, you can assign and manage multiple shortcuts for the "
+"same action and restore default shortcuts if needed."
+msgstr ""
+"این بخش به شما امکان مشاهده و سفارشی‌سازی کلیدهای میانبر برای عملیات مختلف در "
+"برنامه را می‌دهد. در اینجا می‌توانید چندین میانبر برای یک عملیات اختصاص دهید و "
+"در صورت نیاز میانبرهای پیش‌فرض را بازیابی کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:218
+msgid ""
+"**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to "
+"the same action by separating them with a pipe (``|``) delimiter. This "
+"flexibility allows you to configure as many shortcuts as you need for each "
+"action."
+msgstr ""
+"**اختصاص چندین میانبر**: می‌توانید چندین کلید میانبر برای یک عملیات با جدا "
+"کردن آن‌ها با علامت خط عمودی (``|``) اختصاص دهید. این انعطاف‌پذیری به شما "
+"اجازه می‌دهد هر تعداد میانبر که نیاز دارید برای هر عملیات تنظیم کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:221
+msgid ""
+"**Immediate Application**: No restart is required after adjusting keyboard "
+"shortcuts. Changes are applied immediately, so you can start using your "
+"updated shortcuts right away."
+msgstr ""
+"**اعمال فوری**: پس از تغییر کلیدهای میانبر نیازی به راه‌اندازی مجدد نیست. "
+"تغییرات بلافاصله اعمال می‌شوند و می‌توانید فوراً از میانبرهای به‌روزشده استفاده "
+"کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:224
+msgid ""
+"**Restore Default Shortcuts**: If needed, you can reset all keyboard "
+"shortcuts to their default settings by clicking on the :guilabel:`Restore "
+"Defaults: Keyboard` button located in the bottom-left corner of the "
+"Preferences screen."
+msgstr ""
+"**بازنشانی میانبرهای پیش‌فرض**: در صورت نیاز، می‌توانید با کلیک روی دکمه :"
+"guilabel:`بازنشانی پیش‌فرض‌ها: صفحه‌کلید` که در گوشه پایین سمت چپ صفحه تنظیمات "
+"قرار دارد، همه کلیدهای میانبر را به تنظیمات پیش‌فرض بازگردانید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:227
+msgid ""
+"**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are "
+"any duplicate shortcuts, they will be highlighted in **red** and will not "
+"function until the conflict is resolved."
+msgstr ""
+"**میانبرهای یکتا**: هر کلید میانبر باید یکتا باشد. اگر میانبرهای تکراری وجود "
+"داشته باشد، با رنگ **قرمز** برجسته می‌شوند و تا زمانی که تعارض برطرف نشود، "
+"کار نخواهند کرد."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:231
+msgid ""
+"For more detailed information on how to use and customize keyboard "
+"shortcuts, see :ref:`keyboard_shortcut_ref`."
+msgstr ""
+"برای اطلاعات دقیق‌تر درباره نحوه استفاده و سفارشی‌سازی کلیدهای میانبر، به :ref:"
+"`keyboard_shortcut_ref` مراجعه کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:234
+msgid "Location"
+msgstr "مکان"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:238
+msgid ""
+"Default file path locations for saving/opening projects, importing files, "
+"and exporting videos can be configured here. This can save you time by "
+"defaulting the open/save file dialogs to the most appropriate starting "
+"folder (options described below)."
+msgstr ""
+"مکان‌های پیش‌فرض فایل برای ذخیره/باز کردن پروژه‌ها، وارد کردن فایل‌ها و صادر "
+"کردن ویدیوها را می‌توان در اینجا تنظیم کرد. این کار با تنظیم پیش‌فرض پنجره‌های "
+"باز/ذخیره فایل به مناسب‌ترین پوشه شروع، در وقت شما صرفه‌جویی می‌کند (گزینه‌ها در "
+"ادامه توضیح داده شده‌اند)."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:248
+msgid "File Import"
+msgstr "وارد کردن فایل"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:248
+msgid "Default folder to choose when importing a file"
+msgstr "پوشه پیش‌فرض برای انتخاب هنگام وارد کردن فایل"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:249
+msgid "Save or Open Project"
+msgstr "ذخیره یا باز کردن پروژه"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:249
+msgid "Default folder to choose when saving or opening a project file"
+msgstr "پوشه پیش‌فرض برای انتخاب هنگام ذخیره یا باز کردن فایل پروژه"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:250
+msgid "Video Export"
+msgstr "صادر کردن ویدیو"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:250
+msgid "Default folder to choose when exporting a video"
+msgstr "پوشه پیش‌فرض برای انتخاب هنگام صادر کردن ویدیو"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:257
+msgid "Values"
+msgstr "مقادیر"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:259
+msgid "**Recent Folder**"
+msgstr "**پوشه اخیر**"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:259
+msgid ""
+"The last folder used for this same operation. Project folders, Import "
+"folders, and Export folders are tracked separately."
+msgstr ""
+"آخرین پوشه استفاده شده برای همین عملیات. پوشه‌های پروژه، واردات و صادرات به "
+"صورت جداگانه پیگیری می‌شوند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:260
+msgid "**Project Folder**"
+msgstr "**پوشه پروژه**"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:260
+msgid ""
+"The current project folder (or the user's home folder, if the project is not "
+"yet saved)"
+msgstr "پوشه پروژه فعلی (یا پوشه خانه کاربر، اگر پروژه هنوز ذخیره نشده باشد)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:266
+msgid "Reset (Default Values)"
+msgstr "بازنشانی (مقادیر پیش‌فرض)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:268
+msgid ""
+"To reset **all** preferences to their default values, please delete the "
+"``openshot.settings`` file and re-launch OpenShot. The settings file can be "
+"located at this path: ``~/.openshot_qt/openshot.settings`` or ``C:"
+"\\Users\\USERNAME\\.openshot_qt\\openshot.settings``. When OpenShot is re-"
+"launched, it will create the missing ``openshot.settings`` file with default "
+"values."
+msgstr ""
+"برای بازنشانی **تمام** تنظیمات به مقادیر پیش‌فرض، لطفاً فایل ``openshot."
+"settings`` را حذف کرده و OpenShot را مجدداً اجرا کنید. فایل تنظیمات در مسیر "
+"``~/.openshot_qt/openshot.settings`` یا ``C:\\Users\\USERNAME\\."
+"openshot_qt\\openshot.settings`` قرار دارد. هنگام اجرای مجدد OpenShot، فایل "
+"``openshot.settings`` گمشده با مقادیر پیش‌فرض ایجاد خواهد شد."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:273
+msgid ""
+"Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch "
+"OpenShot. However, please make a **backup** of any customized folders: "
+"**emojis, presets, profiles, recovery, title_templates, transitions, or "
+"yolo**. For example, your ``/recovery/`` sub-folder contains backup copies "
+"of all your existing projects (``*.osp`` files)."
+msgstr ""
+"اختیاری است که کل پوشه ``.openshot_qt/`` را حذف کرده و OpenShot را مجدداً "
+"اجرا کنید. با این حال، لطفاً از هر پوشه سفارشی شده یک **پشتیبان** تهیه کنید: "
+"**emojis, presets, profiles, recovery, title_templates, transitions, یا "
+"yolo**. برای مثال، زیرپوشه ``/recovery/`` شامل نسخه‌های پشتیبان از تمام "
+"پروژه‌های موجود شما (فایل‌های ``*.osp``) است."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:278
+msgid ""
+"Deleting the ``.openshot_qt/`` folder is the quickest method to restore "
+"OpenShot preferences and settings to their Default values (i.e. also called "
+"a `clean install`). When OpenShot is re-launched, it will create any missing "
+"folders (i.e. ``.openshot_qt/``) and settings files. See our `step-by-step "
+"guide <https://github.com/OpenShot/openshot-qt/wiki/Clean-Installation-of-"
+"OpenShot>`_ for more information about **clean installs** of OpenShot."
+msgstr ""
+"حذف پوشه ``.openshot_qt/`` سریع‌ترین روش برای بازگرداندن تنظیمات و ترجیحات "
+"OpenShot به مقادیر پیش‌فرض (که به آن `نصب تمیز` نیز گفته می‌شود) است. وقتی "
+"OpenShot دوباره اجرا شود، هر پوشه یا فایل تنظیمات گمشده (مانند ``."
+"openshot_qt/``) را ایجاد خواهد کرد. برای اطلاعات بیشتر درباره **نصب‌های "
+"تمیز** OpenShot، راهنمای گام‌به‌گام ما را در `این لینک <https://github.com/"
+"OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ ببینید."

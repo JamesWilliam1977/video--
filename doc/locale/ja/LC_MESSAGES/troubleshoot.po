@@ -1,0 +1,191 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) OpenShot Studios, LLC
+# This file is distributed under the same license as the OpenShot Video Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenShot Video Editor 3.4\nReport-Msgid-Bugs-To: \nPOT-Cre"
+"ation-Date: 2026-01-22 12:37-0600\nPO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\nLa"
+"st-Translator: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team: LANGUAGE <LL@li.org>\"
+"nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-"
+"Encoding: 8bit\n"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:23
+msgid "Troubleshooting"
+msgstr ""
+"トラブルシューティング"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:25
+msgid ""
+"If you are experiencing an issue with OpenShot, such as a freeze, crash, or "
+"error message, there are many different techniques which can be useful for "
+"troubleshooting the issue."
+msgstr ""
+"OpenShotでフリーズ、クラッシュ、エラーメッセージなどの問題が発生している場合、問題解決に役立つさまざまな手法があります。"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:29
+msgid "Windows 11 Unresponsive"
+msgstr ""
+"Windows 11が応答しない"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:31
+msgid ""
+"If you experience a freeze on Windows 11, this is a known issue with PyQt5 "
+"and Windows 11, related to the accessibility features in Qt. This is "
+"triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). "
+"OpenShot will become unresponsive and a memory leak is also present (i.e. "
+"the longer OpenShot is unresponsive, the larger your memory leak will become "
+"until OpenShot finally crashes or the user kills the process)."
+msgstr ""
+"Windows 11でフリーズが発生する場合、これはPyQt5とWindows 11の既知の問題で、Qtのアクセシビリティ機能に関連しています。これはOpe"
+"nShotで :kbd:`Ctrl+C` を押すことで発生します（*Windows 11のみ* ）。OpenShotが応答しなくなり、メモリリークも発生しま"
+"す（つまり、OpenShotが応答しない時間が長くなるほどメモリリークが大きくなり、最終的にOpenShotがクラッシュするか、ユーザーがプロセスを終了させ"
+"るまで続きます）。"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:36
+msgid ""
+"A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead "
+"use the right-click Copy/Paste menus. Another work-around is to remap your "
+"\"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You "
+"can change your keyboard mappings in the OpenShot Preferences. See :ref:"
+"`preferences_keyboard_ref`."
+msgstr ""
+"簡単な回避策として、Windows 11では :kbd:`Ctrl+C` を避け、代わりに右クリックのコピー/貼り付けメニューを使用してください。別の回避策"
+"として、「コピー」のキー割り当てを :kbd:`Ctrl+C` から別のキー（例： :kbd:`Alt+C` ）に変更することもできます。キーボードの割り当"
+"てはOpenShotの設定で変更可能です。詳細は :ref:`preferences_keyboard_ref` を参照してください。"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:41
+msgid "Windows Debugging with GDB"
+msgstr ""
+"WindowsでのGDBによるデバッグ"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:43
+msgid ""
+"If you are experiencing a crash or freeze with OpenShot in Windows 10/11, "
+"the following step by step instructions will help you determine the cause of "
+"the crash. These instructions will display a stack trace of OpenShot's "
+"source code, at the location of the crash. This information can be extremely "
+"useful for our development team, and very useful to attach to bug reports "
+"(for a quicker resolution)."
+msgstr ""
+"Windows 10/11でOpenShotがクラッシュまたはフリーズする場合、以下の手順に従うことでクラッシュの原因を特定できます。これらの手順は、クラッ"
+"シュ箇所のOpenShotのソースコードのスタックトレースを表示します。この情報は開発チームにとって非常に有用であり、バグ報告に添付すると迅速な解決に役立ち"
+"ます。"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:49
+msgid "Install the Latest Daily Build"
+msgstr ""
+"最新のデイリービルドをインストールする"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:51
+msgid ""
+"Before attaching a debugger, please download the **latest version** of "
+"OpenShot: https://www.openshot.org/download#daily. Install this version of "
+"OpenShot to the default location: ``C:\\Program Files\\OpenShot Video "
+"Editor\\``. For details instructions on debugging OpenShot on Windows, "
+"please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-"
+"Debugging-with-GDB>`_."
+msgstr ""
+"デバッガを接続する前に、OpenShotの**最新バージョン** を https://www.openshot.org/download#daily からダ"
+"ウンロードしてください。このバージョンをデフォルトの場所 ``C:\\Program Files\\OpenShot Video Editor\\`` にイ"
+"ンストールします。WindowsでのOpenShotのデバッグ手順の詳細は ` こちらのWiki <https://github.com/OpenShot/"
+"openshot-qt/wiki/Windows-Debugging-with-GDB>`_ を参照してください。 `this wiki <https://"
+"github.com/OpenShot/openshot-qt/wiki/Windows-Debugging-with-GDB>`_"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:56
+msgid "Install MSYS2"
+msgstr ""
+"MSYS2をインストールする"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:58
+msgid ""
+"The Windows version of OpenShot is compiled using an environment called "
+"MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt."
+"exe``, you must first install MSYS2. This step is only required once."
+msgstr ""
+"Windows版OpenShotはMSYS2という環境を使ってコンパイルされています。GDBデバッガを実行ファイル ``openshot-qt.exe`` "
+"に接続するには、まずMSYS2をインストールする必要があります。この手順は一度だけ行えば十分です。"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:61
+msgid "Download & Install MSYS2: `<http://www.msys2.org/>`_"
+msgstr ""
+"MSYS2をダウンロード＆インストール: `<http://www.msys2.org/>`_"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:62 ../troubleshoot.rst:78
+msgid ""
+"Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:"
+"\\msys64\\msys2_shell.cmd -mingw64``)"
+msgstr ""
+"``MSYS2 MinGW x64`` コマンドプロンプトを起動します（例：``C:\\msys64\\msys2_shell.cmd -mingw64``"
+" ）"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:63
+msgid "Update all packages (*Copy/Paste the following command*):"
+msgstr ""
+"すべてのパッケージを更新する（*以下のコマンドをコピー＆ペースト* ）:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:69
+msgid "Install GDB debugger (*Copy/Paste the following command*):"
+msgstr ""
+"GDBデバッガをインストールする（*以下のコマンドをコピー＆ペースト* ）:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:76
+msgid "Launch OpenShot with GDB Debugger"
+msgstr ""
+"GDBデバッガでOpenShotを起動する"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:80
+msgid "Update the PATH (*Copy/Paste the following commands*):"
+msgstr ""
+"PATHを更新する（*以下のコマンドをコピー＆ペースト* ）:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:87
+msgid ""
+"Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
+msgstr ""
+"GDBデバッガにOpenShotを読み込む（*以下のコマンドをコピー＆ペースト* ）:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:94
+msgid "Launch OpenShot from GDB prompt (*Copy/Paste the following command*):"
+msgstr ""
+"GDBプロンプトからOpenShotを起動する（*以下のコマンドをコピー＆ペースト* ）:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:101
+msgid "Print Debugging Info"
+msgstr ""
+"デバッグ情報を表示する"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:103
+msgid ""
+"Once OpenShot has launched successfully with GDB attached, all you need to "
+"do is trigger a crash or freeze in OpenShot. When a crash occurs, switch "
+"back to the MSYS2 MinGW64 terminal and run one of the following commands (by "
+"typing it and pressing ENTER). Usually, the first command to enter is "
+"``bt``, which stands for ``backtrace``. More commands are listed below."
+msgstr ""
+"GDBを接続してOpenShotが正常に起動したら、OpenShotでクラッシュやフリーズを発生させてください。クラッシュが発生したら、MSYS2 MinG"
+"W64のターミナルに戻り、以下のコマンドのいずれかを入力してENTERを押します。通常、最初に入力するコマンドは ``bt`` （バックトレースの意味）です"
+"。その他のコマンドも以下に記載されています。"

@@ -1322,7 +1322,7 @@ $scope.selectItem = function (item_id, item_type, clear_selections, event, force
       return layer_label;
     }
     else {
-      return $scope.track_label.replace("%s", layer_number.toString());
+      return $scope.track_label.replace("%s", layer_number.toLocaleString());
     }
   };
 

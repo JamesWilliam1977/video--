@@ -1,0 +1,773 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) OpenShot Studios, LLC
+# This file is distributed under the same license as the OpenShot Video Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenShot Video Editor 3.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:23
+msgid "Files"
+msgstr "Tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:25
+msgid ""
+"To create a video, we need to make media files available to our project by "
+"importing files into OpenShot. Most media file types are recognized, such as "
+"videos, images, and audio files. Files can be viewed and managed in the "
+"**Project Files** panel."
+msgstr ""
+"Để tạo video, chúng ta cần làm cho các tệp phương tiện có sẵn trong dự án "
+"bằng cách nhập tệp vào OpenShot. Hầu hết các loại tệp phương tiện đều được "
+"nhận dạng, như video, hình ảnh và tệp âm thanh. Các tệp có thể được xem và "
+"quản lý trong bảng **Tệp Dự Án**."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:29
+msgid ""
+"Note that imported files are not copied anywhere, they remain in the "
+"physical location they were before and are simply being made available to "
+"your video project. So, they must not be deleted, renamed, or moved after "
+"adding them to your project. The \"Show All\", \"Video\", \"Audio\", "
+"\"Image\" filters above the files allows you to only see the file types you "
+"are interested in. You can also toggle the view between :guilabel:`details` "
+"and :guilabel:`thumbnails` view of your files."
+msgstr ""
+"Lưu ý rằng các tệp được nhập không bị sao chép đi đâu, chúng vẫn ở vị trí "
+"vật lý ban đầu và chỉ được làm cho có sẵn trong dự án video của bạn. Vì vậy, "
+"không được xóa, đổi tên hoặc di chuyển chúng sau khi thêm vào dự án. Các bộ "
+"lọc \"Hiển thị tất cả\", \"Video\", \"Âm thanh\", \"Hình ảnh\" phía trên các "
+"tệp cho phép bạn chỉ xem các loại tệp bạn quan tâm. Bạn cũng có thể chuyển "
+"đổi giữa chế độ xem :guilabel:`chi tiết` và :guilabel:`thu nhỏ` của các tệp."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:39
+msgid "Import Files"
+msgstr "Nhập Tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:40
+msgid ""
+"There are many different ways to import media files into an OpenShot "
+"project. When a file is imported successfully, it will be automatically "
+"selected and scrolled into view (in the **Project Files** panel). Also, if "
+"the **Project Files** panel is not currently visible, OpenShot will "
+"automatically display the panel."
+msgstr ""
+"Có nhiều cách khác nhau để nhập tệp phương tiện vào dự án OpenShot. Khi một "
+"tệp được nhập thành công, nó sẽ tự động được chọn và cuộn vào vị trí hiển "
+"thị (trong bảng **Tệp Dự Án**). Ngoài ra, nếu bảng **Tệp Dự Án** không hiển "
+"thị, OpenShot sẽ tự động mở bảng này."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:48
+msgid "Import File Method"
+msgstr "Phương Pháp Nhập Tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:48 ../files.rst:81 ../files.rst:110 ../files.rst:146
+#: ../files.rst:170
+msgid "Description"
+msgstr "Mô Tả"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:50
+msgid "Drag and Drop"
+msgstr "Kéo và Thả"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:50
+msgid ""
+"Drag and drop the files from your file manager (file explorer, finder, "
+"etc...)."
+msgstr ""
+"Kéo và thả các tệp từ trình quản lý tệp của bạn (file explorer, finder, v."
+"v...)."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:51
+msgid "Context menu (`File Menu`_)"
+msgstr "Menu ngữ cảnh (`File Menu`_)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:51
+msgid ""
+"Right click anywhere in the **Project Files** panel and choose :guilabel:"
+"`Import Files`."
+msgstr ""
+"Nhấp chuột phải ở bất kỳ đâu trong bảng **Tệp Dự Án** và chọn :guilabel:"
+"`Nhập Tệp`."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:52
+msgid "Main Menu"
+msgstr "Menu Chính"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:52
+msgid "In the main menu choose: :guilabel:`File\\→Import Files`."
+msgstr "Trong menu chính chọn: :guilabel:`File\\→Nhập Tệp`."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:53
+msgid "Toolbar button"
+msgstr "Nút Thanh công cụ"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:53
+msgid "Click the :guilabel:`+` toolbar button in the main toolbar."
+msgstr "Nhấn nút :guilabel:`+` trên thanh công cụ chính."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:54
+msgid "Keyboard shortcut"
+msgstr "Phím tắt"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:54
+msgid "Press :kbd:`Ctrl-F` (:kbd:`Cmd-F` on Mac)."
+msgstr "Nhấn :kbd:`Ctrl-F` (:kbd:`Cmd-F` trên Mac)."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:55 ../files.rst:63
+msgid "Paste from Clipboard"
+msgstr "Dán từ Bộ nhớ tạm"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:55
+msgid ""
+"Press :kbd:`Ctrl-V` (:kbd:`Cmd-V` on Mac) to paste copied files from your "
+"clipboard. See :ref:`paste_from_clipboard_ref`."
+msgstr ""
+"Nhấn :kbd:`Ctrl-V` (:kbd:`Cmd-V` trên Mac) để dán các tệp đã sao chép từ bộ "
+"nhớ tạm. Xem :ref:`paste_from_clipboard_ref`."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:64
+msgid ""
+"You can paste files and clipboard media straight into OpenShot. If you "
+"copied one or more files in your file manager, switch to OpenShot and press :"
+"kbd:`Ctrl-V` in the **Project Files** panel to add them, just like importing."
+msgstr ""
+"Bạn có thể dán tệp và phương tiện từ bộ nhớ tạm trực tiếp vào OpenShot. Nếu "
+"bạn đã sao chép một hoặc nhiều tệp trong trình quản lý tệp, chuyển sang "
+"OpenShot và nhấn :kbd:`Ctrl-V` trong bảng **Tệp Dự Án** để thêm chúng, giống "
+"như nhập tệp."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:67
+msgid ""
+"If you copied media **data** (for example, **Copy Image** in a web browser, "
+"a pasted frame from another app, or other image/audio/video clipboard data), "
+"press :kbd:`Ctrl-V` in OpenShot to create a file for that clipboard content. "
+"OpenShot saves a copy in a temporary folder: ``.openshot_qt/clipboard/``. "
+"The new file is then added to your project and appears in **Project Files**."
+msgstr ""
+"Nếu bạn sao chép dữ liệu phương tiện **(media data)** (ví dụ, **Sao chép "
+"Hình ảnh** trong trình duyệt web, một khung hình dán từ ứng dụng khác, hoặc "
+"dữ liệu hình ảnh/âm thanh/video trong bộ nhớ tạm), nhấn :kbd:`Ctrl-V` trong "
+"OpenShot để tạo tệp cho nội dung bộ nhớ tạm đó. OpenShot lưu một bản sao "
+"trong thư mục tạm thời: ``.openshot_qt/clipboard/``. Tệp mới sau đó được "
+"thêm vào dự án và xuất hiện trong **Tệp Dự Án**."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:74
+msgid "File Menu"
+msgstr "Menu Tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:75
+msgid ""
+"To view the file menu, right click on a file (in the **Project Files** "
+"panel). Here are the actions you can use from the file menu."
+msgstr ""
+"Để xem menu tệp, nhấp chuột phải vào một tệp (trong bảng **Tệp Dự Án**). "
+"Dưới đây là các hành động bạn có thể sử dụng từ menu tệp."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:81
+msgid "File Context Option"
+msgstr "Tùy chọn ngữ cảnh tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:83
+msgid "Import Files..."
+msgstr "Nhập Tệp..."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:83
+msgid "Import files into your project"
+msgstr "Nhập tệp vào dự án của bạn"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:84
+msgid "Thumbnail/Detail"
+msgstr "Thu nhỏ/Chi tiết"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:84
+msgid "Toggle the view between details and thumbnails"
+msgstr "Chuyển đổi chế độ xem giữa chi tiết và thu nhỏ"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:85
+msgid "Preview File"
+msgstr "Xem trước Tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:85
+msgid "Preview a media file"
+msgstr "Xem trước tệp phương tiện"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:86 ../files.rst:98
+msgid "Split File"
+msgstr "Chia Tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:86
+msgid ""
+"Split a file into many smaller files. The new trimmed files appear in the "
+"Project Files list."
+msgstr ""
+"Chia một tệp thành nhiều tệp nhỏ hơn. Các tệp mới được cắt sẽ xuất hiện "
+"trong danh sách Tệp Dự Án."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:87
+msgid "Edit Title"
+msgstr "Chỉnh sửa Tiêu đề"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:87
+msgid "Edit an existing title SVG file"
+msgstr "Chỉnh sửa tệp tiêu đề SVG hiện có"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:88
+msgid "Duplicate Title"
+msgstr "Nhân bản Tiêu đề"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:88
+msgid "Make a copy, and then edit the copied title SVG file"
+msgstr "Tạo bản sao, sau đó chỉnh sửa tệp tiêu đề SVG đã sao chép"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:89 ../files.rst:135
+msgid "Add to Timeline"
+msgstr "Thêm vào Dòng thời gian"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:89
+msgid ""
+"Add many files to the timeline in one step, including transitions or "
+"alternating tracks."
+msgstr ""
+"Thêm nhiều tệp vào dòng thời gian trong một bước, bao gồm chuyển tiếp hoặc "
+"các track xen kẽ."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:90
+msgid "Choose Profile"
+msgstr "Chọn Hồ sơ"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:90
+msgid ""
+"Change the current project profile to match the selected file. If the file's "
+"profile does not match a known profile, it will give you the option to "
+"create a custom profile."
+msgstr ""
+"Thay đổi hồ sơ dự án hiện tại để phù hợp với tệp đã chọn. Nếu hồ sơ tệp "
+"không khớp với hồ sơ đã biết, bạn sẽ được tùy chọn tạo hồ sơ tùy chỉnh."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:91 ../files.rst:172
+msgid "File Properties"
+msgstr "Thuộc tính Tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:91
+msgid "View the properties of a file, such as frame rate, size, etc..."
+msgstr "Xem thuộc tính của tệp, như tốc độ khung hình, kích thước, v.v..."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:92 ../files.rst:180
+msgid "Remove from Project"
+msgstr "Xóa khỏi Dự án"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:92
+msgid "Remove a file from the project"
+msgstr "Xóa một tệp khỏi dự án"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:99
+msgid ""
+"If you need to cut a large video file into many smaller files before "
+"editing, the **Split File** dialog is built exactly for this purpose. Right "
+"click on a file, and choose :guilabel:`Split File`. Use this dialog to "
+"quickly separate a large file into many smaller segments. For each segment, "
+"you can select the starting and ending frame, and a title. Each segment "
+"appears as a new file in the Project Files dialog."
+msgstr ""
+"Nếu bạn cần cắt một tệp video lớn thành nhiều tệp nhỏ hơn trước khi chỉnh "
+"sửa, hộp thoại **Chia Tệp** được thiết kế chính xác cho mục đích này. Nhấp "
+"chuột phải vào một tệp và chọn :guilabel:`Chia Tệp`. Sử dụng hộp thoại này "
+"để nhanh chóng tách một tệp lớn thành nhiều đoạn nhỏ hơn. Với mỗi đoạn, bạn "
+"có thể chọn khung bắt đầu và kết thúc, cùng một tiêu đề. Mỗi đoạn sẽ xuất "
+"hiện như một tệp mới trong hộp thoại Tệp Dự Án."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:110 ../files.rst:146 ../files.rst:170
+msgid "#"
+msgstr "#"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:110 ../files.rst:146 ../files.rst:170
+msgid "Name"
+msgstr "Tên"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:112 ../files.rst:148 ../files.rst:172
+msgid "1"
+msgstr "1"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:112
+msgid "Start of File"
+msgstr "Bắt đầu Tệp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:112
+msgid "Choose the starting frame of your file by clicking this button"
+msgstr "Chọn khung bắt đầu của tệp bằng cách nhấn nút này"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:113 ../files.rst:149 ../files.rst:173
+msgid "2"
+msgstr "2"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:113
+msgid "End of File"
+msgstr "Cuối Tập Tin"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:113
+msgid "Choose the ending frame of your file by clicking this button"
+msgstr "Chọn khung hình kết thúc của tập tin bằng cách nhấn nút này"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:114 ../files.rst:150
+msgid "3"
+msgstr "3"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:114
+msgid "Name of File"
+msgstr "Tên Tập Tin"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:114
+msgid "Enter an optional name"
+msgstr "Nhập tên tùy chọn"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:115 ../files.rst:151
+msgid "4"
+msgstr "4"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:115
+msgid "Create Button"
+msgstr "Nút Tạo"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:115
+msgid ""
+"Create the file (which resets this dialog, so you can repeat these steps for "
+"each segment)"
+msgstr ""
+"Tạo tập tin (điều này sẽ đặt lại hộp thoại, để bạn có thể lặp lại các bước "
+"cho mỗi đoạn)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:118
+msgid ""
+"Please refer to the section :ref:`clips_cutting_slicing_ref` for more ways "
+"to cut and slice clips directly in the timeline."
+msgstr ""
+"Vui lòng tham khảo phần :ref:`clips_cutting_slicing_ref` để biết thêm cách "
+"cắt và chia đoạn clip trực tiếp trên timeline."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:121
+msgid "Export Files"
+msgstr "Xuất Tập Tin"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:122
+msgid ""
+"If you want your split file segments available outside of your OpenShot "
+"project, or want to copy all your video assets to one place, you can do this "
+"with the **Export Files** dialog. Simply :kbd:`Ctrl+Click` to select all the "
+"files you like, then :kbd:`Right Click` and choose :guilabel:`Export Files`. "
+"In the dialog that appears, choose a destination folder, and click :guilabel:"
+"`Export`."
+msgstr ""
+"Nếu bạn muốn các đoạn tập tin đã chia có thể sử dụng ngoài dự án OpenShot "
+"của bạn, hoặc muốn sao chép tất cả tài nguyên video vào một nơi, bạn có thể "
+"làm điều này với hộp thoại **Xuất Tập Tin**. Chỉ cần :kbd:`Ctrl+Click` để "
+"chọn tất cả các tập tin bạn muốn, sau đó :kbd:`Nhấp phải` và chọn :guilabel:"
+"`Xuất Tập Tin`. Trong hộp thoại hiện ra, chọn thư mục đích và nhấn :guilabel:"
+"`Xuất`."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:127
+msgid ""
+"NOTE: This will export each file or file segment using its **original video "
+"profile** (width, height, framerate, aspect ratio, etc...). It also supports "
+"any :ref:`split_clip_ref` (described above). For example, if you have split "
+"a long video file into many different segments (and named them), you can now "
+"export all the segments as separate video files (using the original file's "
+"video profile)."
+msgstr ""
+"LƯU Ý: Điều này sẽ xuất mỗi tập tin hoặc đoạn tập tin sử dụng **hồ sơ video "
+"gốc** (chiều rộng, chiều cao, tốc độ khung hình, tỷ lệ khung hình, v.v...). "
+"Nó cũng hỗ trợ bất kỳ :ref:`split_clip_ref` nào (đã mô tả ở trên). Ví dụ, "
+"nếu bạn đã chia một tập tin video dài thành nhiều đoạn khác nhau (và đặt tên "
+"cho chúng), bạn có thể xuất tất cả các đoạn dưới dạng các tập tin video "
+"riêng biệt (sử dụng hồ sơ video gốc của tập tin)."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:136
+msgid ""
+"In certain cases, you might need to add many files to the timeline at the "
+"same time. For example, a photo slideshow, or a large number of short video "
+"clips. The **Add to Timeline** dialog can automate this task for you. First, "
+"select all files you need to add, right click, and choose Add to Timeline."
+msgstr ""
+"Trong một số trường hợp, bạn có thể cần thêm nhiều tập tin vào timeline cùng "
+"lúc. Ví dụ, một trình chiếu ảnh, hoặc một số lượng lớn các đoạn video ngắn. "
+"Hộp thoại **Thêm vào Timeline** có thể tự động hóa công việc này cho bạn. "
+"Đầu tiên, chọn tất cả các tập tin bạn cần thêm, nhấp chuột phải và chọn Thêm "
+"vào Timeline."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:148
+msgid "Selected Files"
+msgstr "Tập Tin Đã Chọn"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:148
+msgid "The list of selected files that need to be added to the timeline"
+msgstr "Danh sách các tập tin đã chọn cần được thêm vào timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:149
+msgid "Order of Files"
+msgstr "Thứ Tự Tập Tin"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:149
+msgid ""
+"Use these buttons to reorder the list of files (move up, move down, "
+"randomize, remove)"
+msgstr ""
+"Sử dụng các nút này để sắp xếp lại danh sách tập tin (di chuyển lên, di "
+"chuyển xuống, ngẫu nhiên, xóa)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:150
+msgid "Timeline Position"
+msgstr "Vị Trí Timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:150
+msgid ""
+"Choose the starting position and track where these files need to be inserted "
+"on the timeline"
+msgstr ""
+"Chọn vị trí bắt đầu và track nơi các tập tin này cần được chèn vào timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:151
+msgid "Fade Options"
+msgstr "Tùy Chọn Mờ Dần"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:151
+msgid ""
+"Fade in, fade out, both, or none (only affects the image, and not audio)"
+msgstr ""
+"Mờ vào, mờ ra, cả hai hoặc không (chỉ ảnh hưởng đến hình ảnh, không ảnh "
+"hưởng đến âm thanh)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:152
+msgid "5"
+msgstr "5"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:152
+msgid "Zoom Options"
+msgstr "Tùy Chọn Thu Phóng"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:152
+msgid "Zoom in, zoom out, or none"
+msgstr "Phóng to, thu nhỏ, hoặc không"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:153
+msgid "6"
+msgstr "6"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:153
+msgid "Transitions"
+msgstr "Chuyển Cảnh"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:153
+msgid ""
+"Choose a specific transition to use between files, random, or none (only "
+"affects the image, and not the audio)"
+msgstr ""
+"Chọn một chuyển cảnh cụ thể để sử dụng giữa các tập tin, ngẫu nhiên, hoặc "
+"không (chỉ ảnh hưởng đến hình ảnh, không ảnh hưởng đến âm thanh)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:159
+msgid "Properties"
+msgstr "Thuộc Tính"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:160
+msgid ""
+"To view the properties of any imported file in your video project, right "
+"click on the file, and choose **File Properties**. This will launch the file "
+"properties dialog, which displays information about your media file. For "
+"certain types of images (i.e. image sequences), you can adjust the frame "
+"rate on this dialog also."
+msgstr ""
+"Để xem thuộc tính của bất kỳ tập tin nào đã nhập trong dự án video của bạn, "
+"nhấp chuột phải vào tập tin và chọn **Thuộc Tính Tập Tin**. Điều này sẽ mở "
+"hộp thoại thuộc tính tập tin, hiển thị thông tin về tập tin media của bạn. "
+"Đối với một số loại hình ảnh (ví dụ: chuỗi hình ảnh), bạn cũng có thể điều "
+"chỉnh tốc độ khung hình trong hộp thoại này."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:172
+msgid ""
+"Select an image sequence in the **Project Files** panel, right click and "
+"choose **File Properties**"
+msgstr ""
+"Chọn một chuỗi hình ảnh trong bảng **Tập Tin Dự Án**, nhấp chuột phải và "
+"chọn **Thuộc Tính Tập Tin**"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:173
+msgid "Frame Rate"
+msgstr "Tốc Độ Khung Hình"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:173
+msgid ""
+"For image sequences, you can also adjust the frame rate of the animation"
+msgstr ""
+"Đối với chuỗi hình ảnh, bạn cũng có thể điều chỉnh tốc độ khung hình của "
+"hoạt hình"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:182
+msgid ""
+"This will remove a file from the project. It will not delete the underlying "
+"physical file though, so removing a file from the project merely makes it "
+"unavailable for this video project."
+msgstr ""
+"Điều này sẽ xóa một tập tin khỏi dự án. Tuy nhiên, nó sẽ không xóa tập tin "
+"vật lý gốc, vì vậy việc xóa tập tin khỏi dự án chỉ làm cho tập tin không khả "
+"dụng cho dự án video này."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:187
+msgid "Project Assets Folder"
+msgstr "Thư Mục Tài Nguyên Dự Án"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:188
+msgid ""
+"OpenShot creates and uses a few **temporary working folders** while you "
+"edit. These live under ``.openshot_qt/`` in your user profile and hold "
+"project-specific files that OpenShot generates for you:"
+msgstr ""
+"OpenShot tạo và sử dụng một vài **thư mục làm việc tạm thời** trong khi bạn "
+"chỉnh sửa. Chúng nằm dưới ``.openshot_qt/`` trong hồ sơ người dùng của bạn "
+"và chứa các tập tin riêng cho dự án mà OpenShot tạo ra cho bạn:"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:191
+msgid ""
+"``.openshot_qt/blender/`` - Blender animation renders created by the "
+"Animated Title dialog"
+msgstr ""
+"``.openshot_qt/blender/`` - Các bản render hoạt hình Blender được tạo bởi "
+"hộp thoại Tiêu đề Hoạt hình"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:192
+msgid "``.openshot_qt/title/`` - SVG title files created by the Title dialog"
+msgstr ""
+"``.openshot_qt/title/`` - Các tập tin tiêu đề SVG được tạo bởi hộp thoại "
+"Tiêu đề"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:193
+msgid ""
+"``.openshot_qt/thumbnail/`` - Thumbnails generated for Project Files and "
+"Timeline"
+msgstr ""
+"``.openshot_qt/thumbnail/`` - Hình thu nhỏ được tạo cho Tập Tin Dự Án và "
+"Timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:194
+msgid ""
+"``.openshot_qt/clipboard/`` - Media created from clipboard pastes (images, "
+"audio, or video that must be saved to disk first)"
+msgstr ""
+"``.openshot_qt/clipboard/`` - Media được tạo từ các thao tác dán clipboard "
+"(hình ảnh, âm thanh hoặc video phải được lưu vào đĩa trước)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:195
+msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
+msgstr ""
+"``.openshot_qt/protobuf_data`` - Dữ liệu theo dõi và phát hiện đối tượng"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:197
+msgid ""
+"When you choose **File→Save As**, OpenShot copies these folders into your "
+"project directory, inside a single folder named ``PROJECTNAME_Assets``. For "
+"example: ``MyProject_Assets/clipboard`` will contain any media you pasted "
+"from the clipboard."
+msgstr ""
+"Khi bạn chọn **Tập Tin→Lưu Như**, OpenShot sao chép các thư mục này vào thư "
+"mục dự án của bạn, bên trong một thư mục duy nhất có tên "
+"``PROJECTNAME_Assets``. Ví dụ: ``MyProject_Assets/clipboard`` sẽ chứa bất kỳ "
+"media nào bạn đã dán từ clipboard."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:200
+msgid ""
+"As part of this process, all paths inside your ``*.osp`` project file are "
+"updated to be **relative** to your project folder. This keeps everything "
+"self-contained and easy to move or back up as one folder."
+msgstr ""
+"Trong quá trình này, tất cả các đường dẫn bên trong tập tin dự án ``*.osp`` "
+"của bạn được cập nhật để trở thành **đường dẫn tương đối** với thư mục dự án "
+"của bạn. Điều này giữ mọi thứ tự chứa và dễ dàng di chuyển hoặc sao lưu như "
+"một thư mục duy nhất."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:204
+msgid "Cleanup behavior"
+msgstr "Hành Vi Dọn Dẹp"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:205
+msgid ""
+"Starting a **new project** or opening an **existing project** clears the "
+"temporary ``.openshot_qt`` working folders so you begin with a clean slate. "
+"Your saved projects are not affected, and any assets previously copied into "
+"a ``PROJECTNAME_Assets`` folder remain in that project's directory."
+msgstr ""
+"Bắt đầu một **dự án mới** hoặc mở một **dự án hiện có** sẽ xóa các thư mục "
+"làm việc tạm thời ``.openshot_qt`` để bạn bắt đầu với một trạng thái sạch. "
+"Các dự án đã lưu của bạn không bị ảnh hưởng, và bất kỳ tài nguyên nào đã sao "
+"chép vào thư mục ``PROJECTNAME_Assets`` vẫn còn trong thư mục dự án đó."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:210
+msgid "Missing Files"
+msgstr "Tập Tin Thiếu"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:212
+msgid ""
+"When you create and save a project in OpenShot, any files imported into the "
+"software (such as videos, audio, and images) must remain accessible "
+"throughout the project's duration. This means that these imported files "
+"should not be renamed, deleted, or moved to different folders. Additionally, "
+"the full path where these files are located should not be renamed either. "
+"This principle applies to other video editing software as well."
+msgstr ""
+"Khi bạn tạo và lưu một dự án trong OpenShot, bất kỳ tệp nào được nhập vào "
+"phần mềm (chẳng hạn như video, âm thanh và hình ảnh) phải luôn có thể truy "
+"cập trong suốt thời gian dự án. Điều này có nghĩa là các tệp nhập này không "
+"được đổi tên, xóa hoặc di chuyển đến các thư mục khác. Ngoài ra, đường dẫn "
+"đầy đủ nơi các tệp này nằm cũng không được đổi tên. Nguyên tắc này cũng áp "
+"dụng cho các phần mềm chỉnh sửa video khác."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:217
+msgid ""
+"For example, users might move or delete folders, unplug their USB devices, "
+"or move or delete their project files. Any of these examples cause a :"
+"guilabel:`Missing File` message, in which OpenShot prompts you to locate the "
+"folder of the missing file(s). Depending on the number of files you added to "
+"your project, OpenShot could prompt you many times to find the missing files."
+msgstr ""
+"Ví dụ, người dùng có thể di chuyển hoặc xóa thư mục, rút thiết bị USB, hoặc "
+"di chuyển hoặc xóa các tệp dự án của họ. Bất kỳ trường hợp nào trong số này "
+"đều gây ra thông báo :guilabel:`Missing File`, trong đó OpenShot sẽ yêu cầu "
+"bạn xác định vị trí thư mục chứa tệp bị thiếu. Tùy thuộc vào số lượng tệp "
+"bạn đã thêm vào dự án, OpenShot có thể yêu cầu bạn nhiều lần để tìm các tệp "
+"bị thiếu."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:221
+msgid ""
+"When OpenShot saves a project, all file paths are converted to **relative** "
+"file paths. As long as you keep all assets organized in the same parent "
+"folder (including the \\*.osp project file), you will be able to move your "
+"project folder without triggering any missing file(s) prompts. You can even "
+"move a self-contained project folder to another computer without any issues."
+msgstr ""
+"Khi OpenShot lưu một dự án, tất cả các đường dẫn tệp được chuyển đổi thành "
+"đường dẫn tệp **tương đối**. Miễn là bạn giữ tất cả tài nguyên được tổ chức "
+"trong cùng một thư mục cha (bao gồm cả tệp dự án \\*.osp), bạn sẽ có thể di "
+"chuyển thư mục dự án mà không kích hoạt bất kỳ thông báo tệp bị thiếu nào. "
+"Bạn thậm chí có thể di chuyển một thư mục dự án tự chứa sang máy tính khác "
+"mà không gặp vấn đề gì."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:225
+msgid ""
+"Everyone has their unique way of organizing files, and it's crucial to "
+"remember not to make changes to file paths, rename files, or delete files "
+"when working with video editors, as it can lead to missing file issues. For "
+"a detailed guide on missing file(s), see `The Case of “Missing Files”! "
+"<https://github.com/OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_"
+msgstr ""
+"Mỗi người có cách tổ chức tệp riêng, và điều quan trọng là không được thay "
+"đổi đường dẫn tệp, đổi tên tệp hoặc xóa tệp khi làm việc với phần mềm chỉnh "
+"sửa video, vì điều này có thể dẫn đến các vấn đề về tệp bị thiếu. Để xem "
+"hướng dẫn chi tiết về tệp bị thiếu, hãy xem `The Case of “Missing Files”! "
+"<https://github.com/OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_."

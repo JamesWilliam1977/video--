@@ -1,0 +1,800 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) OpenShot Studios, LLC
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenShot Video Editor 3.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:23
+msgid "Files"
+msgstr "Fichiers"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:25
+msgid ""
+"To create a video, we need to make media files available to our project by "
+"importing files into OpenShot. Most media file types are recognized, such as "
+"videos, images, and audio files. Files can be viewed and managed in the "
+"**Project Files** panel."
+msgstr ""
+"Pour créer une vidéo, nous devons rendre les fichiers médias disponibles "
+"pour notre projet en important des fichiers dans OpenShot. La plupart des "
+"types de fichiers médias sont reconnus, tels que les vidéos, images et "
+"fichiers audio. Les fichiers peuvent être visualisés et gérés dans le "
+"panneau **Fichiers du projet**."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:29
+msgid ""
+"Note that imported files are not copied anywhere, they remain in the "
+"physical location they were before and are simply being made available to "
+"your video project. So, they must not be deleted, renamed, or moved after "
+"adding them to your project. The \"Show All\", \"Video\", \"Audio\", "
+"\"Image\" filters above the files allows you to only see the file types you "
+"are interested in. You can also toggle the view between :guilabel:`details` "
+"and :guilabel:`thumbnails` view of your files."
+msgstr ""
+"Notez que les fichiers importés ne sont copiés nulle part, ils restent à "
+"leur emplacement physique d'origine et sont simplement rendus disponibles "
+"pour votre projet vidéo. Ils ne doivent donc pas être supprimés, renommés ou "
+"déplacés après leur ajout à votre projet. Les filtres « Tout afficher », « "
+"Vidéo », « Audio », « Image » au-dessus des fichiers vous permettent de ne "
+"voir que les types de fichiers qui vous intéressent. Vous pouvez également "
+"basculer la vue entre :guilabel:`détails` et :guilabel:`vignettes` de vos "
+"fichiers."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:39
+msgid "Import Files"
+msgstr "Importer des fichiers"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:40
+msgid ""
+"There are many different ways to import media files into an OpenShot "
+"project. When a file is imported successfully, it will be automatically "
+"selected and scrolled into view (in the **Project Files** panel). Also, if "
+"the **Project Files** panel is not currently visible, OpenShot will "
+"automatically display the panel."
+msgstr ""
+"Il existe plusieurs façons d'importer des fichiers médias dans un projet "
+"OpenShot. Lorsqu'un fichier est importé avec succès, il est automatiquement "
+"sélectionné et affiché (dans le panneau **Fichiers du projet**). De plus, si "
+"le panneau **Fichiers du projet** n'est pas visible, OpenShot l'affichera "
+"automatiquement."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:48
+msgid "Import File Method"
+msgstr "Méthode d'importation de fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:48 ../files.rst:81 ../files.rst:110 ../files.rst:146
+#: ../files.rst:170
+msgid "Description"
+msgstr "Description"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:50
+msgid "Drag and Drop"
+msgstr "Glisser-déposer"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:50
+msgid ""
+"Drag and drop the files from your file manager (file explorer, finder, "
+"etc...)."
+msgstr ""
+"Glissez-déposez les fichiers depuis votre gestionnaire de fichiers "
+"(explorateur, finder, etc.)."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:51
+msgid "Context menu (`File Menu`_)"
+msgstr "Menu contextuel (`Menu Fichier`_)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:51
+msgid ""
+"Right click anywhere in the **Project Files** panel and choose :guilabel:"
+"`Import Files`."
+msgstr ""
+"Cliquez droit n'importe où dans le panneau **Fichiers du projet** et "
+"choisissez :guilabel:`Importer des fichiers`."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:52
+msgid "Main Menu"
+msgstr "Menu principal"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:52
+msgid "In the main menu choose: :guilabel:`File\\→Import Files`."
+msgstr ""
+"Dans le menu principal, choisissez :guilabel:`Fichier\\→Importer des "
+"fichiers`."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:53
+msgid "Toolbar button"
+msgstr "Bouton de la barre d'outils"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:53
+msgid "Click the :guilabel:`+` toolbar button in the main toolbar."
+msgstr "Cliquez sur le bouton :guilabel:`+` dans la barre d'outils principale."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:54
+msgid "Keyboard shortcut"
+msgstr "Raccourci clavier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:54
+msgid "Press :kbd:`Ctrl-F` (:kbd:`Cmd-F` on Mac)."
+msgstr "Appuyez sur :kbd:`Ctrl-F` (:kbd:`Cmd-F` sur Mac)."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:55 ../files.rst:63
+msgid "Paste from Clipboard"
+msgstr "Coller depuis le presse-papiers"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:55
+msgid ""
+"Press :kbd:`Ctrl-V` (:kbd:`Cmd-V` on Mac) to paste copied files from your "
+"clipboard. See :ref:`paste_from_clipboard_ref`."
+msgstr ""
+"Appuyez sur :kbd:`Ctrl-V` (:kbd:`Cmd-V` sur Mac) pour coller les fichiers "
+"copiés depuis votre presse-papiers. Voir :ref:`paste_from_clipboard_ref`."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:64
+msgid ""
+"You can paste files and clipboard media straight into OpenShot. If you "
+"copied one or more files in your file manager, switch to OpenShot and press :"
+"kbd:`Ctrl-V` in the **Project Files** panel to add them, just like importing."
+msgstr ""
+"Vous pouvez coller des fichiers et médias du presse-papiers directement dans "
+"OpenShot. Si vous avez copié un ou plusieurs fichiers dans votre "
+"gestionnaire de fichiers, passez à OpenShot et appuyez sur :kbd:`Ctrl-V` "
+"dans le panneau **Fichiers du projet** pour les ajouter, comme lors d'une "
+"importation."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:67
+msgid ""
+"If you copied media **data** (for example, **Copy Image** in a web browser, "
+"a pasted frame from another app, or other image/audio/video clipboard data), "
+"press :kbd:`Ctrl-V` in OpenShot to create a file for that clipboard content. "
+"OpenShot saves a copy in a temporary folder: ``.openshot_qt/clipboard/``. "
+"The new file is then added to your project and appears in **Project Files**."
+msgstr ""
+"Si vous avez copié des **données** médias (par exemple, **Copier l'image** "
+"dans un navigateur web, une image collée depuis une autre application, ou "
+"d'autres données image/audio/vidéo du presse-papiers), appuyez sur :kbd:"
+"`Ctrl-V` dans OpenShot pour créer un fichier à partir de ce contenu. "
+"OpenShot enregistre une copie dans un dossier temporaire : ``.openshot_qt/"
+"clipboard/``. Le nouveau fichier est ensuite ajouté à votre projet et "
+"apparaît dans **Fichiers du projet**."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:74
+msgid "File Menu"
+msgstr "Menu Fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:75
+msgid ""
+"To view the file menu, right click on a file (in the **Project Files** "
+"panel). Here are the actions you can use from the file menu."
+msgstr ""
+"Pour afficher le menu fichier, cliquez droit sur un fichier (dans le panneau "
+"**Fichiers du projet**). Voici les actions disponibles dans le menu fichier."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:81
+msgid "File Context Option"
+msgstr "Option du menu contextuel fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:83
+msgid "Import Files..."
+msgstr "Importer des fichiers..."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:83
+msgid "Import files into your project"
+msgstr "Importer des fichiers dans votre projet"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:84
+msgid "Thumbnail/Detail"
+msgstr "Vignette/Détail"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:84
+msgid "Toggle the view between details and thumbnails"
+msgstr "Basculer la vue entre détails et vignettes"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:85
+msgid "Preview File"
+msgstr "Aperçu du fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:85
+msgid "Preview a media file"
+msgstr "Prévisualiser un fichier média"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:86 ../files.rst:98
+msgid "Split File"
+msgstr "Diviser le fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:86
+msgid ""
+"Split a file into many smaller files. The new trimmed files appear in the "
+"Project Files list."
+msgstr ""
+"Diviser un fichier en plusieurs fichiers plus petits. Les nouveaux fichiers "
+"découpés apparaissent dans la liste des Fichiers du projet."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:87
+msgid "Edit Title"
+msgstr "Modifier le titre"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:87
+msgid "Edit an existing title SVG file"
+msgstr "Modifier un fichier titre SVG existant"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:88
+msgid "Duplicate Title"
+msgstr "Dupliquer le titre"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:88
+msgid "Make a copy, and then edit the copied title SVG file"
+msgstr "Faire une copie, puis modifier le fichier titre SVG copié"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:89 ../files.rst:135
+msgid "Add to Timeline"
+msgstr "Ajouter à la timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:89
+msgid ""
+"Add many files to the timeline in one step, including transitions or "
+"alternating tracks."
+msgstr ""
+"Ajouter plusieurs fichiers à la timeline en une seule étape, y compris les "
+"transitions ou les pistes alternées."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:90
+msgid "Choose Profile"
+msgstr "Choisir le profil"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:90
+msgid ""
+"Change the current project profile to match the selected file. If the file's "
+"profile does not match a known profile, it will give you the option to "
+"create a custom profile."
+msgstr ""
+"Changer le profil du projet actuel pour correspondre au fichier sélectionné. "
+"Si le profil du fichier ne correspond à aucun profil connu, vous aurez la "
+"possibilité de créer un profil personnalisé."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:91 ../files.rst:172
+msgid "File Properties"
+msgstr "Propriétés du fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:91
+msgid "View the properties of a file, such as frame rate, size, etc..."
+msgstr ""
+"Afficher les propriétés d'un fichier, telles que la fréquence d'images, la "
+"taille, etc."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:92 ../files.rst:180
+msgid "Remove from Project"
+msgstr "Supprimer du projet"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:92
+msgid "Remove a file from the project"
+msgstr "Supprimer un fichier du projet"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:99
+msgid ""
+"If you need to cut a large video file into many smaller files before "
+"editing, the **Split File** dialog is built exactly for this purpose. Right "
+"click on a file, and choose :guilabel:`Split File`. Use this dialog to "
+"quickly separate a large file into many smaller segments. For each segment, "
+"you can select the starting and ending frame, and a title. Each segment "
+"appears as a new file in the Project Files dialog."
+msgstr ""
+"Si vous devez découper un grand fichier vidéo en plusieurs fichiers plus "
+"petits avant le montage, la boîte de dialogue **Diviser le fichier** est "
+"conçue exactement pour cela. Cliquez droit sur un fichier, puis choisissez :"
+"guilabel:`Diviser le fichier`. Utilisez cette boîte de dialogue pour séparer "
+"rapidement un grand fichier en plusieurs segments plus petits. Pour chaque "
+"segment, vous pouvez sélectionner la frame de début et de fin, ainsi qu'un "
+"titre. Chaque segment apparaît comme un nouveau fichier dans la boîte de "
+"dialogue Fichiers du projet."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:110 ../files.rst:146 ../files.rst:170
+msgid "#"
+msgstr "#"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:110 ../files.rst:146 ../files.rst:170
+msgid "Name"
+msgstr "Nom"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:112 ../files.rst:148 ../files.rst:172
+msgid "1"
+msgstr "1"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:112
+msgid "Start of File"
+msgstr "Début du fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:112
+msgid "Choose the starting frame of your file by clicking this button"
+msgstr ""
+"Choisissez la frame de début de votre fichier en cliquant sur ce bouton"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:113 ../files.rst:149 ../files.rst:173
+msgid "2"
+msgstr "2"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:113
+msgid "End of File"
+msgstr "Fin de fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:113
+msgid "Choose the ending frame of your file by clicking this button"
+msgstr ""
+"Choisissez la dernière image de votre fichier en cliquant sur ce bouton"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:114 ../files.rst:150
+msgid "3"
+msgstr "3"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:114
+msgid "Name of File"
+msgstr "Nom du fichier"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:114
+msgid "Enter an optional name"
+msgstr "Entrez un nom optionnel"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:115 ../files.rst:151
+msgid "4"
+msgstr "4"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:115
+msgid "Create Button"
+msgstr "Bouton Créer"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:115
+msgid ""
+"Create the file (which resets this dialog, so you can repeat these steps for "
+"each segment)"
+msgstr ""
+"Créez le fichier (ce qui réinitialise cette boîte de dialogue, vous "
+"permettant de répéter ces étapes pour chaque segment)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:118
+msgid ""
+"Please refer to the section :ref:`clips_cutting_slicing_ref` for more ways "
+"to cut and slice clips directly in the timeline."
+msgstr ""
+"Veuillez vous référer à la section :ref:`clips_cutting_slicing_ref` pour "
+"plus de façons de couper et découper les clips directement dans la timeline."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:121
+msgid "Export Files"
+msgstr "Exporter les fichiers"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:122
+msgid ""
+"If you want your split file segments available outside of your OpenShot "
+"project, or want to copy all your video assets to one place, you can do this "
+"with the **Export Files** dialog. Simply :kbd:`Ctrl+Click` to select all the "
+"files you like, then :kbd:`Right Click` and choose :guilabel:`Export Files`. "
+"In the dialog that appears, choose a destination folder, and click :guilabel:"
+"`Export`."
+msgstr ""
+"Si vous souhaitez que vos segments de fichiers divisés soient disponibles en "
+"dehors de votre projet OpenShot, ou si vous voulez copier tous vos médias "
+"vidéo en un seul endroit, vous pouvez le faire avec la boîte de dialogue "
+"**Exporter les fichiers**. Il suffit de :kbd:`Ctrl+Cliquer` pour "
+"sélectionner tous les fichiers souhaités, puis :kbd:`Clic droit` et choisir :"
+"guilabel:`Exporter les fichiers`. Dans la boîte de dialogue qui apparaît, "
+"choisissez un dossier de destination, puis cliquez sur :guilabel:`Exporter`."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:127
+msgid ""
+"NOTE: This will export each file or file segment using its **original video "
+"profile** (width, height, framerate, aspect ratio, etc...). It also supports "
+"any :ref:`split_clip_ref` (described above). For example, if you have split "
+"a long video file into many different segments (and named them), you can now "
+"export all the segments as separate video files (using the original file's "
+"video profile)."
+msgstr ""
+"REMARQUE : Cela exportera chaque fichier ou segment de fichier en utilisant "
+"son **profil vidéo original** (largeur, hauteur, fréquence d'images, ratio "
+"d'aspect, etc.). Cela prend également en charge tout :ref:`split_clip_ref` "
+"(décrit ci-dessus). Par exemple, si vous avez divisé un long fichier vidéo "
+"en plusieurs segments différents (et les avez nommés), vous pouvez "
+"maintenant exporter tous les segments en tant que fichiers vidéo séparés (en "
+"utilisant le profil vidéo du fichier original)."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:136
+msgid ""
+"In certain cases, you might need to add many files to the timeline at the "
+"same time. For example, a photo slideshow, or a large number of short video "
+"clips. The **Add to Timeline** dialog can automate this task for you. First, "
+"select all files you need to add, right click, and choose Add to Timeline."
+msgstr ""
+"Dans certains cas, vous pourriez avoir besoin d'ajouter plusieurs fichiers à "
+"la timeline en même temps. Par exemple, un diaporama photo ou un grand "
+"nombre de courts clips vidéo. La boîte de dialogue **Ajouter à la timeline** "
+"peut automatiser cette tâche pour vous. Tout d'abord, sélectionnez tous les "
+"fichiers à ajouter, faites un clic droit, puis choisissez Ajouter à la "
+"timeline."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:148
+msgid "Selected Files"
+msgstr "Fichiers sélectionnés"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:148
+msgid "The list of selected files that need to be added to the timeline"
+msgstr "La liste des fichiers sélectionnés à ajouter à la timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:149
+msgid "Order of Files"
+msgstr "Ordre des fichiers"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:149
+msgid ""
+"Use these buttons to reorder the list of files (move up, move down, "
+"randomize, remove)"
+msgstr ""
+"Utilisez ces boutons pour réorganiser la liste des fichiers (monter, "
+"descendre, aléatoire, supprimer)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:150
+msgid "Timeline Position"
+msgstr "Position dans la timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:150
+msgid ""
+"Choose the starting position and track where these files need to be inserted "
+"on the timeline"
+msgstr ""
+"Choisissez la position de départ et la piste où ces fichiers doivent être "
+"insérés dans la timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:151
+msgid "Fade Options"
+msgstr "Options de fondu"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:151
+msgid ""
+"Fade in, fade out, both, or none (only affects the image, and not audio)"
+msgstr ""
+"Fondu entrant, fondu sortant, les deux, ou aucun (n'affecte que l'image, pas "
+"l'audio)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:152
+msgid "5"
+msgstr "5"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:152
+msgid "Zoom Options"
+msgstr "Options de zoom"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:152
+msgid "Zoom in, zoom out, or none"
+msgstr "Zoom avant, zoom arrière, ou aucun"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:153
+msgid "6"
+msgstr "6"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:153
+msgid "Transitions"
+msgstr "Transitions"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:153
+msgid ""
+"Choose a specific transition to use between files, random, or none (only "
+"affects the image, and not the audio)"
+msgstr ""
+"Choisissez une transition spécifique à utiliser entre les fichiers, "
+"aléatoire, ou aucune (n'affecte que l'image, pas l'audio)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:159
+msgid "Properties"
+msgstr "Propriétés"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:160
+msgid ""
+"To view the properties of any imported file in your video project, right "
+"click on the file, and choose **File Properties**. This will launch the file "
+"properties dialog, which displays information about your media file. For "
+"certain types of images (i.e. image sequences), you can adjust the frame "
+"rate on this dialog also."
+msgstr ""
+"Pour voir les propriétés de n'importe quel fichier importé dans votre projet "
+"vidéo, faites un clic droit sur le fichier et choisissez **Propriétés du "
+"fichier**. Cela ouvrira la boîte de dialogue des propriétés du fichier, qui "
+"affiche des informations sur votre média. Pour certains types d'images (par "
+"exemple, les séquences d'images), vous pouvez également ajuster la fréquence "
+"d'images dans cette boîte de dialogue."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:172
+msgid ""
+"Select an image sequence in the **Project Files** panel, right click and "
+"choose **File Properties**"
+msgstr ""
+"Sélectionnez une séquence d'images dans le panneau **Fichiers du projet**, "
+"faites un clic droit et choisissez **Propriétés du fichier**"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:173
+msgid "Frame Rate"
+msgstr "Fréquence d'images"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:173
+msgid ""
+"For image sequences, you can also adjust the frame rate of the animation"
+msgstr ""
+"Pour les séquences d'images, vous pouvez également ajuster la fréquence "
+"d'images de l'animation"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:182
+msgid ""
+"This will remove a file from the project. It will not delete the underlying "
+"physical file though, so removing a file from the project merely makes it "
+"unavailable for this video project."
+msgstr ""
+"Cela supprimera un fichier du projet. Cependant, cela ne supprimera pas le "
+"fichier physique sous-jacent, donc retirer un fichier du projet le rend "
+"simplement indisponible pour ce projet vidéo."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:187
+msgid "Project Assets Folder"
+msgstr "Dossier des ressources du projet"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:188
+msgid ""
+"OpenShot creates and uses a few **temporary working folders** while you "
+"edit. These live under ``.openshot_qt/`` in your user profile and hold "
+"project-specific files that OpenShot generates for you:"
+msgstr ""
+"OpenShot crée et utilise quelques **dossiers de travail temporaires** "
+"pendant que vous éditez. Ils se trouvent sous ``.openshot_qt/`` dans votre "
+"profil utilisateur et contiennent des fichiers spécifiques au projet générés "
+"par OpenShot :"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:191
+msgid ""
+"``.openshot_qt/blender/`` - Blender animation renders created by the "
+"Animated Title dialog"
+msgstr ""
+"``.openshot_qt/blender/`` - Rendus d'animation Blender créés par la boîte de "
+"dialogue Titre animé"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:192
+msgid "``.openshot_qt/title/`` - SVG title files created by the Title dialog"
+msgstr ""
+"``.openshot_qt/title/`` - Fichiers de titre SVG créés par la boîte de "
+"dialogue Titre"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:193
+msgid ""
+"``.openshot_qt/thumbnail/`` - Thumbnails generated for Project Files and "
+"Timeline"
+msgstr ""
+"``.openshot_qt/thumbnail/`` - Vignettes générées pour les fichiers du projet "
+"et la timeline"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:194
+msgid ""
+"``.openshot_qt/clipboard/`` - Media created from clipboard pastes (images, "
+"audio, or video that must be saved to disk first)"
+msgstr ""
+"``.openshot_qt/clipboard/`` - Médias créés à partir des collages du presse-"
+"papiers (images, audio ou vidéo qui doivent d'abord être enregistrés sur le "
+"disque)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:195
+msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
+msgstr ""
+"``.openshot_qt/protobuf_data`` - Données de suivi et de détection d'objets"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:197
+msgid ""
+"When you choose **File→Save As**, OpenShot copies these folders into your "
+"project directory, inside a single folder named ``PROJECTNAME_Assets``. For "
+"example: ``MyProject_Assets/clipboard`` will contain any media you pasted "
+"from the clipboard."
+msgstr ""
+"Lorsque vous choisissez **Fichier→Enregistrer sous**, OpenShot copie ces "
+"dossiers dans votre répertoire de projet, à l'intérieur d'un seul dossier "
+"nommé ``PROJECTNAME_Assets``. Par exemple : ``MyProject_Assets/clipboard`` "
+"contiendra tous les médias que vous avez collés depuis le presse-papiers."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:200
+msgid ""
+"As part of this process, all paths inside your ``*.osp`` project file are "
+"updated to be **relative** to your project folder. This keeps everything "
+"self-contained and easy to move or back up as one folder."
+msgstr ""
+"Dans le cadre de ce processus, tous les chemins à l'intérieur de votre "
+"fichier de projet ``*.osp`` sont mis à jour pour être **relatifs** à votre "
+"dossier de projet. Cela permet de garder tout autonome et facile à déplacer "
+"ou sauvegarder en un seul dossier."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:204
+msgid "Cleanup behavior"
+msgstr "Comportement de nettoyage"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:205
+msgid ""
+"Starting a **new project** or opening an **existing project** clears the "
+"temporary ``.openshot_qt`` working folders so you begin with a clean slate. "
+"Your saved projects are not affected, and any assets previously copied into "
+"a ``PROJECTNAME_Assets`` folder remain in that project's directory."
+msgstr ""
+"Démarrer un **nouveau projet** ou ouvrir un **projet existant** vide les "
+"dossiers de travail temporaires ``.openshot_qt`` pour que vous commenciez "
+"sur une base propre. Vos projets enregistrés ne sont pas affectés, et toutes "
+"les ressources précédemment copiées dans un dossier ``PROJECTNAME_Assets`` "
+"restent dans le répertoire de ce projet."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:210
+msgid "Missing Files"
+msgstr "Fichiers manquants"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:212
+msgid ""
+"When you create and save a project in OpenShot, any files imported into the "
+"software (such as videos, audio, and images) must remain accessible "
+"throughout the project's duration. This means that these imported files "
+"should not be renamed, deleted, or moved to different folders. Additionally, "
+"the full path where these files are located should not be renamed either. "
+"This principle applies to other video editing software as well."
+msgstr ""
+"Lorsque vous créez et enregistrez un projet dans OpenShot, tous les fichiers "
+"importés dans le logiciel (comme les vidéos, l'audio et les images) doivent "
+"rester accessibles pendant toute la durée du projet. Cela signifie que ces "
+"fichiers importés ne doivent pas être renommés, supprimés ou déplacés vers "
+"d'autres dossiers. De plus, le chemin complet où ces fichiers se trouvent ne "
+"doit pas non plus être renommé. Ce principe s'applique également à d'autres "
+"logiciels de montage vidéo."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:217
+msgid ""
+"For example, users might move or delete folders, unplug their USB devices, "
+"or move or delete their project files. Any of these examples cause a :"
+"guilabel:`Missing File` message, in which OpenShot prompts you to locate the "
+"folder of the missing file(s). Depending on the number of files you added to "
+"your project, OpenShot could prompt you many times to find the missing files."
+msgstr ""
+"Par exemple, les utilisateurs peuvent déplacer ou supprimer des dossiers, "
+"débrancher leurs périphériques USB, ou déplacer ou supprimer leurs fichiers "
+"de projet. Chacun de ces cas provoque un message :guilabel:`Fichier "
+"manquant`, où OpenShot vous invite à localiser le dossier du ou des fichiers "
+"manquants. Selon le nombre de fichiers ajoutés à votre projet, OpenShot peut "
+"vous demander plusieurs fois de retrouver les fichiers manquants."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:221
+msgid ""
+"When OpenShot saves a project, all file paths are converted to **relative** "
+"file paths. As long as you keep all assets organized in the same parent "
+"folder (including the \\*.osp project file), you will be able to move your "
+"project folder without triggering any missing file(s) prompts. You can even "
+"move a self-contained project folder to another computer without any issues."
+msgstr ""
+"Lorsque OpenShot enregistre un projet, tous les chemins de fichiers sont "
+"convertis en chemins **relatifs**. Tant que vous gardez tous les éléments "
+"organisés dans le même dossier parent (y compris le fichier de projet \\*."
+"osp), vous pourrez déplacer votre dossier de projet sans déclencher de "
+"messages de fichiers manquants. Vous pouvez même déplacer un dossier de "
+"projet autonome vers un autre ordinateur sans aucun problème."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:225
+msgid ""
+"Everyone has their unique way of organizing files, and it's crucial to "
+"remember not to make changes to file paths, rename files, or delete files "
+"when working with video editors, as it can lead to missing file issues. For "
+"a detailed guide on missing file(s), see `The Case of “Missing Files”! "
+"<https://github.com/OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_"
+msgstr ""
+"Chacun a sa propre façon d'organiser les fichiers, et il est crucial de ne "
+"pas modifier les chemins de fichiers, renommer ou supprimer des fichiers "
+"lors de l'utilisation d'éditeurs vidéo, car cela peut entraîner des "
+"problèmes de fichiers manquants. Pour un guide détaillé sur les fichiers "
+"manquants, voir `Le cas des « Fichiers manquants » ! <https://github.com/"
+"OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_"

@@ -25,7 +25,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import QRectF
+from PyQt5.QtCore import QRectF, QLocale
 from classes.app import get_app
 
 TRACK_TOOLBAR_SPACING_REDUCTION = 2.0
@@ -338,7 +338,7 @@ class TrackInteractionMixin:
         if not display_index:
             display_index = 1
         _ = get_app()._tr
-        return _("Track %s") % display_index
+        return _("Track %s") % QLocale().toString(display_index)
 
     def normalize_track_number(self, track_num):
         try:

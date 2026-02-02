@@ -817,7 +817,7 @@ class PropertiesModel(updates.UpdateInterface):
                         display_label = track.get("label")
                         break
                     display_count -= 1
-                track_name = display_label or _("Track %s") % display_count
+                track_name = display_label or _("Track %s") % QLocale().toString(display_count)
                 col.setText(track_name)
 
             elif type == "int":
@@ -915,7 +915,7 @@ class PropertiesModel(updates.UpdateInterface):
                         display_label = track.get("label")
                         break
                     display_count -= 1
-                track_name = display_label or _("Track %s") % display_count
+                track_name = display_label or _("Track %s") % QLocale().toString(display_count)
                 col.setText(track_name)
             elif type == "int":
                 col.setText("%d" % value)

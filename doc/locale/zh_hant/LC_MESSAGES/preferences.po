@@ -1,0 +1,900 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) OpenShot Studios, LLC
+# This file is distributed under the same license as the OpenShot Video Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenShot Video Editor 3.4\nReport-Msgid-Bugs-To: \nPOT-Cre"
+"ation-Date: 2026-01-22 12:37-0600\nPO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\nLa"
+"st-Translator: FULL NAME <EMAIL@ADDRESS>\nLanguage-Team: LANGUAGE <LL@li.org>\"
+"nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-"
+"Encoding: 8bit\n"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:23
+msgid "Preferences"
+msgstr ""
+"偏好設定"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:25
+msgid ""
+"The Preferences window contains many important settings and configuration "
+"options for OpenShot. They can be found in the top menu under :guilabel:"
+"`Edit→Preferences`. Many settings will require OpenShot to be restarted "
+"after your changes are applied."
+msgstr ""
+"偏好設定視窗包含許多重要的設定和配置選項，可在頂部選單的 :guilabel:`編輯→偏好設定` 中找到。許多設定在變更後需要重新啟動 OpenShot 才"
+"會生效。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:29
+msgid ""
+"NOTE: Some features such as `Animated Titles` and `external SVG editing` "
+"require setting the paths for **Blender** and **Inkscape** under the General "
+"tab. And if you notice audio playback issues, such as audio drift, you may "
+"need to adjust the audio settings under the Preview tab."
+msgstr ""
+"注意：某些功能如 `動畫標題` 和 ` 外部 SVG 編輯` 需要在「一般」標籤中設定 **Blender** 和 **Inkscape** 的路徑。如果您"
+"發現音訊播放問題，例如音訊漂移，可能需要在「預覽」標籤中調整音訊設定。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:36
+msgid "General"
+msgstr ""
+"一般"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:40
+msgid ""
+"The General tab of the Preferences window allows you to modify the settings "
+"that apply to OpenShot as a whole."
+msgstr ""
+"偏好設定視窗中的「一般」標籤允許您修改適用於整個 OpenShot 的設定。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:123
+#: ../preferences.rst:170 ../preferences.rst:246
+msgid "Setting"
+msgstr ""
+"設定"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:48 ../preferences.rst:101
+#: ../preferences.rst:105 ../preferences.rst:123
+msgid "Default"
+msgstr ""
+"預設"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:170
+#: ../preferences.rst:246 ../preferences.rst:257
+msgid "Description"
+msgstr ""
+"描述"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:48
+msgid "Language"
+msgstr ""
+"語言"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:48
+msgid "Choose your preferred language for OpenShot menus and windows"
+msgstr ""
+"選擇您偏好的 OpenShot 選單和視窗語言"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Default Theme"
+msgstr ""
+"預設主題"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Humanity:Dark"
+msgstr ""
+"Humanity:Dark"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Choose your theme for OpenShot, either Light, Dark or None"
+msgstr ""
+"選擇 OpenShot 的主題，Light、Dark 或無"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid "User Interface Scale"
+msgstr ""
+"使用者介面縮放"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid "1.0"
+msgstr ""
+"1.0"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid ""
+"Adjust the size of OpenShot's interface (restart required; range 1–3; known "
+"issues on Windows)"
+msgstr ""
+"調整 OpenShot 介面的大小（需重新啟動；範圍 1–3；Windows 上有已知問題）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "Image Length (seconds)"
+msgstr ""
+"圖片長度（秒）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "10.00"
+msgstr ""
+"10.00"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "How long the image displays on the screen when added to the timeline"
+msgstr ""
+"圖片加入時間軸時在畫面上顯示的時間長度"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "Volume"
+msgstr ""
+"音量"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "75.00"
+msgstr ""
+"75.00"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "The percentage of the volume of the clip when added to the timeline"
+msgstr ""
+"剪輯加入時間軸時的音量百分比"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53
+msgid "Blender Command (path)"
+msgstr ""
+"Blender 指令（路徑）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53 ../preferences.rst:54
+msgid "*<blank>*"
+msgstr ""
+"*<空白>*"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53
+msgid "The path to the binary for Blender (version 5.0+)"
+msgstr ""
+"Blender 執行檔的路徑（版本 5.0 以上）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:54
+msgid "Advanced Title Editor (path)"
+msgstr ""
+"進階標題編輯器（路徑）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:54
+msgid "The path to the binary for Inkscape"
+msgstr ""
+"Inkscape 執行檔的路徑"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "Show Export Dialog when Finished"
+msgstr ""
+"完成後顯示匯出對話框"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "*<checked>*"
+msgstr ""
+"*<已勾選>*"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "Displays the Export Video windows after the export is finished"
+msgstr ""
+"匯出完成後顯示匯出視窗"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:59
+msgid "Themes"
+msgstr ""
+"主題"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:60
+msgid ""
+"OpenShot comes with 3 standard themes, which change the look and feel of the "
+"program."
+msgstr ""
+"OpenShot 內建三種標準主題，可改變程式的外觀與風格。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:62
+msgid ""
+"**Retro:** A light theme that offers a classic and clean appearance. This "
+"theme uses light gray and white tones, making it ideal for users who prefer "
+"a bright and high-contrast interface. It provides a traditional look that is "
+"easy on the eyes, especially in well-lit environments."
+msgstr ""
+"**Retro：** 一款明亮主題，呈現經典且乾淨的外觀。此主題使用淺灰與白色調，適合喜歡明亮且高對比介面的使用者，尤其在光線充足的環境中，視覺舒適。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:63
+msgid ""
+"**Humanity Dark:** [Default Theme] A dark theme with dark gray tones, "
+"providing a modern and sleek look. This theme is designed for users who "
+"prefer working in low-light conditions or who enjoy a more subdued and "
+"professional appearance. The dark gray background reduces glare and eye "
+"strain, making it suitable for extended editing sessions."
+msgstr ""
+"**Humanity Dark：** [預設主題] 一款深色主題，採用深灰色調，呈現現代且俐落的外觀。此主題適合喜歡在低光環境工作或偏好低調專業風格的使用者。"
+"深灰背景可減少眩光與眼睛疲勞，適合長時間編輯。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:64
+msgid ""
+"**Cosmic Dusk:** A bluish theme with a more modern UI design, enhancing the "
+"visual aesthetics of the editor. This theme features shades of blue and "
+"purple, giving the interface a contemporary and dynamic feel. It combines "
+"modern aesthetics with functionality, offering a fresh and visually "
+"appealing workspace for video editing."
+msgstr ""
+"**Cosmic Dusk：** 一款帶有藍色色調的現代化介面主題，提升編輯器的視覺美感。此主題融合藍色與紫色調，賦予介面當代且充滿活力的感覺，結合現代美學"
+"與功能性，提供新穎且吸引人的影片編輯工作空間。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:69
+msgid "Restoring Defaults"
+msgstr ""
+"還原預設值"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:70
+msgid ""
+"In OpenShot, each preferences category (or tab) in the Preferences window "
+"has a **Restore Defaults** button that allows you to easily reset the values "
+"for that specific category. This feature is particularly useful if you want "
+"to reset only certain parts of your preferences, like keyboard shortcuts, "
+"without affecting the rest of your custom settings."
+msgstr ""
+"在 OpenShot 中，偏好設定視窗的每個類別（或標籤）都有一個 **還原預設值** 按鈕，讓您輕鬆重設該類別的設定。此功能特別適合只想重設部分偏好設定（"
+"如鍵盤快速鍵），而不影響其他自訂設定時使用。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:74
+msgid ""
+"**Where to Find the Restore Defaults Button:** Each category or tab in the "
+"Preferences window has a **Restore Defaults** button located in the bottom "
+"left corner of the screen. The name of the button updates based on the "
+"category you’re viewing. For example, if you're in the \"Keyboard\" tab, the "
+"button will say **Restore Defaults: Keyboard**."
+msgstr ""
+"**還原預設值按鈕位置：** 偏好設定視窗的每個類別或標籤，畫面左下角都有一個 **還原預設值** 按鈕。按鈕名稱會根據您所在的類別更新。例如，在「鍵盤」標"
+"籤時，按鈕會顯示 **還原預設值：鍵盤** 。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:79
+msgid ""
+"**How It Works:** Only the settings in the currently selected category will "
+"be restored to their default values. This selective restoration makes it "
+"easy to reset certain preferences without affecting others."
+msgstr ""
+"**運作方式：** 只有目前選取類別的設定會被還原為預設值。此選擇性還原讓您輕鬆重設特定偏好設定，而不影響其他設定。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:83
+msgid ""
+"**Tip for Beginners:** - If you're not sure about a change you've made in a "
+"particular category, don’t hesitate to use the **Restore Defaults** button. "
+"It’s a simple way to undo changes and get back to the default settings for "
+"that specific category without affecting your overall setup."
+msgstr ""
+"**新手提示：** 如果不確定某個類別的變更，請放心使用 **還原預設值** 按鈕。這是撤銷變更並回復該類別預設設定的簡單方法，不會影響整體設定。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:89
+msgid "Preview"
+msgstr ""
+"預覽"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:93
+msgid ""
+"The Preview tab of the Preferences window allows you to set a **Default "
+"Video Profile** for your project, if you have a preference for a specific "
+"editing profile. More about :ref:`profiles_ref`. Also, you can adjust the "
+"real-time preview audio settings, for example, which audio device and sample "
+"rate to use."
+msgstr ""
+"偏好設定視窗的預覽標籤允許您為專案設定**預設影片設定檔** ，如果您偏好特定的編輯設定檔。更多資訊請參考 :ref:`profiles_ref` 。此外，"
+"您還可以調整即時預覽的音訊設定，例如使用哪個音訊裝置和取樣率。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "Default Video Profile"
+msgstr ""
+"預設影片設定檔"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "HD 720P 30 fps"
+msgstr ""
+"HD 720P 30 fps"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "Select the profile for Preview and Export defaults"
+msgstr ""
+"選擇預覽和匯出預設的設定檔"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid "Playback Audio Buffer Size"
+msgstr ""
+"播放音訊緩衝區大小"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid "512"
+msgstr ""
+"512"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid ""
+"Adjust how many audio samples must be buffered before audio playback begins. "
+"Allowed range of values is 128 to 4096. NOTE: If you are experiencing a "
+"large drift or delay in audio playback, try setting this value lower."
+msgstr ""
+"調整在音訊播放開始前必須緩衝的音訊樣本數。允許的範圍是 128 到 4096。注意：如果您遇到音訊播放嚴重偏移或延遲，請嘗試將此值設為較低。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:105
+msgid "Playback Audio Device"
+msgstr ""
+"播放音訊裝置"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:106
+msgid "Default Audio Sample Rate"
+msgstr ""
+"預設音訊取樣率"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:106
+msgid "44100"
+msgstr ""
+"44100"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:107
+msgid "Default Audio Channels"
+msgstr ""
+"預設音訊聲道"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:107
+msgid "Stereo (2 Channel)"
+msgstr ""
+"立體聲（2 聲道）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:111
+msgid "Autosave"
+msgstr ""
+"自動儲存"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115
+msgid ""
+"Autosave is a feature in OpenShot which automatically saves the current "
+"changes to your project after a specific number of minutes, helping to "
+"reduce the risk or impact of data loss in case of a crash, freeze or user "
+"error."
+msgstr ""
+"自動儲存是 OpenShot 的一項功能，會在特定分鐘數後自動儲存您專案的當前變更，有助於降低因當機、凍結或使用者錯誤而導致資料遺失的風險或影響。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:125
+msgid "Enable Autosave"
+msgstr ""
+"啟用自動儲存"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:125
+msgid "Enabled"
+msgstr ""
+"已啟用"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:126
+msgid "Autosave Interval (minutes)"
+msgstr ""
+"自動儲存間隔（分鐘）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:126
+msgid "3"
+msgstr ""
+"3"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:127
+msgid "History Limit (# of undo/redo)"
+msgstr ""
+"歷史紀錄限制（復原/重做次數）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:127
+msgid "15"
+msgstr ""
+"15"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:128
+msgid "Recovery Limit (# of project copies)"
+msgstr ""
+"復原限制（專案備份數量）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:128
+msgid "30"
+msgstr ""
+"30"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:132
+msgid "Recovery"
+msgstr ""
+"復原"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:134
+msgid ""
+"**Before each save**, a compressed ``*.zip`` copy of the current project is "
+"saved in the recovery folder, to further reduce the risk of data loss. The "
+"recovery folder is located at ``~/.openshot_qt/recovery/`` or ``C:"
+"\\Users\\USERNAME\\.openshot_qt\\recovery``."
+msgstr ""
+"**每次儲存前** ，會將當前專案壓縮成 ``*.zip`` 檔案並存放於復原資料夾，以進一步降低資料遺失風險。復原資料夾位於 ``~/.openshot_"
+"qt/recovery/`` 或 ``C:\\Users\\USERNAME\\.openshot_qt\\recovery`` 。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid ""
+"To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:"
+"`File->Recovery` menu on the main window after opening your project. If "
+"available, a list of matching project versions from the recovery folder are "
+"listed in chronological order (most recent one at the top). This will "
+"automatically rename your current project file to ``{project-name}-{time}-"
+"backup.osp``, and replace it with the recovery project file. You can repeat "
+"this process until you find the correct recovery project. NOTE: If for some "
+"unexpected reason the recovery process fails, you can always rename the \"-"
+"backup.osp\" file to the original project file name to restore it."
+msgstr ""
+"若要復原損壞的 ``*.osp`` 專案檔，請在開啟專案後使用主視窗的 :guilabel:` 檔案->復原` 功能。若有可用的復原版本，會依時間順序（最新"
+"在上方）列出復原資料夾中的匹配專案版本。此操作會自動將您目前的專案檔重新命名為 ``{project-name}-{time}-backup.osp`` ，"
+"並以復原專案檔取代。您可以重複此程序直到找到正確的復原專案。注意：若復原過程意外失敗，您也可以將「-backup.osp」檔案重新命名為原專案檔名以還原。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:146
+msgid ""
+"To **manually** recover a corrupt or broken ``*.osp`` project file, please "
+"find the most recent copy in the recovery folder, and copy/paste the file "
+"into your original project folder location (i.e. the folder that contains "
+"your broken project). If the recovery file has been zipped (``*.zip``), you "
+"must first extract the ``*.osp``, and then copy it into your project folder. "
+"Recovery files are named ``{time}-{project-name}``. You can also use the "
+"**Date Modified** on the file to select the version you are interested in "
+"recovering."
+msgstr ""
+"若要**手動** 復原損壞的 ``*.osp`` 專案檔，請在復原資料夾中找到最新的備份，並將該檔案複製貼上到原專案資料夾（即包含損壞專案的資料夾）。若復原"
+"檔為壓縮檔（``*.zip`` ），需先解壓縮出 ``*.osp`` 檔，再複製到專案資料夾。復原檔案命名格式為 ``{time}-{project-nam"
+"e}`` 。您也可以利用檔案的**修改日期** 來選擇想復原的版本。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:156
+msgid "Cache"
+msgstr ""
+"快取"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:160
+msgid ""
+"Cache settings can be adjusted to make real-time playback faster or less CPU "
+"intensive. The cache is used to store image and audio data for each frame of "
+"video requested. The more frames that are cached, the smoother the real-time "
+"playback will be. However, the more that needs to be cached requires more "
+"CPU to generate the cache. There is a balance, and the default settings "
+"provide a generally sane set of cache values, which should allow most "
+"computers to playback video and audio smoothly. See :ref:`playback_ref`."
+msgstr ""
+"快取設定可調整以加快即時播放速度或降低 CPU 負擔。快取用於儲存每個影片影格的影像和音訊資料。快取的影格越多，即時播放越流暢，但產生快取所需的 CPU 也"
+"越多。兩者需取得平衡，預設設定提供合理的快取值，應能讓大多數電腦順暢播放影片和音訊。詳見 :ref:`playback_ref` 。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:172
+msgid "Cache Mode"
+msgstr ""
+"快取模式"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:172
+msgid ""
+"Choose between Memory or Disk caching (memory caching is preferred). Disk "
+"caching writes image data to the hard disk for later retrieving, and works "
+"best with an SSD."
+msgstr ""
+"選擇記憶體或磁碟快取（建議使用記憶體快取）。磁碟快取會將影像資料寫入硬碟以供後續讀取，使用 SSD 效果最佳。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:173
+msgid "Cache Limit (MB)"
+msgstr ""
+"快取限制（MB）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:173
+msgid ""
+"How many MB are set aside for cache related data. Larger numbers are not "
+"always better, since it takes more CPU to generate more frames to fill the "
+"cache."
+msgstr ""
+"為快取資料保留多少 MB。數值越大不一定越好，因為產生更多影格以填滿快取需要更多 CPU。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:174
+msgid "Image Format (Disk Only)"
+msgstr ""
+"影像格式（僅限磁碟）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:174
+msgid "Image format to store disk cache image data"
+msgstr ""
+"用於儲存磁碟快取影像資料的影像格式"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:175
+msgid "Scale Factor (Disk Only)"
+msgstr ""
+"縮放比例（僅限磁碟）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:175
+msgid ""
+"Percentage (0.1 to 1.0) to reduce the size of disk based image files stored "
+"in the disk cache. Smaller numbers make writing and reading cached image "
+"files faster."
+msgstr ""
+"用於縮小磁碟快取中影像檔案大小的百分比（0.1 到 1.0）。數值越小，寫入和讀取快取影像檔案越快。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:176
+msgid "Image Quality (Disk Only)"
+msgstr ""
+"影像品質（僅限磁碟）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:176
+msgid ""
+"Quality of the image files used in disk cache. The higher compression can "
+"cause more slowness, but results in smaller file sizes."
+msgstr ""
+"磁碟快取中影像檔案的品質。壓縮率越高可能導致速度變慢，但檔案大小較小。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:177
+msgid "Cache Pre-roll: Min Frames:"
+msgstr ""
+"快取預載：最小影格數："
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:177
+msgid ""
+"Minimum # of frames that must be cached before playback begins. The larger "
+"the #, the larger the wait before playback begins."
+msgstr ""
+"播放開始前必須快取的最小影格數。數值越大，播放開始前等待時間越長。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:178
+msgid "Cache Pre-roll: Max Frames:"
+msgstr ""
+"快取預載：最大影格數："
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:178
+msgid ""
+"Maximum # of frames that can be cached during playback (in front of the "
+"playhead). The larger the #, the more CPU is required to cache ahead - vs "
+"display the already cached frames."
+msgstr ""
+"播放時可快取的最大影格數（在播放頭前方）。數字越大，快取所需的 CPU 越多，與顯示已快取的影格相比。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:179
+msgid "Cache Ahead (Percent):"
+msgstr ""
+"快取前方（百分比）："
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:179
+msgid ""
+"Between 0.0 and 1.0. This represents how much % we cache ahead of the "
+"playhead. For example, 0.5 would cache 50% behind and 50% ahead of the "
+"playhead. 0.8 would cache 20% behind and 80% ahead of the playhead."
+msgstr ""
+"介於 0.0 和 1.0 之間。表示我們快取播放頭前方的百分比。例如，0.5 表示快取播放頭後方 50% 和前方 50%；0.8 表示快取播放頭後方 20%"
+" 和前方 80%。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:180
+msgid "Cache Max Frames:"
+msgstr ""
+"快取最大影格數："
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:180
+msgid ""
+"This is an override on the total allowed frames that can be cached by our "
+"caching thread. It is defaulted to 600 frames, but even if you give a huge "
+"amount of RAM to OpenShot's cache size, this will override the max # of "
+"frames cached. The reason is... sometimes when the preview window is very "
+"small, and the cache size is set very high, OpenShot might calculate that we "
+"can cache 30,000 frames, or something silly which will take a huge amount of "
+"CPU, lagging the system. This setting is designed to clamp the upper limit "
+"of the cache to something reasonable... even on systems that give OpenShot "
+"huge amounts of RAM to work with."
+msgstr ""
+"這是對快取執行緒可快取的總影格數的覆寫。預設為 600 影格，但即使您給予 OpenShot 大量的快取記憶體，此設定仍會覆蓋最大快取影格數。原因是... "
+"有時候當預覽視窗非常小且快取大小設定很高時，OpenShot 可能會計算出可快取 30,000 影格或其他不合理的數字，導致大量 CPU 使用並使系統延遲。"
+"此設定用於將快取上限限制在合理範圍內，即使在提供 OpenShot 大量記憶體的系統上也是如此。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:184
+msgid "Debug"
+msgstr ""
+"除錯"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:188
+msgid ""
+"Here you can modify how much data should be logged. Normally, *Debug Mode "
+"(verbose)* is off. The default port is 5556. If you want to help improve "
+"OpenShot you can enable **Send Anonymous Metrics and Errors**."
+msgstr ""
+"您可以在此修改要記錄的資料量。通常，*除錯模式（詳細）* 是關閉的。預設連接埠為 5556。如果您想協助改進 OpenShot，可以啟用 **傳送匿名統計與"
+"錯誤** 。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:192
+msgid "Performance"
+msgstr ""
+"效能"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:195
+msgid ""
+"Please keep in mind that GPU hardware acceleration is experimental at the "
+"moment. OpenShot supports both decoding and encoding acceleration. For more "
+"information take a look at our `Github HW-ACCEL Doc <https://github.com/"
+"OpenShot/libopenshot/blob/develop/doc/HW-ACCEL.md>`_. NOTE: On systems with "
+"older graphics cards, hardware acceleration may not always be faster than "
+"CPU encoding."
+msgstr ""
+"請注意，GPU 硬體加速目前仍屬實驗性質。OpenShot 支援解碼與編碼加速。更多資訊請參考我們的 `Github HW-ACCEL 文件 <https:"
+"//github.com/OpenShot/libopenshot/blob/develop/doc/HW-ACCEL.md>`_ 。注意：在使用較舊顯示卡"
+"的系統上，硬體加速不一定比 CPU 編碼更快。 `Github HW-ACCEL Doc <https://github.com/OpenShot/libo"
+"penshot/blob/develop/doc/HW-ACCEL.md>`_"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:212
+msgid "Keyboard"
+msgstr ""
+"鍵盤"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:215
+msgid ""
+"This section allows you to view and customize hotkeys for various actions in "
+"the application. Here, you can assign and manage multiple shortcuts for the "
+"same action and restore default shortcuts if needed."
+msgstr ""
+"此區段允許您檢視並自訂應用程式中各種操作的快速鍵。您可以為同一操作指派多個快捷鍵，並在需要時還原預設快捷鍵。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:218
+msgid ""
+"**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to "
+"the same action by separating them with a pipe (``|``) delimiter. This "
+"flexibility allows you to configure as many shortcuts as you need for each "
+"action."
+msgstr ""
+"**指派多個快捷鍵** ：您可以使用管道符號（``|`` ）分隔，為同一操作指派多個鍵盤快捷鍵。此彈性讓您能為每個操作配置所需數量的快捷鍵。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:221
+msgid ""
+"**Immediate Application**: No restart is required after adjusting keyboard "
+"shortcuts. Changes are applied immediately, so you can start using your "
+"updated shortcuts right away."
+msgstr ""
+"**立即生效** ：調整鍵盤快捷鍵後無需重新啟動。變更會立即套用，您可以立刻使用更新後的快捷鍵。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:224
+msgid ""
+"**Restore Default Shortcuts**: If needed, you can reset all keyboard "
+"shortcuts to their default settings by clicking on the :guilabel:`Restore "
+"Defaults: Keyboard` button located in the bottom-left corner of the "
+"Preferences screen."
+msgstr ""
+"**還原預設快捷鍵** ：如有需要，您可以點擊偏好設定畫面左下角的 :guilabel:`還原預設：鍵盤` 按鈕，將所有鍵盤快捷鍵重設為預設值。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:227
+msgid ""
+"**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are "
+"any duplicate shortcuts, they will be highlighted in **red** and will not "
+"function until the conflict is resolved."
+msgstr ""
+"**快捷鍵唯一性** ：每個鍵盤快捷鍵必須唯一。若有重複快捷鍵，將以**紅色** 標示，且在衝突解決前無法使用。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:231
+msgid ""
+"For more detailed information on how to use and customize keyboard "
+"shortcuts, see :ref:`keyboard_shortcut_ref`."
+msgstr ""
+"欲了解如何使用及自訂鍵盤快捷鍵的詳細資訊，請參閱 :ref:`keyboard_shortcut_ref` 。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:234
+msgid "Location"
+msgstr ""
+"位置"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:238
+msgid ""
+"Default file path locations for saving/opening projects, importing files, "
+"and exporting videos can be configured here. This can save you time by "
+"defaulting the open/save file dialogs to the most appropriate starting "
+"folder (options described below)."
+msgstr ""
+"可在此設定預設的檔案路徑位置，用於儲存/開啟專案、匯入檔案及匯出影片。這能節省您時間，讓開啟/儲存檔案對話框預設至最適合的起始資料夾（下方有相關選項說明）。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:248
+msgid "File Import"
+msgstr ""
+"檔案匯入"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:248
+msgid "Default folder to choose when importing a file"
+msgstr ""
+"匯入檔案時預設選擇的資料夾"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:249
+msgid "Save or Open Project"
+msgstr ""
+"儲存或開啟專案"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:249
+msgid "Default folder to choose when saving or opening a project file"
+msgstr ""
+"儲存或開啟專案檔案時預設選擇的資料夾"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:250
+msgid "Video Export"
+msgstr ""
+"影片匯出"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:250
+msgid "Default folder to choose when exporting a video"
+msgstr ""
+"匯出影片時預設選擇的資料夾"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:257
+msgid "Values"
+msgstr ""
+"值"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:259
+msgid "**Recent Folder**"
+msgstr ""
+"**最近使用的資料夾**"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:259
+msgid ""
+"The last folder used for this same operation. Project folders, Import "
+"folders, and Export folders are tracked separately."
+msgstr ""
+"此操作最後使用的資料夾。專案資料夾、匯入資料夾及匯出資料夾分別追蹤。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:260
+msgid "**Project Folder**"
+msgstr ""
+"**專案資料夾**"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:260
+msgid ""
+"The current project folder (or the user's home folder, if the project is not "
+"yet saved)"
+msgstr ""
+"目前的專案資料夾（若專案尚未儲存，則為使用者的主目錄）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:266
+msgid "Reset (Default Values)"
+msgstr ""
+"重設（預設值）"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:268
+msgid ""
+"To reset **all** preferences to their default values, please delete the "
+"``openshot.settings`` file and re-launch OpenShot. The settings file can be "
+"located at this path: ``~/.openshot_qt/openshot.settings`` or ``C:"
+"\\Users\\USERNAME\\.openshot_qt\\openshot.settings``. When OpenShot is re-"
+"launched, it will create the missing ``openshot.settings`` file with default "
+"values."
+msgstr ""
+"若要將**所有** 偏好設定重設為預設值，請刪除 ``openshot.settings`` 檔案並重新啟動 OpenShot。設定檔位置可能在：``~/."
+"openshot_qt/openshot.settings`` 或 ``C:\\Users\\USERNAME\\.openshot_qt\\opensho"
+"t.settings`` 。重新啟動後，OpenShot 將會建立缺失的 ``openshot.settings`` 檔案並使用預設值。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:273
+msgid ""
+"Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch "
+"OpenShot. However, please make a **backup** of any customized folders: "
+"**emojis, presets, profiles, recovery, title_templates, transitions, or "
+"yolo**. For example, your ``/recovery/`` sub-folder contains backup copies "
+"of all your existing projects (``*.osp`` files)."
+msgstr ""
+"您也可以選擇刪除整個 ``.openshot_qt/`` 資料夾並重新啟動 OpenShot。但請務必**備份** 任何自訂資料夾：**emojis、pre"
+"sets、profiles、recovery、title_templates、transitions 或 yolo** 。例如，您的 ``/recovery"
+"/`` 子資料夾包含所有現有專案（``*.osp`` 檔案）的備份副本。"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:278
+msgid ""
+"Deleting the ``.openshot_qt/`` folder is the quickest method to restore "
+"OpenShot preferences and settings to their Default values (i.e. also called "
+"a `clean install`). When OpenShot is re-launched, it will create any missing "
+"folders (i.e. ``.openshot_qt/``) and settings files. See our `step-by-step "
+"guide <https://github.com/OpenShot/openshot-qt/wiki/Clean-Installation-of-"
+"OpenShot>`_ for more information about **clean installs** of OpenShot."
+msgstr ""
+"刪除 ``.openshot_qt/`` 資料夾是恢復 OpenShot 偏好設定與設定為預設值（即所謂的「乾淨安裝」）的最快方法。當重新啟動 OpenSh"
+"ot 時，會建立任何遺失的資料夾（例如 ``.openshot_qt/`` ）和設定檔。請參閱我們的 ` 逐步指南 <https://github.com/"
+"OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ 以了解更多關於 OpenShot *"
+"*乾淨安裝** 的資訊。 `step-by-step guide <https://github.com/OpenShot/openshot-qt/wiki"
+"/Clean-Installation-of-OpenShot>`_"

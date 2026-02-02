@@ -18,6 +18,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import re
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath('.')), "src"))
 
@@ -99,6 +100,7 @@ release = info.VERSION
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
 language = "en"
+locale_dirs = ["locale/"]
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -153,6 +155,9 @@ todo_include_todos = False
 #
 html_theme = 'sphinx_rtd_theme'
 
+# Optional GA4 measurement ID for HTML builds (set via -D ga4_measurement_id=G-XXXX).
+ga4_measurement_id = None
+
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
@@ -186,6 +191,10 @@ html_favicon = "../xdg/openshot-qt.ico"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['css']
+
+# Use XeLaTeX for Unicode/RTL language support in PDF output.
+latex_engine = "xelatex"
+
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -288,6 +297,99 @@ latex_elements = {
     #
     # 'figure_align': 'htbp',
 }
+
+def _configure_latex_fonts(app, config):
+    lang = (config.language or "").lower()
+    latex_elements = dict(config.latex_elements or {})
+
+    fontpkg = r"""
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+
+% Global fonts must support Latin because Sphinx headings/UI/macros use these.
+\setmainfont{Noto Serif}
+\setsansfont{Noto Sans}
+\setmonofont{Noto Sans Mono}[Scale=0.9]
+"""
+
+    preamble = latex_elements.get("preamble", "")
+    if lang.startswith("bn"):
+        # If your bn is already fine, leave it alone — but polyglossia is also OK.
+        fontpkg += r"""
+\usepackage{ucharclasses}
+\newfontfamily\bengalifont[
+  Script=Bengali,
+  AutoFakeSlant=0.2,
+  AutoFakeBold=2.0
+]{Noto Sans Bengali}
+\setTransitionsFor{Bengali}{\begingroup\bengalifont}{\endgroup}
+"""
+
+    elif lang.startswith("fa"):
+        fontpkg += r"""
+\usepackage{ucharclasses}
+\usepackage{newunicodechar}
+\newfontfamily\arabicfont[
+  Script=Arabic,
+  Language=Farsi,
+  AutoFakeSlant=0.2,
+  AutoFakeBold=2.0
+]{Noto Naskh Arabic}
+\setTransitionsFor{Arabic}{\begingroup\arabicfont}{\endgroup}
+\newunicodechar{^^^^200c}{}
+"""
+
+    latex_elements["fontpkg"] = fontpkg
+    latex_elements["preamble"] = preamble
+    config.latex_elements = latex_elements
+
+
+def _configure_html_context(app, config):
+    # Ensure custom values are available to templates after -D overrides.
+    html_context = dict(config.html_context or {})
+    html_context["ga4_measurement_id"] = config.ga4_measurement_id
+    config.html_context = html_context
+
+
+def _rewrite_shared_assets(app, exception):
+    if exception is not None:
+        return
+    if os.environ.get("OPENSHOT_SHARED_ASSETS") != "1":
+        return
+    lang = (app.config.language or "").lower()
+    if not lang or lang == "en":
+        return
+
+    replacements = {
+        "_static/": "../_static/",
+        "_images/": "../_images/",
+        "_sources/": "../_sources/",
+        "_downloads/": "../_downloads/",
+    }
+    pattern = re.compile(r'(?<=["\'])(' + "|".join(map(re.escape, replacements.keys())) + r')')
+
+    for root, _, files in os.walk(app.outdir):
+        for name in files:
+            if not name.endswith(".html"):
+                continue
+            path = os.path.join(root, name)
+            with open(path, "r", encoding="utf-8") as handle:
+                data = handle.read()
+            new_data = pattern.sub(lambda m: replacements[m.group(1)], data)
+            if new_data != data:
+                with open(path, "w", encoding="utf-8") as handle:
+                    handle.write(new_data)
+
+    for shared in ("_static", "_images", "_sources", "_downloads", ".doctrees"):
+        target = os.path.join(app.outdir, shared)
+        if os.path.isdir(target):
+            for root, dirs, files in os.walk(target, topdown=False):
+                for fname in files:
+                    os.remove(os.path.join(root, fname))
+                for dname in dirs:
+                    os.rmdir(os.path.join(root, dname))
+            os.rmdir(target)
+
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
@@ -455,3 +557,9 @@ epub_exclude_files = ['search.html']
 # If false, no index is generated.
 #
 # epub_use_index = True
+
+def setup(app):
+    app.add_config_value("ga4_measurement_id", None, "env")
+    app.connect("config-inited", _configure_latex_fonts)
+    app.connect("config-inited", _configure_html_context)
+    app.connect("build-finished", _rewrite_shared_assets)

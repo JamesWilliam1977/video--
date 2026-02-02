@@ -1,0 +1,190 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) OpenShot Studios, LLC
+# This file is distributed under the same license as the OpenShot Video Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenShot Video Editor 3.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:23
+msgid "Troubleshooting"
+msgstr "문제 해결"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:25
+msgid ""
+"If you are experiencing an issue with OpenShot, such as a freeze, crash, or "
+"error message, there are many different techniques which can be useful for "
+"troubleshooting the issue."
+msgstr ""
+"OpenShot에서 정지, 충돌 또는 오류 메시지와 같은 문제가 발생하는 경우, 문제 해"
+"결에 유용한 다양한 방법이 있습니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:29
+msgid "Windows 11 Unresponsive"
+msgstr "Windows 11 응답 없음"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:31
+msgid ""
+"If you experience a freeze on Windows 11, this is a known issue with PyQt5 "
+"and Windows 11, related to the accessibility features in Qt. This is "
+"triggered by pressing :kbd:`Ctrl+C` in OpenShot (*only on Windows 11*). "
+"OpenShot will become unresponsive and a memory leak is also present (i.e. "
+"the longer OpenShot is unresponsive, the larger your memory leak will become "
+"until OpenShot finally crashes or the user kills the process)."
+msgstr ""
+"Windows 11에서 정지가 발생하면, 이는 PyQt5와 Windows 11의 알려진 문제로, Qt"
+"의 접근성 기능과 관련이 있습니다. OpenShot에서 :kbd:`Ctrl+C` 를 누르면 "
+"(*Windows 11에서만*) 이 문제가 발생합니다. OpenShot이 응답하지 않게 되고 메모"
+"리 누수도 발생합니다(즉, OpenShot이 응답하지 않는 시간이 길어질수록 메모리 누"
+"수가 커져 결국 OpenShot이 충돌하거나 사용자가 프로세스를 종료할 때까지 계속됩"
+"니다)."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:36
+msgid ""
+"A simple work-around is to avoid :kbd:`Ctrl+C` on Windows 11, and instead "
+"use the right-click Copy/Paste menus. Another work-around is to remap your "
+"\"Copy\" from :kbd:`Ctrl+C` to something else, for example :kbd:`Alt+C`. You "
+"can change your keyboard mappings in the OpenShot Preferences. See :ref:"
+"`preferences_keyboard_ref`."
+msgstr ""
+"간단한 해결책은 Windows 11에서 :kbd:`Ctrl+C` 를 피하고 대신 마우스 오른쪽 클"
+"릭 복사/붙여넣기 메뉴를 사용하는 것입니다. 또 다른 해결책은 \"복사\" 단축키"
+"를 :kbd:`Ctrl+C` 에서 :kbd:`Alt+C` 와 같이 다른 키로 재설정하는 것입니다. "
+"OpenShot 환경 설정에서 키보드 매핑을 변경할 수 있습니다. :ref:"
+"`preferences_keyboard_ref` 를 참조하세요."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:41
+msgid "Windows Debugging with GDB"
+msgstr "Windows에서 GDB로 디버깅하기"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:43
+msgid ""
+"If you are experiencing a crash or freeze with OpenShot in Windows 10/11, "
+"the following step by step instructions will help you determine the cause of "
+"the crash. These instructions will display a stack trace of OpenShot's "
+"source code, at the location of the crash. This information can be extremely "
+"useful for our development team, and very useful to attach to bug reports "
+"(for a quicker resolution)."
+msgstr ""
+"Windows 10/11에서 OpenShot이 충돌하거나 정지하는 경우, 다음 단계별 지침이 충"
+"돌 원인을 파악하는 데 도움이 됩니다. 이 지침은 충돌 위치에서 OpenShot 소스 코"
+"드의 스택 추적을 표시합니다. 이 정보는 개발팀에 매우 유용하며, 버그 보고서에 "
+"첨부하면 문제 해결이 빨라집니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:49
+msgid "Install the Latest Daily Build"
+msgstr "최신 데일리 빌드 설치"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:51
+msgid ""
+"Before attaching a debugger, please download the **latest version** of "
+"OpenShot: https://www.openshot.org/download#daily. Install this version of "
+"OpenShot to the default location: ``C:\\Program Files\\OpenShot Video "
+"Editor\\``. For details instructions on debugging OpenShot on Windows, "
+"please see `this wiki <https://github.com/OpenShot/openshot-qt/wiki/Windows-"
+"Debugging-with-GDB>`_."
+msgstr ""
+"디버거를 연결하기 전에 OpenShot의 ** 최신 버전** 을 다운로드하세요: https://"
+"www.openshot.org/download#daily. 이 버전을 기본 위치인 ``C:\\Program "
+"Files\\OpenShot Video Editor\\`` 에 설치하세요. Windows에서 OpenShot 디버깅에 "
+"대한 자세한 지침은 ` 이 위키 <https://github.com/OpenShot/openshot-qt/wiki/"
+"Windows-Debugging-with-GDB>`_ 를 참조하세요."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:56
+msgid "Install MSYS2"
+msgstr "MSYS2 설치"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:58
+msgid ""
+"The Windows version of OpenShot is compiled using an environment called "
+"MSYS2. In order to attach the GDB debugger to our executable, ``openshot-qt."
+"exe``, you must first install MSYS2. This step is only required once."
+msgstr ""
+"Windows용 OpenShot은 MSYS2라는 환경에서 컴파일됩니다. GDB 디버거를 실행 파일 "
+"``openshot-qt.exe`` 에 연결하려면 먼저 MSYS2를 설치해야 합니다. 이 단계는 한 "
+"번만 필요합니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:61
+msgid "Download & Install MSYS2: `<http://www.msys2.org/>`_"
+msgstr "MSYS2 다운로드 및 설치: `<http://www.msys2.org/>`_"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:62 ../troubleshoot.rst:78
+msgid ""
+"Run ``MSYS2 MinGW x64`` command prompt (for example: ``C:"
+"\\msys64\\msys2_shell.cmd -mingw64``)"
+msgstr ""
+"``MSYS2 MinGW x64`` 명령 프롬프트 실행 (예: ``C:\\msys64\\msys2_shell.cmd -"
+"mingw64``)"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:63
+msgid "Update all packages (*Copy/Paste the following command*):"
+msgstr "모든 패키지 업데이트 (*다음 명령어 복사/붙여넣기*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:69
+msgid "Install GDB debugger (*Copy/Paste the following command*):"
+msgstr "GDB 디버거 설치 (*다음 명령어 복사/붙여넣기*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:76
+msgid "Launch OpenShot with GDB Debugger"
+msgstr "GDB 디버거로 OpenShot 실행"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:80
+msgid "Update the PATH (*Copy/Paste the following commands*):"
+msgstr "PATH 업데이트 (*다음 명령어 복사/붙여넣기*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:87
+msgid ""
+"Load OpenShot into the GDB debugger (*Copy/Paste the following commands*):"
+msgstr "GDB 디버거에 OpenShot 로드 (*다음 명령어 복사/붙여넣기*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:94
+msgid "Launch OpenShot from GDB prompt (*Copy/Paste the following command*):"
+msgstr "GDB 프롬프트에서 OpenShot 실행 (*다음 명령어 복사/붙여넣기*):"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:101
+msgid "Print Debugging Info"
+msgstr "디버깅 정보 출력"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:103
+msgid ""
+"Once OpenShot has launched successfully with GDB attached, all you need to "
+"do is trigger a crash or freeze in OpenShot. When a crash occurs, switch "
+"back to the MSYS2 MinGW64 terminal and run one of the following commands (by "
+"typing it and pressing ENTER). Usually, the first command to enter is "
+"``bt``, which stands for ``backtrace``. More commands are listed below."
+msgstr ""
+"GDB가 연결된 상태로 OpenShot이 성공적으로 실행되면, OpenShot에서 충돌이나 정"
+"지를 유발하면 됩니다. 충돌이 발생하면 MSYS2 MinGW64 터미널로 돌아가 다음 명령"
+"어 중 하나를 입력하고 ENTER를 누르세요. 보통 처음 입력하는 명령어는 ``bt`` (백"
+"트레이스)입니다. 더 많은 명령어가 아래에 나와 있습니다."

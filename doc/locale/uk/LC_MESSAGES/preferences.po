@@ -1,0 +1,937 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) OpenShot Studios, LLC
+# This file is distributed under the same license as the OpenShot Video Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenShot Video Editor 3.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:23
+msgid "Preferences"
+msgstr "Налаштування"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:25
+msgid ""
+"The Preferences window contains many important settings and configuration "
+"options for OpenShot. They can be found in the top menu under :guilabel:"
+"`Edit→Preferences`. Many settings will require OpenShot to be restarted "
+"after your changes are applied."
+msgstr ""
+"Вікно налаштувань містить багато важливих параметрів і опцій конфігурації "
+"для OpenShot. Їх можна знайти у верхньому меню під :guilabel:"
+"`Редагувати→Налаштування`. Для застосування багатьох змін потрібно "
+"перезапустити OpenShot."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:29
+msgid ""
+"NOTE: Some features such as `Animated Titles` and `external SVG editing` "
+"require setting the paths for **Blender** and **Inkscape** under the General "
+"tab. And if you notice audio playback issues, such as audio drift, you may "
+"need to adjust the audio settings under the Preview tab."
+msgstr ""
+"ПРИМІТКА: Деякі функції, такі як `Анімовані заголовки` та `зовнішнє "
+"редагування SVG`, вимагають вказати шляхи до **Blender** та **Inkscape** на "
+"вкладці Загальні. Якщо ви помічаєте проблеми з відтворенням аудіо, "
+"наприклад, зсув звуку, можливо, потрібно налаштувати аудіо у вкладці "
+"Попередній перегляд."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:36
+msgid "General"
+msgstr "Загальні"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:40
+msgid ""
+"The General tab of the Preferences window allows you to modify the settings "
+"that apply to OpenShot as a whole."
+msgstr ""
+"Вкладка Загальні у вікні налаштувань дозволяє змінювати параметри, які "
+"застосовуються до OpenShot загалом."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:123
+#: ../preferences.rst:170 ../preferences.rst:246
+msgid "Setting"
+msgstr "Параметр"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:48 ../preferences.rst:101
+#: ../preferences.rst:105 ../preferences.rst:123
+msgid "Default"
+msgstr "За замовчуванням"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:170
+#: ../preferences.rst:246 ../preferences.rst:257
+msgid "Description"
+msgstr "Опис"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:48
+msgid "Language"
+msgstr "Мова"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:48
+msgid "Choose your preferred language for OpenShot menus and windows"
+msgstr "Виберіть бажану мову для меню та вікон OpenShot"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Default Theme"
+msgstr "Тема за замовчуванням"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Humanity:Dark"
+msgstr "Humanity:Dark"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:49
+msgid "Choose your theme for OpenShot, either Light, Dark or None"
+msgstr "Виберіть тему для OpenShot: Світла, Темна або Відсутня"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid "User Interface Scale"
+msgstr "Масштаб інтерфейсу"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid "1.0"
+msgstr "1.0"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:50
+msgid ""
+"Adjust the size of OpenShot's interface (restart required; range 1–3; known "
+"issues on Windows)"
+msgstr ""
+"Налаштуйте розмір інтерфейсу OpenShot (потрібен перезапуск; діапазон 1–3; "
+"відомі проблеми у Windows)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "Image Length (seconds)"
+msgstr "Тривалість зображення (секунди)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "10.00"
+msgstr "10.00"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:51
+msgid "How long the image displays on the screen when added to the timeline"
+msgstr ""
+"Як довго зображення відображається на екрані після додавання на часову шкалу"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "Volume"
+msgstr "Гучність"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "75.00"
+msgstr "75.00"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:52
+msgid "The percentage of the volume of the clip when added to the timeline"
+msgstr "Відсоток гучності кліпу при додаванні на часову шкалу"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53
+msgid "Blender Command (path)"
+msgstr "Команда Blender (шлях)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53 ../preferences.rst:54
+msgid "*<blank>*"
+msgstr "*<порожньо>*"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:53
+msgid "The path to the binary for Blender (version 5.0+)"
+msgstr "Шлях до виконуваного файлу Blender (версія 5.0 і вище)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:54
+msgid "Advanced Title Editor (path)"
+msgstr "Редактор заголовків (шлях)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:54
+msgid "The path to the binary for Inkscape"
+msgstr "Шлях до виконуваного файлу Inkscape"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "Show Export Dialog when Finished"
+msgstr "Показувати діалог експорту після завершення"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "*<checked>*"
+msgstr "*<позначено>*"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:55
+msgid "Displays the Export Video windows after the export is finished"
+msgstr "Показує вікно експорту відео після завершення експорту"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:59
+msgid "Themes"
+msgstr "Теми"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:60
+msgid ""
+"OpenShot comes with 3 standard themes, which change the look and feel of the "
+"program."
+msgstr ""
+"OpenShot постачається з 3 стандартними темами, які змінюють вигляд і "
+"відчуття програми."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:62
+msgid ""
+"**Retro:** A light theme that offers a classic and clean appearance. This "
+"theme uses light gray and white tones, making it ideal for users who prefer "
+"a bright and high-contrast interface. It provides a traditional look that is "
+"easy on the eyes, especially in well-lit environments."
+msgstr ""
+"**Retro:** Світла тема з класичним і чистим виглядом. Ця тема використовує "
+"світло-сірі та білі тони, що ідеально підходить для користувачів, які "
+"віддають перевагу яскравому та контрастному інтерфейсу. Вона забезпечує "
+"традиційний вигляд, який не напружує очі, особливо в добре освітлених "
+"приміщеннях."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:63
+msgid ""
+"**Humanity Dark:** [Default Theme] A dark theme with dark gray tones, "
+"providing a modern and sleek look. This theme is designed for users who "
+"prefer working in low-light conditions or who enjoy a more subdued and "
+"professional appearance. The dark gray background reduces glare and eye "
+"strain, making it suitable for extended editing sessions."
+msgstr ""
+"**Humanity Dark:** [Тема за замовчуванням] Темна тема з темно-сірими тонами, "
+"що забезпечує сучасний і стильний вигляд. Ця тема призначена для "
+"користувачів, які віддають перевагу роботі в умовах низького освітлення або "
+"цінують стриманий і професійний вигляд. Темно-сірий фон зменшує відблиски та "
+"напругу очей, що робить її придатною для тривалих сесій редагування."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:64
+msgid ""
+"**Cosmic Dusk:** A bluish theme with a more modern UI design, enhancing the "
+"visual aesthetics of the editor. This theme features shades of blue and "
+"purple, giving the interface a contemporary and dynamic feel. It combines "
+"modern aesthetics with functionality, offering a fresh and visually "
+"appealing workspace for video editing."
+msgstr ""
+"**Cosmic Dusk:** Блакитна тема з більш сучасним дизайном інтерфейсу, що "
+"покращує візуальну естетику редактора. Ця тема містить відтінки синього та "
+"фіолетового, надаючи інтерфейсу сучасний і динамічний вигляд. Вона поєднує "
+"сучасну естетику з функціональністю, пропонуючи свіжий і привабливий робочий "
+"простір для відеомонтажу."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:69
+msgid "Restoring Defaults"
+msgstr "Відновлення налаштувань за замовчуванням"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:70
+msgid ""
+"In OpenShot, each preferences category (or tab) in the Preferences window "
+"has a **Restore Defaults** button that allows you to easily reset the values "
+"for that specific category. This feature is particularly useful if you want "
+"to reset only certain parts of your preferences, like keyboard shortcuts, "
+"without affecting the rest of your custom settings."
+msgstr ""
+"У OpenShot кожна категорія налаштувань (або вкладка) у вікні налаштувань має "
+"кнопку **Відновити за замовчуванням**, яка дозволяє легко скинути значення "
+"для цієї конкретної категорії. Ця функція особливо корисна, якщо ви хочете "
+"скинути лише певні частини налаштувань, наприклад, гарячі клавіші, не "
+"впливаючи на інші ваші персональні налаштування."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:74
+msgid ""
+"**Where to Find the Restore Defaults Button:** Each category or tab in the "
+"Preferences window has a **Restore Defaults** button located in the bottom "
+"left corner of the screen. The name of the button updates based on the "
+"category you’re viewing. For example, if you're in the \"Keyboard\" tab, the "
+"button will say **Restore Defaults: Keyboard**."
+msgstr ""
+"**Де знайти кнопку Відновити за замовчуванням:** Кожна категорія або вкладка "
+"у вікні налаштувань має кнопку **Відновити за замовчуванням**, розташовану в "
+"нижньому лівому куті екрану. Назва кнопки оновлюється залежно від "
+"переглянутої категорії. Наприклад, якщо ви на вкладці «Клавіатура», кнопка "
+"буде називатися **Відновити за замовчуванням: Клавіатура**."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:79
+msgid ""
+"**How It Works:** Only the settings in the currently selected category will "
+"be restored to their default values. This selective restoration makes it "
+"easy to reset certain preferences without affecting others."
+msgstr ""
+"**Як це працює:** Відновлюються лише налаштування в обраній категорії до "
+"значень за замовчуванням. Такий вибірковий скидання дозволяє легко скинути "
+"певні налаштування, не впливаючи на інші."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:83
+msgid ""
+"**Tip for Beginners:** - If you're not sure about a change you've made in a "
+"particular category, don’t hesitate to use the **Restore Defaults** button. "
+"It’s a simple way to undo changes and get back to the default settings for "
+"that specific category without affecting your overall setup."
+msgstr ""
+"**Порада для початківців:** Якщо ви не впевнені щодо змін у певній "
+"категорії, не соромтеся скористатися кнопкою **Відновити за замовчуванням**. "
+"Це простий спосіб скасувати зміни і повернутися до налаштувань за "
+"замовчуванням для цієї категорії, не впливаючи на загальні налаштування."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:89
+msgid "Preview"
+msgstr "Попередній перегляд"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:93
+msgid ""
+"The Preview tab of the Preferences window allows you to set a **Default "
+"Video Profile** for your project, if you have a preference for a specific "
+"editing profile. More about :ref:`profiles_ref`. Also, you can adjust the "
+"real-time preview audio settings, for example, which audio device and sample "
+"rate to use."
+msgstr ""
+"Вкладка Попереднього перегляду у вікні Налаштувань дозволяє встановити "
+"**Профіль відео за замовчуванням** для вашого проєкту, якщо ви віддаєте "
+"перевагу певному профілю редагування. Детальніше про :ref:`profiles_ref`. "
+"Також ви можете налаштувати аудіо для попереднього перегляду в реальному "
+"часі, наприклад, вибрати аудіопристрій і частоту дискретизації."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "Default Video Profile"
+msgstr "Профіль відео за замовчуванням"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "HD 720P 30 fps"
+msgstr "HD 720P 30 кадрів/с"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid "Select the profile for Preview and Export defaults"
+msgstr ""
+"Виберіть профіль за замовчуванням для попереднього перегляду та експорту"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid "Playback Audio Buffer Size"
+msgstr "Розмір аудіобуфера відтворення"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid "512"
+msgstr "512"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:104
+msgid ""
+"Adjust how many audio samples must be buffered before audio playback begins. "
+"Allowed range of values is 128 to 4096. NOTE: If you are experiencing a "
+"large drift or delay in audio playback, try setting this value lower."
+msgstr ""
+"Налаштуйте, скільки аудіосемплів має бути в буфері перед початком "
+"відтворення аудіо. Допустимий діапазон значень від 128 до 4096. ПРИМІТКА: "
+"Якщо ви помічаєте значне відставання або затримку аудіо, спробуйте зменшити "
+"це значення."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:105
+msgid "Playback Audio Device"
+msgstr "Аудіопристрій відтворення"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:106
+msgid "Default Audio Sample Rate"
+msgstr "Частота дискретизації аудіо за замовчуванням"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:106
+msgid "44100"
+msgstr "44100"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:107
+msgid "Default Audio Channels"
+msgstr "Канали аудіо за замовчуванням"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:107
+msgid "Stereo (2 Channel)"
+msgstr "Стерео (2 канали)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:111
+msgid "Autosave"
+msgstr "Автозбереження"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115
+msgid ""
+"Autosave is a feature in OpenShot which automatically saves the current "
+"changes to your project after a specific number of minutes, helping to "
+"reduce the risk or impact of data loss in case of a crash, freeze or user "
+"error."
+msgstr ""
+"Автозбереження — це функція в OpenShot, яка автоматично зберігає поточні "
+"зміни у вашому проєкті через певний проміжок часу, допомагаючи зменшити "
+"ризик або наслідки втрати даних у разі збою, зависання або помилки "
+"користувача."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:125
+msgid "Enable Autosave"
+msgstr "Увімкнути автозбереження"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:125
+msgid "Enabled"
+msgstr "Увімкнено"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:126
+msgid "Autosave Interval (minutes)"
+msgstr "Інтервал автозбереження (хвилини)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:126
+msgid "3"
+msgstr "3"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:127
+msgid "History Limit (# of undo/redo)"
+msgstr "Обмеження історії (кількість скасувань/повторів)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:127
+msgid "15"
+msgstr "15"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:128
+msgid "Recovery Limit (# of project copies)"
+msgstr "Обмеження відновлення (кількість копій проєкту)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:128
+msgid "30"
+msgstr "30"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:132
+msgid "Recovery"
+msgstr "Відновлення"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:134
+msgid ""
+"**Before each save**, a compressed ``*.zip`` copy of the current project is "
+"saved in the recovery folder, to further reduce the risk of data loss. The "
+"recovery folder is located at ``~/.openshot_qt/recovery/`` or ``C:"
+"\\Users\\USERNAME\\.openshot_qt\\recovery``."
+msgstr ""
+"**Перед кожним збереженням** у папці відновлення зберігається стиснена копія "
+"поточного проєкту у форматі ``*.zip``, щоб додатково знизити ризик втрати "
+"даних. Папка відновлення знаходиться за адресою ``~/.openshot_qt/recovery/`` "
+"або ``C:\\Users\\USERNAME\\.openshot_qt\\recovery``."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid ""
+"To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:"
+"`File->Recovery` menu on the main window after opening your project. If "
+"available, a list of matching project versions from the recovery folder are "
+"listed in chronological order (most recent one at the top). This will "
+"automatically rename your current project file to ``{project-name}-{time}-"
+"backup.osp``, and replace it with the recovery project file. You can repeat "
+"this process until you find the correct recovery project. NOTE: If for some "
+"unexpected reason the recovery process fails, you can always rename the \"-"
+"backup.osp\" file to the original project file name to restore it."
+msgstr ""
+"Щоб відновити пошкоджений або зламаний файл проєкту ``*.osp``, скористайтеся "
+"меню :guilabel:`Файл->Відновлення` у головному вікні після відкриття "
+"проєкту. Якщо доступно, список відповідних версій проєкту з папки "
+"відновлення відображається в хронологічному порядку (найновіша зверху). Це "
+"автоматично перейменує ваш поточний файл проєкту на ``{project-name}-{time}-"
+"backup.osp`` і замінить його файлом відновлення. Ви можете повторювати цей "
+"процес, доки не знайдете потрібну версію для відновлення. ПРИМІТКА: Якщо з "
+"якоїсь несподіваної причини процес відновлення не вдасться, ви завжди можете "
+"перейменувати файл \"-backup.osp\" на оригінальне ім’я проєкту, щоб "
+"відновити його."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:146
+msgid ""
+"To **manually** recover a corrupt or broken ``*.osp`` project file, please "
+"find the most recent copy in the recovery folder, and copy/paste the file "
+"into your original project folder location (i.e. the folder that contains "
+"your broken project). If the recovery file has been zipped (``*.zip``), you "
+"must first extract the ``*.osp``, and then copy it into your project folder. "
+"Recovery files are named ``{time}-{project-name}``. You can also use the "
+"**Date Modified** on the file to select the version you are interested in "
+"recovering."
+msgstr ""
+"Щоб **вручну** відновити пошкоджений або зламаний файл проєкту ``*.osp``, "
+"знайдіть найновішу копію в папці відновлення та скопіюйте файл у папку "
+"вашого оригінального проєкту (тобто папку, що містить пошкоджений проєкт). "
+"Якщо файл відновлення заархівований (``*.zip``), спочатку розпакуйте ``*."
+"osp``, а потім скопіюйте його у папку проєкту. Файли відновлення мають назви "
+"``{time}-{project-name}``. Ви також можете скористатися датою зміни файлу, "
+"щоб вибрати потрібну версію для відновлення."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:156
+msgid "Cache"
+msgstr "Кеш"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:160
+msgid ""
+"Cache settings can be adjusted to make real-time playback faster or less CPU "
+"intensive. The cache is used to store image and audio data for each frame of "
+"video requested. The more frames that are cached, the smoother the real-time "
+"playback will be. However, the more that needs to be cached requires more "
+"CPU to generate the cache. There is a balance, and the default settings "
+"provide a generally sane set of cache values, which should allow most "
+"computers to playback video and audio smoothly. See :ref:`playback_ref`."
+msgstr ""
+"Налаштування кешу можна відрегулювати, щоб зробити відтворення в реальному "
+"часі швидшим або менш ресурсомістким для процесора. Кеш використовується для "
+"зберігання зображень і аудіоданих для кожного кадру відео. Чим більше кадрів "
+"кешується, тим плавнішим буде відтворення в реальному часі. Однак більший "
+"обсяг кешу вимагає більше ресурсів процесора для його створення. Існує "
+"баланс, і налаштування за замовчуванням забезпечують розумний набір значень "
+"кешу, що дозволяє більшості комп’ютерів плавно відтворювати відео та аудіо. "
+"Див. :ref:`playback_ref`."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:172
+msgid "Cache Mode"
+msgstr "Режим кешування"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:172
+msgid ""
+"Choose between Memory or Disk caching (memory caching is preferred). Disk "
+"caching writes image data to the hard disk for later retrieving, and works "
+"best with an SSD."
+msgstr ""
+"Виберіть між кешуванням у пам’яті або на диску (рекомендується кешування в "
+"пам’яті). Кешування на диску записує зображення на жорсткий диск для "
+"подальшого використання і найкраще працює з SSD."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:173
+msgid "Cache Limit (MB)"
+msgstr "Обмеження кешу (МБ)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:173
+msgid ""
+"How many MB are set aside for cache related data. Larger numbers are not "
+"always better, since it takes more CPU to generate more frames to fill the "
+"cache."
+msgstr ""
+"Скільки мегабайт виділено для кешу. Більші значення не завжди кращі, "
+"оскільки для створення більшої кількості кадрів у кеші потрібно більше "
+"ресурсів процесора."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:174
+msgid "Image Format (Disk Only)"
+msgstr "Формат зображення (тільки для диску)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:174
+msgid "Image format to store disk cache image data"
+msgstr "Формат зображення для зберігання кешу на диску"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:175
+msgid "Scale Factor (Disk Only)"
+msgstr "Коефіцієнт масштабування (тільки для диску)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:175
+msgid ""
+"Percentage (0.1 to 1.0) to reduce the size of disk based image files stored "
+"in the disk cache. Smaller numbers make writing and reading cached image "
+"files faster."
+msgstr ""
+"Відсоток (від 0.1 до 1.0) для зменшення розміру файлів зображень, що "
+"зберігаються в кеші на диску. Менші значення прискорюють запис і читання "
+"кешованих файлів."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:176
+msgid "Image Quality (Disk Only)"
+msgstr "Якість зображення (тільки для диску)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:176
+msgid ""
+"Quality of the image files used in disk cache. The higher compression can "
+"cause more slowness, but results in smaller file sizes."
+msgstr ""
+"Якість файлів зображень, що використовуються в кеші на диску. Вища компресія "
+"може уповільнити роботу, але зменшує розмір файлів."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:177
+msgid "Cache Pre-roll: Min Frames:"
+msgstr "Попереднє кешування: мінімальна кількість кадрів:"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:177
+msgid ""
+"Minimum # of frames that must be cached before playback begins. The larger "
+"the #, the larger the wait before playback begins."
+msgstr ""
+"Мінімальна кількість кадрів, які мають бути закешовані перед початком "
+"відтворення. Чим більше число, тим довше чекати перед початком відтворення."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:178
+msgid "Cache Pre-roll: Max Frames:"
+msgstr "Попереднє кешування: максимальна кількість кадрів:"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:178
+msgid ""
+"Maximum # of frames that can be cached during playback (in front of the "
+"playhead). The larger the #, the more CPU is required to cache ahead - vs "
+"display the already cached frames."
+msgstr ""
+"Максимальна кількість кадрів, які можуть кешуватися під час відтворення "
+"(попереду позиції відтворення). Чим більше число, тим більше ресурсів ЦП "
+"потрібно для кешування вперед, порівняно з відображенням уже кешованих "
+"кадрів."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:179
+msgid "Cache Ahead (Percent):"
+msgstr "Кешування вперед (відсоток):"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:179
+msgid ""
+"Between 0.0 and 1.0. This represents how much % we cache ahead of the "
+"playhead. For example, 0.5 would cache 50% behind and 50% ahead of the "
+"playhead. 0.8 would cache 20% behind and 80% ahead of the playhead."
+msgstr ""
+"Між 0.0 та 1.0. Це показує, який відсоток ми кешуємо попереду позиції "
+"відтворення. Наприклад, 0.5 означає кешування 50% позаду і 50% попереду "
+"позиції відтворення. 0.8 означає кешування 20% позаду і 80% попереду позиції "
+"відтворення."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:180
+msgid "Cache Max Frames:"
+msgstr "Максимальна кількість кадрів у кеші:"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:180
+msgid ""
+"This is an override on the total allowed frames that can be cached by our "
+"caching thread. It is defaulted to 600 frames, but even if you give a huge "
+"amount of RAM to OpenShot's cache size, this will override the max # of "
+"frames cached. The reason is... sometimes when the preview window is very "
+"small, and the cache size is set very high, OpenShot might calculate that we "
+"can cache 30,000 frames, or something silly which will take a huge amount of "
+"CPU, lagging the system. This setting is designed to clamp the upper limit "
+"of the cache to something reasonable... even on systems that give OpenShot "
+"huge amounts of RAM to work with."
+msgstr ""
+"Це обмеження максимальної кількості кадрів, які може кешувати наш потік "
+"кешування. За замовчуванням встановлено 600 кадрів, але навіть якщо ви "
+"виділите велику кількість оперативної пам’яті для кешу OpenShot, це "
+"обмеження перевизначить максимальну кількість кешованих кадрів. Причина в "
+"тому, що іноді, коли вікно попереднього перегляду дуже маленьке, а розмір "
+"кешу встановлено дуже великим, OpenShot може розрахувати кешування 30 000 "
+"кадрів або більше, що призведе до великого навантаження на ЦП і уповільнення "
+"системи. Це налаштування призначене для обмеження верхньої межі кешу до "
+"розумного рівня, навіть на системах з великою кількістю оперативної пам’яті."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:184
+msgid "Debug"
+msgstr "Налагодження"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:188
+msgid ""
+"Here you can modify how much data should be logged. Normally, *Debug Mode "
+"(verbose)* is off. The default port is 5556. If you want to help improve "
+"OpenShot you can enable **Send Anonymous Metrics and Errors**."
+msgstr ""
+"Тут ви можете змінити обсяг даних для журналювання. Зазвичай *режим "
+"налагодження (детальний)* вимкнено. Порт за замовчуванням — 5556. Якщо ви "
+"хочете допомогти покращити OpenShot, можете увімкнути **Відправляти анонімні "
+"метрики та помилки**."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:192
+msgid "Performance"
+msgstr "Продуктивність"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:195
+msgid ""
+"Please keep in mind that GPU hardware acceleration is experimental at the "
+"moment. OpenShot supports both decoding and encoding acceleration. For more "
+"information take a look at our `Github HW-ACCEL Doc <https://github.com/"
+"OpenShot/libopenshot/blob/develop/doc/HW-ACCEL.md>`_. NOTE: On systems with "
+"older graphics cards, hardware acceleration may not always be faster than "
+"CPU encoding."
+msgstr ""
+"Будь ласка, майте на увазі, що апаратне прискорення GPU наразі є "
+"експериментальним. OpenShot підтримує прискорення як декодування, так і "
+"кодування. Для отримання додаткової інформації перегляньте наш `Github HW-"
+"ACCEL Doc <https://github.com/OpenShot/libopenshot/blob/develop/doc/HW-ACCEL."
+"md>`_. ПРИМІТКА: на системах зі старими відеокартами апаратне прискорення не "
+"завжди швидше за кодування на ЦП."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:212
+msgid "Keyboard"
+msgstr "Клавіатура"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:215
+msgid ""
+"This section allows you to view and customize hotkeys for various actions in "
+"the application. Here, you can assign and manage multiple shortcuts for the "
+"same action and restore default shortcuts if needed."
+msgstr ""
+"У цьому розділі ви можете переглядати та налаштовувати гарячі клавіші для "
+"різних дій у програмі. Тут можна призначати та керувати кількома "
+"скороченнями для однієї дії, а також відновлювати стандартні скорочення за "
+"потреби."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:218
+msgid ""
+"**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to "
+"the same action by separating them with a pipe (``|``) delimiter. This "
+"flexibility allows you to configure as many shortcuts as you need for each "
+"action."
+msgstr ""
+"**Призначення кількох скорочень**: Ви можете призначити кілька гарячих "
+"клавіш для однієї дії, розділяючи їх символом труби (``|``). Це дає змогу "
+"налаштувати стільки скорочень, скільки потрібно для кожної дії."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:221
+msgid ""
+"**Immediate Application**: No restart is required after adjusting keyboard "
+"shortcuts. Changes are applied immediately, so you can start using your "
+"updated shortcuts right away."
+msgstr ""
+"**Негайне застосування**: Після зміни гарячих клавіш перезапуск не потрібен. "
+"Зміни застосовуються одразу, тож ви можете почати користуватися оновленими "
+"скороченнями відразу."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:224
+msgid ""
+"**Restore Default Shortcuts**: If needed, you can reset all keyboard "
+"shortcuts to their default settings by clicking on the :guilabel:`Restore "
+"Defaults: Keyboard` button located in the bottom-left corner of the "
+"Preferences screen."
+msgstr ""
+"**Відновити стандартні скорочення**: За потреби ви можете скинути всі гарячі "
+"клавіші до стандартних, натиснувши кнопку :guilabel:`Відновити стандартні: "
+"Клавіатура`, що розташована в нижньому лівому куті вікна налаштувань."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:227
+msgid ""
+"**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are "
+"any duplicate shortcuts, they will be highlighted in **red** and will not "
+"function until the conflict is resolved."
+msgstr ""
+"**Унікальні скорочення**: Кожне гаряче скорочення має бути унікальним. Якщо "
+"є дублікати, вони будуть виділені **червоним** і не працюватимуть, доки "
+"конфлікт не буде усунуто."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:231
+msgid ""
+"For more detailed information on how to use and customize keyboard "
+"shortcuts, see :ref:`keyboard_shortcut_ref`."
+msgstr ""
+"Для детальнішої інформації про використання та налаштування гарячих клавіш "
+"див. :ref:`keyboard_shortcut_ref`."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:234
+msgid "Location"
+msgstr "Розташування"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:238
+msgid ""
+"Default file path locations for saving/opening projects, importing files, "
+"and exporting videos can be configured here. This can save you time by "
+"defaulting the open/save file dialogs to the most appropriate starting "
+"folder (options described below)."
+msgstr ""
+"Тут можна налаштувати стандартні шляхи для збереження/відкриття проектів, "
+"імпорту файлів та експорту відео. Це заощадить ваш час, встановлюючи "
+"діалогові вікна відкриття/збереження файлів у найбільш відповідну початкову "
+"папку (опції описані нижче)."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:248
+msgid "File Import"
+msgstr "Імпорт файлів"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:248
+msgid "Default folder to choose when importing a file"
+msgstr "Папка за замовчуванням для вибору при імпорті файлу"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:249
+msgid "Save or Open Project"
+msgstr "Збереження або відкриття проекту"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:249
+msgid "Default folder to choose when saving or opening a project file"
+msgstr ""
+"Папка за замовчуванням для вибору при збереженні або відкритті файлу проекту"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:250
+msgid "Video Export"
+msgstr "Експорт відео"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:250
+msgid "Default folder to choose when exporting a video"
+msgstr "Папка за замовчуванням для вибору при експорті відео"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:257
+msgid "Values"
+msgstr "Значення"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:259
+msgid "**Recent Folder**"
+msgstr "**Остання папка**"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:259
+msgid ""
+"The last folder used for this same operation. Project folders, Import "
+"folders, and Export folders are tracked separately."
+msgstr ""
+"Остання папка, використана для цієї операції. Папки проектів, імпорту та "
+"експорту відстежуються окремо."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:260
+msgid "**Project Folder**"
+msgstr "**Папка проекту**"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:260
+msgid ""
+"The current project folder (or the user's home folder, if the project is not "
+"yet saved)"
+msgstr ""
+"Поточна папка проекту (або домашня папка користувача, якщо проект ще не "
+"збережено)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:266
+msgid "Reset (Default Values)"
+msgstr "Скинути (значення за замовчуванням)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:268
+msgid ""
+"To reset **all** preferences to their default values, please delete the "
+"``openshot.settings`` file and re-launch OpenShot. The settings file can be "
+"located at this path: ``~/.openshot_qt/openshot.settings`` or ``C:"
+"\\Users\\USERNAME\\.openshot_qt\\openshot.settings``. When OpenShot is re-"
+"launched, it will create the missing ``openshot.settings`` file with default "
+"values."
+msgstr ""
+"Щоб скинути **всі** налаштування до значень за замовчуванням, видаліть файл "
+"``openshot.settings`` і перезапустіть OpenShot. Файл налаштувань можна "
+"знайти за шляхом: ``~/.openshot_qt/openshot.settings`` або ``C:"
+"\\Users\\USERNAME\\.openshot_qt\\openshot.settings``. Після перезапуску "
+"OpenShot створить відсутній файл ``openshot.settings`` зі значеннями за "
+"замовчуванням."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:273
+msgid ""
+"Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch "
+"OpenShot. However, please make a **backup** of any customized folders: "
+"**emojis, presets, profiles, recovery, title_templates, transitions, or "
+"yolo**. For example, your ``/recovery/`` sub-folder contains backup copies "
+"of all your existing projects (``*.osp`` files)."
+msgstr ""
+"За бажанням ви можете видалити всю папку ``.openshot_qt/`` і перезапустити "
+"OpenShot. Однак, будь ласка, зробіть **резервну копію** будь-яких "
+"налаштованих папок: **emojis, presets, profiles, recovery, title_templates, "
+"transitions або yolo**. Наприклад, ваша підпапка ``/recovery/`` містить "
+"резервні копії всіх ваших існуючих проектів (файли ``*.osp``)."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:278
+msgid ""
+"Deleting the ``.openshot_qt/`` folder is the quickest method to restore "
+"OpenShot preferences and settings to their Default values (i.e. also called "
+"a `clean install`). When OpenShot is re-launched, it will create any missing "
+"folders (i.e. ``.openshot_qt/``) and settings files. See our `step-by-step "
+"guide <https://github.com/OpenShot/openshot-qt/wiki/Clean-Installation-of-"
+"OpenShot>`_ for more information about **clean installs** of OpenShot."
+msgstr ""
+"Видалення папки ``.openshot_qt/`` — найшвидший спосіб відновити налаштування "
+"OpenShot до значень за замовчуванням (також званий «чистою установкою»). "
+"Після повторного запуску OpenShot створить усі відсутні папки (наприклад, ``."
+"openshot_qt/``) та файли налаштувань. Дивіться наш `покроковий посібник "
+"<https://github.com/OpenShot/openshot-qt/wiki/Clean-Installation-of-"
+"OpenShot>`_ для отримання додаткової інформації про **чисті установки** "
+"OpenShot."

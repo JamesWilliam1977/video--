@@ -1,5 +1,17 @@
 {% extends "!layout.html" %}
 {% set css_files = css_files + ["_static/tablefix.css"] %}
+{%- block extrahead %}
+  {{ super() }}
+  {%- if ga4_measurement_id %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ ga4_measurement_id|e }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', '{{ ga4_measurement_id|e }}');
+  </script>
+  {%- endif %}
+{%- endblock %}
 {%- block footer %}
   <script src="https://cdn.openshot.org/static/vendor/iframeSizer/iframeResizer.contentWindow.min.js"></script>
   <script>
