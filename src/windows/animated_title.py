@@ -118,9 +118,9 @@ class AnimatedTitle(QDialog):
 
             # Apply tab order directly
             for first, second in zip(ordered, ordered[1:]):
-                QWidget.setTabOrder(first, second)
+                tabstops.safe_set_tab_order(first, second)
             if len(ordered) >= 2:
-                QWidget.setTabOrder(ordered[-1], ordered[0])
+                tabstops.safe_set_tab_order(ordered[-1], ordered[0])
 
         QTimer.singleShot(0, do_tab_order)
 

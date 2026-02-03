@@ -330,11 +330,12 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         if hasattr(self, "_seconds_from_x"):
             seconds = max(0.0, float(self._seconds_from_x(local_pos.x())))
 
+        local_posf = QPointF(local_pos)
         track_number = None
         if hasattr(self, "geometry"):
             self.geometry.ensure()
             for track_rect, track, _name_rect in getattr(self.geometry, "track_rects", []):
-                if track_rect.contains(local_pos):
+                if track_rect.contains(local_posf):
                     track_number = track.data.get("number")
                     break
 
