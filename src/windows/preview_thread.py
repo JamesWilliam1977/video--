@@ -170,6 +170,9 @@ class PlayerWorker(QObject):
 
     def CheckAudioDevice(self):
         """Check if any audio devices initialization errors, default sample rate, and current open audio device"""
+        s = get_app().get_settings()
+        detected_sample_rate_int = None
+
         # Check audio init error
         audio_error = self.player.GetError()
         if audio_error:
@@ -183,7 +186,6 @@ class PlayerWorker(QObject):
             # Convert float to Integer
             detected_sample_rate_int = round(detected_sample_rate)
 
-            s = get_app().get_settings()
             settings_sample_rate = int(s.get("default-samplerate") or 48000)
             if detected_sample_rate_int != settings_sample_rate:
                 log.warning("Your sample rate (%d) does not match OpenShot (%d). "
@@ -201,6 +203,8 @@ class PlayerWorker(QObject):
 
         # Convert float 'settings' sample rate to Integer, if detected
         if type(s.get("default-samplerate")) == float:
+            if detected_sample_rate_int is None:
+                detected_sample_rate_int = round(s.get("default-samplerate"))
             s.set("default-samplerate", detected_sample_rate_int)
 
         # Convert float 'project' sample rate to Integer, if detected
