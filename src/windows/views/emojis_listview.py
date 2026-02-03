@@ -41,6 +41,8 @@ class EmojisListView(QListView):
     """ A QListView QWidget used on the main window """
     drag_item_size = QSize(48, 48)
     drag_item_center = QPoint(24, 24)
+    emoji_icon_size = QSize(75, 75)
+    emoji_grid_size = QSize(80, 95)
 
     def dragEnterEvent(self, event):
         # If dragging urls onto widget, accept
@@ -156,10 +158,10 @@ class EmojisListView(QListView):
         self.setDragEnabled(True)
         self.setDropIndicatorShown(True)
 
-        # Setup header columns
+        # Setup header columns and layout
         self.setModel(self.model)
-        self.setIconSize(info.EMOJI_ICON_SIZE)
-        self.setGridSize(info.EMOJI_GRID_SIZE)
+        self.setIconSize(self.emoji_icon_size)
+        self.setGridSize(self.emoji_grid_size)
         self.setViewMode(QListView.IconMode)
         self.setResizeMode(QListView.Adjust)
         self.setUniformItemSizes(True)
