@@ -146,7 +146,8 @@ class TutorialDialog(QWidget):
         self.setAttribute(Qt.WA_NoSystemBackground, True)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setAttribute(Qt.WA_DeleteOnClose, True)
-        self.setAttribute(Qt.WA_ShowWithoutActivating, True)
+        if hasattr(Qt, "WA_ShowWithoutActivating"):
+            self.setAttribute(Qt.WA_ShowWithoutActivating, True)
         if hasattr(Qt, "WA_AlwaysStackOnTop"):
             self.setAttribute(Qt.WA_AlwaysStackOnTop, True)
 
