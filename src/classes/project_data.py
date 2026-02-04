@@ -1085,16 +1085,27 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
         _ = app._tr
 
         log.info("checking project files...")
+        prompt_state = {"cancelled": False}
 
-        # Loop through each files (in reverse order)
-        for file in reversed(self._data["files"]):
+        # Loop through each files in natural-sorted filename order
+        files_sorted = sorted(
+            self._data["files"],
+            key=lambda f: os.path.basename(f.get("path", "")).lower()
+        )
+        for file in files_sorted:
             path = file["path"]
             parent_path, file_name_with_ext = os.path.split(path)
 
             log.info("checking file %s", path)
             if not os.path.exists(path) and "%" not in path:
                 # File is missing
-                path, is_modified, is_skipped = find_missing_file(path)
+                if prompt_state.get("cancelled"):
+                    # User already cancelled prompts, just remove missing file
+                    log.info('Removed missing file: %s', file_name_with_ext)
+                    self._data["files"].remove(file)
+                    continue
+
+                path, is_modified, is_skipped = find_missing_file(path, prompt_state)
                 if path and is_modified and not is_skipped:
                     # Found file, update path
                     file["path"] = path
@@ -1105,23 +1116,34 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
                     log.info('Removed missing file: %s', file_name_with_ext)
                     self._data["files"].remove(file)
 
-        # Loop through each clip (in reverse order)
+        # Build a lookup of valid file IDs after any removals/updates
+        file_paths_by_id = {file.get("id"): file.get("path") for file in self._data["files"]}
+
+        # Loop through each clip (in reverse order). Don't prompt for clips.
         for clip in reversed(self._data["clips"]):
+            file_id = clip.get("file_id") or clip.get("reader", {}).get("id")
+            if file_id and file_id in file_paths_by_id:
+                # Keep clip reader path in sync with its File path
+                reader = clip.get("reader")
+                if not isinstance(reader, dict):
+                    reader = {}
+                    clip["reader"] = reader
+                reader["path"] = file_paths_by_id[file_id]
+
             path = clip.get("reader", {}).get("path", "")
 
-            if path and not os.path.exists(path) and "%" not in path:
-                # File is missing
-                path, is_modified, is_skipped = find_missing_file(path)
-                file_name_with_ext = os.path.basename(path)
+            if file_id and file_id not in file_paths_by_id:
+                # Remove clips with invalid/missing files
+                file_name_with_ext = os.path.basename(path) if path else ""
+                log.info('Removed missing clip: %s', file_name_with_ext)
+                self._data["clips"].remove(clip)
+                continue
 
-                if path and is_modified and not is_skipped:
-                    # Found file, update path
-                    clip["reader"]["path"] = path
-                    log.info("Auto-updated missing file: %s", clip["reader"]["path"])
-                elif is_skipped:
-                    # Remove missing file
-                    log.info('Removed missing clip: %s', file_name_with_ext)
-                    self._data["clips"].remove(clip)
+            if path and not os.path.exists(path) and "%" not in path:
+                # Remove missing clip without prompting
+                file_name_with_ext = os.path.basename(path)
+                log.info('Removed missing clip: %s', file_name_with_ext)
+                self._data["clips"].remove(clip)
 
     def changed(self, action):
         """ This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface) """

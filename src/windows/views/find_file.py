@@ -34,11 +34,15 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog
 known_paths = [info.HOME_PATH]
 
 
-def find_missing_file(file_path):
+def find_missing_file(file_path, prompt_state=None):
     """Find a missing file name or file path, and return valid path."""
     _ = get_app()._tr
     modified = False
     skipped = False
+
+    # If user cancelled prompts, skip searching
+    if prompt_state and prompt_state.get("cancelled"):
+        return ("", modified, True)
 
     # Bail if path is already valid
     if os.path.exists(file_path):
@@ -61,9 +65,23 @@ def find_missing_file(file_path):
             recommended_path = info.HOME_PATH
         else:
             recommended_path = os.path.dirname(recommended_path)
-        QMessageBox.warning(None, _("Missing File (%s)") % file_name,
-                            _("%s cannot be found.") % file_name)
+        message_box = QMessageBox()
+        message_box.setIcon(QMessageBox.Warning)
+        message_box.setWindowTitle(_("Missing File (%s)") % file_name)
+        message_box.setText(_("%s cannot be found.") % file_name)
+        browse_button = message_box.addButton(_("Browse..."), QMessageBox.AcceptRole)
+        cancel_button = message_box.addButton(QMessageBox.Cancel)
+        message_box.setDefaultButton(browse_button)
+        message_box.exec_()
         modified = True
+
+        if message_box.clickedButton() == cancel_button:
+            # User cancelled all missing file prompts
+            skipped = True
+            if prompt_state is not None:
+                prompt_state["cancelled"] = True
+            return ("", modified, skipped)
+
         folder_to_check = QFileDialog.getExistingDirectory(None, _("Find directory that contains: %s" % file_name),
                                                            recommended_path)
         if folder_to_check and folder_to_check not in known_paths:
