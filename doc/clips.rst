@@ -318,6 +318,7 @@ Or if the transform tool is disabled, right click on a clip and choose
 - Dragging the blue squares will adjust the **scale** of the image.
 - Dragging the center will move the **location** of the image.
 - Dragging the mouse on the outside of the blue lines will **rotate** the image.
+- Hold :kbd:`Ctrl` or :kbd:`Shift` while rotating to snap to 15-degree increments.
 - Dragging along the blue lines will **shear** the image in that direction.
 - Dragging the circle in the middle will move the **origin point** that controls the center of **rotation**. 
 
@@ -686,6 +687,7 @@ a clip (sideways, upside down, right side up, portrait, landscape), flip a clip,
 
 - **Usage Example:** Simulating a spinning effect by animating the rotation curve.
 - **Tip:** Use this property creatively for effects like rotating text or emulating camera movement.
+- **Tip:** In the preview transform tool, hold :kbd:`Ctrl` or :kbd:`Shift` while rotating to snap to 15-degree increments.
 - **Tip:** Experiment with rotating your video at different angles, not just 90 or 180 degrees. Sometimes a slight tilt or a specific angle can add creative flair to your video, especially for artistic or storytelling purposes.
 - **Tip:** After rotating your video, you might end up with black bars around the edges. Consider cropping and resizing the video to eliminate these bars and maintain a clean, polished look.
 - **Tip:** If you're dealing with vertical videos that are meant to be watched on horizontal screens, rotate them by 90 degrees and then scale them up to fill the frame. This way, your vertical video will occupy more screen real estate.
