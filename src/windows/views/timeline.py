@@ -3443,7 +3443,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                 "edge": edge,
                 "data": item_data,
             }
-            QTimer.singleShot(200, self._apply_pending_trim_refresh)
+            QTimer.singleShot(0, self._apply_pending_trim_refresh)
             return
 
         fps = get_app().project.get("fps")
