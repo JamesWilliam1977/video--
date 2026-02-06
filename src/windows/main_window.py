@@ -194,6 +194,10 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # begins destroying child widgets, to avoid QThread warnings on shutdown.
         timeline_widget = getattr(self, "timeline", None)
         if timeline_widget and getattr(timeline_widget, "thumbnail_manager", None):
+            log.info(
+                "Shutdown timeline thumbnail thread running=%s",
+                timeline_widget.thumbnail_manager._thread.isRunning(),
+            )
             timeline_widget.thumbnail_manager.shutdown()
 
         # Stop thumbnail server thread (if any)
@@ -209,6 +213,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Stop preview thread (and wait for it to end)
         if self.preview_thread:
+            if self.preview_parent and getattr(self.preview_parent, "background", None):
+                log.info(
+                    "Shutdown preview thread running=%s",
+                    self.preview_parent.background.isRunning(),
+                )
             self.preview_thread.player.CloseAudioDevice()
             self.preview_thread.kill()
             if self.videoPreview:
