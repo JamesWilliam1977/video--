@@ -163,8 +163,6 @@ class PropertiesModel(updates.UpdateInterface):
                 if self.frame_number > max_frame_number:
                     self.frame_number = max_frame_number
 
-                log.debug("Update frame to %s" % self.frame_number)
-
                 # Update the model data
                 if reload_model:
                     self.update_model(get_app().window.txtPropertyFilter.text())
@@ -977,7 +975,6 @@ class PropertiesModel(updates.UpdateInterface):
         self.items[name] = {"row": row, "property": property}
 
     def update_model(self, filter=""):
-        log.debug("updating clip properties model.")
         app = get_app()
         _ = app._tr
 
