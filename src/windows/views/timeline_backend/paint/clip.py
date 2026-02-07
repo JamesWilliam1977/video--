@@ -138,9 +138,6 @@ class ClipPainter(BasePainter):
         if not clip_token:
             return
         clip_id = str(clip_token).split(":", 1)[0]
-        removed_cache = 0
-        removed_pending = 0
-
         if drop_cache:
             cache_keys = [
                 key for key in list(self.thumb_cache.keys())
@@ -148,7 +145,6 @@ class ClipPainter(BasePainter):
             ]
             for key in cache_keys:
                 self.thumb_cache.pop(key, None)
-            removed_cache = len(cache_keys)
 
         if drop_pending:
             pending_keys = [
@@ -159,7 +155,6 @@ class ClipPainter(BasePainter):
                 self._thumb_pending.pop(key, None)
                 self._thumb_regions.pop(key, None)
                 self._thumb_missing_logged.discard(key)
-            removed_pending = len(pending_keys)
 
         if drop_fallback:
             fallback_keys = [

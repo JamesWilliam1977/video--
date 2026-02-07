@@ -379,7 +379,7 @@ class PlayerWorker(QObject):
                         self.clip_reader.info.has_audio = False
                         new_clip.Reader().info.has_audio = False
                 except Exception:
-                    pass
+                    log.debug("Failed to check has_video on clip reader for %s", path)
                 self.clip_reader.AddClip(new_clip)
             except:
                 log.warning('Failed to load media file into video player: %s' % path)

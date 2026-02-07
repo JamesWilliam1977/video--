@@ -27,7 +27,7 @@
 
 import json
 import uuid
-from PyQt5.QtCore import Qt, QRectF, QTimer
+from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QApplication
 from classes.app import get_app
 from classes.query import Clip, Transition
@@ -932,9 +932,8 @@ class ClipInteractionMixin:
             self.update_transition_data(item.data, only_basic_props=True)
 
         if isinstance(item, (Clip, Transition)):
-            refresh_trim = getattr(self, "RefreshTrimmedTimelineItem", None)
-            if refresh_trim:
-                refresh_trim(json.dumps(item.data), self._resize_edge)
+            if hasattr(self, "RefreshTrimmedTimelineItem"):
+                self.RefreshTrimmedTimelineItem(json.dumps(item.data), self._resize_edge)
 
         if isinstance(item, Clip):
             self._set_trim_thumbnail_suspension(False, item.id)
