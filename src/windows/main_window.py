@@ -134,6 +134,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     SetKeyframeFilter = pyqtSignal(str)     # Signal to only show keyframes for the selected property
     IgnoreUpdates = pyqtSignal(bool, bool)     # Signal to let widgets know to ignore updates (i.e. batch updates)
     ThemeChangedSignal = pyqtSignal(object)     # Signal when theme is changed
+    ProjectSaved = pyqtSignal(str)
+    ProjectSaveFailed = pyqtSignal(str, str)
 
     # Docks are closable, movable and floatable
     docks_frozen = False
@@ -507,17 +509,24 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 # Save project to file
                 app.project.save(file_path)
 
-                # Set Window title
-                self.SetWindowTitle()
-
-                # Load recent projects again
-                self.load_recent_menu()
-
                 log.info("Saved project %s", file_path)
+                self.ProjectSaved.emit(file_path)
 
             except Exception as ex:
                 log.error("Couldn't save project %s", file_path, exc_info=1)
-                QMessageBox.warning(self, _("Error Saving Project"), str(ex))
+                self.ProjectSaveFailed.emit(file_path, str(ex))
+
+    @pyqtSlot(str)
+    def _on_project_saved(self, file_path):
+        """Update UI after a project save completes."""
+        self.SetWindowTitle()
+        self.load_recent_menu()
+
+    @pyqtSlot(str, str)
+    def _on_project_save_failed(self, file_path, error_message):
+        """Show save errors on the UI thread."""
+        _ = get_app()._tr
+        QMessageBox.warning(self, _("Error Saving Project"), error_message)
 
     def save_recovery(self, file_path):
         """Saves the project and manages recovery files based on configured limits."""
@@ -4207,6 +4216,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Connect theme changed signal
         self.ThemeChangedSignal.connect(self.style_dock_widgets)
+        self.ProjectSaved.connect(self._on_project_saved, Qt.QueuedConnection)
+        self.ProjectSaveFailed.connect(self._on_project_save_failed, Qt.QueuedConnection)
 
         # Connect the signals for each dock widget from self.getDocks()
         for dock_widget in self.getDocks():
