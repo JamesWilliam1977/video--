@@ -1999,7 +1999,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Refresh preview
         get_app().window.refreshFrameSignal.emit()
 
-    def actionRemoveClip_trigger(self):
+    def actionRemoveClip_trigger(self, checked=True, refresh=True):
         log.debug('actionRemoveClip_trigger')
 
         locked_tracks = [l.get("number") for l in get_app().project.get('layers') if l.get("lock", False)]
@@ -2019,7 +2019,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 c.delete()
 
         # Refresh preview
-        get_app().window.refreshFrameSignal.emit()
+        if refresh:
+            get_app().window.refreshFrameSignal.emit()
 
     def actionRippleDelete(self):
         log.debug('actionRippleDelete_trigger')
@@ -2145,7 +2146,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Refresh preview
         self.refreshFrameSignal.emit()
 
-    def actionRemoveTransition_trigger(self):
+    def actionRemoveTransition_trigger(self, checked=True, refresh=True):
         log.debug('actionRemoveTransition_trigger')
 
         locked_tracks = [l.get("number")
@@ -2167,7 +2168,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 t.delete()
 
         # Refresh preview
-        self.refreshFrameSignal.emit()
+        if refresh:
+            self.refreshFrameSignal.emit()
 
     def actionRemoveTrack_trigger(self):
         log.debug('actionRemoveTrack_trigger')
@@ -3456,8 +3458,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 self.actionRemove_from_Project_trigger()
             else:
                 # Otherwise, proceed with the normal timeline delete behavior
-                self.actionRemoveClip_trigger()
-                self.actionRemoveTransition_trigger()
+                self.actionRemoveClip_trigger(refresh=False)
+                self.actionRemoveTransition_trigger(refresh=False)
+                self.refreshFrameSignal.emit()
         finally:
             get_app().updates.transaction_id = None
 
