@@ -35,6 +35,36 @@ from classes.waveform import SAMPLES_PER_SECOND as WAVEFORM_SAMPLES_PER_SECOND
 
 
 class ClipInteractionMixin:
+    def _set_trim_thumbnail_suspension(self, enabled, clip_id=None):
+        """Pause thumbnail generation while trimming and drop stale queued work."""
+        self._suspend_thumbnail_requests = bool(enabled)
+        clip_key = str(clip_id or "")
+        if enabled:
+            if self.thumbnail_manager:
+                self.thumbnail_manager.clear_pending()
+            if clip_key and hasattr(self, "clip_painter"):
+                # Keep existing cached thumbs visible while trimming, but drop in-flight requests.
+                self.clip_painter.invalidate_clip_thumbnails(
+                    clip_key,
+                    drop_cache=False,
+                    drop_pending=True,
+                    drop_fallback=False,
+                    invalidate_render_cache=False,
+                )
+            return
+
+        if self.thumbnail_manager:
+            self.thumbnail_manager.clear_pending()
+        if clip_key and hasattr(self, "clip_painter"):
+            # Preserve existing thumbnails until replacements arrive; only drop stale in-flight requests.
+            self.clip_painter.invalidate_clip_thumbnails(
+                clip_key,
+                drop_cache=False,
+                drop_pending=True,
+                drop_fallback=False,
+                invalidate_render_cache=False,
+            )
+
     def clip_has_pending_override(self, clip):
         if not isinstance(clip, Clip):
             return False
@@ -676,6 +706,7 @@ class ClipInteractionMixin:
             updated_ignore.add(item_id)
             self._snap_ignore_ids = updated_ignore
         if isinstance(item, Clip):
+            self._set_trim_thumbnail_suspension(True, item.id)
             max_duration = self._clip_reader_duration_seconds(item)
             if max_duration is None:
                 max_duration = self._positive_float(self._resize_initial.get("duration"))
@@ -870,6 +901,8 @@ class ClipInteractionMixin:
         if not item:
             return
         if not hasattr(self, "_resize_new_start"):
+            if isinstance(item, Clip):
+                self._set_trim_thumbnail_suspension(False, item.id)
             self._resizing_item = None
             self._snap_keyframe_seconds = []
             self.snap.reset()
@@ -902,6 +935,9 @@ class ClipInteractionMixin:
             refresh_trim = getattr(self, "RefreshTrimmedTimelineItem", None)
             if refresh_trim:
                 refresh_trim(json.dumps(item.data), self._resize_edge)
+
+        if isinstance(item, Clip):
+            self._set_trim_thumbnail_suspension(False, item.id)
 
         self._resizing_item = None
         self._snap_keyframe_seconds = []

@@ -803,7 +803,12 @@ App.directive("tlClip", function ($timeout) {
           }
           else {
             // Preview the right side of the clip
-            scope.previewClipFrame(scope.clip.id, snapToFPSGridTime(scope, new_right / scope.pixelsPerSecond));
+            var frame_duration = scope.project.fps.den / scope.project.fps.num;
+            var preview_right = (new_right / scope.pixelsPerSecond) - frame_duration;
+            if (preview_right < 0) {
+              preview_right = 0;
+            }
+            scope.previewClipFrame(scope.clip.id, snapToFPSGridTime(scope, preview_right));
           }
 
           var previewStart = new_left / scope.pixelsPerSecond;

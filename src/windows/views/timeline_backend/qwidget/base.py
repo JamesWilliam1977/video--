@@ -38,6 +38,7 @@ from PyQt5.QtCore import (
     QSignalTransition,
     QByteArray,
     pyqtSignal,
+    pyqtSlot,
     QObject,
     QMetaMethod,
 )
@@ -273,6 +274,7 @@ class TimelineWidgetBase(QWidget):
         # Thumbnail helpers
         self.thumbnail_style = self._load_thumbnail_style()
         self.thumbnail_generation = 0
+        self._suspend_thumbnail_requests = False
         self.thumbnail_manager = TimelineThumbnailManager(self)
         self._viewport_thumbnail_reset_timer = QTimer(self)
         self._viewport_thumbnail_reset_timer.setSingleShot(True)
@@ -295,7 +297,8 @@ class TimelineWidgetBase(QWidget):
         self.selection_painter = SelectionPainter(self)
         self.scrollbar_painter = ScrollbarPainter(self)
         self.thumbnail_manager.thumbnail_ready.connect(
-            self.clip_painter.handle_thumbnail_ready
+            self._handle_thumbnail_ready,
+            type=Qt.QueuedConnection,
         )
 
         # Keyframe helpers
@@ -405,6 +408,17 @@ class TimelineWidgetBase(QWidget):
             self.thumbnail_manager.clear_pending()
         if hasattr(self, "clip_painter"):
             self.clip_painter.expire_thumbnail_requests(self.thumbnail_generation)
+
+    @pyqtSlot(str, int, str, int)
+    def _handle_thumbnail_ready(self, clip_id, frame, thumb_path, generation):
+        """Forward thumbnail ready events to the clip painter on the GUI thread."""
+        if hasattr(self, "clip_painter"):
+            self.clip_painter.handle_thumbnail_ready(
+                clip_id,
+                frame,
+                thumb_path,
+                generation,
+            )
 
     def _buildStateMachine(self):
         sm = TimelineStateMachine(self)
@@ -720,7 +734,13 @@ class TimelineWidgetBase(QWidget):
         self.fps_float = float(fps_info.get("num", 24)) / float(fps_info.get("den", 1) or 1)
 
         # Invalidate caches and geometry
-        self.clip_painter.clear_cache()
+        win = getattr(self, "win", None)
+        if getattr(win, "_trim_refresh_pending", False):
+            # Keep thumbnail/fallback caches during trim commit to avoid a blank flicker
+            # while new thumbnails are still being generated.
+            self.clip_painter.clip_cache.clear()
+        else:
+            self.clip_painter.clear_cache()
         self.transition_painter.clear_cache()
         self.geometry.mark_dirty()
 
