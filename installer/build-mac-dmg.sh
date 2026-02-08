@@ -51,11 +51,11 @@ echo "Fix permissions inside MacOS folder (all everyone to read and execute all 
 chmod -R a+rx "$OS_PATH/"*
 
 echo "Loop through bundled files and sign all binary files"
-find "build" \( -iname '*.dylib' -o -iname '*.so' \) -exec codesign -s "OpenShot Studios, LLC" --timestamp=http://timestamp.apple.com/ts01 --entitlements "installer/openshot.entitlements" --force "{}" \;
+find "build" \( -iname '*.dylib' -o -iname '*.so' \) -exec codesign -s "Developer ID Application: OpenShot Studios, LLC (C94ZNQ5JF3)" --timestamp=http://timestamp.apple.com/ts01 --entitlements "installer/openshot.entitlements" --force "{}" \;
 
 echo "Code Sign App Bundle (deep)"
-codesign -s "OpenShot Studios, LLC" --force --deep --entitlements "installer/openshot.entitlements" --options runtime --timestamp=http://timestamp.apple.com/ts01 "build/$OS_APP_NAME"
-codesign -s "OpenShot Studios, LLC" --force --entitlements "installer/qtwebengine.entitlements" --options runtime --timestamp=http://timestamp.apple.com/ts01 "build/$OS_APP_NAME/Contents/MacOS/QtWebEngineProcess"
+codesign -s "Developer ID Application: OpenShot Studios, LLC (C94ZNQ5JF3)" --force --deep --entitlements "installer/openshot.entitlements" --options runtime --timestamp=http://timestamp.apple.com/ts01 "build/$OS_APP_NAME"
+codesign -s "Developer ID Application: OpenShot Studios, LLC (C94ZNQ5JF3)" --force --entitlements "installer/qtwebengine.entitlements" --options runtime --timestamp=http://timestamp.apple.com/ts01 "build/$OS_APP_NAME/Contents/MacOS/QtWebEngineProcess"
 
 echo "Verifying App Signing"
 spctl -a -vv "build/$OS_APP_NAME"
@@ -64,7 +64,7 @@ echo "Building Custom DMG"
 appdmg "installer/dmg-template.json" "build/$OS_DMG_NAME"
 
 echo "Code Sign DMG"
-codesign -s "OpenShot Studios, LLC" --force --entitlements "installer/openshot.entitlements" --timestamp=http://timestamp.apple.com/ts01 "build/$OS_DMG_NAME"
+codesign -s "Developer ID Application: OpenShot Studios, LLC (C94ZNQ5JF3)" --force --entitlements "installer/openshot.entitlements" --timestamp=http://timestamp.apple.com/ts01 "build/$OS_DMG_NAME"
 
 echo "Notarize DMG file (submit to Apple)"
 # No errors uploading '/Users/jonathan/builds/7d5103a1/0/OpenShot/openshot-qt/build/test.zip'.
