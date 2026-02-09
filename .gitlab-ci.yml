@@ -1,6 +1,7 @@
 stages:
   - init-builders
   - build
+  - sign
   - deploy
   - publish
 
@@ -38,7 +39,7 @@ linux-builder:
     - cd doc; make html SPHINXOPTS="-D ga4_measurement_id=G-W2VHM9Y8QH"; cd ..;
     - python3 -u freeze.py build --git-branch=$CI_COMMIT_REF_NAME
     - for dir in "build/*/"; do /bin/sh ./installer/mangle-hw-libs.sh $(realpath "${dir}"); done 
-    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$WINDOWS_KEY" "$WINDOWS_PASSWORD" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
   when: always
   except:
   - tags
@@ -80,7 +81,7 @@ mac-builder:
     - echo -e "CI_PROJECT_NAME:$CI_PROJECT_NAME\nCI_COMMIT_REF_NAME:$CI_COMMIT_REF_NAME\nCI_COMMIT_SHA:$CI_COMMIT_SHA\nCI_JOB_ID:$CI_JOB_ID\nCI_PIPELINE_ID:$CI_PIPELINE_ID\nVERSION:$VERSION" > "build/install-x64/share/$CI_PROJECT_NAME.env"
     - git log $(git describe --tags --abbrev=0 @^)..@ --oneline --pretty=format:"- %C(auto,yellow)%h%C(auto,magenta)% %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(25,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D" --date=short > "build/install-x64/share/$CI_PROJECT_NAME.log"
     - python3 -u freeze.py bdist_mac --git-branch=$CI_COMMIT_REF_NAME --iconfile=installer/openshot.icns --custom-info-plist=installer/Info.plist --bundle-name="OpenShot Video Editor"
-    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$WINDOWS_KEY" "$WINDOWS_PASSWORD" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
   when: always
   except:
   - tags
@@ -122,7 +123,7 @@ windows-builder-x64:
     - (Get-Content $manifestPath) -creplace "ARCHITECTURE", "amd64" | Set-Content $manifestPath
     - mt.exe -manifest installer/windows.manifest -validate_manifest
     - mt.exe  -manifest installer/windows.manifest -outputresource:$EXE_PATH;1
-    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$WINDOWS_KEY" "$WINDOWS_PASSWORD" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "build-only"
   when: always
   except:
   - tags
@@ -165,12 +166,36 @@ windows-builder-x86:
     - (Get-Content $manifestPath) -creplace "ARCHITECTURE", "x86" | Set-Content $manifestPath
     - mt.exe -manifest installer/windows.manifest -validate_manifest
     - mt.exe  -manifest installer/windows.manifest -outputresource:$EXE_PATH;1
-    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$WINDOWS_KEY" "$WINDOWS_PASSWORD" "$GITHUB_USER" "$GITHUB_PASS" "True" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "True" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "build-only"
   when: always
   except:
   - tags
   tags:
     - windows
+
+windows-code-sign:
+  stage: sign
+  artifacts:
+    expire_in: 4 weeks
+    paths:
+    - build\*.exe
+    - build\build-server.log
+  needs:
+    - job: windows-builder-x64
+      artifacts: true
+    - job: windows-builder-x86
+      artifacts: true
+  script:
+    - $PSVersionTable
+    - $env:Path = $env:Path + ";C:\msys64\usr\local\bin"
+    - if (-not (Get-ChildItem -Path "build\*.exe" -ErrorAction SilentlyContinue)) { throw "No Windows installers found in build\\*.exe" }
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "sign-upload-only"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "True" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "sign-upload-only"
+  when: always
+  except:
+  - tags
+  tags:
+    - code-sign
 
 re-init-builders:
   stage: deploy

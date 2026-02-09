@@ -27,6 +27,7 @@
 
 import os
 import sys
+import json
 
 import datetime
 import platform
@@ -53,13 +54,12 @@ freeze_command = None
 errors_detected = []
 make_command = "make"
 zulip_token = None
-windows_key = None
-windows_key_password = None
 github_user = None
 github_pass = None
 github_release = None
 windows_32bit = False
 version_info = {}
+windows_mode = "full"
 
 # Create temp log
 os.makedirs(os.path.join(PATH, 'build'), exist_ok=True)
@@ -217,36 +217,104 @@ def upload(file_path, github_release):
     return url
 
 
+def run_command_with_exit_code(command, working_dir=None):
+    """Run command and stream output to log, returning process exit code"""
+    short_command = shlex.split(command)[0]  # We don't need to print args
+    output("Running %s... (%s)" % (short_command, working_dir))
+    p = subprocess.Popen(
+        command,
+        shell=True,
+        cwd=working_dir,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    for line in iter(p.stdout.readline, b""):
+        output(line)
+    return p.wait()
+
+
+def sign_windows_installer(installer_path):
+    """Sign a Windows installer with Azure Code Signing"""
+    azure_tenant = os.getenv("AZURE_TENANT_ID")
+    azure_client = os.getenv("AZURE_CLIENT_ID")
+    azure_secret = os.getenv("AZURE_CLIENT_SECRET")
+    azure_account = os.getenv("AZURE_CODESIGN_ACCOUNT_NAME")
+    azure_profile = os.getenv("AZURE_CODESIGN_CERT_PROFILE_NAME")
+
+    required_vars = {
+        "AZURE_TENANT_ID": azure_tenant,
+        "AZURE_CLIENT_ID": azure_client,
+        "AZURE_CLIENT_SECRET": azure_secret,
+        "AZURE_CODESIGN_ACCOUNT_NAME": azure_account,
+        "AZURE_CODESIGN_CERT_PROFILE_NAME": azure_profile,
+    }
+    missing = [name for name, value in required_vars.items() if not value]
+    if missing:
+        error("Azure Code Signing configuration missing: %s" % ", ".join(missing))
+        return False
+
+    metadata = {
+        "Endpoint": os.getenv("AZURE_CODESIGN_ENDPOINT", "https://eus.codesigning.azure.net/"),
+        "CodeSigningAccountName": azure_account,
+        "CertificateProfileName": azure_profile,
+        "CorrelationId": os.getenv("AZURE_CODESIGN_CORRELATION_ID", "openshot-gitlab")
+    }
+    metadata_path = os.path.join(PATH, "build", "azure-codesign-metadata.json")
+    with open(metadata_path, "w", encoding="UTF-8") as f:
+        json.dump(metadata, f)
+
+    signtool_path = os.getenv(
+        "SIGNTOOL_PATH",
+        "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\signtool.exe")
+    dlib_path = os.getenv(
+        "AZURE_CODESIGN_DLIB_PATH",
+        "C:\\Users\\Administrator\\AppData\\Local\\Microsoft\\MicrosoftArtifactSigningClientTools\\Azure.CodeSigning.Dlib.dll")
+    timestamp_url = os.getenv("AZURE_CODESIGN_TIMESTAMP_URL", "http://timestamp.acs.microsoft.com")
+
+    sign_command = " ".join([
+        '"%s"' % signtool_path,
+        "sign",
+        "/v",
+        "/fd SHA256",
+        '/tr "%s"' % timestamp_url,
+        "/td SHA256",
+        '/dlib "%s"' % dlib_path,
+        '/dmdf "%s"' % metadata_path,
+        '"%s"' % installer_path,
+    ])
+    return run_command_with_exit_code(sign_command) == 0
+
+
 def main():
     # Only run this code when directly executing this script. Parts of this file
     # are also used in the deploy.py script.
     try:
+        windows_mode = "full"
+
         # Validate command-line arguments
         if len(sys.argv) >= 2:
             zulip_token = sys.argv[1]
         if len(sys.argv) >= 4:
-            windows_key = sys.argv[2]
-            windows_key_password = sys.argv[3]
-        if len(sys.argv) >= 6:
-            github_user = sys.argv[4]
-            github_pass = sys.argv[5]
+            github_user = sys.argv[2]
+            github_pass = sys.argv[3]
 
             # Login and get "GitHub" object
             gh = login(github_user, github_pass)
             repo = gh.repository("OpenShot", "openshot-qt")
 
-        if len(sys.argv) >= 7:
+        if len(sys.argv) >= 5:
             windows_32bit = False
-            if sys.argv[6] == 'True':
+            if sys.argv[4] == 'True':
                 windows_32bit = True
 
         git_branch_name = "develop"
-        if len(sys.argv) >= 8:
-            git_branch_name = sys.argv[7]
+        if len(sys.argv) >= 6:
+            git_branch_name = sys.argv[5]
 
         mac_password = ""
-        if len(sys.argv) >= 9:
-            mac_password = sys.argv[8]
+        if len(sys.argv) >= 7:
+            mac_password = sys.argv[6]
+        if len(sys.argv) >= 8:
+            windows_mode = sys.argv[7]
 
         # Start log
         output(
@@ -448,167 +516,153 @@ def main():
                 os.remove(app_build_path)
 
         if platform.system() == "Windows":
-            # Move python folder structure, since Cx_Freeze doesn't put it in the correct place
-            exe_dir = os.path.join(PATH, 'build', 'exe.mingw-{}'.format(PY_ABI))
-            python_dir = os.path.join(exe_dir, 'lib', 'python{}'.format(PY_ABI))
-
-            # Remove a redundant openshot_qt module folder (duplicates lots of files)
-            duplicate_openshot_qt_path = os.path.join(python_dir, 'openshot_qt')
-            if os.path.exists(duplicate_openshot_qt_path):
-                shutil.rmtree(duplicate_openshot_qt_path, True)
-
-            # Remove the following paths. cx_Freeze is including many unneeded files. This prunes them out.
-            paths_to_delete = [
-                'mediaservice',
-                'imageformats',
-                'platforms',
-                'printsupport',
-                'lib/openshot_qt',
-                'resvg.dll',
-                ]
-            for delete_path in paths_to_delete:
-                full_delete_path = os.path.join(exe_dir, delete_path)
-                output("Delete path: %s" % full_delete_path)
-                if os.path.exists(full_delete_path):
-                    if os.path.isdir(full_delete_path):
-                        # Delete Folder
-                        shutil.rmtree(full_delete_path)
-                    else:
-                        # Delete File
-                        os.unlink(full_delete_path)
-                else:
-                    output("Invalid delete path: %s" % full_delete_path)
-
-            # Replace these folders (cx_Freeze messes this up, so this fixes it)
-            paths_to_replace = ['imageformats', 'platforms']
-            for replace_name in paths_to_replace:
-                if windows_32bit:
-                    shutil.copytree(
-                        os.path.join('C:\\msys64\\mingw32\\share\\qt5\\plugins', replace_name),
-                        os.path.join(exe_dir, replace_name))
-                else:
-                    shutil.copytree(
-                        os.path.join('C:\\msys64\\mingw64\\share\\qt5\\plugins', replace_name),
-                        os.path.join(exe_dir, replace_name))
-
-            # Copy Qt5Core.dll, Qt5Svg.dll to root of frozen directory
-            paths_to_copy = [
-                ("Qt5Core.dll", "C:\\msys64\\mingw64\\bin\\"),
-                ("Qt5Svg.dll", "C:\\msys64\\mingw64\\bin\\"),
-                ]
-            if windows_32bit:
-                paths_to_copy = [
-                    ("Qt5Core.dll", "C:\\msys64\\mingw32\\bin\\"),
-                    ("Qt5Svg.dll", "C:\\msys64\\mingw32\\bin\\"),
-                    ]
-            for qt_file_name, qt_parent_path in paths_to_copy:
-                qt5_path = os.path.join(qt_parent_path, qt_file_name)
-                new_qt5_path = os.path.join(exe_dir, qt_file_name)
-                if os.path.exists(qt5_path) and not os.path.exists(new_qt5_path):
-                    output("Copying %s to %s" % (qt5_path, new_qt5_path))
-                    shutil.copy(qt5_path, new_qt5_path)
-
-            # Delete debug Qt libraries (since they are not needed, and cx_Freeze grabs them)
-            for sub_folder in ['', 'platforms', 'imageformats']:
-                parent_path = exe_dir
-                if sub_folder:
-                    parent_path = os.path.join(parent_path, sub_folder)
-                for debug_qt_lib in os.listdir(parent_path):
-                    if debug_qt_lib.endswith("d.dll"):
-                        # Delete the debug dll
-                        os.remove(os.path.join(parent_path, debug_qt_lib))
-
             only_64_bit = "x64"
             if windows_32bit:
                 only_64_bit = ""
 
-            # Add version metadata to frozen app launcher
-            launcher_exe = os.path.join(exe_dir, "openshot-qt.exe")
-            verpatch_success = True
-            verpatch_command = " ".join([
-                'verpatch.exe',
-                '{}'.format(launcher_exe),
-                '/va',
-                '/high "{}"'.format(info.VERSION),
-                '/pv "{}"'.format(info.VERSION),
-                '/s product "{}"'.format(info.PRODUCT_NAME),
-                '/s company "{}"'.format(info.COMPANY_NAME),
-                '/s copyright "{}"'.format(info.COPYRIGHT),
-                '/s desc "{}"'.format(info.PRODUCT_NAME),
-                ])
-            verpatch_output = ""
-            # version-stamp executable
-            for line in run_command(verpatch_command):
-                output(line)
-                if line:
-                    verpatch_success = False
-                    verpatch_output = line
+            if windows_mode != "sign-upload-only":
+                # Move python folder structure, since Cx_Freeze doesn't put it in the correct place
+                exe_dir = os.path.join(PATH, 'build', 'exe.mingw-{}'.format(PY_ABI))
+                python_dir = os.path.join(exe_dir, 'lib', 'python{}'.format(PY_ABI))
 
-            # Was the verpatch command successful
-            if not verpatch_success:
-                # Verpatch failed (not fatal)
-                error("Verpatch Error: Had output when none was expected (%s)" % verpatch_output)
+                # Remove a redundant openshot_qt module folder (duplicates lots of files)
+                duplicate_openshot_qt_path = os.path.join(python_dir, 'openshot_qt')
+                if os.path.exists(duplicate_openshot_qt_path):
+                    shutil.rmtree(duplicate_openshot_qt_path, True)
 
-            # Copy uninstall files into build folder
-            for file in os.listdir(os.path.join("c:/", "InnoSetup")):
-                shutil.copyfile(os.path.join("c:/", "InnoSetup", file), os.path.join(PATH, "build", file))
+                # Remove the following paths. cx_Freeze is including many unneeded files. This prunes them out.
+                paths_to_delete = [
+                    'mediaservice',
+                    'imageformats',
+                    'platforms',
+                    'printsupport',
+                    'lib/openshot_qt',
+                    'resvg.dll',
+                    ]
+                for delete_path in paths_to_delete:
+                    full_delete_path = os.path.join(exe_dir, delete_path)
+                    output("Delete path: %s" % full_delete_path)
+                    if os.path.exists(full_delete_path):
+                        if os.path.isdir(full_delete_path):
+                            # Delete Folder
+                            shutil.rmtree(full_delete_path)
+                        else:
+                            # Delete File
+                            os.unlink(full_delete_path)
+                    else:
+                        output("Invalid delete path: %s" % full_delete_path)
 
-            # Create Installer (OpenShot-%s-x86_64.exe)
-            inno_success = True
-            inno_command = " ".join([
-                'iscc.exe',
-                '/Q',
-                '/DVERSION=%s' % version,
-                '/DONLY_64_BIT=%s' % only_64_bit,
-                '/DPY_EXE_DIR=%s' % "exe.mingw-{}".format(PY_ABI),
-                '"%s"' % os.path.join(PATH, 'installer', 'windows-installer.iss'),
-                ])
-            inno_output = ""
-            # Compile Inno installer
-            for line in run_command(inno_command):
-                output(line)
-                if line:
-                    inno_success = False
-                    inno_output = line
+                # Replace these folders (cx_Freeze messes this up, so this fixes it)
+                paths_to_replace = ['imageformats', 'platforms']
+                for replace_name in paths_to_replace:
+                    if windows_32bit:
+                        shutil.copytree(
+                            os.path.join('C:\\msys64\\mingw32\\share\\qt5\\plugins', replace_name),
+                            os.path.join(exe_dir, replace_name))
+                    else:
+                        shutil.copytree(
+                            os.path.join('C:\\msys64\\mingw64\\share\\qt5\\plugins', replace_name),
+                            os.path.join(exe_dir, replace_name))
 
-            # Was the Inno Installer successful
-            inno_output_exe = os.path.join(PATH, "installer", "Output", "OpenShot.exe")
-            if not inno_success or not os.path.exists(inno_output_exe):
-                # Installer failed
-                error("Inno Compiler Error: Had output when none was expected (%s)" % inno_output)
+                # Copy Qt5Core.dll, Qt5Svg.dll to root of frozen directory
+                paths_to_copy = [
+                    ("Qt5Core.dll", "C:\\msys64\\mingw64\\bin\\"),
+                    ("Qt5Svg.dll", "C:\\msys64\\mingw64\\bin\\"),
+                    ]
+                if windows_32bit:
+                    paths_to_copy = [
+                        ("Qt5Core.dll", "C:\\msys64\\mingw32\\bin\\"),
+                        ("Qt5Svg.dll", "C:\\msys64\\mingw32\\bin\\"),
+                        ]
+                for qt_file_name, qt_parent_path in paths_to_copy:
+                    qt5_path = os.path.join(qt_parent_path, qt_file_name)
+                    new_qt5_path = os.path.join(exe_dir, qt_file_name)
+                    if os.path.exists(qt5_path) and not os.path.exists(new_qt5_path):
+                        output("Copying %s to %s" % (qt5_path, new_qt5_path))
+                        shutil.copy(qt5_path, new_qt5_path)
+
+                # Delete debug Qt libraries (since they are not needed, and cx_Freeze grabs them)
+                for sub_folder in ['', 'platforms', 'imageformats']:
+                    parent_path = exe_dir
+                    if sub_folder:
+                        parent_path = os.path.join(parent_path, sub_folder)
+                    for debug_qt_lib in os.listdir(parent_path):
+                        if debug_qt_lib.endswith("d.dll"):
+                            # Delete the debug dll
+                            os.remove(os.path.join(parent_path, debug_qt_lib))
+
+                # Add version metadata to frozen app launcher
+                launcher_exe = os.path.join(exe_dir, "openshot-qt.exe")
+                verpatch_success = True
+                verpatch_command = " ".join([
+                    'verpatch.exe',
+                    '{}'.format(launcher_exe),
+                    '/va',
+                    '/high "{}"'.format(info.VERSION),
+                    '/pv "{}"'.format(info.VERSION),
+                    '/s product "{}"'.format(info.PRODUCT_NAME),
+                    '/s company "{}"'.format(info.COMPANY_NAME),
+                    '/s copyright "{}"'.format(info.COPYRIGHT),
+                    '/s desc "{}"'.format(info.PRODUCT_NAME),
+                    ])
+                verpatch_output = ""
+                # version-stamp executable
+                for line in run_command(verpatch_command):
+                    output(line)
+                    if line:
+                        verpatch_success = False
+                        verpatch_output = line
+
+                # Was the verpatch command successful
+                if not verpatch_success:
+                    # Verpatch failed (not fatal)
+                    error("Verpatch Error: Had output when none was expected (%s)" % verpatch_output)
+
+                # Copy uninstall files into build folder
+                for file in os.listdir(os.path.join("c:/", "InnoSetup")):
+                    shutil.copyfile(os.path.join("c:/", "InnoSetup", file), os.path.join(PATH, "build", file))
+
+                # Create Installer (OpenShot-%s-x86_64.exe)
+                inno_success = True
+                inno_command = " ".join([
+                    'iscc.exe',
+                    '/Q',
+                    '/DVERSION=%s' % version,
+                    '/DONLY_64_BIT=%s' % only_64_bit,
+                    '/DPY_EXE_DIR=%s' % "exe.mingw-{}".format(PY_ABI),
+                    '"%s"' % os.path.join(PATH, 'installer', 'windows-installer.iss'),
+                    ])
+                inno_output = ""
+                # Compile Inno installer
+                for line in run_command(inno_command):
+                    output(line)
+                    if line:
+                        inno_success = False
+                        inno_output = line
+
+                # Was the Inno Installer successful
+                inno_output_exe = os.path.join(PATH, "installer", "Output", "OpenShot.exe")
+                if not inno_success or not os.path.exists(inno_output_exe):
+                    # Installer failed
+                    error("Inno Compiler Error: Had output when none was expected (%s)" % inno_output)
+                    needs_upload = False
+                else:
+                    # Rename exe to correct name / path
+                    os.rename(inno_output_exe, app_build_path)
+                    # Clean-up empty folder created by Inno compiler
+                    os.rmdir(os.path.join(PATH, 'installer', 'Output'))
+
+            # Build-only mode: stop after generating installer artifacts.
+            if windows_mode == "build-only":
                 needs_upload = False
+            elif os.path.exists(app_build_path):
+                sign_success = sign_windows_installer(app_build_path)
+                if not sign_success:
+                    needs_upload = False
+                    os.remove(app_build_path)
             else:
-                # Rename exe to correct name / path
-                os.rename(inno_output_exe, app_build_path)
-                # Clean-up empty folder created by Inno compiler
-                os.rmdir(os.path.join(PATH, 'installer', 'Output'))
-
-            # Sign the installer
-            key_sign_success = True
-            key_sign_command = " ".join([
-                'kSignCMD.exe',
-                '/f "%s%s"' % (windows_key, only_64_bit),
-                '/p "%s"' % windows_key_password,
-                '/d "OpenShot Video Editor"',
-                '/du "http://www.openshot.org"',
-                '"%s"' % app_build_path,
-                ])
-            key_sign_output = ""
-            # Sign MSI
-            for line in run_command(key_sign_command):
-                output(line)
-                if line and "will expire" not in line.decode('UTF-8'):
-                    key_sign_success = False
-                    key_sign_output = line
-
-            # Was the MSI creation successful
-            if not key_sign_success:
-                # MSI failed
-                error("Key Sign Error: Had output when none was expected (%s)" % key_sign_output)
+                error("Windows signing step could not find installer: %s" % app_build_path)
                 needs_upload = False
-
-                # Delete build (since key signing might have failed)
-                os.remove(app_build_path)
 
         # Upload Installer to GitHub (if build path exists)
         if needs_upload and os.path.exists(app_build_path):
