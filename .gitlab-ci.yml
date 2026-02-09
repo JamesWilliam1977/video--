@@ -15,7 +15,7 @@ init-builders:
     - send-ci-sqs linux
     - send-ci-sqs windows
 
-linux-builder:
+linux:
   stage: build
   artifacts:
     expire_in: 4 weeks
@@ -46,7 +46,7 @@ linux-builder:
   tags:
     - linux-focal
 
-mac-builder:
+mac:
   stage: build
   artifacts:
     expire_in: 4 weeks
@@ -88,7 +88,7 @@ mac-builder:
   tags:
     - mac
 
-windows-builder-x64:
+win-x64:
   stage: build
   artifacts:
     expire_in: 4 weeks
@@ -130,7 +130,7 @@ windows-builder-x64:
   tags:
     - windows
 
-windows-builder-x86:
+win-x86:
   stage: build
   artifacts:
     expire_in: 4 weeks
@@ -173,21 +173,39 @@ windows-builder-x86:
   tags:
     - windows
 
-windows-code-sign:
+win-sign-x64:
   stage: sign
   artifacts:
     expire_in: 4 weeks
     paths:
-    - build\*.exe
+    - build\*-x86_64.exe
     - build\build-server.log
   dependencies:
-    - windows-builder-x64
-    - windows-builder-x86
+    - win-x64
   script:
     - $PSVersionTable
     - $env:Path = $env:Path + ";C:\msys64\usr\local\bin;C:\msys64\usr\bin"
-    - if (-not (Get-ChildItem -Path "build\*.exe" -ErrorAction SilentlyContinue)) { throw "No Windows installers found in build\\*.exe" }
+    - if (-not (Get-ChildItem -Path "build\*-x86_64.exe" -ErrorAction SilentlyContinue)) { throw "No x64 Windows installer found in build\\*-x86_64.exe" }
     - py -3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "sign-upload-only"
+  when: always
+  except:
+  - tags
+  tags:
+    - code-sign
+
+win-sign-x86:
+  stage: sign
+  artifacts:
+    expire_in: 4 weeks
+    paths:
+    - build\*-x86.exe
+    - build\build-server.log
+  dependencies:
+    - win-x86
+  script:
+    - $PSVersionTable
+    - $env:Path = $env:Path + ";C:\msys64\usr\local\bin;C:\msys64\usr\bin"
+    - if (-not (Get-ChildItem -Path "build\*-x86.exe" -ErrorAction SilentlyContinue)) { throw "No x86 Windows installer found in build\\*-x86.exe" }
     - py -3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "True" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "sign-upload-only"
   when: always
   except:
