@@ -180,11 +180,9 @@ windows-code-sign:
     paths:
     - build\*.exe
     - build\build-server.log
-  needs:
-    - job: windows-builder-x64
-      artifacts: true
-    - job: windows-builder-x86
-      artifacts: true
+  dependencies:
+    - windows-builder-x64
+    - windows-builder-x86
   script:
     - $PSVersionTable
     - $env:Path = $env:Path + ";C:\msys64\usr\local\bin"
