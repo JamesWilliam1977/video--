@@ -583,7 +583,7 @@
     "setting": "decode_hw_max_height"
   },
   {
-    "value": false,
+    "value": true,
     "title": "Use Blender GPU rendering for Animated Titles (Experimental)",
     "type": "bool",
     "restart": false,
