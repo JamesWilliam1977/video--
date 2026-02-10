@@ -309,11 +309,6 @@ def main():
         git_branch_name = "develop"
         if len(sys.argv) >= 6:
             git_branch_name = sys.argv[5]
-        forced_branch_name = os.getenv("BUILD_SERVER_FORCE_BRANCH", "").strip()
-        if forced_branch_name:
-            output("Forcing build-server branch logic from '%s' to '%s'" % (
-                git_branch_name, forced_branch_name))
-            git_branch_name = forced_branch_name
 
         mac_password = ""
         if len(sys.argv) >= 7:
