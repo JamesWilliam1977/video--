@@ -1,6 +1,7 @@
 stages:
   - init-builders
   - build
+  - sign
   - deploy
   - publish
 
@@ -14,7 +15,7 @@ init-builders:
     - send-ci-sqs linux
     - send-ci-sqs windows
 
-linux-builder:
+linux:
   stage: build
   artifacts:
     expire_in: 4 weeks
@@ -38,14 +39,14 @@ linux-builder:
     - cd doc; make html SPHINXOPTS="-D ga4_measurement_id=G-W2VHM9Y8QH"; cd ..;
     - python3 -u freeze.py build --git-branch=$CI_COMMIT_REF_NAME
     - for dir in "build/*/"; do /bin/sh ./installer/mangle-hw-libs.sh $(realpath "${dir}"); done 
-    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$WINDOWS_KEY" "$WINDOWS_PASSWORD" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
   when: always
   except:
   - tags
   tags:
     - linux-focal
 
-mac-builder:
+mac:
   stage: build
   artifacts:
     expire_in: 4 weeks
@@ -80,14 +81,14 @@ mac-builder:
     - echo -e "CI_PROJECT_NAME:$CI_PROJECT_NAME\nCI_COMMIT_REF_NAME:$CI_COMMIT_REF_NAME\nCI_COMMIT_SHA:$CI_COMMIT_SHA\nCI_JOB_ID:$CI_JOB_ID\nCI_PIPELINE_ID:$CI_PIPELINE_ID\nVERSION:$VERSION" > "build/install-x64/share/$CI_PROJECT_NAME.env"
     - git log $(git describe --tags --abbrev=0 @^)..@ --oneline --pretty=format:"- %C(auto,yellow)%h%C(auto,magenta)% %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(25,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D" --date=short > "build/install-x64/share/$CI_PROJECT_NAME.log"
     - python3 -u freeze.py bdist_mac --git-branch=$CI_COMMIT_REF_NAME --iconfile=installer/openshot.icns --custom-info-plist=installer/Info.plist --bundle-name="OpenShot Video Editor"
-    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$WINDOWS_KEY" "$WINDOWS_PASSWORD" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
   when: always
   except:
   - tags
   tags:
     - mac
 
-windows-builder-x64:
+win-x64:
   stage: build
   artifacts:
     expire_in: 4 weeks
@@ -122,14 +123,14 @@ windows-builder-x64:
     - (Get-Content $manifestPath) -creplace "ARCHITECTURE", "amd64" | Set-Content $manifestPath
     - mt.exe -manifest installer/windows.manifest -validate_manifest
     - mt.exe  -manifest installer/windows.manifest -outputresource:$EXE_PATH;1
-    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$WINDOWS_KEY" "$WINDOWS_PASSWORD" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "build-only"
   when: always
   except:
   - tags
   tags:
     - windows
 
-windows-builder-x86:
+win-x86:
   stage: build
   artifacts:
     expire_in: 4 weeks
@@ -165,16 +166,62 @@ windows-builder-x86:
     - (Get-Content $manifestPath) -creplace "ARCHITECTURE", "x86" | Set-Content $manifestPath
     - mt.exe -manifest installer/windows.manifest -validate_manifest
     - mt.exe  -manifest installer/windows.manifest -outputresource:$EXE_PATH;1
-    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$WINDOWS_KEY" "$WINDOWS_PASSWORD" "$GITHUB_USER" "$GITHUB_PASS" "True" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
+    - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "True" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "build-only"
   when: always
   except:
   - tags
   tags:
     - windows
 
+win-sign-x64:
+  stage: sign
+  artifacts:
+    expire_in: 4 weeks
+    paths:
+    - build\*-x86_64.exe
+    - build\build-server.log
+  dependencies:
+    - win-x64
+  script:
+    - $PSVersionTable
+    - $env:Path = $env:Path + ";C:\msys64\usr\local\bin;C:\msys64\usr\bin"
+    - $env:BUILD_SERVER_FORCE_BRANCH = "develop"
+    - if (-not (Get-ChildItem -Path "build\*-x86_64.exe" -ErrorAction SilentlyContinue)) { throw "No x64 Windows installer found in build\\*-x86_64.exe" }
+    - py -3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "sign-upload-only"
+  when: always
+  except:
+  - tags
+  tags:
+    - code-sign
+
+win-sign-x86:
+  stage: sign
+  artifacts:
+    expire_in: 4 weeks
+    paths:
+    - build\*-x86.exe
+    - build\build-server.log
+  dependencies:
+    - win-x86
+  script:
+    - $PSVersionTable
+    - $env:Path = $env:Path + ";C:\msys64\usr\local\bin;C:\msys64\usr\bin"
+    - $env:BUILD_SERVER_FORCE_BRANCH = "develop"
+    - if (-not (Get-ChildItem -Path "build\*-x86.exe" -ErrorAction SilentlyContinue)) { throw "No x86 Windows installer found in build\\*-x86.exe" }
+    - py -3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "True" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "sign-upload-only"
+  when: always
+  except:
+  - tags
+  tags:
+    - code-sign
+
 re-init-builders:
   stage: deploy
   when: manual
+  except:
+    - tags
+  only:
+    - /^release.*$/
   tags:
     - gitlab
   script:
