@@ -1968,6 +1968,19 @@ $scope.updateLayerIndex = function () {
    * @return {string}
    * @return {string}
    */
+  $scope.isTrackLocked = function(layer_number) {
+    if (!$scope.project || !$scope.project.layers) {
+      return false;
+    }
+    for (var i = 0; i < $scope.project.layers.length; i++) {
+      var layer = $scope.project.layers[i];
+      if (layer && parseInt(layer.number, 10) === parseInt(layer_number, 10)) {
+        return !!layer.lock;
+      }
+    }
+    return false;
+  };
+
   $scope.getTrackStyle = function (lock) {
     if (lock) {
       return "track track_disabled";
@@ -1975,6 +1988,13 @@ $scope.updateLayerIndex = function () {
     else {
       return "track";
     }
+  };
+
+  $scope.getTrackNameStyle = function (lock) {
+    if (lock) {
+      return "track_disabled";
+    }
+    return "";
   };
 
   $scope.setDragging = function(value) {
@@ -2009,6 +2029,9 @@ $scope.updateLayerIndex = function () {
     }
     if ($scope.enable_razor) {
       style += "razor_cursor ";
+    }
+    if ($scope.isTrackLocked(clip.layer)) {
+      style += "track_disabled ";
     }
 
     return style;

@@ -1012,6 +1012,10 @@ class TimelineWidgetBase(QWidget):
         if coords is None:
             coords = (0.0, self.track_list[0].data.get("number") if self.track_list else 0, 0)
         pos_seconds, track_num, _ = coords
+        track_num = self._nearest_unlocked_track_number(track_num)
+        if track_num is None:
+            self._reset_drag_preview()
+            return
         pos = QPointF(pos_seconds, 0)
 
         if effect_names:
@@ -1105,8 +1109,80 @@ class TimelineWidgetBase(QWidget):
         track_idx = int((pos.y() - self.ruler_height + v_offset) / vertical_factor)
         if track_idx < 0 or track_idx >= len(self.track_list):
             return None
+        track_idx = self._nearest_unlocked_track_index(track_idx)
+        if track_idx is None:
+            return None
         track_num = self.track_list[track_idx].data.get("number")
         return pos_seconds, track_num, track_idx
+
+    def _is_track_locked(self, track_num):
+        normalized = self.normalize_track_number(track_num)
+        for track in self.track_list:
+            data = track.data if isinstance(track.data, dict) else {}
+            if self.normalize_track_number(data.get("number")) == normalized:
+                return bool(data.get("lock"))
+        return False
+
+    def _nearest_unlocked_track_index(self, preferred_idx):
+        try:
+            idx = int(preferred_idx)
+        except (TypeError, ValueError):
+            return None
+        if idx < 0 or idx >= len(self.track_list):
+            return None
+        if not self._is_track_locked(self.track_list[idx].data.get("number")):
+            return idx
+
+        max_radius = len(self.track_list)
+        for radius in range(1, max_radius + 1):
+            up = idx - radius
+            if up >= 0 and not self._is_track_locked(self.track_list[up].data.get("number")):
+                return up
+            down = idx + radius
+            if down < len(self.track_list) and not self._is_track_locked(self.track_list[down].data.get("number")):
+                return down
+        return None
+
+    def _nearest_unlocked_track_number(self, preferred_track_num):
+        normalized = self.normalize_track_number(preferred_track_num)
+        preferred_idx = None
+        for idx, track in enumerate(self.track_list):
+            data = track.data if isinstance(track.data, dict) else {}
+            if self.normalize_track_number(data.get("number")) == normalized:
+                preferred_idx = idx
+                break
+        if preferred_idx is None:
+            preferred_idx = 0
+        unlocked_idx = self._nearest_unlocked_track_index(preferred_idx)
+        if unlocked_idx is None:
+            return None
+        data = self.track_list[unlocked_idx].data if isinstance(self.track_list[unlocked_idx].data, dict) else {}
+        return data.get("number")
+
+    def _selection_overlaps_locked_tracks(self, items):
+        if not items:
+            return False
+        track_indices = []
+        for item in items:
+            data = item.data if hasattr(item, "data") and isinstance(item.data, dict) else {}
+            layer = data.get("layer")
+            normalized = self.normalize_track_number(layer)
+            for idx, track in enumerate(self.track_list):
+                track_num = self.normalize_track_number((track.data if isinstance(track.data, dict) else {}).get("number"))
+                if track_num == normalized:
+                    track_indices.append(idx)
+                    break
+
+        if not track_indices:
+            return False
+        top_idx = min(track_indices)
+        bottom_idx = max(track_indices)
+        for idx in range(top_idx, bottom_idx + 1):
+            track = self.track_list[idx]
+            data = track.data if isinstance(track.data, dict) else {}
+            if bool(data.get("lock")):
+                return True
+        return False
 
     def _snap_new_item_start(self, seconds, duration):
         seconds = max(0.0, seconds)
@@ -1153,6 +1229,9 @@ class TimelineWidgetBase(QWidget):
         if not hasattr(self, "item_ids"):
             self.item_ids = []
         self.item_ids.clear()
+        if track_num is None:
+            return False
+        track_num = self._nearest_unlocked_track_number(track_num)
         if track_num is None:
             return False
         preview_items = []
@@ -1205,6 +1284,9 @@ class TimelineWidgetBase(QWidget):
 
     def _update_drag_preview_position(self, pos_seconds, track_num):
         if not self._drag_preview_items:
+            return
+        track_num = self._nearest_unlocked_track_number(track_num)
+        if track_num is None:
             return
         min_offset = min(entry.get("offset", 0.0) for entry in self._drag_preview_items)
         max_end = max(

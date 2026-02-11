@@ -274,6 +274,11 @@ class ClipInteractionMixin:
         ]
         if not self.dragging_items:
             self.dragging_items = [clicked_item]
+        if self._selection_overlaps_locked_tracks(self.dragging_items):
+            self.dragging_items = []
+            self._drag_transaction_id = None
+            self._release_cursor()
+            return
 
         # Map track number → index
         self._track_index_from_num = {
@@ -465,6 +470,10 @@ class ClipInteractionMixin:
             new_pos_sec = self._snap_time(new_pos_sec)
             new_idx = start_idx + delta_idx
             new_idx = max(0, min(new_idx, len(self.track_list) - 1))
+            unlocked_idx = self._nearest_unlocked_track_index(new_idx)
+            if unlocked_idx is None:
+                unlocked_idx = start_idx
+            new_idx = unlocked_idx
             new_layer_num = self._track_num_from_index[new_idx]
 
             if (
@@ -683,6 +692,11 @@ class ClipInteractionMixin:
     def _startItemResize(self):
         item = self._resizing_item
         if not item:
+            return
+        if self._is_track_locked((item.data if isinstance(item.data, dict) else {}).get("layer")):
+            self._resizing_item = None
+            self._resize_edge = None
+            self._release_cursor()
             return
         self.snap.reset()
         self._fix_cursor(self.cursors["resize_x"])

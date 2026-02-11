@@ -139,12 +139,19 @@ class TrackPainter(BasePainter):
         painter.save()
         painter.setClipRect(area)
         banding_cfg = self._frame_banding_config()
-        for track_rect, _track, _name_rect in self.w.geometry.iter_tracks():
+        for track_rect, track, _name_rect in self.w.geometry.iter_tracks():
             vis = track_rect.intersected(area)
             if vis.isNull():
                 continue
-            bg = self.w.theme.track.background
-            bg2 = self.w.theme.track.background2
+            locked = bool((track.data if isinstance(track.data, dict) else {}).get("lock"))
+            bg = QColor(self.w.theme.track.background)
+            bg2 = QColor(self.w.theme.track.background2)
+            border_color = QColor(self.w.theme.track.border_color)
+            if locked:
+                bg = self.dimmed_color(bg)
+                if bg2.isValid():
+                    bg2 = self.dimmed_color(bg2)
+                border_color = self.dimmed_color(border_color)
             if bg2.isValid() and bg2 != bg:
                 grad = QLinearGradient(vis.topLeft(), vis.bottomLeft())
                 grad.setColorAt(0, bg)
@@ -153,8 +160,14 @@ class TrackPainter(BasePainter):
             else:
                 painter.fillRect(vis, bg)
             if banding_cfg:
-                self._paint_frame_banding(painter, vis, banding_cfg)
-            painter.setPen(self.border_pen)
+                per_track_cfg = banding_cfg
+                if locked:
+                    per_track_cfg = dict(banding_cfg)
+                    per_track_cfg["color"] = self.dimmed_color(QColor(banding_cfg.get("color")))
+                self._paint_frame_banding(painter, vis, per_track_cfg)
+            border_pen = QPen(border_color)
+            border_pen.setCosmetic(True)
+            painter.setPen(border_pen)
             painter.drawLine(vis.topLeft(), vis.topRight())
             painter.drawLine(vis.bottomLeft(), vis.bottomRight())
             painter.drawLine(vis.topRight(), vis.bottomRight())
@@ -267,8 +280,20 @@ class TrackPainter(BasePainter):
         painter.save()
         painter.setClipRect(area)
         for _track_rect, track, name_rect in self.w.geometry.iter_tracks():
+            locked = bool((track.data if isinstance(track.data, dict) else {}).get("lock"))
+            name_bg = QColor(self.w.theme.track.name_background)
+            name_border_top = QColor(self.name_border_top_color)
+            name_border_bottom = QColor(self.name_border_bottom_color)
+            name_border = QColor(self.name_border_color)
+            text_color = QColor(self.w.theme.track.font_color)
+            if locked:
+                name_bg = self.dimmed_color(name_bg)
+                name_border_top = self.dimmed_color(name_border_top)
+                name_border_bottom = self.dimmed_color(name_border_bottom)
+                name_border = self.dimmed_color(name_border)
+                text_color = self.dimmed_color(text_color)
             painter.setPen(Qt.NoPen)
-            painter.setBrush(self.w.theme.track.name_background)
+            painter.setBrush(name_bg)
             if self.name_radius_tl or self.name_radius_bl:
                 r = name_rect
                 path = QPainterPath()
@@ -298,7 +323,7 @@ class TrackPainter(BasePainter):
                     name_rect.width(),
                     self.name_border_top_width,
                 )
-                painter.fillRect(top_rect, self.name_border_top_color)
+                painter.fillRect(top_rect, name_border_top)
             if self.name_border_bottom_width:
                 bottom_rect = QRectF(
                     name_rect.x(),
@@ -306,7 +331,7 @@ class TrackPainter(BasePainter):
                     name_rect.width(),
                     self.name_border_bottom_width,
                 )
-                painter.fillRect(bottom_rect, self.name_border_bottom_color)
+                painter.fillRect(bottom_rect, name_border_bottom)
             if self.name_border_width:
                 left_rect = QRectF(
                     name_rect.x(),
@@ -314,7 +339,7 @@ class TrackPainter(BasePainter):
                     self.name_border_width,
                     name_rect.height(),
                 )
-                painter.fillRect(left_rect, self.name_border_color)
+                painter.fillRect(left_rect, name_border)
 
             menu_w = 0.0
             metrics = painter.fontMetrics()
@@ -344,7 +369,7 @@ class TrackPainter(BasePainter):
                 text_width,
                 max(0.0, text_bottom - text_top),
             )
-            painter.setPen(self.w.theme.track.font_color)
+            painter.setPen(text_color)
             if text_rect.width() > 0.0 and text_rect.height() > 0.0:
                 painter.drawText(
                     text_rect,
@@ -365,10 +390,14 @@ class TrackPainter(BasePainter):
                 )
                 if not pix:
                     continue
+                painter.save()
+                if locked:
+                    painter.setOpacity(0.8)
                 default_margin = float(getattr(self, "toggle_margin", 0.0) or 0.0)
                 margin_x = button.get("margin_x", button.get("margin", default_margin))
                 margin_y = button.get("margin_y", button.get("margin", default_margin))
                 draw_x = button["rect"].x() + margin_x
                 draw_y = button["rect"].y() + margin_y
                 painter.drawPixmap(QPointF(draw_x, draw_y), pix)
+                painter.restore()
         painter.restore()

@@ -210,7 +210,14 @@ class ClipPainter(BasePainter):
             )
 
             pen = self.sel_pen if selected else self.clip_pen
+            locked = self.w._is_track_locked((clip.data if isinstance(clip.data, dict) else {}).get("layer"))
+            if locked:
+                pen = self.dimmed_pen(pen)
+                painter.save()
+                painter.setOpacity(0.8)
             self._draw_clip(painter, rect, segment_rect, clip, pen, selected)
+            if locked:
+                painter.restore()
         painter.restore()
 
     @staticmethod
@@ -662,6 +669,16 @@ class ClipPainter(BasePainter):
         thumb_w = max(self._min_thumb_slot_width, thumb_w)
         thumb_h = max(self._min_thumb_slot_width, min(thumb_h, inner.height()))
         top = inner.y() + (inner.height() - thumb_h) / 2.0
+        # Keep legacy/default theme behavior while nudging thumbnails downward
+        # on taller tracks so they do not appear vertically centered too high.
+        baseline_clip_height = 48.0
+        if inner.height() > baseline_clip_height:
+            top += (inner.height() - baseline_clip_height) / 2.0
+            top += 3.0
+        max_top = inner.bottom() - thumb_h
+        if max_top < inner.y():
+            max_top = inner.y()
+        top = min(max(top, inner.y()), max_top)
 
         pixels_per_second = float(self.w.pixels_per_second or 0.0)
         if pixels_per_second <= 0.0:
@@ -1347,7 +1364,7 @@ class ClipPainter(BasePainter):
         includes_start = (segment_rect.left() - full_rect.left()) <= 0.5
         includes_end = (full_rect.right() - segment_rect.right()) <= 0.5
 
-        border_pen = self.sel_pen if selected else self.clip_pen
+        border_pen = pen if isinstance(pen, QPen) else (self.sel_pen if selected else self.clip_pen)
         self._stroke_visible_border(
             painter,
             segment_rect,

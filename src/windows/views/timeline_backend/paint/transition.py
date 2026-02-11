@@ -88,7 +88,7 @@ class TransitionPainter(BasePainter):
 
         painter.save()
         painter.setClipRect(area)
-        for rect, _tran, selected in self.w.geometry.iter_transitions():
+        for rect, tran, selected in self.w.geometry.iter_transitions():
             if not rect.intersects(expanded):
                 continue
             segment_left = max(rect.left(), expanded.left())
@@ -102,8 +102,15 @@ class TransitionPainter(BasePainter):
                 rect.height(),
             )
             pen = self.sel_pen if selected else self.pen
+            locked = self.w._is_track_locked((tran.data if isinstance(tran.data, dict) else {}).get("layer"))
+            if locked:
+                pen = self.dimmed_pen(pen)
+                painter.save()
+                painter.setOpacity(0.8)
             result = self._transition_pixmap(rect, segment_rect)
             if not result:
+                if locked:
+                    painter.restore()
                 continue
             pix, includes_start, includes_end = result
             if pix:
@@ -115,6 +122,8 @@ class TransitionPainter(BasePainter):
                 includes_start=includes_start,
                 includes_end=includes_end,
             )
+            if locked:
+                painter.restore()
         painter.restore()
 
     def _transition_pixmap(self, full_rect, segment_rect):
