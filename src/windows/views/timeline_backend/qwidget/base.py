@@ -751,7 +751,10 @@ class TimelineWidgetBase(QWidget):
             self._pending_clip_overrides.clear()
             self._pending_transition_overrides.clear()
 
-        self._update_track_panel_properties()
+        # Skip panel property rebuild during an active keyframe drag
+        # to prevent stale point references.
+        if not self._dragging_panel_keyframes:
+            self._update_track_panel_properties()
         self.geometry.ensure()
         self._keyframes_dirty = True
         self._snap_keyframe_seconds = []
@@ -785,14 +788,19 @@ class TimelineWidgetBase(QWidget):
             if not get_app().window.timeline:
                 return
 
-            signature = self._panel_current_signature()
-            if signature != self._panel_refresh_signature:
-                self._panel_refresh_signature = signature
-                if self._update_track_panel_properties():
-                    self.geometry.mark_dirty()
+            # Skip panel property rebuild during an active keyframe drag
+            # to prevent stale point references (the drag writes
+            # pending_seconds directly to the cached point dicts).
+            if not self._dragging_panel_keyframes:
+                signature = self._panel_current_signature()
+                if signature != self._panel_refresh_signature:
+                    self._panel_refresh_signature = signature
+                    if self._update_track_panel_properties():
+                        self.geometry.mark_dirty()
 
             self.geometry.ensure()
             self._ensure_keyframe_markers()
+            self._apply_panel_drag_marker_override()
 
             self.bg_painter.paint(painter, event.rect())
             self.track_painter.paint_background(painter)
@@ -2008,6 +2016,11 @@ class TimelineWidgetBase(QWidget):
             self.setCursor(self.cursors.get("resize_x", Qt.SizeHorCursor))
             return
 
+        panel_marker = self._panel_marker_at(pos)
+        if panel_marker:
+            self.setCursor(self.cursors.get("resize_x", Qt.SizeHorCursor))
+            return
+
         # Clip menu icons
         for rect, _clip, _selected in self.geometry.iter_clips(reverse=True):
             if self._clip_menu_rect(rect).contains(pos):
@@ -2182,6 +2195,11 @@ class TimelineWidgetBase(QWidget):
             self._press_hit = "panel"
             self._panel_press_info = {"lane": panel_lane}
             return
+        panel_track = self._panel_track_at_pos(pos)
+        if panel_track is not None:
+            self._press_hit = "panel"
+            self._panel_press_info = {"track": panel_track}
+            return
         icon_entry = self._effect_icon_at(pos)
         if icon_entry:
             self._press_hit = "effect-icon"
@@ -2205,6 +2223,16 @@ class TimelineWidgetBase(QWidget):
         self._resizing_item = None
         self._resize_edge = None
         self._press_hit = self._hitTest(pos)
+
+    def _panel_track_at_pos(self, pos):
+        """Return track number when *pos* lies within any keyframe panel area."""
+        self.geometry.ensure()
+        for _track_rect, track, _name_rect in self.geometry.iter_tracks():
+            track_num = self.normalize_track_number(track.data.get("number"))
+            bounds = self._panel_bounds_for_track(track_num)
+            if isinstance(bounds, QRectF) and not bounds.isNull() and bounds.contains(pos):
+                return track_num
+        return None
 
     def _start_scroll_drag_if_needed(self, pos):
         if self._press_hit == "h-scroll":

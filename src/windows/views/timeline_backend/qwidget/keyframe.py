@@ -502,6 +502,280 @@ class KeyframeMixin:
         else:
             self._update_keyframe_marker_viewports()
 
+    def _apply_panel_drag_marker_override(self):
+        """Adjust clip-level keyframe marker positions during a panel drag.
+
+        Called from paintEvent AFTER _ensure_keyframe_markers so that
+        the override is always the last thing to touch marker rects
+        before painting.  This corrects the sub-frame rounding that
+        occurs when markers are rebuilt from saved clip data.
+        """
+        panel_drag = self._dragging_panel_keyframes
+        if not panel_drag:
+            return
+        markers = getattr(self, "_keyframe_markers", None)
+        if not markers:
+            return
+        entries = panel_drag.get("entries") or []
+        if not entries:
+            return
+
+        base_position = panel_drag.get("base_position", 0.0) or 0.0
+        try:
+            base_position = float(base_position)
+        except (TypeError, ValueError):
+            base_position = 0.0
+        marker_updates = {}
+        pending_by_path = {}
+        pending_by_parent_path = {}
+        for entry in entries:
+            entry_path = self._entry_path_tuple(entry)
+            marker = self._find_panel_drag_marker(markers, panel_drag, entry)
+            if not marker:
+                continue
+            pending_seconds = entry.get("pending_seconds")
+            if pending_seconds is None:
+                continue
+            try:
+                pending_seconds = float(pending_seconds)
+            except (TypeError, ValueError):
+                continue
+            if entry_path:
+                pending_entry = {
+                    "seconds": pending_seconds,
+                    "frame": entry.get("pending_frame"),
+                }
+                pending_by_path[entry_path] = pending_entry
+                if len(entry_path) > 1:
+                    parent_path = entry_path[:-1]
+                    pending_by_parent_path.setdefault(parent_path, []).append(pending_entry)
+            marker_updates[id(marker)] = {
+                "marker": marker,
+                "seconds": pending_seconds,
+                "frame": entry.get("pending_frame"),
+            }
+
+        if not marker_updates and not pending_by_path:
+            return
+
+        state = self.geometry._current_view_state()
+        def apply_marker_update(marker, update):
+            local_seconds = update["seconds"] - base_position
+            marker["seconds"] = local_seconds
+            marker["display_seconds"] = local_seconds
+            pending_frame = update.get("frame")
+            if pending_frame is not None:
+                marker["display_frame"] = pending_frame
+            clip_timeline = marker.get("clip_rect_timeline", marker.get("clip_rect"))
+            if isinstance(clip_timeline, QRectF) and not clip_timeline.isNull():
+                rect_timeline = self._keyframe_rect(clip_timeline, local_seconds)
+                marker["rect_timeline"] = QRectF(rect_timeline)
+                marker["rect"] = self._viewport_rect(rect_timeline, state)
+            else:
+                marker["rect"] = self._keyframe_rect(
+                    marker.get("clip_rect", QRectF()), local_seconds
+                )
+            marker["dimmed"] = False
+
+        for update in marker_updates.values():
+            apply_marker_update(update["marker"], update)
+
+        # If a dragged path still exists on another marker (stale cache/data
+        # frame), force it to the same pending drag position this paint cycle.
+        # This prevents old pre-snap marker positions from lingering visually.
+        if pending_by_path:
+            for marker in markers:
+                if id(marker) in marker_updates:
+                    continue
+                marker_paths = self._marker_paths_tuples(marker)
+                if not marker_paths:
+                    continue
+                marker_frame = marker.get("frame")
+                try:
+                    marker_frame = int(marker_frame) if marker_frame is not None else None
+                except (TypeError, ValueError):
+                    marker_frame = None
+                matched_update = None
+                for marker_path in marker_paths:
+                    matched_update = pending_by_path.get(marker_path)
+                    if matched_update:
+                        break
+                    if len(marker_path) <= 1 or marker_frame is None:
+                        continue
+                    candidates = pending_by_parent_path.get(marker_path[:-1]) or []
+                    if not candidates:
+                        continue
+                    frame_candidates = []
+                    for candidate in candidates:
+                        try:
+                            candidate_frame = candidate.get("frame")
+                            candidate_frame = (
+                                int(candidate_frame) if candidate_frame is not None else None
+                            )
+                        except (TypeError, ValueError):
+                            candidate_frame = None
+                        if candidate_frame == marker_frame:
+                            frame_candidates.append(candidate)
+                    if len(frame_candidates) == 1:
+                        matched_update = frame_candidates[0]
+                        break
+                    if len(frame_candidates) > 1:
+                        marker_seconds = self._marker_absolute_seconds(marker)
+                        if marker_seconds is None:
+                            continue
+                        best = None
+                        best_diff = None
+                        for candidate in frame_candidates:
+                            try:
+                                candidate_seconds = float(candidate.get("seconds"))
+                            except (TypeError, ValueError):
+                                continue
+                            diff = abs(candidate_seconds - marker_seconds)
+                            if best_diff is None or diff < best_diff:
+                                best_diff = diff
+                                best = candidate
+                        if best is not None:
+                            matched_update = best
+                            break
+                if matched_update:
+                    apply_marker_update(marker, matched_update)
+
+    def _entry_path_tuple(self, entry):
+        if not isinstance(entry, dict):
+            return None
+        path = entry.get("path")
+        if not path:
+            return None
+        try:
+            return tuple(path)
+        except TypeError:
+            return None
+
+    def _marker_paths_tuples(self, marker):
+        if not isinstance(marker, dict):
+            return []
+        marker_paths = marker.get("data_paths")
+        if not marker_paths:
+            single_path = marker.get("data_path")
+            if single_path:
+                marker_paths = (single_path,)
+        normalized = []
+        for marker_path in marker_paths or ():
+            try:
+                normalized.append(tuple(marker_path))
+            except TypeError:
+                continue
+        return normalized
+
+    def _panel_drag_owner_matches_marker(self, drag, marker):
+        if not isinstance(drag, dict) or not isinstance(marker, dict):
+            return False
+        drag_object_id = drag.get("object_id", "")
+        drag_owner_type = drag.get("owner_type", "clip") or "clip"
+        drag_clip = drag.get("clip")
+        drag_transition = drag.get("transition")
+        drag_clip_id = str(getattr(drag_clip, "id", "")) if drag_clip is not None else ""
+        drag_transition_id = (
+            str(getattr(drag_transition, "id", "")) if drag_transition is not None else ""
+        )
+        if drag_owner_type == "transition":
+            marker_transition = marker.get("transition")
+            marker_transition_id = (
+                str(getattr(marker_transition, "id", ""))
+                if marker_transition is not None
+                else ""
+            )
+            if drag_transition_id and marker_transition_id != drag_transition_id:
+                return False
+        else:
+            marker_clip = marker.get("clip")
+            marker_clip_id = (
+                str(getattr(marker_clip, "id", "")) if marker_clip is not None else ""
+            )
+            if drag_clip_id and marker_clip_id != drag_clip_id:
+                return False
+        if drag_object_id and marker.get("object_id") != drag_object_id:
+            return False
+        return True
+
+    def _select_marker_by_entry_frames(self, markers, entry):
+        if not markers:
+            return None
+        frame_values = []
+        for key in ("pending_frame", "original_frame"):
+            value = entry.get(key)
+            try:
+                if value is not None:
+                    frame_values.append(int(value))
+            except (TypeError, ValueError):
+                continue
+        for frame_int in frame_values:
+            frame_matches = []
+            for marker in markers:
+                try:
+                    marker_frame = marker.get("frame")
+                    if marker_frame is not None and int(marker_frame) == frame_int:
+                        frame_matches.append(marker)
+                except (TypeError, ValueError):
+                    continue
+            if len(frame_matches) == 1:
+                return frame_matches[0]
+            if len(frame_matches) > 1:
+                target_seconds = entry.get("pending_seconds", entry.get("original_seconds"))
+                try:
+                    target_seconds = float(target_seconds)
+                except (TypeError, ValueError):
+                    target_seconds = None
+                if target_seconds is not None:
+                    best = None
+                    best_diff = None
+                    for marker in frame_matches:
+                        marker_seconds = self._marker_absolute_seconds(marker)
+                        if marker_seconds is None:
+                            continue
+                        diff = abs(marker_seconds - target_seconds)
+                        if best_diff is None or diff < best_diff:
+                            best_diff = diff
+                            best = marker
+                    if best is not None:
+                        return best
+                return frame_matches[0]
+        return None
+
+    def _find_panel_drag_marker(self, markers, drag, entry):
+        if not markers or not isinstance(entry, dict):
+            return None
+        owner_markers = [m for m in markers if self._panel_drag_owner_matches_marker(drag, m)]
+        candidates = owner_markers if owner_markers else list(markers)
+
+        entry_path = self._entry_path_tuple(entry)
+        if entry_path:
+            exact = [m for m in candidates if entry_path in self._marker_paths_tuples(m)]
+            if len(exact) == 1:
+                return exact[0]
+            if len(exact) > 1:
+                selected = self._select_marker_by_entry_frames(exact, entry)
+                if selected is not None:
+                    return selected
+                return exact[0]
+
+            if len(entry_path) > 1:
+                parent = entry_path[:-1]
+                parent_matches = []
+                for marker in candidates:
+                    for marker_path in self._marker_paths_tuples(marker):
+                        if len(marker_path) > 1 and marker_path[:-1] == parent:
+                            parent_matches.append(marker)
+                            break
+                if len(parent_matches) == 1:
+                    return parent_matches[0]
+                if len(parent_matches) > 1:
+                    selected = self._select_marker_by_entry_frames(parent_matches, entry)
+                    if selected is not None:
+                        return selected
+
+        return self._select_marker_by_entry_frames(candidates, entry)
+
     def _update_keyframe_marker_viewports(self, state=None):
         markers = getattr(self, "_keyframe_markers", [])
         state = state or self.geometry._current_view_state()
@@ -771,15 +1045,10 @@ class KeyframeMixin:
 
         return targets
 
-    def _apply_keyframe_snapping(self, drag, local_seconds):
-        if not drag or not self.enable_snapping:
-            return local_seconds
-        targets = drag.get("snap_targets")
-        if not targets:
-            return local_seconds
+    def _keyframe_snap_tolerance_seconds(self):
         pps = float(self.pixels_per_second or 0.0)
         if pps <= 0.0:
-            return local_seconds
+            return 0.0
         tolerance_px = 0.0
         snap_helper = getattr(self, "snap", None)
         if snap_helper and hasattr(snap_helper, "_snap_tolerance_px"):
@@ -788,14 +1057,20 @@ class KeyframeMixin:
             except (TypeError, ValueError):
                 tolerance_px = 0.0
         if tolerance_px <= 0.0:
-            return local_seconds
-        tolerance_sec = tolerance_px / pps
+            return 0.0
+        return tolerance_px / pps
+
+    def _snap_absolute_seconds_to_targets(self, absolute_seconds, targets):
+        if not self.enable_snapping or not targets:
+            return absolute_seconds
         try:
-            current = float(local_seconds)
+            current = float(absolute_seconds)
         except (TypeError, ValueError):
-            return local_seconds
-        base_position = self._keyframe_base_position(drag)
-        absolute = base_position + current
+            return absolute_seconds
+        tolerance_sec = self._keyframe_snap_tolerance_seconds()
+        if tolerance_sec <= 0.0:
+            return absolute_seconds
+
         best = None
         min_diff = None
         for target in targets:
@@ -809,6 +1084,7 @@ class KeyframeMixin:
                 value = float(value)
             except (TypeError, ValueError):
                 continue
+
             local_tol = tolerance_sec
             if tolerance_override is not None:
                 try:
@@ -817,15 +1093,32 @@ class KeyframeMixin:
                     override = None
                 if override is not None and override > 0.0:
                     local_tol = override
-            diff = abs(value - absolute)
+
+            diff = abs(value - current)
             if diff > local_tol + 1e-9:
                 continue
             if min_diff is None or diff < min_diff:
                 min_diff = diff
                 best = value
+
         if best is None:
+            return absolute_seconds
+        return best
+
+    def _apply_keyframe_snapping(self, drag, local_seconds):
+        if not drag or not self.enable_snapping:
             return local_seconds
-        snapped = best - base_position
+        targets = drag.get("snap_targets")
+        if not targets:
+            return local_seconds
+        try:
+            current = float(local_seconds)
+        except (TypeError, ValueError):
+            return local_seconds
+        base_position = self._keyframe_base_position(drag)
+        absolute = base_position + current
+        snapped_absolute = self._snap_absolute_seconds_to_targets(absolute, targets)
+        snapped = snapped_absolute - base_position
         if snapped < 0.0:
             snapped = 0.0
         return snapped

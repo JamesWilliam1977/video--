@@ -82,11 +82,8 @@ class TrackPainter(BasePainter):
         self.toggle_margin = self.w.theme.menu_margin
 
         self.toolbar_order = (
-            "keyframe-panel",
-            "insert-above",
-            "insert-below",
             "lock-toggle",
-            "delete-track",
+            "keyframe-panel",
         )
 
         toolbar = {}
@@ -108,30 +105,6 @@ class TrackPainter(BasePainter):
                 self.toggle_off_pix = keyframe_disabled
             if not self.toggle_on_pix:
                 self.toggle_on_pix = keyframe_enabled or keyframe_disabled
-
-        insert_above_disabled = _scaled_toggle(getattr(self.w.theme, "track_add_above_disabled_icon", None))
-        insert_above_enabled = _scaled_toggle(getattr(self.w.theme, "track_add_above_enabled_icon", None))
-        if insert_above_disabled or insert_above_enabled:
-            toolbar["insert-above"] = {
-                "disabled": insert_above_disabled,
-                "enabled": insert_above_enabled or insert_above_disabled,
-            }
-
-        insert_below_disabled = _scaled_toggle(getattr(self.w.theme, "track_add_below_disabled_icon", None))
-        insert_below_enabled = _scaled_toggle(getattr(self.w.theme, "track_add_below_enabled_icon", None))
-        if insert_below_disabled or insert_below_enabled:
-            toolbar["insert-below"] = {
-                "disabled": insert_below_disabled,
-                "enabled": insert_below_enabled or insert_below_disabled,
-            }
-
-        delete_disabled = _scaled_toggle(getattr(self.w.theme, "track_delete_disabled_icon", None))
-        delete_enabled = _scaled_toggle(getattr(self.w.theme, "track_delete_enabled_icon", None))
-        if delete_disabled or delete_enabled:
-            toolbar["delete-track"] = {
-                "disabled": delete_disabled,
-                "enabled": delete_enabled or delete_disabled,
-            }
 
         lock_locked_disabled = _scaled_toggle(getattr(self.w.theme, "track_locked_disabled_icon", None))
         lock_locked_enabled = _scaled_toggle(getattr(self.w.theme, "track_locked_enabled_icon", None))

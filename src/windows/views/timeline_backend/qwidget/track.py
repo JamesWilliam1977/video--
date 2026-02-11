@@ -258,27 +258,6 @@ class TrackInteractionMixin:
         if not self.win:
             return
 
-        if key == "insert-above":
-            action = getattr(self.win, "actionAddTrackAbove_trigger", None)
-            if action and track_id:
-                self._select_track_for_action(track_id)
-                action()
-            return
-
-        if key == "insert-below":
-            action = getattr(self.win, "actionAddTrackBelow_trigger", None)
-            if action and track_id:
-                self._select_track_for_action(track_id)
-                action()
-            return
-
-        if key == "delete-track":
-            action = getattr(self.win, "actionRemoveTrack_trigger", None)
-            if action and track_id:
-                self._select_track_for_action(track_id)
-                action()
-            return
-
         if key == "lock-toggle" and track_id:
             self._select_track_for_action(track_id)
             locked = bool(getattr(track, "data", {}).get("lock")) if track else False

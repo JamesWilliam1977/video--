@@ -968,8 +968,9 @@ class ClipInteractionMixin:
         ctrl_down = bool(e.modifiers() & Qt.ControlModifier)
         self.box_start = e.pos()
         panel_lane = self._panel_lane_at(self.box_start)
-        if panel_lane:
-            self._panel_box_track = panel_lane.get("track")
+        panel_track = panel_lane.get("track") if panel_lane else self._panel_track_at_pos(self.box_start)
+        if panel_track is not None:
+            self._panel_box_track = panel_track
             self._panel_box_bounds = self._panel_bounds_for_track(self._panel_box_track)
             if not ctrl_down:
                 self._clear_panel_selection(self._panel_box_track)

@@ -380,6 +380,92 @@ class KeyframePanelMixin:
         targets = []
         seen = set()
 
+        # Collect dragged entries' original positions (seconds) to exclude
+        # from non-keyframe snap sources (markers, snap_helper) that would
+        # otherwise create a dead zone at the drag origin.
+        dragged_positions = set()
+        for entry in entries or []:
+            orig = entry.get("original_seconds")
+            if orig is not None:
+                dragged_positions.add(round(float(orig), 6))
+
+        # Collect dragged frames by property key so selected points across
+        # multiple properties are excluded from snap targets.
+        selected_frames_by_prop = {}
+        dragged_paths = set()
+        for entry in entries or []:
+            prop_key = entry.get("prop_key")
+            frame_val = entry.get("original_frame")
+            if not prop_key or frame_val is None:
+                continue
+            try:
+                frame_int = int(frame_val)
+            except (TypeError, ValueError):
+                continue
+            selected_frames_by_prop.setdefault(prop_key, set()).add(frame_int)
+            path = entry.get("path")
+            if path:
+                try:
+                    dragged_paths.add(tuple(path))
+                except TypeError:
+                    pass
+
+        property_key = property_entry.get("key") if isinstance(property_entry, dict) else None
+        selected_frames = selected_frames_by_prop.get(property_key, set())
+
+        # Keep origin-position snapping only when an unselected point exists at
+        # that same time.
+        unselected_positions = set()
+        # Track panel property points first.
+        for prop in self.get_track_panel_properties(track_num) or []:
+            prop_key = prop.get("key") if isinstance(prop, dict) else None
+            selected_prop_frames = selected_frames_by_prop.get(prop_key, set())
+            for point in prop.get("points") or []:
+                frame_val = point.get("frame")
+                try:
+                    frame_int = int(frame_val) if frame_val is not None else None
+                except (TypeError, ValueError):
+                    frame_int = None
+                if frame_int is not None and frame_int in selected_prop_frames:
+                    continue
+                seconds_val = point.get("seconds")
+                try:
+                    unselected_positions.add(round(float(seconds_val), 6))
+                except (TypeError, ValueError):
+                    continue
+
+        # Also include unselected keyframe markers for the same owner. Because
+        # clip markers are merged by frame, inspect marker paths to detect mixed
+        # selected/unselected keyframes at a dragged origin frame.
+        owner = self._panel_resolve_owner(property_entry, context)
+        drag_scope = {
+            "owner_type": owner.get("owner_type", "clip"),
+            "object_id": owner.get("object_id", ""),
+            "clip": owner.get("clip"),
+            "transition": owner.get("transition"),
+            "entries": entries,
+        }
+        self._ensure_keyframe_markers()
+        markers = list(getattr(self, "_keyframe_markers", []) or [])
+        selected_marker_ids = set()
+        for entry in entries or []:
+            marker = self._find_panel_drag_marker(markers, drag_scope, entry)
+            if marker is not None:
+                selected_marker_ids.add(id(marker))
+        for marker in markers:
+            if not self._panel_drag_owner_matches_marker(drag_scope, marker):
+                continue
+            if id(marker) in selected_marker_ids:
+                marker_paths = self._marker_paths_tuples(marker)
+                if marker_paths and any(path not in dragged_paths for path in marker_paths):
+                    absolute = self._marker_absolute_seconds(marker)
+                    if absolute is not None:
+                        unselected_positions.add(round(float(absolute), 6))
+                continue
+            absolute = self._marker_absolute_seconds(marker)
+            if absolute is not None:
+                unselected_positions.add(round(float(absolute), 6))
+
         def add_target(value, tolerance=None):
             try:
                 seconds_val = float(value)
@@ -403,14 +489,18 @@ class KeyframePanelMixin:
             else:
                 targets.append(seconds_val)
 
-        for entry in entries or []:
-            add_target(entry.get("original_seconds"))
+        def _is_excluded_dragged_position(value):
+            try:
+                key = round(float(value), 6)
+            except (TypeError, ValueError):
+                return False
+            if key not in dragged_positions:
+                return False
+            # Allow snapping back to drag origin when there is at least one
+            # unselected keyframe at this position.
+            return key not in unselected_positions
 
-        selected_frames = {
-            entry.get("original_frame")
-            for entry in entries
-            if entry.get("original_frame") is not None
-        }
+        # Same-property points: exclude dragged frames
         for point in property_entry.get("points") or []:
             frame_val = point.get("frame")
             try:
@@ -427,12 +517,22 @@ class KeyframePanelMixin:
         for other_prop in self.get_track_panel_properties(track_num) or []:
             if other_prop is property_entry:
                 continue
+            other_key = other_prop.get("key") if isinstance(other_prop, dict) else None
+            selected_other_frames = selected_frames_by_prop.get(other_key, set())
             for point in other_prop.get("points") or []:
+                frame_val = point.get("frame")
+                try:
+                    frame_int = int(frame_val) if frame_val is not None else None
+                except (TypeError, ValueError):
+                    frame_int = None
+                if frame_int is not None and frame_int in selected_other_frames:
+                    continue
                 seconds = point.get("seconds")
                 if seconds is None:
                     continue
                 add_target(seconds)
 
+        # Context range boundaries: always valid
         if isinstance(context, dict):
             range_start = context.get("range_start_seconds")
             range_end = context.get("range_end_seconds")
@@ -441,72 +541,34 @@ class KeyframePanelMixin:
             if range_end is not None:
                 add_target(range_end)
 
-        self._ensure_keyframe_markers()
-        for marker in getattr(self, "_keyframe_markers", []):
+        # Markers: exclude those at the drag origin
+        for marker in markers:
             absolute = self._marker_absolute_seconds(marker)
             if absolute is None:
                 continue
+            if _is_excluded_dragged_position(absolute):
+                continue
             add_target(absolute)
 
+        # Snap helper: exclude those at the drag origin
         snap_helper = getattr(self, "snap", None)
         if snap_helper and hasattr(snap_helper, "keyframe_snap_seconds"):
             for entry in snap_helper.keyframe_snap_seconds(include_playhead=False):
                 if isinstance(entry, dict):
-                    add_target(entry.get("seconds"), entry.get("tolerance"))
+                    sec = entry.get("seconds")
+                    if _is_excluded_dragged_position(sec):
+                        continue
+                    add_target(sec, entry.get("tolerance"))
                 else:
+                    if _is_excluded_dragged_position(entry):
+                        continue
                     add_target(entry)
 
         return targets
 
     def _panel_snap_seconds(self, drag, seconds):
-        if not self.enable_snapping:
-            return seconds
         targets = drag.get("snap_targets") or []
-        if not targets:
-            return seconds
-        pps = float(self.pixels_per_second or 0.0)
-        if pps <= 0.0:
-            return seconds
-        tolerance_px = 0.0
-        snap_helper = getattr(self, "snap", None)
-        if snap_helper and hasattr(snap_helper, "_snap_tolerance_px"):
-            try:
-                tolerance_px = float(snap_helper._snap_tolerance_px())
-            except (TypeError, ValueError):
-                tolerance_px = 0.0
-        if tolerance_px <= 0.0:
-            return seconds
-        tolerance_sec = tolerance_px / pps
-        best = None
-        min_diff = None
-        for target in targets:
-            tolerance_override = None
-            if isinstance(target, dict):
-                target_seconds = target.get("seconds")
-                tolerance_override = target.get("tolerance")
-            else:
-                target_seconds = target
-            try:
-                value = float(target_seconds)
-            except (TypeError, ValueError):
-                continue
-            local_tol = tolerance_sec
-            if tolerance_override is not None:
-                try:
-                    override = float(tolerance_override)
-                except (TypeError, ValueError):
-                    override = None
-                if override and override > 0.0:
-                    local_tol = override
-            diff = abs(value - seconds)
-            if diff > local_tol + 1e-9:
-                continue
-            if min_diff is None or diff < min_diff:
-                min_diff = diff
-                best = value
-        if best is None:
-            return seconds
-        return best
+        return self._snap_absolute_seconds_to_targets(seconds, targets)
 
     def _panel_write_point_value(
         self,
@@ -1010,6 +1072,9 @@ class KeyframePanelMixin:
                 new_local = new_abs - base_position
                 frame_seconds = new_local + clip_start
                 new_frame = int(round(frame_seconds * fps)) + 1
+                # Keep panel drag positions locked to exact frame boundaries,
+                # matching clip keyframe-icon dragging behavior.
+                new_abs = ((new_frame - 1.0) / fps) - clip_start + base_position
             else:
                 new_frame = entry.get("original_frame")
             if new_frame != prev_frame or prev_seconds is None or not math.isclose(new_abs, prev_seconds, rel_tol=1e-6, abs_tol=1e-9):
@@ -1033,6 +1098,9 @@ class KeyframePanelMixin:
         self._panel_update_property_points(drag)
         self._panel_begin_transaction(drag)
         self._apply_panel_keyframe_delta(drag, ignore_refresh=True)
+        # Rebuild clip keyframe markers every drag tick so old pre-snap
+        # marker frames are not left in the cached marker list.
+        self._keyframes_dirty = True
 
         fps_seek = drag.get("fps") or self.fps_float or 1.0
         if anchor_pending is not None and fps_seek and fps_seek > 0.0 and hasattr(self, "win"):
