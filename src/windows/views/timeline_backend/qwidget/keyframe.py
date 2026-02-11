@@ -433,8 +433,25 @@ class KeyframeMixin:
         if transition.id not in getattr(self.win, "selected_transitions", []):
             return []
         data = transition.data if isinstance(transition.data, dict) else {}
-        clip_start = float(data.get("start", 0.0) or 0.0)
-        clip_end = float(data.get("end", clip_start) or clip_start)
+        base_start = float(data.get("start", 0.0) or 0.0)
+        base_end = float(data.get("end", base_start) or base_start)
+        clip_start = base_start
+        clip_end = base_end
+        override_ctx = None
+        overrides = self._pending_transition_overrides.get(transition.id)
+        if overrides:
+            clip_start = overrides.get("start", clip_start)
+            clip_end = overrides.get("end", clip_end)
+            if clip_end < clip_start:
+                clip_end = clip_start
+            initial_start = overrides.get("initial_start", base_start)
+            initial_end = overrides.get("initial_end", base_end)
+            override_ctx = {
+                "initial_start": initial_start,
+                "initial_end": initial_end,
+                "scale": bool(overrides.get("scale")),
+                "show_outside": not bool(overrides.get("scale")),
+            }
         if clip_end < clip_start:
             clip_end = clip_start
         return self._collect_keyframes_from_data(
@@ -449,6 +466,7 @@ class KeyframeMixin:
             selected=True,
             color=self.keyframe_painter.fill,
             object_id=str(transition.id),
+            override=override_ctx,
             view_state=view_state,
         )
 

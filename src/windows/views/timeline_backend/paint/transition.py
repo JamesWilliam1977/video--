@@ -40,6 +40,9 @@ from .base import BasePainter
 
 
 class TransitionPainter(BasePainter):
+    DEFAULT_OPACITY = 0.75
+    LOCKED_OPACITY_MULTIPLIER = 0.8
+
     def update_theme(self):
         self.col = self.w.theme.transition.background
         self.col2 = self.w.theme.transition.background2
@@ -105,11 +108,15 @@ class TransitionPainter(BasePainter):
             locked = self.w._is_track_locked((tran.data if isinstance(tran.data, dict) else {}).get("layer"))
             if locked:
                 pen = self.dimmed_pen(pen)
+            opacity = 1.0 if selected else self.DEFAULT_OPACITY
+            if locked:
+                opacity *= self.LOCKED_OPACITY_MULTIPLIER
+            if opacity < 0.999:
                 painter.save()
-                painter.setOpacity(0.8)
+                painter.setOpacity(opacity)
             result = self._transition_pixmap(rect, segment_rect)
             if not result:
-                if locked:
+                if opacity < 0.999:
                     painter.restore()
                 continue
             pix, includes_start, includes_end = result
@@ -122,7 +129,7 @@ class TransitionPainter(BasePainter):
                 includes_start=includes_start,
                 includes_end=includes_end,
             )
-            if locked:
+            if opacity < 0.999:
                 painter.restore()
         painter.restore()
 

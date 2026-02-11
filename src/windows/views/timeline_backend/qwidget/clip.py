@@ -757,6 +757,15 @@ class ClipInteractionMixin:
             sel_type = "clip"
         else:
             sel_type = "transition"
+            self._pending_transition_overrides[item.id] = {
+                "position": self._resize_initial["position"],
+                "start": self._resize_initial["start"],
+                "end": self._resize_initial["end"],
+                "initial_start": self._resize_initial["start"],
+                "initial_end": self._resize_initial["end"],
+                # Transition keyframes should preview as scaled while trimming.
+                "scale": True,
+            }
             self._snap_keyframe_seconds = []
         # Ensure item is selected
         self.win.addSelection(item.id, sel_type, False)
@@ -806,6 +815,22 @@ class ClipInteractionMixin:
                 self._update_snap_keyframe_targets(item)
             else:
                 self._snap_keyframe_seconds = []
+        else:
+            override = self._pending_transition_overrides.setdefault(
+                item.id,
+                {
+                    "position": position,
+                    "start": start,
+                    "end": end,
+                    "initial_start": self._resize_initial.get("start", start),
+                    "initial_end": self._resize_initial.get("end", end),
+                },
+            )
+            override["position"] = position
+            override["start"] = start
+            override["end"] = end
+            override["scale"] = True
+            self._keyframes_dirty = True
         self.update()
 
     def _compute_transition_resize(self, item):
@@ -932,6 +957,10 @@ class ClipInteractionMixin:
         if not hasattr(self, "_resize_new_start"):
             if isinstance(item, Clip):
                 self._set_trim_thumbnail_suspension(False, item.id)
+            elif isinstance(item, Transition):
+                # Resize can start/end without a move event; clear any preview
+                # override seeded in _startItemResize().
+                self._pending_transition_overrides.pop(item.id, None)
             self._resizing_item = None
             self._snap_keyframe_seconds = []
             self.snap.reset()
@@ -972,6 +1001,8 @@ class ClipInteractionMixin:
 
         if isinstance(item, Clip):
             self._set_trim_thumbnail_suspension(False, item.id)
+        elif isinstance(item, Transition):
+            self._pending_transition_overrides.pop(item.id, None)
 
         self._resizing_item = None
         self._snap_keyframe_seconds = []
