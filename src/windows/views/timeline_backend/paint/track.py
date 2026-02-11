@@ -52,6 +52,8 @@ class TrackPainter(BasePainter):
         self.name_border_bottom_width = self.w.theme.track.name_border_bottom_width
         self.name_radius_tl = self.w.theme.track.name_radius_tl
         self.name_radius_bl = self.w.theme.track.name_radius_bl
+        self.name_top_overlay = QColor(self.w.theme.track.name_top_overlay)
+        self.name_top_overlay2 = QColor(self.w.theme.track.name_top_overlay2)
         self.menu_pix = None
         if self.w.theme.menu_icon:
             size = self.w.theme.menu_size or self.w.theme.menu_icon.width()
@@ -128,6 +130,32 @@ class TrackPainter(BasePainter):
             }
 
         self.toolbar_pixmaps = toolbar
+
+    def _track_name_path(self, rect: QRectF) -> QPainterPath:
+        r = QRectF(rect)
+        radius_tl = max(0.0, float(self.name_radius_tl or 0.0))
+        radius_bl = max(0.0, float(self.name_radius_bl or 0.0))
+        radius_tl = min(radius_tl, r.height() / 2.0)
+        radius_bl = min(radius_bl, r.height() / 2.0)
+        path = QPainterPath()
+        if radius_tl <= 0.0 and radius_bl <= 0.0:
+            path.addRect(r)
+            return path
+        path.moveTo(r.x() + radius_tl, r.y())
+        path.lineTo(r.right(), r.y())
+        path.lineTo(r.right(), r.bottom())
+        path.lineTo(r.x() + radius_bl, r.bottom())
+        if radius_bl > 0.0:
+            path.quadTo(r.x(), r.bottom(), r.x(), r.bottom() - radius_bl)
+        else:
+            path.lineTo(r.x(), r.bottom())
+        if radius_tl > 0.0:
+            path.lineTo(r.x(), r.y() + radius_tl)
+            path.quadTo(r.x(), r.y(), r.x() + radius_tl, r.y())
+        else:
+            path.lineTo(r.x(), r.y())
+        path.closeSubpath()
+        return path
 
     def paint_background(self, painter: QPainter):
         area = QRectF(
@@ -294,52 +322,92 @@ class TrackPainter(BasePainter):
                 text_color = self.dimmed_color(text_color)
             painter.setPen(Qt.NoPen)
             painter.setBrush(name_bg)
-            if self.name_radius_tl or self.name_radius_bl:
-                r = name_rect
-                path = QPainterPath()
-                path.moveTo(r.x() + self.name_radius_tl, r.y())
-                path.lineTo(r.right(), r.y())
-                path.lineTo(r.right(), r.bottom())
-                path.lineTo(r.x() + self.name_radius_bl, r.bottom())
-                if self.name_radius_bl:
-                    path.quadTo(r.x(), r.bottom(), r.x(), r.bottom() - self.name_radius_bl)
-                else:
-                    path.lineTo(r.x(), r.bottom())
-                if self.name_radius_tl:
-                    path.lineTo(r.x(), r.y() + self.name_radius_tl)
-                    path.quadTo(r.x(), r.y(), r.x() + self.name_radius_tl, r.y())
-                else:
-                    path.lineTo(r.x(), r.y())
-                path.closeSubpath()
-                painter.drawPath(path)
-            else:
-                painter.drawRect(name_rect)
+            path = self._track_name_path(name_rect)
+            painter.drawPath(path)
+
+            # Match JS .track_top overlay (light-to-transparent).
+            overlay_top = QColor(self.name_top_overlay)
+            overlay_bottom = QColor(self.name_top_overlay2)
+            if overlay_top.isValid() or overlay_bottom.isValid():
+                if not overlay_top.isValid() and overlay_bottom.isValid():
+                    overlay_top = QColor(overlay_bottom)
+                if not overlay_bottom.isValid() and overlay_top.isValid():
+                    overlay_bottom = QColor(overlay_top)
+                    overlay_bottom.setAlpha(0)
+                if locked:
+                    overlay_top = self.dimmed_color(overlay_top)
+                    overlay_bottom = self.dimmed_color(overlay_bottom)
+                grad = QLinearGradient(name_rect.topLeft(), name_rect.bottomLeft())
+                grad.setColorAt(0.0, overlay_top)
+                grad.setColorAt(1.0, overlay_bottom)
+                painter.save()
+                painter.setClipPath(path)
+                painter.fillRect(name_rect, QBrush(grad))
+                painter.restore()
             painter.setBrush(Qt.NoBrush)
 
+            painter.save()
+            painter.setClipPath(path)
+            radius_tl = max(0.0, float(self.name_radius_tl or 0.0))
+            radius_bl = max(0.0, float(self.name_radius_bl or 0.0))
             if self.name_border_top_width:
                 top_rect = QRectF(
-                    name_rect.x(),
+                    name_rect.x() + radius_tl,
                     name_rect.y(),
-                    name_rect.width(),
+                    max(0.0, name_rect.width() - radius_tl),
                     self.name_border_top_width,
                 )
                 painter.fillRect(top_rect, name_border_top)
             if self.name_border_bottom_width:
                 bottom_rect = QRectF(
-                    name_rect.x(),
+                    name_rect.x() + radius_bl,
                     name_rect.bottom() - self.name_border_bottom_width,
-                    name_rect.width(),
+                    max(0.0, name_rect.width() - radius_bl),
                     self.name_border_bottom_width,
                 )
                 painter.fillRect(bottom_rect, name_border_bottom)
             if self.name_border_width:
                 left_rect = QRectF(
                     name_rect.x(),
-                    name_rect.y(),
+                    name_rect.y() + radius_tl,
                     self.name_border_width,
-                    name_rect.height(),
+                    max(
+                        0.0,
+                        name_rect.height()
+                        - radius_tl
+                        - radius_bl,
+                    ),
                 )
                 painter.fillRect(left_rect, name_border)
+
+            # Preserve curved left-corner border strokes on rounded track names.
+            if radius_tl > 0.0 and self.name_border_top_width and name_border_top.isValid():
+                pen = QPen(name_border_top, float(self.name_border_top_width))
+                pen.setCapStyle(Qt.FlatCap)
+                pen.setJoinStyle(Qt.RoundJoin)
+                painter.setPen(pen)
+                painter.setBrush(Qt.NoBrush)
+                arc = QRectF(
+                    name_rect.x(),
+                    name_rect.y(),
+                    radius_tl * 2.0,
+                    radius_tl * 2.0,
+                )
+                painter.drawArc(arc, 90 * 16, 90 * 16)
+            if radius_bl > 0.0 and self.name_border_bottom_width and name_border_bottom.isValid():
+                pen = QPen(name_border_bottom, float(self.name_border_bottom_width))
+                pen.setCapStyle(Qt.FlatCap)
+                pen.setJoinStyle(Qt.RoundJoin)
+                painter.setPen(pen)
+                painter.setBrush(Qt.NoBrush)
+                arc = QRectF(
+                    name_rect.x(),
+                    name_rect.bottom() - (radius_bl * 2.0),
+                    radius_bl * 2.0,
+                    radius_bl * 2.0,
+                )
+                painter.drawArc(arc, 180 * 16, 90 * 16)
+            painter.restore()
 
             menu_w = 0.0
             metrics = painter.fontMetrics()

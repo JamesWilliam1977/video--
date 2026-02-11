@@ -97,6 +97,8 @@ class ClipPainter(BasePainter):
         self.clip_pen.setCosmetic(True)
         self.sel_pen = QPen(QBrush(self.w.theme.clip_selected), bw)
         self.sel_pen.setCosmetic(True)
+        self.top_overlay = QColor(self.w.theme.clip.top_overlay)
+        self.top_overlay2 = QColor(self.w.theme.clip.top_overlay2)
         self.menu_pix = None
         if self.w.theme.menu_icon:
             size = self.w.theme.menu_size or self.w.theme.menu_icon.width()
@@ -466,7 +468,7 @@ class ClipPainter(BasePainter):
         icon_entries = []
         pending_thumbs = False
         if not tiny:
-            self._fill_clip_background(painter, inner_rect)
+            self._fill_clip_background(painter, inner_rect, segment_info)
             icon_entries, pending_thumbs = self._draw_clip_contents(
                 painter, clip, inner_rect, segment_info
             )
@@ -521,16 +523,87 @@ class ClipPainter(BasePainter):
         composite.drawImage(0, 0, blurred)
         composite.end()
 
-    def _fill_clip_background(self, painter, inner_rect):
+    def _clip_fill_path(self, rect, includes_start=True, includes_end=True):
+        if rect.width() <= 0.0 or rect.height() <= 0.0:
+            return None
+        radius = 0.0
+        if rect.width() >= 20.0 and rect.height() > 0.0:
+            radius = min(float(self.border_radius or 0.0), min(rect.width(), rect.height()) / 2.0)
+        if radius <= 0.0:
+            return None
+
+        left = rect.left()
+        right = rect.right()
+        top = rect.top()
+        bottom = rect.bottom()
+        path = QPainterPath()
+
+        if includes_start:
+            path.moveTo(left, top + radius)
+            path.quadTo(left, top, left + radius, top)
+        else:
+            path.moveTo(left, top)
+
+        if includes_end:
+            path.lineTo(right - radius, top)
+            path.quadTo(right, top, right, top + radius)
+            path.lineTo(right, bottom - radius)
+            path.quadTo(right, bottom, right - radius, bottom)
+        else:
+            path.lineTo(right, top)
+            path.lineTo(right, bottom)
+
+        if includes_start:
+            path.lineTo(left + radius, bottom)
+            path.quadTo(left, bottom, left, bottom - radius)
+            path.lineTo(left, top + radius)
+        else:
+            path.lineTo(left, bottom)
+            path.lineTo(left, top)
+
+        path.closeSubpath()
+        return path
+
+    def _fill_clip_background(self, painter, inner_rect, segment=None):
+        includes_start = True
+        includes_end = True
+        if isinstance(segment, dict):
+            includes_start = bool(segment.get("includes_start", True))
+            includes_end = bool(segment.get("includes_end", True))
+        shape_path = self._clip_fill_path(inner_rect, includes_start, includes_end)
+
         bg = self.w.theme.clip.background
         bg2 = self.w.theme.clip.background2
         if bg2.isValid() and bg2 != bg:
             grad = QLinearGradient(inner_rect.topLeft(), inner_rect.bottomLeft())
             grad.setColorAt(0, bg)
             grad.setColorAt(1, bg2)
-            painter.fillRect(inner_rect, QBrush(grad))
+            if shape_path:
+                painter.fillPath(shape_path, QBrush(grad))
+            else:
+                painter.fillRect(inner_rect, QBrush(grad))
         elif bg.isValid():
-            painter.fillRect(inner_rect, bg)
+            if shape_path:
+                painter.fillPath(shape_path, bg)
+            else:
+                painter.fillRect(inner_rect, bg)
+
+        # Match JS .clip_top overlay (light-to-transparent).
+        top_overlay = QColor(self.top_overlay)
+        bottom_overlay = QColor(self.top_overlay2)
+        if top_overlay.isValid() or bottom_overlay.isValid():
+            if not top_overlay.isValid() and bottom_overlay.isValid():
+                top_overlay = QColor(bottom_overlay)
+            if not bottom_overlay.isValid() and top_overlay.isValid():
+                bottom_overlay = QColor(top_overlay)
+                bottom_overlay.setAlpha(0)
+            overlay = QLinearGradient(inner_rect.topLeft(), inner_rect.bottomLeft())
+            overlay.setColorAt(0.0, top_overlay)
+            overlay.setColorAt(1.0, bottom_overlay)
+            if shape_path:
+                painter.fillPath(shape_path, QBrush(overlay))
+            else:
+                painter.fillRect(inner_rect, QBrush(overlay))
 
     def _draw_clip_contents(self, painter, clip, inner_rect, segment):
         bw = float(self.border_width or 0.0)
