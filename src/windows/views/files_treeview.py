@@ -136,8 +136,6 @@ class FilesTreeView(QTreeView):
         menu = StyledContextMenu(parent=self)
 
         menu.addAction(self.win.actionImportFiles)
-        self.win.actionGenerate.setEnabled(self.win.can_open_generate_dialog())
-        menu.addAction(self.win.actionGenerate)
 
         active_job = None
         file_id = None
@@ -152,8 +150,16 @@ class FilesTreeView(QTreeView):
                     active_job = None
             else:
                 active_job = self.win.active_generation_job_for_file(file_id)
+        if not active_job:
+            self.win.actionGenerate.setEnabled(self.win.can_open_generate_dialog())
+            menu.addAction(self.win.actionGenerate)
         if active_job:
             cancel_action = menu.addAction(_("Cancel Job"))
+            delete_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "track-delete-enabled.svg")
+            if os.path.exists(delete_icon_path):
+                cancel_action.setIcon(QIcon(delete_icon_path))
+            else:
+                cancel_action.setIcon(self.win.actionRemove_from_Project.icon())
             cancel_action.triggered.connect(
                 lambda checked=False, job_id=active_job.get("id"): self.win.cancel_generation_job(job_id)
             )

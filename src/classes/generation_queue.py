@@ -1,11 +1,28 @@
 """
  @file
- @brief Lightweight in-memory generation queue for ComfyUI-backed jobs.
+ @brief This file contains a lightweight in-memory generation queue for ComfyUI jobs.
+ @author Jonathan Thomas <jonathan@openshot.org>
+
+ @section LICENSE
+
+ Copyright (c) 2008-2026 OpenShot Studios, LLC
+ (http://www.openshotstudios.com). This file is part of
+ OpenShot Video Editor (http://www.openshot.org), an open-source project
+ dedicated to delivering high quality video editing and animation solutions
+ to the world.
 
  OpenShot Video Editor is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
+
+ OpenShot Video Editor is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
 import uuid
@@ -86,9 +103,14 @@ class _GenerationWorker(QObject):
 
             start_time = monotonic()
             last_in_queue_time = start_time
+            last_contact_time = start_time
             last_progress_log_time = 0.0
+            last_network_error_log_time = 0.0
             progress_endpoint_unavailable = False
             accepted_progress_started = False
+            ws_retry_delay_s = 2.0
+            ws_next_retry_at = start_time
+            prompt_key = str(prompt_id)
 
             while True:
                 if self._is_cancel_requested(job_id, cancel_event):
@@ -165,9 +187,21 @@ class _GenerationWorker(QObject):
                         )
                     return
 
-                history = client.history(prompt_id) or {}
-                prompt_key = str(prompt_id)
-                history_entry = history.get(prompt_key) or history.get(prompt_id) or None
+                history_entry = None
+                try:
+                    history = client.history(prompt_id) or {}
+                    history_entry = history.get(prompt_key) or history.get(prompt_id) or None
+                    last_contact_time = monotonic()
+                except Exception:
+                    now_log = monotonic()
+                    if (now_log - last_network_error_log_time) > 8.0:
+                        log.debug(
+                            "Comfy history poll temporarily unavailable for job=%s prompt=%s; retrying",
+                            job_id,
+                            prompt_key,
+                            exc_info=True,
+                        )
+                        last_network_error_log_time = now_log
                 if history_entry is not None:
                     status_obj = history_entry.get("status", {}) if isinstance(history_entry, dict) else {}
                     status_str = str(status_obj.get("status_str", "")).lower()
@@ -187,8 +221,48 @@ class _GenerationWorker(QObject):
 
                 # Query ComfyUI's live progress values when available.
                 try:
+                    now = monotonic()
+                    if ws_client is None and now >= ws_next_retry_at:
+                        try:
+                            ws_client = ComfyClient.open_progress_socket(comfy_url, client_id)
+                            ws_retry_delay_s = 2.0
+                            log.debug("Comfy progress websocket reconnected for prompt=%s", prompt_key)
+                        except Exception:
+                            ws_next_retry_at = now + ws_retry_delay_s
+                            ws_retry_delay_s = min(60.0, ws_retry_delay_s * 1.5)
+                            now_log = monotonic()
+                            if (now_log - last_network_error_log_time) > 8.0:
+                                log.debug(
+                                    "Comfy websocket reconnect failed for job=%s prompt=%s; retrying in %.1fs",
+                                    job_id,
+                                    prompt_key,
+                                    ws_retry_delay_s,
+                                    exc_info=True,
+                                )
+                                last_network_error_log_time = now_log
+
                     if ws_client is not None:
-                        progress_event = ws_client.poll_progress(prompt_id)
+                        try:
+                            progress_event = ws_client.poll_progress(prompt_id)
+                        except Exception:
+                            progress_event = None
+                            try:
+                                ws_client.close()
+                            except Exception:
+                                pass
+                            ws_client = None
+                            ws_next_retry_at = monotonic() + ws_retry_delay_s
+                            ws_retry_delay_s = min(60.0, ws_retry_delay_s * 1.5)
+                            now_log = monotonic()
+                            if (now_log - last_network_error_log_time) > 8.0:
+                                log.debug(
+                                    "Comfy websocket progress read failed for job=%s prompt=%s; switching to retry mode",
+                                    job_id,
+                                    prompt_key,
+                                    exc_info=True,
+                                )
+                                last_network_error_log_time = now_log
+
                         if progress_event is not None:
                             elapsed = monotonic() - start_time
                             progress = int(progress_event.get("percent", 0))
@@ -237,8 +311,9 @@ class _GenerationWorker(QObject):
                                     progress,
                                 )
                                 self.progress_changed.emit(job_id, progress)
-                    else:
-                        progress_data = client.progress() or {}
+                                last_contact_time = monotonic()
+                    if ws_client is None:
+                        progress_data = client.progress()
                         if progress_data is None:
                             if not progress_endpoint_unavailable:
                                 log.debug(
@@ -284,19 +359,27 @@ class _GenerationWorker(QObject):
                                 progress,
                             )
                             self.progress_changed.emit(job_id, progress)
+                            last_contact_time = monotonic()
                 except Exception:
                     # Keep polling history and queue even if /progress is unavailable.
-                    if not progress_endpoint_unavailable:
+                    now_log = monotonic()
+                    if (now_log - last_network_error_log_time) > 8.0:
                         log.debug("Comfy progress poll failed for job=%s", job_id, exc_info=True)
+                        last_network_error_log_time = now_log
 
                 # Check queue to avoid timing out long-running but active jobs.
                 in_queue = False
                 try:
                     queue_data = client.queue() or {}
                     in_queue = ComfyClient.prompt_in_queue(prompt_id, queue_data)
+                    last_contact_time = monotonic()
                 except Exception:
                     # If queue check fails, do not penalize the job immediately.
                     in_queue = True
+                    now_log = monotonic()
+                    if (now_log - last_network_error_log_time) > 8.0:
+                        log.debug("Comfy queue check temporarily unavailable for job=%s", job_id, exc_info=True)
+                        last_network_error_log_time = now_log
                 if in_queue:
                     last_in_queue_time = monotonic()
                 else:
@@ -313,6 +396,17 @@ class _GenerationWorker(QObject):
                     self._job_prompts.pop(job_id, None)
                     self.job_finished.emit(job_id, False, False, "Timed out waiting for ComfyUI history result", [])
                     return
+
+                if (now - last_contact_time) > 60.0:
+                    now_log = monotonic()
+                    if (now_log - last_network_error_log_time) > 8.0:
+                        log.debug(
+                            "Comfy connection degraded for job=%s prompt=%s (no successful API contact for %.1fs); continuing retries",
+                            job_id,
+                            prompt_key,
+                            now - last_contact_time,
+                        )
+                        last_network_error_log_time = now_log
 
                 # If prompt vanished from queue for an extended period and still no history, treat as failure.
                 if (now - last_in_queue_time) > 600:

@@ -1,12 +1,35 @@
 """
  @file
- @brief Small ComfyUI HTTP client for queue/poll/cancel operations.
+ @brief This file contains a small ComfyUI HTTP/WebSocket client.
+ @author Jonathan Thomas <jonathan@openshot.org>
+
+ @section LICENSE
+
+ Copyright (c) 2008-2026 OpenShot Studios, LLC
+ (http://www.openshotstudios.com). This file is part of
+ OpenShot Video Editor (http://www.openshot.org), an open-source project
+ dedicated to delivering high quality video editing and animation solutions
+ to the world.
+
+ OpenShot Video Editor is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ OpenShot Video Editor is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import json
 import os
 import ssl
 import base64
+import uuid
 import socket
 import struct
 from urllib.error import HTTPError
@@ -33,13 +56,16 @@ class ComfyProgressSocket:
         if not host:
             raise RuntimeError("Invalid ComfyUI URL for websocket")
         port = parsed.port or (443 if scheme == "https" else 80)
-        path = "/ws?clientId={}".format(self.client_id)
+        base_path = (parsed.path or "").rstrip("/")
+        ws_path = "{}/ws".format(base_path) if base_path else "/ws"
+        path = "{}?clientId={}".format(ws_path, quote(self.client_id))
 
-        raw = socket.create_connection((host, port), timeout=4.0)
+        raw = socket.create_connection((host, port), timeout=6.0)
         if scheme == "https":
             ctx = ssl.create_default_context()
             raw = ctx.wrap_socket(raw, server_hostname=host)
-        raw.settimeout(0.25)
+        # Allow slower remote/proxied websocket handshakes.
+        raw.settimeout(6.0)
         self.sock = raw
 
         key = base64.b64encode(os.urandom(16)).decode("ascii")
@@ -48,15 +74,20 @@ class ComfyProgressSocket:
             "Host: {}:{}\r\n"
             "Upgrade: websocket\r\n"
             "Connection: Upgrade\r\n"
+            "Origin: {}://{}:{}\r\n"
+            "Pragma: no-cache\r\n"
+            "Cache-Control: no-cache\r\n"
             "Sec-WebSocket-Key: {}\r\n"
             "Sec-WebSocket-Version: 13\r\n"
             "\r\n"
-        ).format(path, host, port, key)
+        ).format(path, host, port, scheme, host, port, key)
         self.sock.sendall(req.encode("utf-8"))
 
         response = self._recv_http_headers()
         if " 101 " not in response.split("\r\n", 1)[0]:
             raise RuntimeError("WebSocket upgrade failed: {}".format(response.split("\r\n", 1)[0]))
+        # Use short timeout for regular frame polling after successful handshake.
+        self.sock.settimeout(0.25)
 
     def close(self):
         if self.sock is not None:
@@ -230,6 +261,7 @@ class ComfyClient:
             return int(response.status) >= 200 and int(response.status) < 300
 
     def queue_prompt(self, prompt_graph, client_id):
+        prompt_graph = self._rewrite_prompt_local_file_inputs(prompt_graph)
         payload = json.dumps({"prompt": prompt_graph, "client_id": client_id}).encode("utf-8")
         req = Request(
             "{}/prompt".format(self.base_url),
@@ -238,43 +270,187 @@ class ComfyClient:
             headers={"Content-Type": "application/json"},
         )
         try:
-            with urlopen(req, timeout=5.0) as response:
+            with urlopen(req, timeout=10.0) as response:
                 data = json.loads(response.read().decode("utf-8"))
         except HTTPError as ex:
             details = ""
             try:
                 error_data = json.loads(ex.read().decode("utf-8"))
-                details = error_data.get("error", {}).get("type") or error_data.get("error", {}).get("message") or str(error_data)
+                error_obj = error_data.get("error", {})
+                if isinstance(error_obj, dict):
+                    details = error_obj.get("type") or error_obj.get("message") or ""
+                else:
+                    details = str(error_obj or "")
+
+                node_errors = error_data.get("node_errors", {})
+                node_error_text = self._format_node_errors(node_errors)
+                if node_error_text:
+                    details = "{}\n{}".format(details or "prompt validation failed", node_error_text)
+                elif not details:
+                    details = json.dumps(error_data, ensure_ascii=True)
+                else:
+                    details = "{}\n{}".format(details, json.dumps(error_data, ensure_ascii=True))
             except Exception:
                 details = str(ex)
             raise RuntimeError("ComfyUI prompt rejected: {}".format(details))
         return data.get("prompt_id")
 
+    def _rewrite_prompt_local_file_inputs(self, prompt_graph):
+        """Rewrite local absolute paths for LoadImage/LoadVideo nodes to uploaded [input] refs."""
+        if not isinstance(prompt_graph, dict):
+            return prompt_graph
+        rewritten = dict(prompt_graph)
+
+        def _annotated(path_text):
+            path_text = str(path_text or "").strip()
+            return path_text.endswith("[input]") or path_text.endswith("[output]") or path_text.endswith("[temp]")
+
+        for node_id, node in rewritten.items():
+            if not isinstance(node, dict):
+                continue
+            class_type = str(node.get("class_type", ""))
+            inputs = node.get("inputs", {})
+            if not isinstance(inputs, dict):
+                continue
+
+            if class_type == "LoadImage":
+                image_path = str(inputs.get("image", "")).strip()
+                if image_path and os.path.isabs(image_path) and os.path.exists(image_path) and not _annotated(image_path):
+                    uploaded = self.upload_input_file(image_path)
+                    inputs["image"] = uploaded
+                    node["inputs"] = inputs
+                    rewritten[node_id] = node
+                    log.debug("ComfyClient rewrote LoadImage input node=%s path=%s -> %s", str(node_id), image_path, uploaded)
+            elif class_type == "LoadVideo":
+                video_path = str(inputs.get("file", "")).strip()
+                if video_path and os.path.isabs(video_path) and os.path.exists(video_path) and not _annotated(video_path):
+                    uploaded = self.upload_input_file(video_path)
+                    inputs["file"] = uploaded
+                    node["inputs"] = inputs
+                    rewritten[node_id] = node
+                    log.debug("ComfyClient rewrote LoadVideo input node=%s path=%s -> %s", str(node_id), video_path, uploaded)
+
+        return rewritten
+
+    @staticmethod
+    def _format_node_errors(node_errors):
+        if not isinstance(node_errors, dict) or not node_errors:
+            return ""
+        lines = []
+        max_lines = 8
+        for node_id, err in node_errors.items():
+            if len(lines) >= max_lines:
+                break
+            if not isinstance(err, dict):
+                lines.append("node {}: {}".format(node_id, str(err)))
+                continue
+            err_type = str(err.get("type", "")).strip()
+            message = str(err.get("message", "")).strip()
+            if not message:
+                details = err.get("details")
+                if details:
+                    message = str(details)
+            if err_type and message:
+                lines.append("node {} [{}]: {}".format(node_id, err_type, message))
+            elif message:
+                lines.append("node {}: {}".format(node_id, message))
+            elif err_type:
+                lines.append("node {} [{}]".format(node_id, err_type))
+        if not lines:
+            return ""
+        return "Node validation errors: {}".format(" | ".join(lines))
+
     def list_checkpoints(self):
         """Return available checkpoint names from ComfyUI object info."""
-        with urlopen("{}/object_info/CheckpointLoaderSimple".format(self.base_url), timeout=3.0) as response:
+        with urlopen("{}/object_info/CheckpointLoaderSimple".format(self.base_url), timeout=8.0) as response:
             data = json.loads(response.read().decode("utf-8"))
 
         # Expected path:
-        # CheckpointLoaderSimple -> input -> required -> ckpt_name -> [ [..names..], {...meta...} ]
+        # CheckpointLoaderSimple -> input -> required -> ckpt_name
+        # Supports multiple schema variants:
+        # 1) [ [..names..], {...meta...} ]
+        # 2) ["COMBO", {"options":[..names..], ...}]
         node_info = data.get("CheckpointLoaderSimple", {})
         required = node_info.get("input", {}).get("required", {})
-        ckpt_input = required.get("ckpt_name", [])
-        if not ckpt_input or not isinstance(ckpt_input, list):
-            return []
-        values = ckpt_input[0] if len(ckpt_input) > 0 else []
-        if not isinstance(values, list):
-            return []
+        ckpt_input = required.get("ckpt_name", None)
+        values = self._extract_combo_options(ckpt_input)
         return [str(v) for v in values if str(v).strip()]
 
+    def list_upscale_models(self):
+        """Return available upscaler model names from ComfyUI object info."""
+        models = []
+        # Primary source: object_info schema for UpscaleModelLoader.
+        try:
+            with urlopen("{}/object_info/UpscaleModelLoader".format(self.base_url), timeout=8.0) as response:
+                data = json.loads(response.read().decode("utf-8"))
+
+            node_info = data.get("UpscaleModelLoader", {})
+            required = node_info.get("input", {}).get("required", {})
+            model_input = required.get("model_name", None)
+            values = self._extract_combo_options(model_input)
+            if values:
+                models = [str(v) for v in values if str(v).strip()]
+        except Exception as ex:
+            log.debug("ComfyClient list_upscale_models object_info parse failed: %s", ex)
+
+        # Fallback: direct model listing endpoint.
+        if not models:
+            try:
+                with urlopen("{}/models/upscale_models".format(self.base_url), timeout=8.0) as response:
+                    data = json.loads(response.read().decode("utf-8"))
+                if isinstance(data, list):
+                    models = [str(v) for v in data if str(v).strip()]
+            except Exception as ex:
+                log.debug("ComfyClient list_upscale_models /models fallback failed: %s", ex)
+
+        # Dedupe while preserving order.
+        seen = set()
+        ordered = []
+        for name in models:
+            if name not in seen:
+                seen.add(name)
+                ordered.append(name)
+        return ordered
+
+    @staticmethod
+    def _extract_combo_options(input_config):
+        """Extract valid options from Comfy object_info input config variants."""
+        if input_config is None:
+            return []
+
+        # Variant: [ [options...], {meta...} ]
+        if isinstance(input_config, list) and input_config and isinstance(input_config[0], list):
+            return [str(v) for v in input_config[0]]
+
+        # Variant: ["COMBO", {"options":[...], ...}]
+        if (
+            isinstance(input_config, list)
+            and len(input_config) >= 2
+            and str(input_config[0]).upper() == "COMBO"
+            and isinstance(input_config[1], dict)
+        ):
+            options = input_config[1].get("options", [])
+            if isinstance(options, list):
+                return [str(v) for v in options]
+
+        # Variant: direct list of values
+        if isinstance(input_config, list):
+            scalar_values = []
+            for item in input_config:
+                if isinstance(item, (str, int, float)):
+                    scalar_values.append(str(item))
+            return scalar_values
+
+        return []
+
     def history(self, prompt_id):
-        with urlopen("{}/history/{}".format(self.base_url, quote(str(prompt_id))), timeout=3.0) as response:
+        with urlopen("{}/history/{}".format(self.base_url, quote(str(prompt_id))), timeout=10.0) as response:
             return json.loads(response.read().decode("utf-8"))
 
     def progress(self):
         """Return ComfyUI /progress payload."""
         try:
-            with urlopen("{}/progress".format(self.base_url), timeout=3.0) as response:
+            with urlopen("{}/progress".format(self.base_url), timeout=8.0) as response:
                 return json.loads(response.read().decode("utf-8"))
         except HTTPError as ex:
             if int(getattr(ex, "code", 0)) == 404:
@@ -293,7 +469,7 @@ class ComfyClient:
             method="POST",
             headers={"Content-Type": "application/json"},
         )
-        with urlopen(req, timeout=3.0) as response:
+        with urlopen(req, timeout=8.0) as response:
             log.debug("ComfyClient interrupt response status=%s", int(response.status))
             return int(response.status) >= 200 and int(response.status) < 300
 
@@ -307,14 +483,60 @@ class ComfyClient:
             method="POST",
             headers={"Content-Type": "application/json"},
         )
-        with urlopen(req, timeout=3.0) as response:
+        with urlopen(req, timeout=8.0) as response:
             log.debug("ComfyClient cancel_prompt response status=%s", int(response.status))
             return int(response.status) >= 200 and int(response.status) < 300
 
     def queue(self):
         """Return ComfyUI queue state."""
-        with urlopen("{}/queue".format(self.base_url), timeout=3.0) as response:
+        with urlopen("{}/queue".format(self.base_url), timeout=10.0) as response:
             return json.loads(response.read().decode("utf-8"))
+
+    def upload_input_file(self, local_path):
+        """Upload a local file into ComfyUI input dir via /upload/image."""
+        local_path = str(local_path or "").strip()
+        if not local_path or not os.path.exists(local_path):
+            raise RuntimeError("Local file does not exist: {}".format(local_path))
+
+        boundary = "----OpenShotComfy{}".format(uuid.uuid4().hex)
+        filename = os.path.basename(local_path)
+        parts = []
+
+        def _add_field(name, value):
+            parts.append("--{}\r\n".format(boundary).encode("utf-8"))
+            parts.append('Content-Disposition: form-data; name="{}"\r\n\r\n'.format(name).encode("utf-8"))
+            parts.append(str(value).encode("utf-8"))
+            parts.append(b"\r\n")
+
+        _add_field("type", "input")
+        parts.append("--{}\r\n".format(boundary).encode("utf-8"))
+        parts.append(
+            (
+                'Content-Disposition: form-data; name="image"; filename="{}"\r\n'
+                "Content-Type: application/octet-stream\r\n\r\n"
+            ).format(filename).encode("utf-8")
+        )
+        with open(local_path, "rb") as handle:
+            parts.append(handle.read())
+        parts.append(b"\r\n")
+        parts.append("--{}--\r\n".format(boundary).encode("utf-8"))
+        body = b"".join(parts)
+
+        req = Request(
+            "{}/upload/image".format(self.base_url),
+            data=body,
+            method="POST",
+            headers={"Content-Type": "multipart/form-data; boundary={}".format(boundary)},
+        )
+        with urlopen(req, timeout=30.0) as response:
+            data = json.loads(response.read().decode("utf-8"))
+
+        name = str(data.get("name", "")).strip()
+        subfolder = str(data.get("subfolder", "")).strip()
+        if not name:
+            raise RuntimeError("ComfyUI upload failed: invalid response")
+        rel = "{}/{}".format(subfolder, name) if subfolder else name
+        return "{} [input]".format(rel)
 
     @staticmethod
     def prompt_in_queue(prompt_id, queue_data):
