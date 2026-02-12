@@ -447,6 +447,14 @@
     "setting": "qwidget-based-timeline"
   },
   {
+    "value": "http://127.0.0.1:8188",
+    "title": "Comfy UI URL",
+    "type": "text",
+    "restart": false,
+    "category": "Experimental",
+    "setting": "comfy-ui-url"
+  },
+  {
     "value": "start",
     "title": "Thumbnail Style",
     "type": "dropdown",

@@ -34,11 +34,14 @@ import re
 import shutil
 import uuid
 import webbrowser
+import tempfile
 from time import sleep, time
 from datetime import datetime
 from uuid import uuid4
 import zipfile
 import threading
+from urllib.parse import urlparse
+from urllib.request import urlopen
 
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 from PyQt5.QtCore import (
@@ -63,6 +66,9 @@ from classes.importers.final_cut_pro import import_xml
 from classes.logger import log
 from classes.metrics import track_metric_session, track_metric_screen
 from classes.query import File, Clip, Transition, Marker, Track, Effect
+from classes.generation_queue import GenerationQueueManager
+from classes.comfy_pipelines import available_pipelines, build_workflow, is_supported_img2img_path
+from classes.comfy_client import ComfyClient
 from classes.thumbnail import httpThumbnailServerThread, httpThumbnailException
 from classes.time_parts import secondsToTimecode
 from classes.timeline import TimelineSync
@@ -86,6 +92,7 @@ from windows.views.timeline_backend.enums import MenuCopy, MenuSlice
 from windows.views.transitions_listview import TransitionsListView
 from windows.views.transitions_treeview import TransitionsTreeView
 from windows.views.tutorial import TutorialManager
+from windows.generate_media import GenerateMediaDialog
 
 
 class MainWindow(updates.UpdateWatcher, QMainWindow):
@@ -208,6 +215,18 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Stop thumbnail server thread (if any)
         if self.http_server_thread:
             self.http_server_thread.kill()
+
+        # Stop generation queue worker thread (if any)
+        if getattr(self, "generation_queue", None):
+            self.generation_queue.shutdown()
+
+        # Cleanup temporary generation source files
+        for tmp_path in getattr(self, "_generation_temp_files", []):
+            try:
+                if tmp_path and os.path.exists(tmp_path):
+                    os.remove(tmp_path)
+            except OSError:
+                pass
 
         # Stop ZMQ polling thread (if any)
         if app.logger_libopenshot:
@@ -1980,6 +1999,277 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         else:
             log.info('Cutting Cancelled')
 
+    def comfy_ui_url(self):
+        url = get_app().get_settings().get("comfy-ui-url") or "http://127.0.0.1:8188"
+        return str(url).strip().rstrip("/")
+
+    def _prepare_generation_source_path(self, source_file, template_id):
+        """Return a source path suitable for the selected template."""
+        if not source_file:
+            return ""
+
+        source_path = source_file.data.get("path", "")
+        media_type = source_file.data.get("media_type")
+        if template_id != "img2img-basic" or media_type != "image":
+            return source_path
+
+        if is_supported_img2img_path(source_path):
+            return source_path
+
+        # Convert unsupported image formats (such as SVG) into a temporary PNG.
+        tmp_fd, tmp_png = tempfile.mkstemp(prefix="openshot-comfy-", suffix=".png")
+        os.close(tmp_fd)
+        try:
+            clip = openshot.Clip(source_path)
+            frame = clip.Reader().GetFrame(1)
+            frame.Save(tmp_png, 1.0)
+            self._generation_temp_files.append(tmp_png)
+            return tmp_png
+        except Exception:
+            try:
+                os.remove(tmp_png)
+            except OSError:
+                pass
+            raise
+
+    def is_comfy_available(self, force=False):
+        now = time()
+        if not force and (now - self._comfy_status_cache["checked_at"]) < 2.0:
+            return self._comfy_status_cache["available"]
+
+        url = self.comfy_ui_url()
+        parsed = urlparse(url)
+        available = False
+        if parsed.scheme in ("http", "https") and parsed.netloc:
+            try:
+                with urlopen("{}/system_stats".format(url), timeout=0.5) as response:
+                    available = int(response.status) >= 200 and int(response.status) < 300
+            except Exception:
+                available = False
+
+        self._comfy_status_cache["checked_at"] = now
+        self._comfy_status_cache["available"] = available
+        return available
+
+    def can_open_generate_dialog(self):
+        # Keep action clickable for valid selection counts.
+        # Comfy availability is validated when the action is triggered.
+        return len(self.selected_file_ids()) <= 1
+
+    def active_generation_job_for_file(self, file_id):
+        if not getattr(self, "generation_queue", None):
+            return None
+        return self.generation_queue.get_active_job_for_file(file_id)
+
+    def cancel_generation_job(self, job_id):
+        if not job_id:
+            log.debug("MainWindow cancel_generation_job ignored; empty job_id")
+            return
+        log.debug("MainWindow cancel_generation_job requested job=%s", str(job_id))
+        if self.generation_queue.cancel_job(job_id):
+            log.debug("MainWindow cancel_generation_job accepted job=%s", str(job_id))
+            self.statusBar.showMessage("Generation canceled", 3000)
+        else:
+            log.debug("MainWindow cancel_generation_job rejected job=%s", str(job_id))
+
+    def actionCancelGenerationJob_trigger(self, checked=True):
+        file_id = self.current_file_id()
+        if not file_id:
+            return
+        active_job = self.active_generation_job_for_file(file_id)
+        if active_job:
+            self.cancel_generation_job(active_job.get("id"))
+
+    def actionGenerate_trigger(self, checked=True):
+        selected_files = self.selected_files()
+        if len(selected_files) > 1:
+            return
+
+        if not self.is_comfy_available(force=True):
+            msg = QMessageBox(self)
+            msg.setWindowTitle("ComfyUI Unavailable")
+            msg.setText(
+                "OpenShot could not connect to ComfyUI at:\n{}\n\n"
+                "Start ComfyUI or update the URL in Preferences > Experimental.".format(self.comfy_ui_url())
+            )
+            msg.exec_()
+            return
+
+        source_file = selected_files[0] if selected_files else None
+        templates = available_pipelines(source_file=source_file)
+        win = GenerateMediaDialog(source_file=source_file, templates=templates, parent=self)
+        if win.exec_() != QDialog.Accepted:
+            return
+
+        payload = win.get_payload()
+        payload_name = self._next_generation_name(payload.get("name"))
+        source_file_id = source_file.id if source_file else None
+        try:
+            source_path = self._prepare_generation_source_path(source_file, payload.get("template_id"))
+        except Exception as ex:
+            QMessageBox.warning(
+                self,
+                "Source Conversion Failed",
+                "OpenShot could not convert this image into PNG for ComfyUI.\n\n{}".format(ex),
+            )
+            return
+        checkpoint_name = None
+        try:
+            checkpoint_names = ComfyClient(self.comfy_ui_url()).list_checkpoints()
+            if checkpoint_names:
+                checkpoint_name = checkpoint_names[0]
+        except Exception as ex:
+            log.warning("Failed to query ComfyUI checkpoints: %s", ex)
+
+        if not checkpoint_name:
+            QMessageBox.information(
+                self,
+                "No Checkpoints Found",
+                "ComfyUI has no checkpoints available for CheckpointLoaderSimple.\n"
+                "Add a model to ComfyUI/models/checkpoints and try again.",
+            )
+            return
+
+        try:
+            workflow = build_workflow(
+                payload.get("template_id"),
+                payload.get("prompt"),
+                source_path,
+                payload_name,
+                checkpoint_name=checkpoint_name,
+            )
+        except Exception as ex:
+            QMessageBox.information(self, "Invalid Input", str(ex))
+            return
+        request = {
+            "comfy_url": self.comfy_ui_url(),
+            "workflow": workflow,
+            "client_id": "openshot-qt",
+            "timeout_s": 21600,
+            "save_node_ids": [str(node_id) for node_id, node in workflow.items() if node.get("class_type") == "SaveImage"],
+        }
+        job_id = self.generation_queue.enqueue(
+            payload_name,
+            payload.get("template_id"),
+            payload.get("prompt"),
+            source_file_id=source_file_id,
+            request=request,
+        )
+        if not job_id:
+            QMessageBox.information(
+                self,
+                "Generation Already Active",
+                "Only one active generation is allowed per source file.",
+            )
+            return
+
+        self.statusBar.showMessage("Queued generation job", 3000)
+
+    def _on_generation_job_finished(self, job_id, status):
+        job = self.generation_queue.get_job(job_id) if getattr(self, "generation_queue", None) else None
+        if not job:
+            return
+
+        if status == "completed":
+            imported = self._import_generation_outputs(job)
+            if imported > 0:
+                self.statusBar.showMessage("Generation completed and imported {} file(s)".format(imported), 5000)
+            else:
+                self.statusBar.showMessage("Generation completed (no output files found)", 5000)
+            return
+
+        if status == "canceled":
+            self.statusBar.showMessage("Generation canceled", 3000)
+            return
+
+        if status == "failed":
+            error_text = str(job.get("error") or "ComfyUI generation failed.")
+            self.statusBar.showMessage("Generation failed", 5000)
+            QMessageBox.warning(self, "Generation Failed", error_text)
+            return
+
+    def _import_generation_outputs(self, job):
+        outputs = list(job.get("outputs", []) or [])
+        if not outputs:
+            return 0
+
+        request = job.get("request", {}) or {}
+        comfy_url = str(request.get("comfy_url") or self.comfy_ui_url())
+        client = ComfyClient(comfy_url)
+        output_dir = os.path.join(info.USER_PATH, "comfy_outputs")
+        os.makedirs(output_dir, exist_ok=True)
+
+        name_raw = str(job.get("name") or "generation")
+        safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", name_raw).strip("._")
+        if not safe_name:
+            safe_name = "generation"
+
+        saved_paths = []
+        for index, image_ref in enumerate(outputs, start=1):
+            original_name = str(image_ref.get("filename", "output.png"))
+            ext = os.path.splitext(original_name)[1] or ".png"
+            local_name = "{}_{}{}".format(safe_name, str(index).zfill(3), ext)
+            local_path = self._next_available_path(os.path.join(output_dir, local_name))
+            try:
+                client.download_image(image_ref, local_path)
+                saved_paths.append(local_path)
+            except Exception as ex:
+                log.warning("Failed to download Comfy output %s: %s", image_ref, ex)
+
+        if not saved_paths:
+            return 0
+
+        self.files_model.add_files(
+            saved_paths,
+            quiet=True,
+            prevent_image_seq=True,
+            prevent_recent_folder=True,
+        )
+        return len(saved_paths)
+
+    def _next_generation_name(self, requested_name):
+        """Return a unique generation-friendly name for project files/jobs."""
+        base = re.sub(r"[^A-Za-z0-9._-]+", "_", str(requested_name or "").strip()).strip("._")
+        if not base:
+            base = "generation"
+
+        existing_names = set()
+        for file_obj in File.filter():
+            if not file_obj:
+                continue
+            display_name = str(file_obj.data.get("name") or os.path.basename(file_obj.data.get("path", "")) or "")
+            if display_name:
+                stem = os.path.splitext(display_name)[0]
+                existing_names.add(stem.lower())
+
+        if base.lower() not in existing_names:
+            return base
+
+        # If the requested name already exists, append/increment _genN.
+        name_root = base
+        m = re.match(r"^(.*?)(?:_gen(\d+))?$", base, re.IGNORECASE)
+        if m:
+            name_root = (m.group(1) or base).rstrip("_") or "generation"
+        n = 1
+        while True:
+            candidate = "{}_gen{}".format(name_root, n)
+            if candidate.lower() not in existing_names:
+                return candidate
+            n += 1
+
+    def _next_available_path(self, path):
+        """Return a non-colliding file path by appending _N when needed."""
+        if not os.path.exists(path):
+            return path
+        folder = os.path.dirname(path)
+        stem, ext = os.path.splitext(os.path.basename(path))
+        n = 2
+        while True:
+            candidate = os.path.join(folder, "{}_{}{}".format(stem, n, ext))
+            if not os.path.exists(candidate):
+                return candidate
+            n += 1
+
     def actionRemove_from_Project_trigger(self):
         log.debug("actionRemove_from_Project_trigger")
 
@@ -1990,6 +2280,10 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         for f in self.selected_files():
             if not f:
                 continue
+
+            # Cancel queued/running generation jobs tied to this file
+            if getattr(self, "generation_queue", None):
+                self.generation_queue.cancel_jobs_for_file(f.data.get("id"))
 
             # Find matching clips (if any)
             clips = Clip.filter(file_id=f.data.get("id"))
@@ -3379,7 +3673,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         s = get_app().get_settings()
 
         # Setup files tree and list view (both share a model)
-        self.files_model = FilesModel()
+        self.files_model = FilesModel(generation_queue=self.generation_queue)
         self.filesTreeView = FilesTreeView(self.files_model)
         self.filesListView = FilesListView(self.files_model)
         self.files_model.update_model()
@@ -3440,6 +3734,17 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.emojis_model.update_model()
         self.emojiListView = EmojisListView(self.emojis_model)
         self.tabEmojis.layout().addWidget(self.emojiListView)
+
+    def _init_generation_actions(self):
+        self.actionGenerate = QAction("Generate...", self)
+        self.actionGenerate.setObjectName("actionGenerate")
+        sparkle_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-generate-sparkle.svg")
+        self.actionGenerate.setIcon(QIcon(sparkle_icon_path))
+        self.actionGenerate.triggered.connect(self.actionGenerate_trigger)
+
+        self.actionCancelGenerationJob = QAction("Cancel Job", self)
+        self.actionCancelGenerationJob.setObjectName("actionCancelGenerationJob")
+        self.actionCancelGenerationJob.triggered.connect(self.actionCancelGenerationJob_trigger)
 
     def actionInsertKeyframe(self):
         log.debug("actionInsertKeyframe")
@@ -4010,6 +4315,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Load UI from designer
         self.selected_items = []
+        self._generation_temp_files = []
         ui_util.load_ui(self, self.ui_path)
 
         # Init UI
@@ -4017,6 +4323,10 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Create dock toolbars, set initial state of items, etc
         self.setup_toolbars()
+        self._comfy_status_cache = {"checked_at": 0.0, "available": False}
+        self.generation_queue = GenerationQueueManager(self)
+        self.generation_queue.job_finished.connect(self._on_generation_job_finished)
+        self._init_generation_actions()
 
         # Add window as watcher to receive undo/redo status updates
         app.updates.add_watcher(self)

@@ -144,6 +144,7 @@ class FileFilterProxyModel(QSortFilterProxyModel):
 
 class FilesModel(QObject, updates.UpdateInterface):
     ModelRefreshed = pyqtSignal()
+    PLACEHOLDER_PREFIX = "__genjob__:"
 
     # This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface)
     def changed(self, action):
@@ -303,6 +304,7 @@ class FilesModel(QObject, updates.UpdateInterface):
 
         # Emit signal when model is updated
         self.ModelRefreshed.emit()
+        self._rebuild_generation_placeholders()
 
     def add_files(self, files, image_seq_details=None, quiet=False,
                   prevent_image_seq=False, prevent_recent_folder=False):
@@ -606,8 +608,13 @@ class FilesModel(QObject, updates.UpdateInterface):
         """ Get a list of file IDs for all selected files """
         # Get the indexes for column 5 of all selected rows
         selected = self.selection_model.selectedRows(5)
-
-        return [idx.data() for idx in selected]
+        ids = []
+        for idx in selected:
+            file_id = idx.data()
+            if not file_id or self._is_generation_placeholder(file_id):
+                continue
+            ids.append(file_id)
+        return ids
 
     def selected_files(self):
         """ Get a list of File objects representing the current selection """
@@ -624,7 +631,10 @@ class FilesModel(QObject, updates.UpdateInterface):
             cur = self.selection_model.selectedIndexes()[0]
 
         if cur and cur.isValid():
-            return cur.sibling(cur.row(), 5).data()
+            file_id = cur.sibling(cur.row(), 5).data()
+            if self._is_generation_placeholder(file_id):
+                return None
+            return file_id
 
     def current_file(self):
         """ Get the File object for the current files-view item, or the first selection """
@@ -683,7 +693,8 @@ class FilesModel(QObject, updates.UpdateInterface):
         finally:
             self._syncing_selection = False
 
-    def __init__(self, *args):
+    def __init__(self, generation_queue=None, *args):
+        self.generation_queue = generation_queue
 
         # Add self as listener to project data updates
         # (undo/redo, as well as normal actions handled within this class all update the model)
@@ -725,6 +736,13 @@ class FilesModel(QObject, updates.UpdateInterface):
         app.window.FileUpdated.connect(self.update_file_thumbnail)
         app.window.refreshFilesSignal.connect(
             functools.partial(self.update_model, clear=False))
+        if self.generation_queue:
+            self.generation_queue.file_job_changed.connect(self._refresh_file_generation_display)
+            self.generation_queue.queue_changed.connect(self._refresh_all_generation_displays)
+            self.generation_queue.job_added.connect(self._on_generation_job_added)
+            self.generation_queue.job_updated.connect(self._on_generation_job_updated)
+            self.generation_queue.job_finished.connect(self._on_generation_job_finished)
+            self.generation_queue.job_removed.connect(self._on_generation_job_removed)
 
         # Call init for superclass QObject
         super(QObject, FilesModel).__init__(self, *args)
@@ -744,3 +762,182 @@ class FilesModel(QObject, updates.UpdateInterface):
                 log.info("Enabled {} model tests for emoji data".format(len(self.model_tests)))
             except ImportError:
                 pass
+
+    def _is_generation_placeholder(self, file_id):
+        return str(file_id or "").startswith(self.PLACEHOLDER_PREFIX)
+
+    def _placeholder_id_for_job(self, job_id):
+        return "{}{}".format(self.PLACEHOLDER_PREFIX, str(job_id or ""))
+
+    def _job_id_from_placeholder(self, file_id):
+        file_id = str(file_id or "")
+        if not self._is_generation_placeholder(file_id):
+            return None
+        return file_id[len(self.PLACEHOLDER_PREFIX):]
+
+    def _placeholder_row_for_job(self, job_id):
+        placeholder_id = self._placeholder_id_for_job(job_id)
+        if placeholder_id not in self.model_ids:
+            return None
+        id_index = self.model_ids[placeholder_id]
+        if not id_index.isValid():
+            return None
+        return id_index.row()
+
+    def _add_generation_placeholder(self, job_id):
+        job = self.generation_queue.get_job(job_id) if self.generation_queue else None
+        if not job:
+            return
+        if job.get("source_file_id"):
+            return
+
+        placeholder_id = self._placeholder_id_for_job(job_id)
+        if placeholder_id in self.model_ids and self.model_ids[placeholder_id].isValid():
+            self._update_generation_placeholder(job_id)
+            return
+
+        name = str(job.get("name") or "generation")
+        status = str(job.get("status") or "queued")
+        progress = int(job.get("progress", 0))
+        label = name
+        if status == "running":
+            label = "{} ({}%)".format(name, progress)
+        elif status == "queued":
+            label = "{} (Queued)".format(name)
+        elif status == "canceling":
+            label = "{} (Canceling...)".format(name)
+
+        row = []
+        generate_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-generate-sparkle.svg")
+        emoji_icon_path = os.path.join(info.PATH, "emojis", "color", "svg", "2728.svg")
+        if os.path.exists(generate_icon_path):
+            icon = QIcon(generate_icon_path)
+        elif os.path.exists(emoji_icon_path):
+            icon = QIcon(emoji_icon_path)
+        else:
+            icon = QIcon(":/icons/Humanity/actions/16/media-record.svg")
+        flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemNeverHasChildren
+
+        col = QStandardItem(icon, label)
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem(label)
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem("generation")
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem("generation_job")
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem("")
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem(placeholder_id)
+        col.setFlags(flags)
+        row.append(col)
+
+        self.model.appendRow(row)
+        self.model_ids[placeholder_id] = QPersistentModelIndex(row[5].index())
+        self.ModelRefreshed.emit()
+
+    def _update_generation_placeholder(self, job_id):
+        row = self._placeholder_row_for_job(job_id)
+        if row is None:
+            self._add_generation_placeholder(job_id)
+            return
+        job = self.generation_queue.get_job(job_id) if self.generation_queue else None
+        if not job:
+            return
+
+        name = str(job.get("name") or "generation")
+        status = str(job.get("status") or "queued")
+        progress = int(job.get("progress", 0))
+        label = name
+        if status == "running":
+            label = "{} ({}%)".format(name, progress)
+        elif status == "queued":
+            label = "{} (Queued)".format(name)
+        elif status == "canceling":
+            label = "{} (Canceling...)".format(name)
+
+        self.model.item(row, 0).setText(label)
+        self.model.item(row, 1).setText(label)
+        left = self.model.index(row, 0)
+        right = self.model.index(row, 1)
+        self.model.dataChanged.emit(left, right, [Qt.DisplayRole, Qt.AccessibleTextRole])
+        self.ModelRefreshed.emit()
+
+    def _remove_generation_placeholder(self, job_id):
+        placeholder_id = self._placeholder_id_for_job(job_id)
+        if placeholder_id not in self.model_ids:
+            return
+        id_index = self.model_ids.get(placeholder_id)
+        if not id_index or not id_index.isValid():
+            self.model_ids.pop(placeholder_id, None)
+            return
+        row = id_index.row()
+        self.model.removeRows(row, 1, id_index.parent())
+        self.model.submit()
+        self.model_ids.pop(placeholder_id, None)
+        self.ModelRefreshed.emit()
+
+    def _rebuild_generation_placeholders(self):
+        if not self.generation_queue:
+            return
+        for job in list(self.generation_queue.jobs.values()):
+            if job.get("source_file_id"):
+                continue
+            if job.get("status") in ("completed", "failed", "canceled"):
+                self._remove_generation_placeholder(job.get("id"))
+            else:
+                self._add_generation_placeholder(job.get("id"))
+
+    def _on_generation_job_added(self, job_id, source_file_id):
+        if source_file_id:
+            return
+        self._add_generation_placeholder(job_id)
+
+    def _on_generation_job_updated(self, job_id, status, progress):
+        job = self.generation_queue.get_job(job_id) if self.generation_queue else None
+        if not job or job.get("source_file_id"):
+            return
+        if status in ("completed", "failed", "canceled"):
+            self._remove_generation_placeholder(job_id)
+        else:
+            self._update_generation_placeholder(job_id)
+
+    def _on_generation_job_finished(self, job_id, status):
+        job = self.generation_queue.get_job(job_id) if self.generation_queue else None
+        if not job or job.get("source_file_id"):
+            return
+        self._remove_generation_placeholder(job_id)
+
+    def _on_generation_job_removed(self, job_id):
+        self._remove_generation_placeholder(job_id)
+
+    def _refresh_file_generation_display(self, file_id):
+        if file_id not in self.model_ids:
+            return
+        id_index = self.model_ids[file_id]
+        if not id_index.isValid():
+            return
+
+        row = id_index.row()
+        left = self.model.index(row, 0)
+        right = self.model.index(row, 0)
+        self.model.dataChanged.emit(left, right, [Qt.DisplayRole, Qt.AccessibleTextRole])
+        self.ModelRefreshed.emit()
+
+    def _refresh_all_generation_displays(self):
+        if self.model.rowCount() < 1:
+            return
+        left = self.model.index(0, 0)
+        right = self.model.index(self.model.rowCount() - 1, 0)
+        self.model.dataChanged.emit(left, right, [Qt.DisplayRole, Qt.AccessibleTextRole])
+        self.ModelRefreshed.emit()

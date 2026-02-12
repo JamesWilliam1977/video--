@@ -31,14 +31,90 @@ import os
 import uuid
 
 from PyQt5.QtCore import QSize, Qt, QPoint
-from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon
-from PyQt5.QtWidgets import QTreeView, QAbstractItemView, QSizePolicy, QHeaderView
+from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon, QColor
+from PyQt5.QtWidgets import QTreeView, QAbstractItemView, QSizePolicy, QHeaderView, QStyledItemDelegate, QStyleOptionViewItem, QStyle
 
 from classes import info
 from classes.app import get_app
 from classes.logger import log
 from classes.query import File
 from .menu import StyledContextMenu
+
+
+def _is_generation_placeholder(file_id):
+    return str(file_id or "").startswith("__genjob__:")
+
+
+def _job_id_from_placeholder(file_id):
+    file_id = str(file_id or "")
+    if not _is_generation_placeholder(file_id):
+        return None
+    return file_id.split(":", 1)[1]
+
+
+class FilesTreeProgressDelegate(QStyledItemDelegate):
+    """Paint a thin progress line over thumbnail cells."""
+
+    def __init__(self, view):
+        super().__init__(view)
+        self.view = view
+
+    def paint(self, painter, option, index):
+        super().paint(painter, option, index)
+
+        if index.column() != 0:
+            return
+
+        file_id = index.sibling(index.row(), 5).data(Qt.DisplayRole)
+        queue = getattr(self.view.win, "generation_queue", None)
+        if not file_id or not queue:
+            return
+        badge = queue.get_file_badge(file_id)
+        if not badge and _is_generation_placeholder(file_id):
+            job = queue.get_job(_job_id_from_placeholder(file_id))
+            if job and job.get("status") in ("queued", "running", "canceling"):
+                label = "Queued" if job.get("status") == "queued" else "Generating"
+                badge = {
+                    "status": job.get("status"),
+                    "progress": int(job.get("progress", 0)),
+                    "label": label,
+                    "job_id": job.get("id"),
+                }
+        if not badge:
+            return
+
+        progress = int(badge.get("progress", 0))
+        status = badge.get("status", "")
+        if status == "queued":
+            progress = max(progress, 2)
+        if progress <= 0:
+            return
+
+        opt = QStyleOptionViewItem(option)
+        self.initStyleOption(opt, index)
+        style = opt.widget.style() if opt.widget else self.view.style()
+        deco_rect = style.subElementRect(QStyle.SE_ItemViewItemDecoration, opt, opt.widget)
+        if not deco_rect.isValid():
+            return
+
+        bar_height = 3
+        bar_margin = 2
+        full_rect = deco_rect.adjusted(1, 0, -1, 0)
+        full_rect.setTop(deco_rect.bottom() - bar_height - bar_margin + 1)
+        full_rect.setHeight(bar_height)
+        if full_rect.width() <= 2:
+            return
+
+        fill_width = max(1, int((full_rect.width() * min(progress, 100)) / 100.0))
+        fill_rect = full_rect.adjusted(0, 0, -(full_rect.width() - fill_width), 0)
+
+        painter.save()
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor("#283241"))
+        painter.drawRect(full_rect)
+        painter.setBrush(QColor("#53A0ED"))
+        painter.drawRect(fill_rect)
+        painter.restore()
 
 
 class FilesTreeView(QTreeView):
@@ -60,6 +136,28 @@ class FilesTreeView(QTreeView):
         menu = StyledContextMenu(parent=self)
 
         menu.addAction(self.win.actionImportFiles)
+        self.win.actionGenerate.setEnabled(self.win.can_open_generate_dialog())
+        menu.addAction(self.win.actionGenerate)
+
+        active_job = None
+        file_id = None
+        if index.isValid():
+            id_index = index.sibling(index.row(), 5)
+            file_id = index.model().data(id_index, Qt.DisplayRole)
+            if _is_generation_placeholder(file_id):
+                job_id = _job_id_from_placeholder(file_id)
+                queue = getattr(self.win, "generation_queue", None)
+                active_job = queue.get_job(job_id) if queue else None
+                if active_job and active_job.get("status") not in ("queued", "running", "canceling"):
+                    active_job = None
+            else:
+                active_job = self.win.active_generation_job_for_file(file_id)
+        if active_job:
+            cancel_action = menu.addAction(_("Cancel Job"))
+            cancel_action.triggered.connect(
+                lambda checked=False, job_id=active_job.get("id"): self.win.cancel_generation_job(job_id)
+            )
+        menu.addSeparator()
         menu.addAction(self.win.actionThumbnailView)
 
         if index.isValid():
@@ -75,6 +173,9 @@ class FilesTreeView(QTreeView):
 
             # Add edit title option (if svg file)
             file = File.get(id=file_id)
+            if not file:
+                menu.popup(event.globalPos())
+                return
             if file and file.data.get("path").endswith(".svg"):
                 menu.addAction(self.win.actionEditTitle)
                 menu.addAction(self.win.actionDuplicate)
@@ -136,6 +237,7 @@ class FilesTreeView(QTreeView):
 
         # Get first column indexes for all selected rows
         selected = self.selectionModel().selectedRows(0)
+        selected = [idx for idx in selected if not _is_generation_placeholder(idx.sibling(idx.row(), 5).data(Qt.DisplayRole))]
 
         # Check if there are any selected items
         if not selected:
@@ -248,17 +350,29 @@ class FilesTreeView(QTreeView):
         """ Name or tags updated """
         if self.files_model.ignore_updates:
             return
-
-        # Get translation method
-        _ = get_app()._tr
+        if item is None:
+            return
+        if item.column() not in (1, 2):
+            return
 
         # Determine what was changed
-        file_id = self.files_model.model.item(item.row(), 5).text()
-        name = self.files_model.model.item(item.row(), 1).text()
-        tags = self.files_model.model.item(item.row(), 2).text()
+        file_id_item = self.files_model.model.item(item.row(), 5)
+        name_item = self.files_model.model.item(item.row(), 1)
+        tags_item = self.files_model.model.item(item.row(), 2)
+        if not file_id_item or not name_item or not tags_item:
+            return
+
+        file_id = file_id_item.text()
+        if _is_generation_placeholder(file_id):
+            return
+
+        name = name_item.text()
+        tags = tags_item.text()
 
         # Get file object and update friendly name and tags attribute
         f = File.get(id=file_id)
+        if not f:
+            return
         f.data.update({"name": name or os.path.basename(f.data.get("path"))})
         if "tags" in f.data or tags:
             f.data.update({"tags": tags})
@@ -286,6 +400,7 @@ class FilesTreeView(QTreeView):
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.setSelectionModel(self.files_model.selection_model)
         self.setSortingEnabled(True)
+        self.setItemDelegate(FilesTreeProgressDelegate(self))
 
         self.setAcceptDrops(True)
         self.setDragEnabled(True)
