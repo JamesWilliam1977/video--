@@ -213,7 +213,7 @@ class _GenerationWorker(QObject):
                         self._job_prompts.pop(job_id, None)
                         self.job_finished.emit(job_id, False, False, error_text, [])
                         return
-                    image_outputs = ComfyClient.extract_image_outputs(history_entry, save_node_ids=save_node_ids)
+                    image_outputs = ComfyClient.extract_file_outputs(history_entry, save_node_ids=save_node_ids)
                     self.progress_changed.emit(job_id, 100)
                     self._job_prompts.pop(job_id, None)
                     self.job_finished.emit(job_id, True, False, "", image_outputs)

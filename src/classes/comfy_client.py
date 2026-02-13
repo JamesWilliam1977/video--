@@ -412,6 +412,28 @@ class ComfyClient:
                 ordered.append(name)
         return ordered
 
+    def list_clip_models(self):
+        """Return available CLIP/text-encoder model names from ComfyUI object info."""
+        with urlopen("{}/object_info/CLIPLoader".format(self.base_url), timeout=8.0) as response:
+            data = json.loads(response.read().decode("utf-8"))
+
+        node_info = data.get("CLIPLoader", {})
+        required = node_info.get("input", {}).get("required", {})
+        clip_input = required.get("clip_name", None)
+        values = self._extract_combo_options(clip_input)
+        return [str(v) for v in values if str(v).strip()]
+
+    def list_clip_vision_models(self):
+        """Return available CLIP vision model names from ComfyUI object info."""
+        with urlopen("{}/object_info/CLIPVisionLoader".format(self.base_url), timeout=8.0) as response:
+            data = json.loads(response.read().decode("utf-8"))
+
+        node_info = data.get("CLIPVisionLoader", {})
+        required = node_info.get("input", {}).get("required", {})
+        clip_input = required.get("clip_name", None)
+        values = self._extract_combo_options(clip_input)
+        return [str(v) for v in values if str(v).strip()]
+
     @staticmethod
     def _extract_combo_options(input_config):
         """Extract valid options from Comfy object_info input config variants."""
@@ -560,8 +582,8 @@ class ComfyClient:
         return False
 
     @staticmethod
-    def extract_image_outputs(history_entry, save_node_ids=None):
-        """Return a flat list of image refs from a history entry."""
+    def extract_file_outputs(history_entry, save_node_ids=None):
+        """Return a flat list of file refs from image/video/audio history outputs."""
         outputs = []
         if not isinstance(history_entry, dict):
             return outputs
@@ -575,26 +597,31 @@ class ComfyClient:
                 continue
             if not isinstance(node_out, dict):
                 continue
-            images = node_out.get("images", [])
-            if not isinstance(images, list):
-                continue
-            for img in images:
-                if not isinstance(img, dict):
+            for key in ("images", "videos", "video", "audios", "audio", "files"):
+                refs = node_out.get(key, [])
+                if not isinstance(refs, list):
                     continue
-                if img.get("filename"):
-                    outputs.append({
-                        "filename": str(img.get("filename")),
-                        "subfolder": str(img.get("subfolder", "")),
-                        "type": str(img.get("type", "output")),
-                    })
+                for ref in refs:
+                    if not isinstance(ref, dict):
+                        continue
+                    if ref.get("filename"):
+                        outputs.append({
+                            "filename": str(ref.get("filename")),
+                            "subfolder": str(ref.get("subfolder", "")),
+                            "type": str(ref.get("type", "output")),
+                        })
         return outputs
 
-    def download_image(self, image_ref, destination_path):
-        """Download a Comfy image reference to a local file path."""
+    @staticmethod
+    def extract_image_outputs(history_entry, save_node_ids=None):
+        return ComfyClient.extract_file_outputs(history_entry, save_node_ids=save_node_ids)
+
+    def download_output_file(self, file_ref, destination_path):
+        """Download a Comfy output reference to a local file path."""
         params = {
-            "filename": image_ref.get("filename", ""),
-            "subfolder": image_ref.get("subfolder", ""),
-            "type": image_ref.get("type", "output"),
+            "filename": file_ref.get("filename", ""),
+            "subfolder": file_ref.get("subfolder", ""),
+            "type": file_ref.get("type", "output"),
         }
         url = "{}/view?{}".format(self.base_url, urlencode(params))
         with urlopen(url, timeout=10.0) as response:
@@ -603,3 +630,6 @@ class ComfyClient:
         os.makedirs(os.path.dirname(destination_path), exist_ok=True)
         with open(destination_path, "wb") as handle:
             handle.write(data)
+
+    def download_image(self, image_ref, destination_path):
+        self.download_output_file(image_ref, destination_path)

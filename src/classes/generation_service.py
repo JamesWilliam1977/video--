@@ -41,8 +41,14 @@ from classes.comfy_pipelines import (
     build_workflow,
     is_supported_img2img_path,
     pipeline_requires_checkpoint,
+    pipeline_requires_svd_checkpoint,
+    pipeline_requires_stable_audio_clip,
     pipeline_requires_upscale_model,
     DEFAULT_SD_CHECKPOINT,
+    DEFAULT_SD_BASE_CHECKPOINT,
+    DEFAULT_STABLE_AUDIO_CHECKPOINT,
+    DEFAULT_STABLE_AUDIO_CLIP,
+    DEFAULT_SVD_CHECKPOINT,
     DEFAULT_UPSCALE_MODEL,
 )
 from classes.logger import log
@@ -167,10 +173,12 @@ class GenerationService:
         pipeline_id = payload.get("template_id")
         checkpoint_name = None
         upscale_model_name = None
+        stable_audio_clip_name = None
+        svd_checkpoint_name = None
         client = ComfyClient(self.comfy_ui_url())
         workflow_source = source_path
 
-        if pipeline_id == "video-upscale-gan":
+        if pipeline_id in ("video-upscale-gan", "video2video-basic"):
             if not source_file or source_file.data.get("media_type") != "video":
                 QMessageBox.information(self.win, "Invalid Input", "This pipeline requires a source video file.")
                 return
@@ -198,8 +206,17 @@ class GenerationService:
             if pipeline_requires_checkpoint(pipeline_id):
                 checkpoint_names = client.list_checkpoints()
                 if checkpoint_names:
+                    preferred_checkpoint = DEFAULT_SD_CHECKPOINT
+                    if pipeline_id == "txt2audio-stable-open":
+                        preferred_checkpoint = DEFAULT_STABLE_AUDIO_CHECKPOINT
+                    elif pipeline_id in ("txt2video-svd", "video2video-basic"):
+                        preferred_checkpoint = DEFAULT_SD_BASE_CHECKPOINT
                     checkpoint_name = (
-                        DEFAULT_SD_CHECKPOINT if DEFAULT_SD_CHECKPOINT in checkpoint_names else checkpoint_names[0]
+                        preferred_checkpoint if preferred_checkpoint in checkpoint_names else checkpoint_names[0]
+                    )
+                if pipeline_requires_svd_checkpoint(pipeline_id):
+                    svd_checkpoint_name = (
+                        DEFAULT_SVD_CHECKPOINT if DEFAULT_SVD_CHECKPOINT in checkpoint_names else None
                     )
         except Exception as ex:
             log.warning("Failed to query ComfyUI checkpoints: %s", ex)
@@ -210,6 +227,15 @@ class GenerationService:
                 "No Checkpoints Found",
                 "ComfyUI has no checkpoints available for CheckpointLoaderSimple.\n"
                 "Add a model to ComfyUI/models/checkpoints and try again.",
+            )
+            return
+
+        if pipeline_requires_svd_checkpoint(pipeline_id) and not svd_checkpoint_name:
+            QMessageBox.information(
+                self.win,
+                "No SVD Checkpoint Found",
+                "ComfyUI could not find the SVD checkpoint required for txt_to_image_to_video.\n"
+                "Add {} to ComfyUI/models/checkpoints and try again.".format(DEFAULT_SVD_CHECKPOINT),
             )
             return
 
@@ -233,6 +259,28 @@ class GenerationService:
             return
 
         try:
+            if pipeline_requires_stable_audio_clip(pipeline_id):
+                clip_names = client.list_clip_models()
+                if clip_names:
+                    for preferred in (DEFAULT_STABLE_AUDIO_CLIP, "t5_base.safetensors"):
+                        if preferred in clip_names:
+                            stable_audio_clip_name = preferred
+                            break
+                    if not stable_audio_clip_name:
+                        stable_audio_clip_name = clip_names[0]
+        except Exception as ex:
+            log.warning("Failed to query ComfyUI CLIP models: %s", ex)
+
+        if pipeline_requires_stable_audio_clip(pipeline_id) and not stable_audio_clip_name:
+            QMessageBox.information(
+                self.win,
+                "No Text Encoders Found",
+                "ComfyUI has no CLIP/text-encoder models available for CLIPLoader.\n"
+                "Add a text encoder such as t5-base.safetensors and try again.",
+            )
+            return
+
+        try:
             workflow = build_workflow(
                 pipeline_id,
                 payload.get("prompt"),
@@ -240,6 +288,8 @@ class GenerationService:
                 payload_name,
                 checkpoint_name=checkpoint_name,
                 upscale_model_name=upscale_model_name,
+                stable_audio_clip_name=stable_audio_clip_name,
+                svd_checkpoint_name=svd_checkpoint_name,
             )
         except Exception as ex:
             QMessageBox.information(self.win, "Invalid Input", str(ex))
@@ -252,7 +302,7 @@ class GenerationService:
             "save_node_ids": [
                 str(node_id)
                 for node_id, node in workflow.items()
-                if node.get("class_type") in ("SaveImage", "SaveVideo")
+                if node.get("class_type") in ("SaveImage", "SaveVideo", "SaveAudio")
             ],
         }
         job_id = self.win.generation_queue.enqueue(
@@ -311,16 +361,16 @@ class GenerationService:
             safe_name = "generation"
 
         saved_paths = []
-        for index, image_ref in enumerate(outputs, start=1):
-            original_name = str(image_ref.get("filename", "output.png"))
+        for index, output_ref in enumerate(outputs, start=1):
+            original_name = str(output_ref.get("filename", "output.png"))
             ext = os.path.splitext(original_name)[1] or ".png"
             local_name = "{}_{}{}".format(safe_name, str(index).zfill(3), ext)
             local_path = self._next_available_path(os.path.join(output_dir, local_name))
             try:
-                client.download_image(image_ref, local_path)
+                client.download_output_file(output_ref, local_path)
                 saved_paths.append(local_path)
             except Exception as ex:
-                log.warning("Failed to download Comfy output %s: %s", image_ref, ex)
+                log.warning("Failed to download Comfy output %s: %s", output_ref, ex)
 
         if not saved_paths:
             return 0
