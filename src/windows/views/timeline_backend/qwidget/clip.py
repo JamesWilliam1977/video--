@@ -540,13 +540,17 @@ class ClipInteractionMixin:
                     )
                     itm.data = transition_data
                 else:
+                    clip_data = json.loads(json.dumps(itm.data))
+                    if total == 1:
+                        clip_data["_auto_transition"] = True
                     self.update_clip_data(
-                        itm.data,
+                        clip_data,
                         only_basic_props=True,
                         ignore_reader=True,
                         ignore_refresh=ignore_refresh,
                         transaction_id=transaction_id,
                     )
+                    itm.data = clip_data
         elif items and not moved:
             for itm in items:
                 if isinstance(itm, Transition):

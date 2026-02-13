@@ -1372,8 +1372,11 @@ class TimelineWidgetBase(QWidget):
                     ignore_refresh=ignore_refresh,
                 )
             else:
+                data = dict(model.data) if isinstance(model.data, dict) else {}
+                if total == 1:
+                    data["_auto_transition"] = True
                 self.update_clip_data(
-                    model.data,
+                    data,
                     only_basic_props=False,
                     ignore_reader=True,
                     ignore_refresh=ignore_refresh,

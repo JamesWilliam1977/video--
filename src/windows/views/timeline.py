@@ -538,6 +538,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             # Failed to parse json, do nothing
             log.warning('Failed to parse clip JSON data', exc_info=1)
             return
+        auto_transition = bool(clip_data.pop("_auto_transition", False))
 
         self._apply_effect_colors(clip_data)
 
@@ -582,6 +583,11 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
         if transaction_id:
             get_app().updates.transaction_id = None
+
+        if auto_transition:
+            missing_transition = self._find_missing_transition_details(existing_clip.data)
+            if missing_transition is not None:
+                self.add_missing_transition(json.dumps(missing_transition))
 
         # Notify UI to ignore OR not ignore updates
         self.window.IgnoreUpdates.emit(ignore_refresh, self.show_wait_spinner)
@@ -629,6 +635,79 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
         # Send to update manager
         self.update_transition_data(transitions_data, only_basic_props=False)
+
+    def _find_missing_transition_details(self, clip_data):
+        """Return auto-transition details for one overlap on the clip's layer, or None."""
+        if not isinstance(clip_data, dict):
+            return None
+
+        try:
+            clip_layer = int(clip_data.get("layer", 0))
+            original_left = float(clip_data.get("position", 0.0))
+            original_duration = float(clip_data.get("end", 0.0)) - float(clip_data.get("start", 0.0))
+        except (TypeError, ValueError):
+            return None
+        if original_duration <= 0.0:
+            return None
+
+        original_right = original_left + original_duration
+        original_id = clip_data.get("id")
+        transition_size = None
+
+        def _clip_pos(clip_obj):
+            try:
+                return float(((clip_obj.data or {}).get("position", 0.0)))
+            except (TypeError, ValueError):
+                return 0.0
+
+        same_layer_clips = sorted(Clip.filter(layer=clip_layer), key=_clip_pos)
+        for clip in same_layer_clips:
+            data = clip.data if isinstance(clip.data, dict) else {}
+            if data.get("id") == original_id:
+                continue
+            try:
+                clip_left = float(data.get("position", 0.0))
+                clip_right = clip_left + (float(data.get("end", 0.0)) - float(data.get("start", 0.0)))
+            except (TypeError, ValueError):
+                continue
+
+            if original_left < clip_right and original_left > clip_left:
+                transition_size = {
+                    "position": original_left,
+                    "layer": clip_layer,
+                    "start": 0.0,
+                    "end": (clip_right - original_left),
+                }
+            elif original_right > clip_left and original_right < clip_right:
+                transition_size = {
+                    "position": clip_left,
+                    "layer": clip_layer,
+                    "start": 0.0,
+                    "end": (original_right - clip_left),
+                }
+
+            if transition_size is not None and transition_size["end"] >= 0.5:
+                break
+            if transition_size is not None and transition_size["end"] < 0.5:
+                transition_size = None
+
+        if transition_size is None:
+            return None
+
+        new_left = transition_size["position"]
+        new_right = transition_size["position"] + (transition_size["end"] - transition_size["start"])
+        tolerance = 0.01
+        for tran in Transition.filter(layer=clip_layer):
+            tran_data = tran.data if isinstance(tran.data, dict) else {}
+            try:
+                tran_left = float(tran_data.get("position", 0.0))
+                tran_right = tran_left + (float(tran_data.get("end", 0.0)) - float(tran_data.get("start", 0.0)))
+            except (TypeError, ValueError):
+                continue
+            if abs(tran_left - new_left) < tolerance or abs(tran_right - new_right) < tolerance:
+                return None
+
+        return transition_size
 
     def _scale_keyframes(self, keyframe, factor):
         """Scale the X values of keyframe points"""
