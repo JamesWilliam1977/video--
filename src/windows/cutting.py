@@ -61,6 +61,9 @@ class Cutting(QDialog):
 
     def __init__(self, file=None, preview=False):
         _ = get_app()._tr
+        self.is_preview_mode = preview
+        self._preview_autoplay_active = preview
+        self._preview_autoplay_attempts = 0
 
         # Create dialog class
         QDialog.__init__(self)
@@ -177,12 +180,19 @@ class Cutting(QDialog):
         self.sliderVideo.setMinimum(1)
         self.sliderVideo.setMaximum(self.video_length)
         self.sliderVideo.setSingleStep(1)
-        self.sliderVideo.setSingleStep(1)
         self.sliderVideo.setPageStep(24)
 
-        # Display start frame (and then the previous frame)
-        QTimer.singleShot(500, functools.partial(self.sliderVideo.setValue, 2))
-        QTimer.singleShot(600, functools.partial(self.sliderVideo.setValue, 1))
+        # Initialize first frame display.
+        # For cutting mode, preserve the legacy two-step seek refresh.
+        # For preview mode, avoid the seek/pause startup hack so autoplay
+        # isn't fighting initialization pauses.
+        if self.is_preview_mode:
+            self.sliderIgnoreSignal = True
+            self.sliderVideo.setValue(1)
+            self.sliderIgnoreSignal = False
+        else:
+            QTimer.singleShot(500, functools.partial(self.sliderVideo.setValue, 2))
+            QTimer.singleShot(600, functools.partial(self.sliderVideo.setValue, 1))
 
         # Connect signals
         self.actionPlay.triggered.connect(self.actionPlay_Triggered)
@@ -263,6 +273,10 @@ class Cutting(QDialog):
     def btnPlay_clicked(self, force=None):
         log.info("btnPlay_clicked")
 
+        if force is None and self._preview_autoplay_active:
+            # Respect explicit user input (don't keep forcing startup autoplay).
+            self._preview_autoplay_active = False
+
         if force == "pause":
             self.btnPlay.setChecked(False)
         elif force == "play":
@@ -271,21 +285,62 @@ class Cutting(QDialog):
         if self.btnPlay.isChecked():
             log.info('play (icon to pause)')
             ui_util.setup_icon(self, self.btnPlay, "actionPlay", "media-playback-pause")
-            self.preview_thread.Play()
+            self.PlaySignal.emit()
         else:
             log.info('pause (icon to play)')
             ui_util.setup_icon(self, self.btnPlay, "actionPlay", "media-playback-start")  # to default
-            self.preview_thread.Pause()
+            self.PauseSignal.emit()
 
         # Send focus back to toolbar
         self.sliderVideo.setFocus()
+
+    def _start_preview_autoplay(self):
+        if not self._preview_autoplay_active or not self.is_preview_mode:
+            return
+        if not getattr(self, "preview_thread", None):
+            QTimer.singleShot(120, self._start_preview_autoplay)
+            return
+        if self._preview_autoplay_attempts >= 30:
+            self._preview_autoplay_active = False
+            return
+
+        self._preview_autoplay_attempts += 1
+        self.btnPlay_clicked(force="play")
+
+        is_playing = False
+        try:
+            is_playing = (
+                self.preview_thread.player.Mode() == openshot.PLAYBACK_PLAY
+                and self.preview_thread.player.Speed() != 0.0
+            )
+        except Exception:
+            is_playing = False
+
+        if is_playing:
+            self._preview_autoplay_active = False
+            return
+
+        QTimer.singleShot(120, self._start_preview_autoplay)
+
+    def _preview_ready(self):
+        if not self.is_preview_mode:
+            return
+        self.SeekSignal.emit(1)
+        if self._preview_autoplay_active:
+            QTimer.singleShot(0, self._start_preview_autoplay)
+
+    def _preview_mode_changed(self, mode):
+        if not self.is_preview_mode or not self._preview_autoplay_active:
+            return
+        if mode == openshot.PLAYBACK_PAUSE:
+            QTimer.singleShot(0, self._start_preview_autoplay)
 
     def sliderVideo_valueChanged(self, new_frame):
         if self.preview_thread and not self.sliderIgnoreSignal:
             log.info('sliderVideo_valueChanged')
             # Pause video and update preview immediately
             self.btnPlay_clicked(force="pause")
-            self.preview_thread.previewFrame(new_frame)
+            self.previewFrameSignal.emit(new_frame)
             # Start timer to ensure preview updates after dragging stops
             self.slider_timer.start()
 
@@ -293,13 +348,13 @@ class Cutting(QDialog):
         if self.preview_thread and not self.sliderIgnoreSignal:
             log.info('sliderVideo_timeout')
             self.btnPlay_clicked(force="pause")
-            self.preview_thread.previewFrame(self.sliderVideo.value())
+            self.previewFrameSignal.emit(self.sliderVideo.value())
 
     def sliderVideo_released(self):
         if self.preview_thread and not self.sliderIgnoreSignal:
             log.info('sliderVideo_released')
             self.btnPlay_clicked(force="pause")
-            self.preview_thread.previewFrame(self.sliderVideo.value())
+            self.previewFrameSignal.emit(self.sliderVideo.value())
             self.slider_timer.start()
 
     def btnStart_clicked(self):

@@ -124,6 +124,10 @@ class PreviewParent(QObject, UpdateInterface):
         # Hook up signals to Background Worker
         self.worker.position_changed.connect(self.onPositionChanged)
         self.worker.mode_changed.connect(self.onModeChanged)
+        if hasattr(self.parent, "_preview_ready"):
+            self.worker.ready.connect(self.parent._preview_ready)
+        if hasattr(self.parent, "_preview_mode_changed"):
+            self.worker.mode_changed.connect(self.parent._preview_mode_changed)
         self.background.started.connect(self.worker.Start)
         self.worker.finished.connect(self.background.quit)
         self.worker.error_found.connect(self.onError)
@@ -153,6 +157,7 @@ class PlayerWorker(QObject):
     position_changed = pyqtSignal(int)
     mode_changed = pyqtSignal(object)
     error_found = pyqtSignal(object)
+    ready = pyqtSignal()
     finished = pyqtSignal()
 
     @pyqtSlot(object, object)
@@ -243,6 +248,7 @@ class PlayerWorker(QObject):
         self.player.Reader(self.timeline)
         self.player.Play()
         self.player.Pause()
+        self.ready.emit()
 
         # Check for any Player initialization errors (only JUCE errors bubble up here now)
         # But slightly delay, to allow for correct audio thread initialization with the
