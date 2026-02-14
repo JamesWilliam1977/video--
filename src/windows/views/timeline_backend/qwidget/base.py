@@ -1166,12 +1166,14 @@ class TimelineWidgetBase(QWidget):
                 if item:
                     pos.setX(pos.x() + (item.get("end", 0.0) - item.get("start", 0.0)))
             else:
+                auto_transition = len(file_ids) == 1
                 clip = self.addClip(
                     fid,
                     pos,
                     track_num,
                     ignore_refresh=ignore_refresh,
                     call_manual_move=False,
+                    auto_transition=auto_transition,
                 )
                 if clip:
                     pos.setX(pos.x() + (clip.get("end", 0.0) - clip.get("start", 0.0)))
@@ -1581,12 +1583,14 @@ class TimelineWidgetBase(QWidget):
                     call_manual_move=False,
                 )
             else:
+                auto_transition = total == 1
                 self.addClip(
                     source_id,
                     QPointF(position, 0),
                     track_num,
                     ignore_refresh=ignore_refresh,
                     call_manual_move=False,
+                    auto_transition=auto_transition,
                 )
         self._update_project_duration()
         self._drag_preview_items = []
