@@ -200,10 +200,15 @@ img {
 }
 
 .track_disabled {
-  background:
-    -webkit-gradient(linear, left top, left bottom,
-                     color-stop(0%, rgba(20, 20, 20, 1)),
-                     color-stop(100%, rgba(6, 6, 6, 1))) !important;
+  -webkit-filter: brightness(0.8) saturate(0.8);
+  filter: brightness(0.8) saturate(0.8);
+}
+
+.track_name.track_disabled,
+.clip.track_disabled,
+.transition.track_disabled {
+  -webkit-filter: brightness(0.8) saturate(0.8);
+  filter: brightness(0.8) saturate(0.8);
 }
 
 .track {
