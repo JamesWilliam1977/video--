@@ -57,7 +57,7 @@ from .timeline_backend.enums import (
 from .timeline_backend.qwidget import TimelineWidget
 from .timeline_backend.colors import effect_color_hex
 from .menu import StyledContextMenu
-from classes.clip_utils import clamp_timing_to_media
+from classes.clip_utils import clamp_timing_to_media, apply_file_caption_to_clip
 from .retime import retime_clip
 from .repeat import apply_repeat, reset_repeat, RepeatDialog
 
@@ -4022,6 +4022,9 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         # Skip clips that are missing a 'reader' attribute
         if not new_clip.get("reader"):
             return  # Skip this clip
+
+        # If the source file has stored caption text, attach a Caption effect to this new clip.
+        apply_file_caption_to_clip(new_clip, file)
 
         # Determine start, duration, and end using file metadata
         media_type = (file.data or {}).get("media_type")

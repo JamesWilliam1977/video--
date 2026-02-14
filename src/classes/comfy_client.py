@@ -30,6 +30,7 @@ import os
 import ssl
 import base64
 import uuid
+import re
 import socket
 import struct
 from urllib.error import HTTPError
@@ -610,11 +611,47 @@ class ComfyClient:
                             "subfolder": str(ref.get("subfolder", "")),
                             "type": str(ref.get("type", "output")),
                         })
+            # Also extract text-like outputs (for custom nodes such as Whisper/SRT pipelines).
+            for value in node_out.values():
+                text_value = ComfyClient._extract_text_output(value)
+                if not text_value:
+                    continue
+                output_format = "srt" if ComfyClient._looks_like_srt(text_value) else "txt"
+                outputs.append({
+                    "text": text_value,
+                    "format": output_format,
+                    "type": "text",
+                })
         return outputs
 
     @staticmethod
     def extract_image_outputs(history_entry, save_node_ids=None):
         return ComfyClient.extract_file_outputs(history_entry, save_node_ids=save_node_ids)
+
+    @staticmethod
+    def _extract_text_output(value):
+        """Extract text payloads from common Comfy output structures."""
+        if isinstance(value, str):
+            text = value.strip()
+            return text if text else ""
+        if isinstance(value, list):
+            if len(value) == 1 and isinstance(value[0], str):
+                text = value[0].strip()
+                return text if text else ""
+            return ""
+        if isinstance(value, dict):
+            for key in ("srt", "text", "value"):
+                text = value.get(key)
+                if isinstance(text, str) and text.strip():
+                    return text.strip()
+        return ""
+
+    @staticmethod
+    def _looks_like_srt(text):
+        text = str(text or "")
+        if "-->" not in text:
+            return False
+        return bool(re.search(r"\d{2}:\d{2}:\d{2}[,.:]\d{3}\s+-->\s+\d{2}:\d{2}:\d{2}[,.:]\d{3}", text))
 
     def download_output_file(self, file_ref, destination_path):
         """Download a Comfy output reference to a local file path."""

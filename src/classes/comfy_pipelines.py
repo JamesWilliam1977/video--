@@ -77,6 +77,7 @@ def available_pipelines(source_file=None):
     if _supports_video_upscale(source_file):
         pipelines.append({"id": "video-upscale-gan", "name": "Upscale Video (GAN x4, first 10s)"})
         pipelines.append({"id": "video2video-basic", "name": "Video + Text to Video (Style Transfer)"})
+        pipelines.append({"id": "video-whisper-srt", "name": "Whisper Transcribe to SRT (Caption Effect)"})
     return pipelines
 
 
@@ -173,6 +174,50 @@ def build_workflow(
             "5": {"inputs": {"upscale_model": ["4", 0], "image": ["3", 0]}, "class_type": "ImageUpscaleWithModel"},
             "6": {"inputs": {"images": ["5", 0], "audio": ["3", 1], "fps": ["3", 2]}, "class_type": "CreateVideo"},
             "7": {"inputs": {"video": ["6", 0], "filename_prefix": "video/{}".format(output_prefix), "format": "auto", "codec": "auto"}, "class_type": "SaveVideo"},
+        }
+
+    if pipeline_id == "video-whisper-srt":
+        source_path = str(source_path or "").strip()
+        if not source_path:
+            raise ValueError("A source video is required for this pipeline.")
+        return {
+            "1": {
+                "inputs": {
+                    "video": source_path,
+                    "force_rate": 0,
+                    "custom_width": 0,
+                    "custom_height": 0,
+                    "frame_load_cap": 0,
+                    "skip_first_frames": 0,
+                    "select_every_nth": 1,
+                    "format": "AnimateDiff",
+                },
+                "class_type": "VHS_LoadVideo",
+            },
+            "2": {
+                "inputs": {
+                    "model": "medium",
+                    "language": "auto",
+                    "prompt": "",
+                    "audio": ["1", 2],
+                },
+                "class_type": "Apply Whisper",
+            },
+            "3": {
+                "inputs": {
+                    "name": "{}_segments".format(output_prefix),
+                    "alignment": ["2", 1],
+                },
+                "class_type": "Save SRT",
+            },
+            "4": {
+                "inputs": {
+                    "preview": "",
+                    "previewMode": None,
+                    "source": ["3", 0],
+                },
+                "class_type": "PreviewAny",
+            },
         }
 
     if pipeline_id == "txt2audio-stable-open":

@@ -29,6 +29,7 @@ import os
 import re
 import tempfile
 from time import time
+from urllib.parse import unquote
 
 import openshot
 from PyQt5.QtWidgets import QMessageBox, QDialog
@@ -178,7 +179,7 @@ class GenerationService:
         client = ComfyClient(self.comfy_ui_url())
         workflow_source = source_path
 
-        if pipeline_id in ("video-upscale-gan", "video2video-basic"):
+        if pipeline_id in ("video-upscale-gan", "video2video-basic", "video-whisper-srt"):
             if not source_file or source_file.data.get("media_type") != "video":
                 QMessageBox.information(self.win, "Invalid Input", "This pipeline requires a source video file.")
                 return
@@ -302,7 +303,7 @@ class GenerationService:
             "save_node_ids": [
                 str(node_id)
                 for node_id, node in workflow.items()
-                if node.get("class_type") in ("SaveImage", "SaveVideo", "SaveAudio")
+                if node.get("class_type") in ("SaveImage", "SaveVideo", "SaveAudio", "Save SRT", "PreviewAny")
             ],
         }
         job_id = self.win.generation_queue.enqueue(
@@ -328,9 +329,18 @@ class GenerationService:
             return
 
         if status == "completed":
-            imported = self._import_generation_outputs(job)
-            if imported > 0:
+            result = self._import_generation_outputs(job)
+            imported = int(result.get("imported", 0))
+            caption_saved = bool(result.get("caption_saved", False))
+            if imported > 0 and caption_saved:
+                self.win.statusBar.showMessage(
+                    "Generation completed, imported {} file(s), and saved file caption data".format(imported),
+                    5000,
+                )
+            elif imported > 0:
                 self.win.statusBar.showMessage("Generation completed and imported {} file(s)".format(imported), 5000)
+            elif caption_saved:
+                self.win.statusBar.showMessage("Generation completed and saved file caption data", 5000)
             else:
                 self.win.statusBar.showMessage("Generation completed (no output files found)", 5000)
             return
@@ -347,7 +357,7 @@ class GenerationService:
     def _import_generation_outputs(self, job):
         outputs = list(job.get("outputs", []) or [])
         if not outputs:
-            return 0
+            return {"imported": 0, "caption_saved": False}
 
         request = job.get("request", {}) or {}
         comfy_url = str(request.get("comfy_url") or self.comfy_ui_url())
@@ -361,7 +371,40 @@ class GenerationService:
             safe_name = "generation"
 
         saved_paths = []
+        text_outputs = []
         for index, output_ref in enumerate(outputs, start=1):
+            text_payload = str(output_ref.get("text", "")).strip()
+            if text_payload:
+                # Some Save SRT node variants return the output file path as text.
+                # Convert that path to a downloadable Comfy output ref when possible.
+                if text_payload.lower().endswith(".srt"):
+                    srt_ref = self._comfy_output_ref_from_path(text_payload)
+                    if srt_ref:
+                        local_name = "{}_{}{}".format(safe_name, str(index).zfill(3), ".srt")
+                        local_path = self._next_available_path(os.path.join(output_dir, local_name))
+                        try:
+                            client.download_output_file(srt_ref, local_path)
+                            with open(local_path, "r", encoding="utf-8") as handle:
+                                srt_text = handle.read().strip()
+                            if srt_text:
+                                saved_paths.append(local_path)
+                                text_outputs.append(srt_text)
+                                continue
+                        except Exception as ex:
+                            log.warning("Failed to download/read SRT from Comfy path output %s: %s", text_payload, ex)
+
+                ext = ".srt" if str(output_ref.get("format", "")).lower() == "srt" else ".txt"
+                local_name = "{}_{}{}".format(safe_name, str(index).zfill(3), ext)
+                local_path = self._next_available_path(os.path.join(output_dir, local_name))
+                try:
+                    with open(local_path, "w", encoding="utf-8") as handle:
+                        handle.write(text_payload)
+                    saved_paths.append(local_path)
+                    text_outputs.append(text_payload)
+                except Exception as ex:
+                    log.warning("Failed to write Comfy text output to %s: %s", local_path, ex)
+                continue
+
             original_name = str(output_ref.get("filename", "output.png"))
             ext = os.path.splitext(original_name)[1] or ".png"
             local_name = "{}_{}{}".format(safe_name, str(index).zfill(3), ext)
@@ -373,7 +416,7 @@ class GenerationService:
                 log.warning("Failed to download Comfy output %s: %s", output_ref, ex)
 
         if not saved_paths:
-            return 0
+            return {"imported": 0, "caption_saved": False}
 
         self.win.files_model.add_files(
             saved_paths,
@@ -381,7 +424,93 @@ class GenerationService:
             prevent_image_seq=True,
             prevent_recent_folder=True,
         )
-        return len(saved_paths)
+
+        caption_saved = False
+        if str(job.get("template_id") or "") == "video-whisper-srt":
+            caption_text = self._resolve_caption_text(saved_paths, text_outputs)
+            caption_saved = self._store_caption_on_file(
+                source_file_id=job.get("source_file_id"),
+                caption_text=caption_text,
+            )
+        return {"imported": len(saved_paths), "caption_saved": caption_saved}
+
+    def _resolve_caption_text(self, saved_paths, text_outputs):
+        srt_path = ""
+        for path in saved_paths:
+            if str(path).lower().endswith(".srt"):
+                srt_path = path
+                break
+        if srt_path:
+            try:
+                with open(srt_path, "r", encoding="utf-8") as handle:
+                    text = handle.read().strip()
+                if text:
+                    return text
+            except Exception as ex:
+                log.warning("Failed reading SRT file for file caption metadata: %s", ex)
+
+        for value in text_outputs:
+            text = str(value or "").strip()
+            if "-->" in text:
+                return text
+
+        for value in text_outputs:
+            text = str(value or "").strip()
+            if text:
+                return text
+
+        return ""
+
+    def _store_caption_on_file(self, source_file_id, caption_text):
+        caption_text = str(caption_text or "").strip()
+        if not caption_text:
+            return False
+
+        source_file_value = source_file_id
+        file_obj = File.get(id=source_file_value)
+        if file_obj is None:
+            file_obj = File.get(id=str(source_file_value or ""))
+        if file_obj is None:
+            log.info("No source file found for caption metadata update (file_id=%s)", source_file_value)
+            return False
+
+        if not isinstance(file_obj.data, dict):
+            file_obj.data = {}
+        file_obj.data["caption"] = caption_text
+        file_obj.save()
+        self.win.FileUpdated.emit(str(file_obj.id))
+        return True
+
+    def _comfy_output_ref_from_path(self, path_text):
+        """Convert a Comfy output absolute/relative path into a /view-compatible output ref."""
+        path_text = unquote(str(path_text or "").strip())
+        if not path_text:
+            return None
+        normalized = path_text.replace("\\", "/")
+        filename = os.path.basename(normalized)
+        if not filename:
+            return None
+
+        subfolder = ""
+        marker = "/output/"
+        if marker in normalized:
+            rel = normalized.split(marker, 1)[1].lstrip("/")
+            rel_dir = os.path.dirname(rel).strip("/")
+            subfolder = rel_dir
+        elif normalized.startswith("output/"):
+            rel = normalized[len("output/"):]
+            rel_dir = os.path.dirname(rel).strip("/")
+            subfolder = rel_dir
+        else:
+            rel_dir = os.path.dirname(normalized).strip("/")
+            if rel_dir and rel_dir != ".":
+                subfolder = rel_dir
+
+        return {
+            "filename": filename,
+            "subfolder": subfolder,
+            "type": "output",
+        }
 
     def _next_generation_name(self, requested_name):
         base = re.sub(r"[^A-Za-z0-9._-]+", "_", str(requested_name or "").strip()).strip("._")
