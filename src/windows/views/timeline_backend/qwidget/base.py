@@ -1103,7 +1103,8 @@ class TimelineWidgetBase(QWidget):
         pos = _event_posf(event)
         if pos.y() < self.ruler_height:
             return None
-        if not self.rect().contains(pos):
+        contains_pos = pos.toPoint() if hasattr(pos, "toPoint") else pos
+        if not self.rect().contains(contains_pos):
             return None
         if not self.track_list:
             return None
