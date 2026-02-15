@@ -77,6 +77,7 @@ def available_pipelines(source_file=None):
         pipelines.insert(1, {"id": "upscale-realesrgan-x4", "name": "Upscale Image (RealESRGAN x4)"})
         pipelines.insert(2, {"id": "img2video-svd", "name": "Image to Video (img_to_video)"})
     if _supports_video_upscale(source_file):
+        pipelines.append({"id": "video-segment-scenes-transnet", "name": "Segment Scenes (TransNetV2)"})
         pipelines.append({"id": "video-frame-interpolation-rife2x", "name": "Frame Interpolation (RIFE 2x FPS)"})
         pipelines.append({"id": "video-upscale-gan", "name": "Upscale Video (GAN x4, first 10s)"})
         pipelines.append({"id": "video2video-basic", "name": "Video + Text to Video (Style Transfer)"})
@@ -266,6 +267,50 @@ def build_workflow(
                     "codec": "auto",
                 },
                 "class_type": "SaveVideo",
+            },
+        }
+
+    if pipeline_id == "video-segment-scenes-transnet":
+        source_path = str(source_path or "").strip()
+        if not source_path:
+            raise ValueError("A source video is required for this pipeline.")
+        return {
+            "7": {"inputs": {"file": source_path}, "class_type": "LoadVideo"},
+            "2": {
+                "inputs": {
+                    "model": "transnetv2-pytorch-weights",
+                    "device": "auto",
+                },
+                "class_type": "DownloadAndLoadTransNetModel",
+                "_meta": {"title": "MiaoshouAI Load TransNet Model"},
+            },
+            "1": {
+                "inputs": {
+                    "threshold": 0.5,
+                    "min_scene_length": 30,
+                    "output_dir": "output",
+                    "TransNet_model": ["2", 0],
+                    "video": ["7", 0],
+                },
+                "class_type": "TransNetV2_Run",
+                "_meta": {"title": "MiaoshouAI Segment Video"},
+            },
+            "8": {
+                "inputs": {
+                    "index": 0,
+                    "segment_paths": ["1", 0],
+                },
+                "class_type": "SelectVideo",
+                "_meta": {"title": "MiaoshouAI Select Video"},
+            },
+            "9": {
+                "inputs": {
+                    "preview": "",
+                    "previewMode": None,
+                    "source": ["1", 0],
+                },
+                "class_type": "PreviewAny",
+                "_meta": {"title": "Preview Any"},
             },
         }
 

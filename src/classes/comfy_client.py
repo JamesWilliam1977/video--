@@ -611,32 +611,40 @@ class ComfyClient:
         for node_id, node_out in node_outputs.items():
             if save_node_ids and str(node_id) not in save_node_ids:
                 continue
-            if not isinstance(node_out, dict):
-                continue
-            for key in ("images", "videos", "video", "audios", "audio", "files"):
-                refs = node_out.get(key, [])
-                if not isinstance(refs, list):
-                    continue
-                for ref in refs:
-                    if not isinstance(ref, dict):
+            if isinstance(node_out, dict):
+                for key in ("images", "videos", "video", "audios", "audio", "files"):
+                    refs = node_out.get(key, [])
+                    if not isinstance(refs, list):
                         continue
-                    if ref.get("filename"):
+                    for ref in refs:
+                        if not isinstance(ref, dict):
+                            continue
+                        if ref.get("filename"):
+                            outputs.append({
+                                "filename": str(ref.get("filename")),
+                                "subfolder": str(ref.get("subfolder", "")),
+                                "type": str(ref.get("type", "output")),
+                            })
+                # Also extract text-like outputs (for custom nodes such as Whisper/SRT pipelines).
+                for value in node_out.values():
+                    text_values = ComfyClient._extract_text_outputs(value)
+                    for text_value in text_values:
+                        output_format = "srt" if ComfyClient._looks_like_srt(text_value) else "txt"
                         outputs.append({
-                            "filename": str(ref.get("filename")),
-                            "subfolder": str(ref.get("subfolder", "")),
-                            "type": str(ref.get("type", "output")),
+                            "text": text_value,
+                            "format": output_format,
+                            "type": "text",
                         })
-            # Also extract text-like outputs (for custom nodes such as Whisper/SRT pipelines).
-            for value in node_out.values():
-                text_value = ComfyClient._extract_text_output(value)
-                if not text_value:
-                    continue
-                output_format = "srt" if ComfyClient._looks_like_srt(text_value) else "txt"
-                outputs.append({
-                    "text": text_value,
-                    "format": output_format,
-                    "type": "text",
-                })
+            else:
+                # Some custom nodes emit list/string outputs directly instead of dicts.
+                text_values = ComfyClient._extract_text_outputs(node_out)
+                for text_value in text_values:
+                    output_format = "srt" if ComfyClient._looks_like_srt(text_value) else "txt"
+                    outputs.append({
+                        "text": text_value,
+                        "format": output_format,
+                        "type": "text",
+                    })
         return outputs
 
     @staticmethod
@@ -646,20 +654,31 @@ class ComfyClient:
     @staticmethod
     def _extract_text_output(value):
         """Extract text payloads from common Comfy output structures."""
+        values = ComfyClient._extract_text_outputs(value)
+        return values[0] if values else ""
+
+    @staticmethod
+    def _extract_text_outputs(value):
+        """Extract one or more text payloads from common Comfy output structures."""
         if isinstance(value, str):
             text = value.strip()
-            return text if text else ""
+            return [text] if text else []
         if isinstance(value, list):
-            if len(value) == 1 and isinstance(value[0], str):
-                text = value[0].strip()
-                return text if text else ""
-            return ""
+            out = []
+            for item in value:
+                if isinstance(item, str):
+                    text = item.strip()
+                    if text:
+                        out.append(text)
+            return out
         if isinstance(value, dict):
+            out = []
             for key in ("srt", "text", "value"):
                 text = value.get(key)
                 if isinstance(text, str) and text.strip():
-                    return text.strip()
-        return ""
+                    out.append(text.strip())
+            return out
+        return []
 
     @staticmethod
     def _looks_like_srt(text):

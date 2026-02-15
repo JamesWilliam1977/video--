@@ -30,11 +30,13 @@ import re
 import tempfile
 from time import time
 from urllib.parse import unquote
+from fractions import Fraction
 
 import openshot
 from PyQt5.QtWidgets import QMessageBox, QDialog
 
 from classes import info
+from classes import time_parts
 from classes.app import get_app
 from classes.comfy_client import ComfyClient
 from classes.comfy_pipelines import (
@@ -201,6 +203,7 @@ class GenerationService:
             "video2video-basic",
             "video-whisper-srt",
             "video-frame-interpolation-rife2x",
+            "video-segment-scenes-transnet",
         ):
             if not source_file or source_file.data.get("media_type") != "video":
                 QMessageBox.information(self.win, "Invalid Input", "This pipeline requires a source video file.")
@@ -354,7 +357,14 @@ class GenerationService:
             "save_node_ids": [
                 str(node_id)
                 for node_id, node in workflow.items()
-                if node.get("class_type") in ("SaveImage", "SaveVideo", "SaveAudio", "Save SRT", "PreviewAny")
+                if node.get("class_type") in (
+                    "SaveImage",
+                    "SaveVideo",
+                    "SaveAudio",
+                    "Save SRT",
+                    "PreviewAny",
+                    "TransNetV2_Run",
+                )
             ],
         }
         job_id = self.win.generation_queue.enqueue(
@@ -383,9 +393,17 @@ class GenerationService:
             result = self._import_generation_outputs(job)
             imported = int(result.get("imported", 0))
             caption_saved = bool(result.get("caption_saved", False))
+            scenes_labeled = int(result.get("scenes_labeled", 0))
             if imported > 0 and caption_saved:
                 self.win.statusBar.showMessage(
                     "Generation completed, imported {} file(s), and saved file caption data".format(imported),
+                    5000,
+                )
+            elif imported > 0 and scenes_labeled > 0:
+                self.win.statusBar.showMessage(
+                    "Generation completed, imported {} file(s), and labeled {} scene segment(s)".format(
+                        imported, scenes_labeled
+                    ),
                     5000,
                 )
             elif imported > 0:
@@ -423,9 +441,42 @@ class GenerationService:
 
         saved_paths = []
         text_outputs = []
+        video_path_exts = {".mp4", ".mov", ".mkv", ".webm", ".avi", ".m4v"}
+        seen_video_payload_paths = set()
         for index, output_ref in enumerate(outputs, start=1):
             text_payload = str(output_ref.get("text", "")).strip()
             if text_payload:
+                payload_video_paths = self._extract_video_paths_from_text(text_payload)
+                if not payload_video_paths:
+                    payload_ext = os.path.splitext(text_payload)[1].lower()
+                    if payload_ext in video_path_exts:
+                        payload_video_paths = [text_payload]
+                downloaded_any_video = False
+                for raw_video_path in payload_video_paths:
+                    norm_video_path = str(raw_video_path).strip().replace("\\", "/")
+                    if not norm_video_path or norm_video_path in seen_video_payload_paths:
+                        continue
+                    seen_video_payload_paths.add(norm_video_path)
+
+                    payload_ext = os.path.splitext(norm_video_path)[1].lower() or ".mp4"
+                    video_ref = self._comfy_output_ref_from_path(norm_video_path)
+                    if not video_ref:
+                        continue
+                    local_name = "{}_{}{}".format(safe_name, str(index).zfill(3), payload_ext)
+                    local_path = self._next_available_path(os.path.join(output_dir, local_name))
+                    try:
+                        client.download_output_file(video_ref, local_path)
+                        saved_paths.append(local_path)
+                        downloaded_any_video = True
+                    except Exception as ex:
+                        log.warning(
+                            "Failed to download segmented video from Comfy path output %s: %s",
+                            raw_video_path,
+                            ex,
+                        )
+                if downloaded_any_video:
+                    continue
+
                 # Some Save SRT node variants return the output file path as text.
                 # Convert that path to a downloadable Comfy output ref when possible.
                 if text_payload.lower().endswith(".srt"):
@@ -477,13 +528,30 @@ class GenerationService:
         )
 
         caption_saved = False
+        scenes_labeled = 0
         if str(job.get("template_id") or "") == "video-whisper-srt":
             caption_text = self._resolve_caption_text(saved_paths, text_outputs)
             caption_saved = self._store_caption_on_file(
                 source_file_id=job.get("source_file_id"),
                 caption_text=caption_text,
             )
-        return {"imported": len(saved_paths), "caption_saved": caption_saved}
+        if str(job.get("template_id") or "") == "video-segment-scenes-transnet":
+            scenes_labeled = self._apply_scene_segment_metadata(
+                source_file_id=job.get("source_file_id"),
+                saved_paths=saved_paths,
+            )
+        return {"imported": len(saved_paths), "caption_saved": caption_saved, "scenes_labeled": scenes_labeled}
+
+    def _extract_video_paths_from_text(self, text_payload):
+        """Extract absolute video file paths from log/text payloads."""
+        text_payload = str(text_payload or "")
+        if not text_payload:
+            return []
+        pattern = re.compile(
+            r"([A-Za-z]:[\\/][^\r\n]+?\.(?:mp4|mov|mkv|webm|avi|m4v)|/[^\r\n]+?\.(?:mp4|mov|mkv|webm|avi|m4v))",
+            re.IGNORECASE,
+        )
+        return [match.strip() for match in pattern.findall(text_payload) if match.strip()]
 
     def _resolve_caption_text(self, saved_paths, text_outputs):
         srt_path = ""
@@ -532,6 +600,85 @@ class GenerationService:
         self.win.FileUpdated.emit(str(file_obj.id))
         return True
 
+    def _seconds_to_compact_timecode(self, seconds_value, fps_fraction, include_hours=False, include_minutes=False):
+        fps_fraction = fps_fraction if isinstance(fps_fraction, Fraction) and fps_fraction > 0 else Fraction(30, 1)
+        fps_float = float(fps_fraction)
+        frame_number = int(round(max(0.0, float(seconds_value or 0.0)) * fps_float)) + 1
+        t = time_parts.secondsToTime((frame_number - 1) / fps_float, fps_fraction.numerator, fps_fraction.denominator)
+        hours = int(t.get("hour", 0))
+        minutes = int(t.get("min", 0))
+        secs = int(t.get("sec", 0))
+        frames = int(t.get("frame", 0))
+        if include_hours:
+            return "{:02d}:{:02d}:{:02d};{:02d}".format(hours, minutes, secs, frames)
+        if include_minutes:
+            return "{:02d}:{:02d};{:02d}".format(minutes, secs, frames)
+        return "{:02d};{:02d}".format(secs, frames)
+
+    def _append_scene_tag(self, file_obj):
+        tags_raw = str(file_obj.data.get("tags", "") or "").strip()
+        if not tags_raw:
+            file_obj.data["tags"] = "scene"
+            return
+        tags = [part.strip() for part in tags_raw.split(",") if part.strip()]
+        if any(part.lower() == "scene" for part in tags):
+            return
+        tags.append("scene")
+        file_obj.data["tags"] = ", ".join(tags)
+
+    def _apply_scene_segment_metadata(self, source_file_id, saved_paths):
+        source_file = File.get(id=source_file_id) if source_file_id else None
+        base_name = "scene"
+        fps_fraction = Fraction(30, 1)
+        if source_file:
+            source_path = str(source_file.data.get("path", "") or "")
+            if source_path:
+                base_name = os.path.splitext(os.path.basename(source_path))[0] or base_name
+            fps_data = source_file.data.get("fps", {})
+            try:
+                num = int(fps_data.get("num", 30))
+                den = int(fps_data.get("den", 1) or 1)
+                if num > 0 and den > 0:
+                    fps_fraction = Fraction(num, den)
+            except (TypeError, ValueError, ZeroDivisionError):
+                fps_fraction = Fraction(30, 1)
+
+        imported_files = []
+        for path in saved_paths:
+            file_obj = File.get(path=path)
+            if file_obj and str(file_obj.data.get("media_type", "")) == "video":
+                imported_files.append(file_obj)
+        if not imported_files:
+            return 0
+
+        running_start = 0.0
+        updated = 0
+        for file_obj in imported_files:
+            duration = float(file_obj.data.get("duration") or 0.0)
+            if duration <= 0:
+                start_trim = float(file_obj.data.get("start") or 0.0)
+                end_trim = float(file_obj.data.get("end") or 0.0)
+                duration = max(0.0, end_trim - start_trim)
+            running_end = running_start + max(0.0, duration)
+
+            include_hours = int(running_end // 3600) > 0
+            include_minutes = include_hours or int((running_end % 3600) // 60) > 0
+            start_tc = self._seconds_to_compact_timecode(
+                running_start, fps_fraction, include_hours=include_hours, include_minutes=include_minutes
+            )
+            end_tc = self._seconds_to_compact_timecode(
+                running_end, fps_fraction, include_hours=include_hours, include_minutes=include_minutes
+            )
+            file_obj.data["name"] = "{} ({} to {})".format(base_name, start_tc, end_tc)
+            self._append_scene_tag(file_obj)
+            file_obj.save()
+            self.win.FileUpdated.emit(str(file_obj.id))
+
+            running_start = running_end
+            updated += 1
+
+        return updated
+
     def _comfy_output_ref_from_path(self, path_text):
         """Convert a Comfy output absolute/relative path into a /view-compatible output ref."""
         path_text = unquote(str(path_text or "").strip())
@@ -553,6 +700,13 @@ class GenerationService:
             rel_dir = os.path.dirname(rel).strip("/")
             subfolder = rel_dir
         else:
+            if os.path.isabs(normalized):
+                # Unknown absolute location outside Comfy output tree; fallback to basename only.
+                return {
+                    "filename": filename,
+                    "subfolder": "",
+                    "type": "output",
+                }
             rel_dir = os.path.dirname(normalized).strip("/")
             if rel_dir and rel_dir != ".":
                 subfolder = rel_dir
