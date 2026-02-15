@@ -923,12 +923,14 @@ class FilesModel(QObject, updates.UpdateInterface):
         self._remove_generation_placeholder(job_id)
 
     def _refresh_file_generation_display(self, file_id):
+        file_id = str(file_id or "")
+        if not file_id:
+            return
         if file_id not in self.model_ids:
             return
         id_index = self.model_ids[file_id]
         if not id_index.isValid():
             return
-
         row = id_index.row()
         left = self.model.index(row, 0)
         right = self.model.index(row, 0)

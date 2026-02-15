@@ -44,7 +44,9 @@ from classes.comfy_pipelines import (
     pipeline_requires_checkpoint,
     pipeline_requires_svd_checkpoint,
     pipeline_requires_stable_audio_clip,
+    pipeline_requires_rife_model,
     pipeline_requires_upscale_model,
+    DEFAULT_RIFE_VFI_MODEL,
     DEFAULT_SD_CHECKPOINT,
     DEFAULT_SD_BASE_CHECKPOINT,
     DEFAULT_STABLE_AUDIO_CHECKPOINT,
@@ -103,7 +105,7 @@ class GenerationService:
 
         source_path = source_file.data.get("path", "")
         media_type = source_file.data.get("media_type")
-        if template_id not in ("img2img-basic", "upscale-realesrgan-x4") or media_type != "image":
+        if template_id not in ("img2img-basic", "upscale-realesrgan-x4", "img2video-svd") or media_type != "image":
             return source_path
 
         if is_supported_img2img_path(source_path):
@@ -137,6 +139,20 @@ class GenerationService:
         if not local_image_path:
             raise ValueError("A source image is required.")
         return client.upload_input_file(local_image_path)
+
+    def _get_source_fps(self, source_file):
+        if not source_file:
+            return None
+        fps_data = source_file.data.get("fps")
+        if isinstance(fps_data, dict):
+            try:
+                num = float(fps_data.get("num", 0))
+                den = float(fps_data.get("den", 0))
+            except (TypeError, ValueError):
+                num = den = 0.0
+            if num > 0 and den > 0:
+                return num / den
+        return None
 
     def action_generate_trigger(self, checked=True):
         selected_files = self.win.selected_files()
@@ -176,10 +192,16 @@ class GenerationService:
         upscale_model_name = None
         stable_audio_clip_name = None
         svd_checkpoint_name = None
+        rife_model_name = None
         client = ComfyClient(self.comfy_ui_url())
         workflow_source = source_path
 
-        if pipeline_id in ("video-upscale-gan", "video2video-basic", "video-whisper-srt"):
+        if pipeline_id in (
+            "video-upscale-gan",
+            "video2video-basic",
+            "video-whisper-srt",
+            "video-frame-interpolation-rife2x",
+        ):
             if not source_file or source_file.data.get("media_type") != "video":
                 QMessageBox.information(self.win, "Invalid Input", "This pipeline requires a source video file.")
                 return
@@ -192,7 +214,7 @@ class GenerationService:
                     "OpenShot could not upload the source video into ComfyUI input.\n\n{}".format(ex),
                 )
                 return
-        elif pipeline_id in ("img2img-basic", "upscale-realesrgan-x4"):
+        elif pipeline_id in ("img2img-basic", "upscale-realesrgan-x4", "img2video-svd"):
             try:
                 workflow_source = self._prepare_generation_image_input(source_path, client)
             except Exception as ex:
@@ -204,7 +226,8 @@ class GenerationService:
                 return
 
         try:
-            if pipeline_requires_checkpoint(pipeline_id):
+            checkpoint_names = []
+            if pipeline_requires_checkpoint(pipeline_id) or pipeline_requires_svd_checkpoint(pipeline_id):
                 checkpoint_names = client.list_checkpoints()
                 if checkpoint_names:
                     preferred_checkpoint = DEFAULT_SD_CHECKPOINT
@@ -216,9 +239,13 @@ class GenerationService:
                         preferred_checkpoint if preferred_checkpoint in checkpoint_names else checkpoint_names[0]
                     )
                 if pipeline_requires_svd_checkpoint(pipeline_id):
-                    svd_checkpoint_name = (
-                        DEFAULT_SVD_CHECKPOINT if DEFAULT_SVD_CHECKPOINT in checkpoint_names else None
-                    )
+                    if DEFAULT_SVD_CHECKPOINT in checkpoint_names:
+                        svd_checkpoint_name = DEFAULT_SVD_CHECKPOINT
+                    else:
+                        # Prefer any checkpoint that appears to be an SVD model.
+                        svd_candidates = [name for name in checkpoint_names if "svd" in str(name).lower()]
+                        if svd_candidates:
+                            svd_checkpoint_name = svd_candidates[0]
         except Exception as ex:
             log.warning("Failed to query ComfyUI checkpoints: %s", ex)
 
@@ -235,8 +262,8 @@ class GenerationService:
             QMessageBox.information(
                 self.win,
                 "No SVD Checkpoint Found",
-                "ComfyUI could not find the SVD checkpoint required for txt_to_image_to_video.\n"
-                "Add {} to ComfyUI/models/checkpoints and try again.".format(DEFAULT_SVD_CHECKPOINT),
+                "ComfyUI could not find the SVD checkpoint required for the selected video generation template.\n"
+                "Add an SVD checkpoint (for example {}) to ComfyUI/models/checkpoints and try again.".format(DEFAULT_SVD_CHECKPOINT),
             )
             return
 
@@ -282,6 +309,28 @@ class GenerationService:
             return
 
         try:
+            if pipeline_requires_rife_model(pipeline_id):
+                rife_models = client.list_rife_vfi_models()
+                if rife_models:
+                    for preferred in (DEFAULT_RIFE_VFI_MODEL, "rife49.pth"):
+                        if preferred in rife_models:
+                            rife_model_name = preferred
+                            break
+                    if not rife_model_name:
+                        rife_model_name = rife_models[0]
+        except Exception as ex:
+            log.warning("Failed to query ComfyUI RIFE VFI models: %s", ex)
+
+        if pipeline_requires_rife_model(pipeline_id) and not rife_model_name:
+            QMessageBox.information(
+                self.win,
+                "RIFE VFI Not Available",
+                "ComfyUI could not find the RIFE VFI node/models required for frame interpolation.\n"
+                "Install ComfyUI-Frame-Interpolation and add models such as rife47.pth.",
+            )
+            return
+
+        try:
             workflow = build_workflow(
                 pipeline_id,
                 payload.get("prompt"),
@@ -291,6 +340,8 @@ class GenerationService:
                 upscale_model_name=upscale_model_name,
                 stable_audio_clip_name=stable_audio_clip_name,
                 svd_checkpoint_name=svd_checkpoint_name,
+                source_fps=self._get_source_fps(source_file),
+                rife_model_name=rife_model_name,
             )
         except Exception as ex:
             QMessageBox.information(self.win, "Invalid Input", str(ex))

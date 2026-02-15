@@ -435,6 +435,21 @@ class ComfyClient:
         values = self._extract_combo_options(clip_input)
         return [str(v) for v in values if str(v).strip()]
 
+    def list_rife_vfi_models(self):
+        """Return available RIFE checkpoint names from ComfyUI object info."""
+        node_type = "RIFE VFI"
+        with urlopen(
+            "{}/object_info/{}".format(self.base_url, quote(node_type, safe="")),
+            timeout=8.0,
+        ) as response:
+            data = json.loads(response.read().decode("utf-8"))
+
+        node_info = data.get(node_type, {})
+        required = node_info.get("input", {}).get("required", {})
+        ckpt_input = required.get("ckpt_name", None)
+        values = self._extract_combo_options(ckpt_input)
+        return [str(v) for v in values if str(v).strip()]
+
     @staticmethod
     def _extract_combo_options(input_config):
         """Extract valid options from Comfy object_info input config variants."""

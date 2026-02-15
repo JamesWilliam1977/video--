@@ -39,6 +39,7 @@ DEFAULT_UPSCALE_MODEL = "RealESRGAN_x4plus.safetensors"
 DEFAULT_STABLE_AUDIO_CHECKPOINT = "stable-audio-open-1.0.safetensors"
 DEFAULT_STABLE_AUDIO_CLIP = "t5-base.safetensors"
 DEFAULT_SVD_CHECKPOINT = "svd_xt.safetensors"
+DEFAULT_RIFE_VFI_MODEL = "rife47.pth"
 
 
 def is_supported_img2img_path(path):
@@ -74,7 +75,9 @@ def available_pipelines(source_file=None):
     if _supports_img2img(source_file):
         pipelines.insert(0, {"id": "img2img-basic", "name": "Basic Image Variation"})
         pipelines.insert(1, {"id": "upscale-realesrgan-x4", "name": "Upscale Image (RealESRGAN x4)"})
+        pipelines.insert(2, {"id": "img2video-svd", "name": "Image to Video (img_to_video)"})
     if _supports_video_upscale(source_file):
+        pipelines.append({"id": "video-frame-interpolation-rife2x", "name": "Frame Interpolation (RIFE 2x FPS)"})
         pipelines.append({"id": "video-upscale-gan", "name": "Upscale Video (GAN x4, first 10s)"})
         pipelines.append({"id": "video2video-basic", "name": "Video + Text to Video (Style Transfer)"})
         pipelines.append({"id": "video-whisper-srt", "name": "Whisper Transcribe to SRT (Caption Effect)"})
@@ -100,7 +103,11 @@ def pipeline_requires_stable_audio_clip(pipeline_id):
 
 
 def pipeline_requires_svd_checkpoint(pipeline_id):
-    return str(pipeline_id or "") in ("txt2video-svd",)
+    return str(pipeline_id or "") in ("txt2video-svd", "img2video-svd")
+
+
+def pipeline_requires_rife_model(pipeline_id):
+    return str(pipeline_id or "") in ("video-frame-interpolation-rife2x",)
 
 
 def build_workflow(
@@ -112,6 +119,8 @@ def build_workflow(
     upscale_model_name=None,
     stable_audio_clip_name=None,
     svd_checkpoint_name=None,
+    source_fps=None,
+    rife_model_name=None,
 ):
     prompt_text = str(prompt_text or "cinematic shot, highly detailed").strip()
     if not prompt_text:
@@ -121,6 +130,14 @@ def build_workflow(
     upscale_model_name = str(upscale_model_name or "").strip() or DEFAULT_UPSCALE_MODEL
     stable_audio_clip_name = str(stable_audio_clip_name or "").strip() or DEFAULT_STABLE_AUDIO_CLIP
     svd_checkpoint_name = str(svd_checkpoint_name or "").strip() or DEFAULT_SVD_CHECKPOINT
+    rife_model_name = str(rife_model_name or "").strip() or DEFAULT_RIFE_VFI_MODEL
+    try:
+        source_fps_value = float(source_fps)
+    except (TypeError, ValueError):
+        source_fps_value = 30.0
+    if source_fps_value <= 0:
+        source_fps_value = 30.0
+    target_fps = round(source_fps_value * 2.0, 6)
     seed = random.randint(1, 2**31 - 1)
 
     if pipeline_id == "img2img-basic":
@@ -220,6 +237,38 @@ def build_workflow(
             },
         }
 
+    if pipeline_id == "video-frame-interpolation-rife2x":
+        source_path = str(source_path or "").strip()
+        if not source_path:
+            raise ValueError("A source video is required for this pipeline.")
+        return {
+            "1": {"inputs": {"file": source_path}, "class_type": "LoadVideo"},
+            "2": {"inputs": {"video": ["1", 0]}, "class_type": "GetVideoComponents"},
+            "3": {
+                "inputs": {
+                    "frames": ["2", 0],
+                    "ckpt_name": rife_model_name,
+                    "clear_cache_after_n_frames": 10,
+                    "multiplier": 2,
+                    "fast_mode": True,
+                    "ensemble": True,
+                    "scale_factor": 1,
+                },
+                "class_type": "RIFE VFI",
+                "_meta": {"title": "RIFE VFI (recommend rife47 and rife49)"},
+            },
+            "4": {"inputs": {"images": ["3", 0], "audio": ["2", 1], "fps": target_fps}, "class_type": "CreateVideo"},
+            "5": {
+                "inputs": {
+                    "video": ["4", 0],
+                    "filename_prefix": "video/{}".format(output_prefix),
+                    "format": "auto",
+                    "codec": "auto",
+                },
+                "class_type": "SaveVideo",
+            },
+        }
+
     if pipeline_id == "txt2audio-stable-open":
         return {
             "3": {
@@ -302,6 +351,50 @@ def build_workflow(
             "11": {"inputs": {"samples": ["10", 0], "vae": ["1", 2]}, "class_type": "VAEDecode"},
             "12": {"inputs": {"images": ["11", 0], "fps": 24}, "class_type": "CreateVideo"},
             "13": {"inputs": {"video": ["12", 0], "filename_prefix": "video/{}".format(output_prefix), "format": "auto", "codec": "auto"}, "class_type": "SaveVideo"},
+        }
+
+    if pipeline_id == "img2video-svd":
+        if not is_supported_img2img_path(source_path):
+            raise ValueError(
+                "The selected file is not a supported raster image for this pipeline. "
+                "Use PNG/JPG/WebP/BMP/TIFF or switch to Text to Video."
+            )
+        return {
+            "1": {"inputs": {"ckpt_name": svd_checkpoint_name}, "class_type": "ImageOnlyCheckpointLoader"},
+            "2": {"inputs": {"image": str(source_path or ""), "upload": "image"}, "class_type": "LoadImage"},
+            "3": {
+                "inputs": {
+                    "clip_vision": ["1", 1],
+                    "init_image": ["2", 0],
+                    "vae": ["1", 2],
+                    "width": 512,
+                    "height": 288,
+                    "video_frames": 24,
+                    "motion_bucket_id": 127,
+                    "fps": 24,
+                    "augmentation_level": 0.0,
+                },
+                "class_type": "SVD_img2vid_Conditioning",
+            },
+            "4": {"inputs": {"model": ["1", 0], "min_cfg": 1.0}, "class_type": "VideoLinearCFGGuidance"},
+            "5": {
+                "inputs": {
+                    "seed": seed + 1,
+                    "steps": 20,
+                    "cfg": 2.5,
+                    "sampler_name": "euler",
+                    "scheduler": "karras",
+                    "denoise": 1.0,
+                    "model": ["4", 0],
+                    "positive": ["3", 0],
+                    "negative": ["3", 1],
+                    "latent_image": ["3", 2],
+                },
+                "class_type": "KSampler",
+            },
+            "6": {"inputs": {"samples": ["5", 0], "vae": ["1", 2]}, "class_type": "VAEDecode"},
+            "7": {"inputs": {"images": ["6", 0], "fps": 24}, "class_type": "CreateVideo"},
+            "8": {"inputs": {"video": ["7", 0], "filename_prefix": "video/{}".format(output_prefix), "format": "auto", "codec": "auto"}, "class_type": "SaveVideo"},
         }
 
     if pipeline_id == "video2video-basic":

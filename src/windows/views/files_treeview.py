@@ -84,8 +84,9 @@ class FilesTreeProgressDelegate(QStyledItemDelegate):
             return
 
         progress = int(badge.get("progress", 0))
-        status = badge.get("status", "")
-        if status == "queued":
+        status = str(badge.get("status", "")).strip().lower()
+        if status in ("queued", "running", "canceling"):
+            # Keep active jobs visible even before numeric progress starts.
             progress = max(progress, 2)
         if progress <= 0:
             return
@@ -114,6 +115,10 @@ class FilesTreeProgressDelegate(QStyledItemDelegate):
         painter.drawRect(full_rect)
         painter.setBrush(QColor("#53A0ED"))
         painter.drawRect(fill_rect)
+        if status == "queued":
+            text_rect = full_rect.adjusted(0, -14, 0, -4)
+            painter.setPen(QColor("#9EC8F7"))
+            painter.drawText(text_rect, Qt.AlignLeft | Qt.AlignVCenter, "Queued")
         painter.restore()
 
 
