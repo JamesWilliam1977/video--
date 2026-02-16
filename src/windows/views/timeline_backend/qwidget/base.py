@@ -26,6 +26,7 @@
 """
 
 import json
+import os
 import uuid
 from functools import partial
 from types import SimpleNamespace
@@ -1042,10 +1043,18 @@ class TimelineWidgetBase(QWidget):
         mime = event.mimeData()
 
         if mime.hasUrls():
+            urls = mime.urls()
+            payload = self._preimport_os_drop_urls(urls)
+            if payload:
+                self._drag_payload = payload
+                self.item_type = payload.get("type")
+                self.new_item = True
+                event.accept()
+                return
             event.accept()
             self.new_item = True
             self.item_type = "os_drop"
-            self._drag_payload = {"type": "os_drop", "urls": mime.urls()}
+            self._drag_payload = {"type": "os_drop", "urls": urls}
             return
 
         mime_html = mime.html()
@@ -1101,18 +1110,28 @@ class TimelineWidgetBase(QWidget):
         mime = event.mimeData()
         mime_html = mime.html()
         if mime.hasUrls():
-            urls = mime.urls()
-            # Wrap file import + clip creation + auto-transitions in a single
-            # transaction so a single Undo reverts everything.
-            os_drop_tid = str(uuid.uuid4())
-            self.win.files_model.process_urls(
-                urls, import_quietly=True, prevent_image_seq=True,
-                transaction_id=os_drop_tid,
-            )
-            # process_urls preserves our transaction when given a transaction_id
-            for uri in urls:
-                for f in File.filter(path=uri.toLocalFile()):
-                    file_ids.append(f.id)
+            payload = self._drag_payload or {}
+            if (
+                payload.get("type") == "clip"
+                and payload.get("source") == "os_drop"
+                and payload.get("ids")
+            ):
+                file_ids.extend(payload.get("ids") or [])
+                os_drop_tid = payload.get("transaction_id")
+                mime_html = "clip"
+            else:
+                urls = mime.urls()
+                # Wrap file import + clip creation + auto-transitions in a single
+                # transaction so a single Undo reverts everything.
+                os_drop_tid = str(uuid.uuid4())
+                self.win.files_model.process_urls(
+                    urls, import_quietly=True, prevent_image_seq=True,
+                    transaction_id=os_drop_tid,
+                )
+                # process_urls preserves our transaction when given a transaction_id
+                for uri in urls:
+                    for f in File.filter(path=uri.toLocalFile()):
+                        file_ids.append(f.id)
         elif mime_html == "clip":
             try:
                 ids = json.loads(mime.text())
@@ -1209,7 +1228,14 @@ class TimelineWidgetBase(QWidget):
             return self._drag_payload
         mime = event.mimeData()
         if mime.hasUrls():
-            self._drag_payload = {"type": "os_drop", "urls": mime.urls()}
+            urls = mime.urls()
+            payload = self._preimport_os_drop_urls(urls)
+            if payload:
+                self._drag_payload = payload
+                self.item_type = payload.get("type")
+                self.new_item = True
+                return self._drag_payload
+            self._drag_payload = {"type": "os_drop", "urls": urls}
             return self._drag_payload
         mime_html = mime.html()
         if mime_html in {"clip", "transition"}:
@@ -1598,40 +1624,48 @@ class TimelineWidgetBase(QWidget):
         if not total:
             self._reset_drag_preview()
             return
+        payload = self._drag_payload or {}
+        drag_transaction_id = payload.get("transaction_id")
+        if drag_transaction_id:
+            get_app().updates.transaction_id = drag_transaction_id
         committed_any = False
-        for idx, entry in enumerate(self._drag_preview_items):
-            source_id = entry.get("source_id")
-            if source_id is None:
-                continue
-            track_num = self.normalize_track_number(entry.get("layer"))
-            if track_num is None:
-                continue
-            position = max(0.0, float(entry.get("position", 0.0) or 0.0))
-            ignore_refresh = idx < total - 1
-            if entry.get("type") == "transition":
-                transition = self.addTransition(
-                    source_id,
-                    QPointF(position, 0),
-                    track_num,
-                    ignore_refresh=ignore_refresh,
-                    call_manual_move=False,
-                )
-                if transition is None:
-                    log.warning("Deferred transition drop failed for path: %s", source_id)
+        try:
+            for idx, entry in enumerate(self._drag_preview_items):
+                source_id = entry.get("source_id")
+                if source_id is None:
                     continue
-                committed_any = True
-            else:
-                auto_transition = total == 1
-                clip = self.addClip(
-                    source_id,
-                    QPointF(position, 0),
-                    track_num,
-                    ignore_refresh=ignore_refresh,
-                    call_manual_move=False,
-                    auto_transition=auto_transition,
-                )
-                if clip is not None:
+                track_num = self.normalize_track_number(entry.get("layer"))
+                if track_num is None:
+                    continue
+                position = max(0.0, float(entry.get("position", 0.0) or 0.0))
+                ignore_refresh = idx < total - 1
+                if entry.get("type") == "transition":
+                    transition = self.addTransition(
+                        source_id,
+                        QPointF(position, 0),
+                        track_num,
+                        ignore_refresh=ignore_refresh,
+                        call_manual_move=False,
+                    )
+                    if transition is None:
+                        log.warning("Deferred transition drop failed for path: %s", source_id)
+                        continue
                     committed_any = True
+                else:
+                    auto_transition = total == 1
+                    clip = self.addClip(
+                        source_id,
+                        QPointF(position, 0),
+                        track_num,
+                        ignore_refresh=ignore_refresh,
+                        call_manual_move=False,
+                        auto_transition=auto_transition,
+                    )
+                    if clip is not None:
+                        committed_any = True
+        finally:
+            if drag_transaction_id:
+                get_app().updates.transaction_id = None
 
         # Auto-select newly added clips/transitions
         preview_type = "clip"
@@ -1650,6 +1684,45 @@ class TimelineWidgetBase(QWidget):
         if committed_any:
             self.changed(None)
         self.update()
+
+    def _preimport_os_drop_urls(self, urls):
+        """Pre-import OS-dropped files so timeline drag preview can render clip shapes."""
+        local_file_urls = []
+        for uri in urls or []:
+            if not uri.isLocalFile():
+                return None
+            local_path = uri.toLocalFile()
+            if not local_path or not os.path.isfile(local_path):
+                return None
+            local_file_urls.append(uri)
+        if not local_file_urls:
+            return None
+
+        os_drop_tid = str(uuid.uuid4())
+        self.win.files_model.process_urls(
+            local_file_urls,
+            import_quietly=True,
+            prevent_image_seq=True,
+            transaction_id=os_drop_tid,
+        )
+        # The caller-provided transaction remains active; close it now and
+        # reopen only when committing clip creation on drop.
+        get_app().updates.transaction_id = None
+
+        file_ids = []
+        for uri in local_file_urls:
+            for f in File.filter(path=uri.toLocalFile()):
+                file_ids.append(f.id)
+        if not file_ids:
+            return None
+
+        return {
+            "type": "clip",
+            "ids": file_ids,
+            "source": "os_drop",
+            "urls": local_file_urls,
+            "transaction_id": os_drop_tid,
+        }
 
 
 
