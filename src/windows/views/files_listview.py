@@ -153,7 +153,9 @@ class FilesListView(QListView):
         app.context_menu_object = "files"
 
         index = self.indexAt(event.pos())
-        if index.isValid():
+        if not index.isValid():
+            self.clearSelection()
+        else:
             self.setCurrentIndex(index)
             self.selectionModel().select(
                 index,
@@ -252,6 +254,12 @@ class FilesListView(QListView):
 
         # Show menu
         menu.popup(event.globalPos())
+
+    def mousePressEvent(self, event):
+        index = self.indexAt(event.pos())
+        if not index.isValid() and event.button() in (Qt.LeftButton, Qt.RightButton):
+            self.clearSelection()
+        super().mousePressEvent(event)
 
     def mouseDoubleClickEvent(self, event):
         super(FilesListView, self).mouseDoubleClickEvent(event)

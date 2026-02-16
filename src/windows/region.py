@@ -56,6 +56,7 @@ class SelectRegion(QDialog):
     PlaySignal = pyqtSignal()
     PauseSignal = pyqtSignal()
     SeekSignal = pyqtSignal(int)
+    LoadTimelineAndSeekSignal = pyqtSignal(int)
     SpeedSignal = pyqtSignal(float)
     StopSignal = pyqtSignal()
 
@@ -277,6 +278,5 @@ class SelectRegion(QDialog):
         self.shutdownPlayer()
         get_app().window.SelectRegionSignal.emit("")
         super(SelectRegion, self).reject()
-
 
 
