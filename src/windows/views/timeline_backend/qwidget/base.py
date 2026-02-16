@@ -2400,6 +2400,17 @@ class TimelineWidgetBase(QWidget):
 
         self.unsetCursor()
 
+    def mouseDoubleClickEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.geometry.ensure()
+            pos = event.pos()
+            for rect, item, _selected, _type in self.geometry.iter_items(reverse=True):
+                if rect.contains(pos):
+                    self.win.actionProperties.trigger()
+                    event.accept()
+                    return
+        super().mouseDoubleClickEvent(event)
+
     def mousePressEvent(self, event):
         self._press_marker = None
         if event.button() == Qt.RightButton:
