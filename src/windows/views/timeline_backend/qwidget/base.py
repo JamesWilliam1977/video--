@@ -2964,14 +2964,18 @@ class TimelineWidgetBase(QWidget):
         # Transition context menu (prioritized over clips)
         for rect, tran, _selected in self.geometry.iter_transitions(reverse=True):
             if rect.contains(pos) and hasattr(self.win, "timeline"):
-                self._select_timeline_item(tran.id, "transition", True)
+                # Preserve multi-selection on right-click when target is already selected.
+                if not _selected:
+                    self._select_timeline_item(tran.id, "transition", True)
                 self.win.timeline.ShowTransitionMenu(tran.id)
                 return True
 
         # Clip context menu
         for rect, clip, _selected in self.geometry.iter_clips(reverse=True):
             if rect.contains(pos) and hasattr(self.win, "timeline"):
-                self._select_timeline_item(clip.id, "clip", True)
+                # Preserve multi-selection on right-click when target is already selected.
+                if not _selected:
+                    self._select_timeline_item(clip.id, "clip", True)
                 self.win.timeline.ShowClipMenu(clip.id)
                 return True
 
