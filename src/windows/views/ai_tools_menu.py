@@ -30,72 +30,47 @@ def _icon(name):
 
 def add_ai_tools_menu(win, parent_menu, source_file=None):
     _ = get_app()._tr
-    media_type = str(source_file.data.get("media_type", "")) if source_file else ""
-
+    grouped = win.generation_service.build_menu_templates(source_file=source_file)
+    menu_defs = []
     if source_file:
-        ai_menu = StyledContextMenu(title=_("Enhance with AI"), parent=parent_menu)
+        menu_defs = [("enhance", _("Enhance with AI")), ("unknown", _("Unknown AI"))]
+    else:
+        menu_defs = [("create", _("Create with AI")), ("unknown", _("Unknown AI"))]
+
+    created_menus = []
+    for key, title in menu_defs:
+        templates = list(grouped.get(key, []) or [])
+        if not templates:
+            continue
+        ai_menu = StyledContextMenu(title=title, parent=parent_menu)
         ai_menu.setIcon(_icon("tool-generate-sparkle.svg"))
 
-        if media_type == "image":
-            action = ai_menu.addAction(_("Increase Resolution (4x)"))
-            action.setIcon(_icon("ai-action-upscale.svg"))
+        inserted_style_separator = False
+        for template in templates:
+            template_key = str(template.get("template_id") or template.get("id") or "")
+            if (
+                key == "enhance"
+                and not inserted_style_separator
+                and template_key in ("img2img-basic", "video2video-basic")
+            ):
+                ai_menu.addSeparator()
+                inserted_style_separator = True
+            open_dialog = template.get("open_dialog")
+            if not isinstance(open_dialog, bool):
+                open_dialog = (source_file is None) or bool(template.get("needs_prompt", False))
+            action = ai_menu.addAction(_(str(template.get("display_name", ""))))
+            action.setIcon(_icon(win.generation_service.icon_for_template(template)))
             action.triggered.connect(
-                partial(_trigger_generation, win, "upscale-realesrgan-x4", source_file, False)
+                partial(
+                    _trigger_generation,
+                    win,
+                    template.get("id"),
+                    source_file,
+                    open_dialog,
+                )
             )
-            ai_menu.addSeparator()
-            action = ai_menu.addAction(_("Change Image Style..."))
-            action.setIcon(_icon("ai-action-restyle.svg"))
-            action.triggered.connect(
-                partial(_trigger_generation, win, "img2img-basic", source_file, True)
-            )
-            parent_menu.addMenu(ai_menu)
-            return ai_menu
-
-        elif media_type == "video":
-            action = ai_menu.addAction(_("Increase Resolution (4x)"))
-            action.setIcon(_icon("ai-action-upscale.svg"))
-            action.triggered.connect(
-                partial(_trigger_generation, win, "video-upscale-gan", source_file, False)
-            )
-            action = ai_menu.addAction(_("Smooth Motion (2x Frame Rate)"))
-            action.setIcon(_icon("ai-action-smooth.svg"))
-            action.triggered.connect(
-                partial(_trigger_generation, win, "video-frame-interpolation-rife2x", source_file, False)
-            )
-            action = ai_menu.addAction(_("Split into Scenes"))
-            action.setIcon(_icon("ai-action-scenes.svg"))
-            action.triggered.connect(
-                partial(_trigger_generation, win, "video-segment-scenes-transnet", source_file, False)
-            )
-            action = ai_menu.addAction(_("Add Captions from Speech"))
-            action.setIcon(_icon("ai-action-captions.svg"))
-            action.triggered.connect(
-                partial(_trigger_generation, win, "video-whisper-srt", source_file, False)
-            )
-            ai_menu.addSeparator()
-            action = ai_menu.addAction(_("Change Video Style..."))
-            action.setIcon(_icon("ai-action-restyle.svg"))
-            action.triggered.connect(
-                partial(_trigger_generation, win, "video2video-basic", source_file, True)
-            )
-        else:
-            action = ai_menu.addAction(_("No AI enhancement actions available yet."))
-            action.setEnabled(False)
 
         parent_menu.addMenu(ai_menu)
-        return ai_menu
+        created_menus.append(ai_menu)
 
-    ai_menu = StyledContextMenu(title=_("Create with AI"), parent=parent_menu)
-    ai_menu.setIcon(_icon("tool-generate-sparkle.svg"))
-    action = ai_menu.addAction(_("Image..."))
-    action.setIcon(_icon("ai-action-create-image.svg"))
-    action.triggered.connect(partial(_trigger_generation, win, "txt2img-basic", source_file, True))
-    action = ai_menu.addAction(_("Video..."))
-    action.setIcon(_icon("ai-action-create-video.svg"))
-    action.triggered.connect(partial(_trigger_generation, win, "txt2video-svd", source_file, True))
-    action = ai_menu.addAction(_("Audio..."))
-    action.setIcon(_icon("ai-action-create-audio.svg"))
-    action.triggered.connect(partial(_trigger_generation, win, "txt2audio-stable-open", source_file, True))
-
-    parent_menu.addMenu(ai_menu)
-    return ai_menu
+    return created_menus[0] if created_menus else None

@@ -804,6 +804,31 @@ class FilesModel(QObject, updates.UpdateInterface):
             return None
         return id_index.row()
 
+    def _generation_icon_for_job(self, job):
+        icon_name = "tool-generate-sparkle.svg"
+        try:
+            app = get_app()
+            window = getattr(app, "window", None)
+            generation_service = getattr(window, "generation_service", None)
+            if generation_service and isinstance(job, dict):
+                template_id = str(job.get("template_id") or "").strip()
+                template = generation_service.template_registry.get_template(template_id)
+                if template:
+                    resolved_icon = generation_service.icon_for_template(template)
+                    if resolved_icon:
+                        icon_name = resolved_icon
+        except Exception:
+            pass
+
+        icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", icon_name)
+        if os.path.exists(icon_path):
+            return QIcon(icon_path)
+
+        emoji_icon_path = os.path.join(info.PATH, "emojis", "color", "svg", "2728.svg")
+        if os.path.exists(emoji_icon_path):
+            return QIcon(emoji_icon_path)
+        return QIcon(":/icons/Humanity/actions/16/media-record.svg")
+
     def _add_generation_placeholder(self, job_id):
         job = self.generation_queue.get_job(job_id) if self.generation_queue else None
         if not job:
@@ -828,14 +853,7 @@ class FilesModel(QObject, updates.UpdateInterface):
             label = "{} (Canceling...)".format(name)
 
         row = []
-        generate_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-generate-sparkle.svg")
-        emoji_icon_path = os.path.join(info.PATH, "emojis", "color", "svg", "2728.svg")
-        if os.path.exists(generate_icon_path):
-            icon = QIcon(generate_icon_path)
-        elif os.path.exists(emoji_icon_path):
-            icon = QIcon(emoji_icon_path)
-        else:
-            icon = QIcon(":/icons/Humanity/actions/16/media-record.svg")
+        icon = self._generation_icon_for_job(job)
         flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemNeverHasChildren
 
         col = QStandardItem(icon, label)
@@ -886,6 +904,7 @@ class FilesModel(QObject, updates.UpdateInterface):
         elif status == "canceling":
             label = "{} (Canceling...)".format(name)
 
+        self.model.item(row, 0).setIcon(self._generation_icon_for_job(job))
         self.model.item(row, 0).setText(label)
         self.model.item(row, 1).setText(label)
         left = self.model.index(row, 0)

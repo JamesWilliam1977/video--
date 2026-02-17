@@ -30,6 +30,7 @@ import os
 import ssl
 import base64
 import uuid
+from datetime import datetime
 import re
 import socket
 import struct
@@ -38,6 +39,7 @@ from urllib.request import Request, urlopen
 from urllib.parse import quote, urlencode
 from urllib.parse import urlparse
 
+from classes import info
 from classes.logger import log
 
 
@@ -254,6 +256,35 @@ class ComfyClient:
         self.base_url = str(base_url or "").rstrip("/")
 
     @staticmethod
+    def _write_debug_error(payload):
+        debug_dir = info.COMFYUI_PATH
+        try:
+            os.makedirs(debug_dir, exist_ok=True)
+            debug_path = os.path.join(debug_dir, "debug_error.json")
+            with open(debug_path, "w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2, sort_keys=True)
+                handle.write("\n")
+        except Exception:
+            log.warning("Failed writing Comfy debug error payload", exc_info=True)
+
+    def _write_debug_prompt_payload(self, prompt_graph, client_id):
+        debug_dir = info.COMFYUI_PATH
+        try:
+            os.makedirs(debug_dir, exist_ok=True)
+            debug_path = os.path.join(debug_dir, "debug.json")
+            payload = {
+                "generated_at_utc": datetime.utcnow().isoformat() + "Z",
+                "comfy_url": self.base_url,
+                "client_id": str(client_id or ""),
+                "prompt": prompt_graph,
+            }
+            with open(debug_path, "w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2, sort_keys=True)
+                handle.write("\n")
+        except Exception:
+            log.warning("Failed writing Comfy sent prompt payload", exc_info=True)
+
+    @staticmethod
     def open_progress_socket(base_url, client_id):
         return ComfyProgressSocket(base_url, client_id)
 
@@ -263,6 +294,7 @@ class ComfyClient:
 
     def queue_prompt(self, prompt_graph, client_id):
         prompt_graph = self._rewrite_prompt_local_file_inputs(prompt_graph)
+        self._write_debug_prompt_payload(prompt_graph, client_id)
         payload = json.dumps({"prompt": prompt_graph, "client_id": client_id}).encode("utf-8")
         req = Request(
             "{}/prompt".format(self.base_url),
@@ -277,6 +309,7 @@ class ComfyClient:
             details = ""
             try:
                 error_data = json.loads(ex.read().decode("utf-8"))
+                ComfyClient._write_debug_error(error_data)
                 error_obj = error_data.get("error", {})
                 if isinstance(error_obj, dict):
                     details = error_obj.get("type") or error_obj.get("message") or ""

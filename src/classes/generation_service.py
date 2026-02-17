@@ -39,8 +39,8 @@ from classes import info
 from classes import time_parts
 from classes.app import get_app
 from classes.comfy_client import ComfyClient
+from classes.comfy_templates import ComfyTemplateRegistry
 from classes.comfy_pipelines import (
-    available_pipelines,
     build_workflow,
     is_supported_img2img_path,
     pipeline_requires_checkpoint,
@@ -64,10 +64,25 @@ from windows.generate import GenerateMediaDialog
 class GenerationService:
     """Encapsulates generation-specific UI + workflow behavior."""
 
+    LEGACY_PIPELINE_IDS = {
+        "txt2img-basic",
+        "txt2video-svd",
+        "txt2audio-stable-open",
+        "img2img-basic",
+        "upscale-realesrgan-x4",
+        "img2video-svd",
+        "video-segment-scenes-transnet",
+        "video-frame-interpolation-rife2x",
+        "video-upscale-gan",
+        "video2video-basic",
+        "video-whisper-srt",
+    }
+
     def __init__(self, win):
         self.win = win
         self._generation_temp_files = []
         self._comfy_status_cache = {"checked_at": 0.0, "available": False}
+        self.template_registry = ComfyTemplateRegistry()
 
     def cleanup_temp_files(self):
         for tmp_path in list(self._generation_temp_files):
@@ -164,6 +179,200 @@ class GenerationService:
                 default_name = "{}_gen".format(os.path.splitext(os.path.basename(path))[0])
         return default_name
 
+    def templates_for_context(self, source_file=None):
+        templates = self.template_registry.templates_for_context(source_file=source_file)
+        return [
+            {"id": t.get("id"), "name": t.get("display_name"), "template": t}
+            for t in templates
+        ]
+
+    def build_menu_templates(self, source_file=None):
+        grouped = {"create": [], "enhance": [], "unknown": []}
+        for template in self.template_registry.templates_for_context(source_file=source_file):
+            category = str(template.get("category", "unknown"))
+            if category not in grouped:
+                category = "unknown"
+            grouped[category].append(template)
+        return grouped
+
+    def icon_for_template(self, template):
+        return self.template_registry.output_icon_name(template)
+
+    def _prepare_nonlegacy_workflow(self, template, payload_name, prompt_text, source_file, source_path):
+        workflow = self.template_registry.get_workflow_copy(template.get("id"))
+        if not workflow:
+            raise ValueError("Template workflow not found.")
+
+        template_dir = ""
+        template_path = str((template or {}).get("path") or "").strip()
+        if template_path:
+            template_dir = os.path.dirname(template_path)
+
+        def _resolve_template_local_file(path_text):
+            path_text = str(path_text or "").strip()
+            if not path_text:
+                return ""
+            if os.path.isabs(path_text):
+                return path_text if os.path.exists(path_text) else ""
+            if not template_dir:
+                return ""
+            candidate = os.path.abspath(os.path.join(template_dir, path_text))
+            if os.path.exists(candidate):
+                return candidate
+            return ""
+
+        prompt_text = str(prompt_text or "").strip()
+        media_type = str(source_file.data.get("media_type", "")).strip().lower() if source_file else ""
+        applied_prompt = False
+        loadimage_node_ids = []
+        loadvideo_node_ids = []
+        loadaudio_node_ids = []
+
+        for node_id, node in workflow.items():
+            if not isinstance(node, dict):
+                continue
+            class_flat = str(node.get("class_type", "")).strip().lower()
+            if class_flat == "loadimage":
+                loadimage_node_ids.append(str(node_id))
+            elif class_flat in ("loadvideo", "load video", "vhs_loadvideo"):
+                loadvideo_node_ids.append(str(node_id))
+            elif class_flat in ("loadaudio", "load audio"):
+                loadaudio_node_ids.append(str(node_id))
+
+        def _is_placeholder_value(path_text):
+            path_text = str(path_text or "").strip().lower()
+            return path_text in ("__openshot_input__", "{{openshot_input}}", "$openshot_input")
+
+        def _select_bind_nodes(node_ids, path_key, preferred_upload=None):
+            explicit = []
+            candidates = []
+            for node_id in node_ids:
+                node = workflow.get(node_id, {})
+                inputs = node.get("inputs", {}) if isinstance(node, dict) else {}
+                if not isinstance(inputs, dict):
+                    continue
+                path_value = str(inputs.get(path_key, "")).strip()
+                upload_value = str(inputs.get("upload", "")).strip().lower()
+                if _is_placeholder_value(path_value):
+                    explicit.append(node_id)
+                    continue
+                if preferred_upload and upload_value == preferred_upload:
+                    explicit.append(node_id)
+                    continue
+                if not path_value:
+                    candidates.append(node_id)
+            if explicit:
+                return set(explicit)
+            if candidates:
+                return {candidates[0]}
+            if node_ids:
+                return {node_ids[0]}
+            return set()
+
+        image_bind_nodes = _select_bind_nodes(loadimage_node_ids, "image", preferred_upload="image")
+        video_bind_nodes = _select_bind_nodes(loadvideo_node_ids, "file")
+        audio_bind_nodes = _select_bind_nodes(loadaudio_node_ids, "audio")
+
+        for node_id, node in workflow.items():
+            if not isinstance(node, dict):
+                continue
+            class_type = str(node.get("class_type", "")).strip()
+            inputs = node.get("inputs", {})
+            if not isinstance(inputs, dict):
+                continue
+
+            class_flat = class_type.lower().strip()
+
+            if "filename_prefix" in inputs:
+                prefix_value = str(inputs.get("filename_prefix", "")).strip()
+                if "/" in prefix_value:
+                    head = prefix_value.rsplit("/", 1)[0]
+                    inputs["filename_prefix"] = "{}/{}".format(head, payload_name)
+                else:
+                    inputs["filename_prefix"] = payload_name
+
+            if prompt_text and class_flat == "cliptextencode" and "text" in inputs and not applied_prompt:
+                inputs["text"] = prompt_text
+                applied_prompt = True
+
+            if not source_path:
+                continue
+
+            node_id = str(node_id)
+
+            if class_flat == "loadimage" and media_type == "image" and node_id in image_bind_nodes:
+                if "image" in inputs:
+                    inputs["image"] = source_path
+                if "upload" in inputs:
+                    inputs["upload"] = "image"
+            elif class_flat == "loadimage":
+                # Resolve template-local reference images (relative filenames) to absolute paths,
+                # so ComfyClient can upload and rewrite them to [input] automatically.
+                configured_image = str(inputs.get("image", "")).strip()
+                local_image = _resolve_template_local_file(configured_image)
+                if local_image:
+                    inputs["image"] = local_image
+                    if "upload" in inputs:
+                        inputs["upload"] = "image"
+                elif media_type == "image" and source_path:
+                    # If additional reference images are missing, gracefully fallback to the selected source image.
+                    # This keeps common exported workflows usable without hand-editing filenames.
+                    missing_relative = configured_image and (not os.path.isabs(configured_image))
+                    missing_absolute = os.path.isabs(configured_image) and (not os.path.exists(configured_image))
+                    if missing_relative or missing_absolute:
+                        inputs["image"] = source_path
+                        if "upload" in inputs:
+                            inputs["upload"] = "image"
+                        log.warning(
+                            "Comfy template missing LoadImage asset (%s). Falling back to selected source image.",
+                            configured_image,
+                        )
+            elif class_flat in ("loadvideo", "load video") and media_type == "video" and node_id in video_bind_nodes:
+                if "file" in inputs:
+                    inputs["file"] = source_path
+                elif "video" in inputs:
+                    inputs["video"] = source_path
+            elif class_flat in ("loadvideo", "load video"):
+                local_video = _resolve_template_local_file(inputs.get("file", ""))
+                if local_video and "file" in inputs:
+                    inputs["file"] = local_video
+            elif class_flat == "vhs_loadvideo" and media_type == "video" and node_id in video_bind_nodes:
+                if "video" in inputs:
+                    inputs["video"] = source_path
+            elif class_flat in ("loadaudio", "load audio") and media_type == "audio" and node_id in audio_bind_nodes:
+                if "audio" in inputs:
+                    inputs["audio"] = source_path
+                elif "file" in inputs:
+                    inputs["file"] = source_path
+            elif class_flat in ("loadaudio", "load audio"):
+                local_audio = _resolve_template_local_file(inputs.get("audio", "") or inputs.get("file", ""))
+                if local_audio:
+                    if "audio" in inputs:
+                        inputs["audio"] = local_audio
+                    elif "file" in inputs:
+                        inputs["file"] = local_audio
+
+        if media_type == "image" and image_bind_nodes:
+            log.debug("Comfy template image input binding nodes=%s source=%s", sorted(image_bind_nodes), source_path)
+        if media_type == "video" and video_bind_nodes:
+            log.debug("Comfy template video input binding nodes=%s source=%s", sorted(video_bind_nodes), source_path)
+        if media_type == "audio" and audio_bind_nodes:
+            log.debug("Comfy template audio input binding nodes=%s source=%s", sorted(audio_bind_nodes), source_path)
+
+        return workflow
+
+    def _save_nodes_for_workflow(self, workflow):
+        save_nodes = []
+        for node_id, node in workflow.items():
+            if not isinstance(node, dict):
+                continue
+            class_type = str(node.get("class_type", "")).strip().lower()
+            if not class_type:
+                continue
+            if class_type.startswith("save") or class_type in ("previewany", "transnetv2_run"):
+                save_nodes.append(str(node_id))
+        return save_nodes
+
     def action_generate_trigger(self, checked=True, source_file=None, template_id=None, open_dialog=True):
         selected_files = [source_file] if source_file else self.win.selected_files()
         if len(selected_files) > 1:
@@ -180,7 +389,7 @@ class GenerationService:
             return
 
         source_file = selected_files[0] if selected_files else None
-        templates = available_pipelines(source_file=source_file)
+        templates = self.templates_for_context(source_file=source_file)
         available_template_ids = {str(t.get("id", "")).strip() for t in templates}
         if open_dialog:
             dialog_title = "Enhance with AI" if source_file else "Create with AI"
@@ -213,6 +422,10 @@ class GenerationService:
 
         payload_name = self._next_generation_name(payload.get("name"))
         source_file_id = source_file.id if source_file else None
+        template_meta = self.template_registry.get_template(payload.get("template_id"))
+        if not template_meta:
+            QMessageBox.information(self.win, "Invalid Input", "The selected AI template was not found.")
+            return
         try:
             source_path = self._prepare_generation_source_path(source_file, payload.get("template_id"))
         except Exception as ex:
@@ -261,144 +474,145 @@ class GenerationService:
                 )
                 return
 
-        try:
-            checkpoint_names = []
-            if pipeline_requires_checkpoint(pipeline_id) or pipeline_requires_svd_checkpoint(pipeline_id):
-                checkpoint_names = client.list_checkpoints()
-                if checkpoint_names:
-                    preferred_checkpoint = DEFAULT_SD_CHECKPOINT
-                    if pipeline_id == "txt2audio-stable-open":
-                        preferred_checkpoint = DEFAULT_STABLE_AUDIO_CHECKPOINT
-                    elif pipeline_id == "video2video-basic":
-                        preferred_checkpoint = DEFAULT_SD_BASE_CHECKPOINT
-                    checkpoint_name = (
-                        preferred_checkpoint if preferred_checkpoint in checkpoint_names else checkpoint_names[0]
-                    )
-                if pipeline_requires_svd_checkpoint(pipeline_id):
-                    if DEFAULT_SVD_CHECKPOINT in checkpoint_names:
-                        svd_checkpoint_name = DEFAULT_SVD_CHECKPOINT
-                    else:
-                        # Prefer any checkpoint that appears to be an SVD model.
-                        svd_candidates = [name for name in checkpoint_names if "svd" in str(name).lower()]
-                        if svd_candidates:
-                            svd_checkpoint_name = svd_candidates[0]
-        except Exception as ex:
-            log.warning("Failed to query ComfyUI checkpoints: %s", ex)
+        if pipeline_id in self.LEGACY_PIPELINE_IDS:
+            try:
+                checkpoint_names = []
+                if pipeline_requires_checkpoint(pipeline_id) or pipeline_requires_svd_checkpoint(pipeline_id):
+                    checkpoint_names = client.list_checkpoints()
+                    if checkpoint_names:
+                        preferred_checkpoint = DEFAULT_SD_CHECKPOINT
+                        if pipeline_id == "txt2audio-stable-open":
+                            preferred_checkpoint = DEFAULT_STABLE_AUDIO_CHECKPOINT
+                        elif pipeline_id == "video2video-basic":
+                            preferred_checkpoint = DEFAULT_SD_BASE_CHECKPOINT
+                        checkpoint_name = (
+                            preferred_checkpoint if preferred_checkpoint in checkpoint_names else checkpoint_names[0]
+                        )
+                    if pipeline_requires_svd_checkpoint(pipeline_id):
+                        if DEFAULT_SVD_CHECKPOINT in checkpoint_names:
+                            svd_checkpoint_name = DEFAULT_SVD_CHECKPOINT
+                        else:
+                            svd_candidates = [name for name in checkpoint_names if "svd" in str(name).lower()]
+                            if svd_candidates:
+                                svd_checkpoint_name = svd_candidates[0]
+            except Exception as ex:
+                log.warning("Failed to query ComfyUI checkpoints: %s", ex)
 
-        if pipeline_requires_checkpoint(pipeline_id) and not checkpoint_name:
-            QMessageBox.information(
-                self.win,
-                "No Checkpoints Found",
-                "ComfyUI has no checkpoints available for CheckpointLoaderSimple.\n"
-                "Add a model to ComfyUI/models/checkpoints and try again.",
-            )
-            return
+            if pipeline_requires_checkpoint(pipeline_id) and not checkpoint_name:
+                QMessageBox.information(
+                    self.win,
+                    "No Checkpoints Found",
+                    "ComfyUI has no checkpoints available for CheckpointLoaderSimple.\n"
+                    "Add a model to ComfyUI/models/checkpoints and try again.",
+                )
+                return
 
-        if pipeline_requires_svd_checkpoint(pipeline_id) and not svd_checkpoint_name:
-            QMessageBox.information(
-                self.win,
-                "No SVD Checkpoint Found",
-                "ComfyUI could not find the SVD checkpoint required for the selected video generation template.\n"
-                "Add an SVD checkpoint (for example {}) to ComfyUI/models/checkpoints and try again.".format(DEFAULT_SVD_CHECKPOINT),
-            )
-            return
+            if pipeline_requires_svd_checkpoint(pipeline_id) and not svd_checkpoint_name:
+                QMessageBox.information(
+                    self.win,
+                    "No SVD Checkpoint Found",
+                    "ComfyUI could not find the SVD checkpoint required for the selected video generation template.\n"
+                    "Add an SVD checkpoint (for example {}) to ComfyUI/models/checkpoints and try again.".format(DEFAULT_SVD_CHECKPOINT),
+                )
+                return
 
-        try:
-            if pipeline_requires_upscale_model(pipeline_id):
-                upscale_models = client.list_upscale_models()
-                if upscale_models:
-                    upscale_model_name = (
-                        DEFAULT_UPSCALE_MODEL if DEFAULT_UPSCALE_MODEL in upscale_models else upscale_models[0]
-                    )
-        except Exception as ex:
-            log.warning("Failed to query ComfyUI upscale models: %s", ex)
+            try:
+                if pipeline_requires_upscale_model(pipeline_id):
+                    upscale_models = client.list_upscale_models()
+                    if upscale_models:
+                        upscale_model_name = (
+                            DEFAULT_UPSCALE_MODEL if DEFAULT_UPSCALE_MODEL in upscale_models else upscale_models[0]
+                        )
+            except Exception as ex:
+                log.warning("Failed to query ComfyUI upscale models: %s", ex)
 
-        if pipeline_requires_upscale_model(pipeline_id) and not upscale_model_name:
-            QMessageBox.information(
-                self.win,
-                "No Upscale Models Found",
-                "ComfyUI has no upscaler models available for UpscaleModelLoader.\n"
-                "Add a model such as RealESRGAN_x4plus.safetensors to ComfyUI/models/upscale_models and try again.",
-            )
-            return
+            if pipeline_requires_upscale_model(pipeline_id) and not upscale_model_name:
+                QMessageBox.information(
+                    self.win,
+                    "No Upscale Models Found",
+                    "ComfyUI has no upscaler models available for UpscaleModelLoader.\n"
+                    "Add a model such as RealESRGAN_x4plus.safetensors to ComfyUI/models/upscale_models and try again.",
+                )
+                return
 
-        try:
-            if pipeline_requires_stable_audio_clip(pipeline_id):
-                clip_names = client.list_clip_models()
-                if clip_names:
-                    for preferred in (DEFAULT_STABLE_AUDIO_CLIP, "t5_base.safetensors"):
-                        if preferred in clip_names:
-                            stable_audio_clip_name = preferred
-                            break
-                    if not stable_audio_clip_name:
-                        stable_audio_clip_name = clip_names[0]
-        except Exception as ex:
-            log.warning("Failed to query ComfyUI CLIP models: %s", ex)
+            try:
+                if pipeline_requires_stable_audio_clip(pipeline_id):
+                    clip_names = client.list_clip_models()
+                    if clip_names:
+                        for preferred in (DEFAULT_STABLE_AUDIO_CLIP, "t5_base.safetensors"):
+                            if preferred in clip_names:
+                                stable_audio_clip_name = preferred
+                                break
+                        if not stable_audio_clip_name:
+                            stable_audio_clip_name = clip_names[0]
+            except Exception as ex:
+                log.warning("Failed to query ComfyUI CLIP models: %s", ex)
 
-        if pipeline_requires_stable_audio_clip(pipeline_id) and not stable_audio_clip_name:
-            QMessageBox.information(
-                self.win,
-                "No Text Encoders Found",
-                "ComfyUI has no CLIP/text-encoder models available for CLIPLoader.\n"
-                "Add a text encoder such as t5-base.safetensors and try again.",
-            )
-            return
+            if pipeline_requires_stable_audio_clip(pipeline_id) and not stable_audio_clip_name:
+                QMessageBox.information(
+                    self.win,
+                    "No Text Encoders Found",
+                    "ComfyUI has no CLIP/text-encoder models available for CLIPLoader.\n"
+                    "Add a text encoder such as t5-base.safetensors and try again.",
+                )
+                return
 
-        try:
-            if pipeline_requires_rife_model(pipeline_id):
-                rife_models = client.list_rife_vfi_models()
-                if rife_models:
-                    for preferred in (DEFAULT_RIFE_VFI_MODEL, "rife49.pth"):
-                        if preferred in rife_models:
-                            rife_model_name = preferred
-                            break
-                    if not rife_model_name:
-                        rife_model_name = rife_models[0]
-        except Exception as ex:
-            log.warning("Failed to query ComfyUI RIFE VFI models: %s", ex)
+            try:
+                if pipeline_requires_rife_model(pipeline_id):
+                    rife_models = client.list_rife_vfi_models()
+                    if rife_models:
+                        for preferred in (DEFAULT_RIFE_VFI_MODEL, "rife49.pth"):
+                            if preferred in rife_models:
+                                rife_model_name = preferred
+                                break
+                        if not rife_model_name:
+                            rife_model_name = rife_models[0]
+            except Exception as ex:
+                log.warning("Failed to query ComfyUI RIFE VFI models: %s", ex)
 
-        if pipeline_requires_rife_model(pipeline_id) and not rife_model_name:
-            QMessageBox.information(
-                self.win,
-                "RIFE VFI Not Available",
-                "ComfyUI could not find the RIFE VFI node/models required for frame interpolation.\n"
-                "Install ComfyUI-Frame-Interpolation and add models such as rife47.pth.",
-            )
-            return
+            if pipeline_requires_rife_model(pipeline_id) and not rife_model_name:
+                QMessageBox.information(
+                    self.win,
+                    "RIFE VFI Not Available",
+                    "ComfyUI could not find the RIFE VFI node/models required for frame interpolation.\n"
+                    "Install ComfyUI-Frame-Interpolation and add models such as rife47.pth.",
+                )
+                return
 
-        try:
-            workflow = build_workflow(
-                pipeline_id,
-                payload.get("prompt"),
-                workflow_source,
-                payload_name,
-                checkpoint_name=checkpoint_name,
-                upscale_model_name=upscale_model_name,
-                stable_audio_clip_name=stable_audio_clip_name,
-                svd_checkpoint_name=svd_checkpoint_name,
-                source_fps=self._get_source_fps(source_file),
-                rife_model_name=rife_model_name,
-            )
-        except Exception as ex:
-            QMessageBox.information(self.win, "Invalid Input", str(ex))
-            return
+            try:
+                workflow = build_workflow(
+                    pipeline_id,
+                    payload.get("prompt"),
+                    workflow_source,
+                    payload_name,
+                    checkpoint_name=checkpoint_name,
+                    upscale_model_name=upscale_model_name,
+                    stable_audio_clip_name=stable_audio_clip_name,
+                    svd_checkpoint_name=svd_checkpoint_name,
+                    source_fps=self._get_source_fps(source_file),
+                    rife_model_name=rife_model_name,
+                )
+            except Exception as ex:
+                QMessageBox.information(self.win, "Invalid Input", str(ex))
+                return
+        else:
+            try:
+                workflow = self._prepare_nonlegacy_workflow(
+                    template_meta,
+                    payload_name=payload_name,
+                    prompt_text=payload.get("prompt"),
+                    source_file=source_file,
+                    source_path=source_path,
+                )
+            except Exception as ex:
+                QMessageBox.information(self.win, "Invalid Input", str(ex))
+                return
         request = {
             "comfy_url": self.comfy_ui_url(),
             "workflow": workflow,
             "client_id": "openshot-qt",
             "timeout_s": 21600,
-            "save_node_ids": [
-                str(node_id)
-                for node_id, node in workflow.items()
-                if node.get("class_type") in (
-                    "SaveImage",
-                    "SaveVideo",
-                    "SaveAudio",
-                    "Save SRT",
-                    "PreviewAny",
-                    "TransNetV2_Run",
-                )
-            ],
+            "save_node_ids": self._save_nodes_for_workflow(workflow),
         }
         job_id = self.win.generation_queue.enqueue(
             payload_name,
@@ -464,7 +678,7 @@ class GenerationService:
         request = job.get("request", {}) or {}
         comfy_url = str(request.get("comfy_url") or self.comfy_ui_url())
         client = ComfyClient(comfy_url)
-        output_dir = os.path.join(info.USER_PATH, "comfy_outputs")
+        output_dir = info.COMFYUI_OUTPUT_PATH
         os.makedirs(output_dir, exist_ok=True)
 
         name_raw = str(job.get("name") or "generation")

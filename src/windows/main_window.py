@@ -709,6 +709,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 info.get_default_path("BLENDER_PATH"),
                 info.get_default_path("TITLE_PATH"),
                 info.get_default_path("CLIPBOARD_PATH"),
+                info.get_default_path("COMFYUI_OUTPUT_PATH"),
                 ]:
             try:
                 if os.path.exists(temp_dir):
