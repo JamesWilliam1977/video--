@@ -30,7 +30,7 @@
 import os
 import uuid
 
-from PyQt5.QtCore import QSize, Qt, QPoint
+from PyQt5.QtCore import QSize, Qt, QPoint, QItemSelectionModel
 from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon
 from PyQt5.QtWidgets import QTreeView, QAbstractItemView, QSizePolicy, QHeaderView
 
@@ -57,6 +57,8 @@ class FilesTreeView(QTreeView):
         index = self.indexAt(event.pos())
         if not index.isValid():
             self.clearSelection()
+        else:
+            self.selectionModel().setCurrentIndex(index, QItemSelectionModel.NoUpdate)
 
         # Build menu
         menu = StyledContextMenu(parent=self)

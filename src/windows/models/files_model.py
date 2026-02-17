@@ -518,13 +518,18 @@ class FilesModel(QObject, updates.UpdateInterface):
         }
         return parameters
 
-    def process_urls(self, qurl_list, import_quietly=False, prevent_image_seq=False):
+    def process_urls(self, qurl_list, import_quietly=False, prevent_image_seq=False,
+                     transaction_id=None):
         """Recursively process QUrls from a QDropEvent"""
         media_paths = []
 
-        # Transaction
-        tid = str(uuid.uuid4())
-        get_app().updates.transaction_id = tid
+        # Transaction — use caller's transaction_id when provided so the
+        # caller can group file imports with subsequent operations (e.g.
+        # clip creation on timeline drop) into a single undo step.
+        owns_transaction = transaction_id is None
+        if owns_transaction:
+            transaction_id = str(uuid.uuid4())
+        get_app().updates.transaction_id = transaction_id
 
         for uri in qurl_list:
             filepath = uri.toLocalFile()
@@ -546,12 +551,15 @@ class FilesModel(QObject, updates.UpdateInterface):
             elif os.path.isfile(filepath):
                 media_paths.append(filepath)
         if not media_paths:
+            if owns_transaction:
+                get_app().updates.transaction_id = None
             return
         # Import all new media files
         media_paths.sort()
         log.debug("Importing file list: {}".format(media_paths))
         self.add_files(media_paths, quiet=import_quietly, prevent_image_seq=prevent_image_seq)
-        get_app().updates.transaction_id = None
+        if owns_transaction:
+            get_app().updates.transaction_id = None
 
     def update_file_thumbnail(self, file_id):
         """Update/re-generate the thumbnail of a specific file"""
