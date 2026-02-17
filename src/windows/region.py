@@ -60,7 +60,7 @@ class SelectRegion(QDialog):
     SpeedSignal = pyqtSignal(float)
     StopSignal = pyqtSignal()
 
-    def __init__(self, file=None, clip=None):
+    def __init__(self, file=None, clip=None, selection_mode="rect"):
         _ = get_app()._tr
 
         # Create dialog class
@@ -71,9 +71,22 @@ class SelectRegion(QDialog):
 
         # Init UI
         ui_util.init_ui(self)
+        self.setWindowFlags(
+            (self.windowFlags() & ~Qt.Dialog)
+            | Qt.Window
+            | Qt.WindowMinMaxButtonsHint
+            | Qt.WindowMaximizeButtonHint
+        )
+        self.setSizeGripEnabled(True)
 
         # Track metrics
         track_metric_screen("cutting-screen")
+
+        self.selection_mode = str(selection_mode or "rect").strip().lower()
+        if self.selection_mode not in ("rect", "point"):
+            self.selection_mode = "rect"
+        self._selected_points = []
+        self._selected_points_negative = []
 
         self.start_frame = 1
         self.start_image = None
@@ -82,19 +95,31 @@ class SelectRegion(QDialog):
         self.current_frame = 1
 
         # Create region clip with Reader
-        self.clip = openshot.Clip(clip.Reader())
-        self.clip.Open()
-
-        # Set region clip start and end
-        self.clip.Start(clip.Start())
-        self.clip.End(clip.End())
-        self.clip.Id( get_app().project.generate_id() )
+        if clip:
+            self.clip = openshot.Clip(clip.Reader())
+            self.clip.Open()
+            # Set region clip start and end
+            self.clip.Start(clip.Start())
+            self.clip.End(clip.End())
+        else:
+            source_path = ""
+            if file:
+                if hasattr(file, "absolute_path"):
+                    source_path = file.absolute_path()
+                else:
+                    source_path = str(getattr(file, "data", {}).get("path", ""))
+            self.clip = openshot.Clip(source_path)
+            self.clip.Open()
+        self.clip.Id(get_app().project.generate_id())
 
         # Keep track of file object
         self.file = file
-        self.file_path = file.absolute_path()
+        if file and hasattr(file, "absolute_path"):
+            self.file_path = file.absolute_path()
+        else:
+            self.file_path = str(getattr(file, "data", {}).get("path", ""))
 
-        c_info = clip.Reader().info
+        c_info = self.clip.Reader().info
         self.fps = c_info.fps.ToInt()
         self.fps_num = c_info.fps.num
         self.fps_den = c_info.fps.den
@@ -106,16 +131,26 @@ class SelectRegion(QDialog):
         self.video_length = int(self.clip.Duration() * self.fps) + 1
 
         # Apply effects to region frames
-        for effect in clip.Effects():
-            self.clip.AddEffect(effect)
+        if clip:
+            for effect in clip.Effects():
+                self.clip.AddEffect(effect)
 
         # Open video file with Reader
         log.info(self.clip.Reader())
 
+        # Set instruction text first so it remains above the preview widget.
+        if self.selection_mode == "point":
+            self.lblInstructions.setText(
+                _("Click to add tracking point (SHIFT+Click for additional points, CTRL+Click for negative point)")
+            )
+        else:
+            self.lblInstructions.setText(_("Draw a rectangle to select a region of the video frame."))
+
         # Add Video Widget
         self.videoPreview = VideoWidget()
         self.videoPreview.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        self.verticalLayout.insertWidget(0, self.videoPreview)
+        self.videoPreview.region_selection_mode = self.selection_mode
+        self.verticalLayout.insertWidget(1, self.videoPreview)
 
         # Set aspect ratio to match source content
         aspect_ratio = openshot.Fraction(self.width, self.height)
@@ -172,7 +207,8 @@ class SelectRegion(QDialog):
 
         # Add buttons
         self.cancel_button = QPushButton(_('Cancel'))
-        self.process_button = QPushButton(_('Select Region'))
+        process_label = _('Select Region') if self.selection_mode == "rect" else _('Select Point(s)')
+        self.process_button = QPushButton(process_label)
         self.buttonBox.addButton(self.process_button, QDialogButtonBox.AcceptRole)
         self.buttonBox.addButton(self.cancel_button, QDialogButtonBox.RejectRole)
 
@@ -182,7 +218,7 @@ class SelectRegion(QDialog):
         self.sliderVideo.valueChanged.connect(self.sliderVideo_valueChanged)
         self.initialized = True
 
-        get_app().window.SelectRegionSignal.emit(clip.Id())
+        get_app().window.SelectRegionSignal.emit(self.clip.Id())
 
     def actionPlay_Triggered(self):
         # Trigger play button (This action is invoked from the preview thread, so it must exist here)
@@ -253,7 +289,13 @@ class SelectRegion(QDialog):
             self.sliderVideo.setValue(self.sliderVideo.minimum())
             return
 
+        if self.selection_mode == "point" and not self.videoPreview.region_points_positive:
+            QMessageBox.warning(self, _("Invalid Selection"), _("Please select at least one point."))
+            return
+
         # Continue with the rest of the accept method
+        self._selected_points = self.selected_points()
+        self._selected_points_negative = self.selected_points_negative()
         self.shutdownPlayer()
         get_app().window.SelectRegionSignal.emit("")
         super(SelectRegion, self).accept()
@@ -279,4 +321,18 @@ class SelectRegion(QDialog):
         get_app().window.SelectRegionSignal.emit("")
         super(SelectRegion, self).reject()
 
+    def selected_points(self):
+        if self._selected_points:
+            return list(self._selected_points)
+        points = []
+        for point in getattr(self.videoPreview, "region_points_positive", []) or []:
+            points.append({"x": float(point.x()), "y": float(point.y())})
+        return points
 
+    def selected_points_negative(self):
+        if self._selected_points_negative:
+            return list(self._selected_points_negative)
+        points = []
+        for point in getattr(self.videoPreview, "region_points_negative", []) or []:
+            points.append({"x": float(point.x()), "y": float(point.y())})
+        return points

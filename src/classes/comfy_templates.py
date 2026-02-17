@@ -85,6 +85,23 @@ KNOWN_NODE_TYPES = {
     "imagetosimage",
     "imagetoimage",
     "imagescaleto",
+    "imageblur",
+    "imagecompositemasked",
+    # Video Helper Suite
+    "vhs_batchmanager",
+    "vhs_loadvideo",
+    "vhs_loadvideopath",
+    "vhs_loadvideoffmpegpath",
+    "vhs_videocombine",
+    "vhs_videoinfo",
+    "vhs_videoinfoloaded",
+    "vhs_videoinfosource",
+    # ComfyUI-segment-anything-2
+    "downloadandloadsam2model",
+    "sam2segmentation",
+    "sam2autosegmentation",
+    "sam2videosegmentationaddpoints",
+    "sam2videosegmentation",
 }
 
 

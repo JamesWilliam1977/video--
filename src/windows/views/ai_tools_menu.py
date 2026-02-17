@@ -30,6 +30,9 @@ def _icon(name):
 
 def add_ai_tools_menu(win, parent_menu, source_file=None):
     _ = get_app()._tr
+    if not win.is_comfy_available(force=False):
+        return None
+
     grouped = win.generation_service.build_menu_templates(source_file=source_file)
     menu_defs = []
     if source_file:

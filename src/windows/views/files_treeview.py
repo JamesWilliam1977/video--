@@ -125,7 +125,9 @@ class FilesTreeProgressDelegate(QStyledItemDelegate):
             pad_y = 2
             badge_w = text_w + (pad_x * 2)
             badge_h = text_h + (pad_y * 2)
-            badge_rect = deco_rect.adjusted(3, 3, 0, 0)
+            badge_bottom = full_rect.top() - 3
+            badge_top = max(deco_rect.top() + 3, badge_bottom - badge_h + 1)
+            badge_rect = deco_rect.adjusted(3, badge_top - deco_rect.top(), 0, 0)
             badge_rect.setWidth(badge_w)
             badge_rect.setHeight(badge_h)
             painter.setBrush(QColor(18, 22, 30, 220))

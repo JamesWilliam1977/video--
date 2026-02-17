@@ -50,6 +50,74 @@ class _GenerationWorker(QObject):
     def _is_cancel_requested(self, job_id, cancel_event):
         return (job_id in self._cancel_requested) or (cancel_event is not None and cancel_event.is_set())
 
+    @staticmethod
+    def _is_unfinished_meta_batch(history_entry):
+        outputs = history_entry.get("outputs", {}) if isinstance(history_entry, dict) else {}
+        if not isinstance(outputs, dict):
+            return False
+        for node_out in outputs.values():
+            if not isinstance(node_out, dict):
+                continue
+            unfinished = node_out.get("unfinished_batch", None)
+            if isinstance(unfinished, list):
+                if any(bool(v) for v in unfinished):
+                    return True
+            elif unfinished:
+                return True
+        return False
+
+    @staticmethod
+    def _history_prompt_meta(history_entry):
+        prompt_payload = history_entry.get("prompt", []) if isinstance(history_entry, dict) else []
+        if not isinstance(prompt_payload, list):
+            return "", 0
+        client_payload = prompt_payload[3] if len(prompt_payload) >= 4 else {}
+        if not isinstance(client_payload, dict):
+            return "", 0
+        client_id = str(client_payload.get("client_id", "")).strip()
+        create_time = int(client_payload.get("create_time", 0) or 0)
+        return client_id, create_time
+
+    def _find_related_meta_batch_outputs(self, client, history_entry, save_node_ids):
+        base_client_id, base_create_time = self._history_prompt_meta(history_entry)
+        if not base_client_id:
+            return []
+        try:
+            history_all = client.history_all() or {}
+        except Exception:
+            return []
+        if not isinstance(history_all, dict):
+            return []
+
+        best_create_time = 0
+        best_outputs = []
+        for entry in history_all.values():
+            if not isinstance(entry, dict):
+                continue
+            status_obj = entry.get("status", {}) if isinstance(entry, dict) else {}
+            status_str = str(status_obj.get("status_str", "")).lower()
+            if status_str not in ("success", "completed", ""):
+                continue
+            entry_client_id, entry_create_time = self._history_prompt_meta(entry)
+            if entry_client_id != base_client_id:
+                continue
+            if entry_create_time and base_create_time and entry_create_time < base_create_time:
+                continue
+            if self._is_unfinished_meta_batch(entry):
+                continue
+
+            outputs = ComfyClient.extract_file_outputs(entry, save_node_ids=save_node_ids)
+            if not outputs and save_node_ids:
+                outputs = ComfyClient.extract_file_outputs(entry, save_node_ids=None)
+            if not outputs:
+                continue
+
+            if entry_create_time >= best_create_time:
+                best_create_time = entry_create_time
+                best_outputs = outputs
+
+        return best_outputs
+
     @pyqtSlot(str, object)
     def run_job(self, job_id, request):
         request = request or {}
@@ -209,15 +277,28 @@ class _GenerationWorker(QObject):
                         error_text = "ComfyUI job failed."
                         messages = status_obj.get("messages", [])
                         if isinstance(messages, list) and messages:
-                            error_text = str(messages[-1])
+                            error_text = ComfyClient.summarize_error_text(messages[-1])
                         self._job_prompts.pop(job_id, None)
                         self.job_finished.emit(job_id, False, False, error_text, [])
                         return
-                    image_outputs = ComfyClient.extract_file_outputs(history_entry, save_node_ids=save_node_ids)
-                    self.progress_changed.emit(job_id, 100)
-                    self._job_prompts.pop(job_id, None)
-                    self.job_finished.emit(job_id, True, False, "", image_outputs)
-                    return
+                    if self._is_unfinished_meta_batch(history_entry):
+                        image_outputs = self._find_related_meta_batch_outputs(client, history_entry, save_node_ids)
+                        if image_outputs:
+                            self.progress_changed.emit(job_id, 100)
+                            self._job_prompts.pop(job_id, None)
+                            self.job_finished.emit(job_id, True, False, "", image_outputs)
+                            return
+                        # Meta batch uses follow-up prompts under the same client_id.
+                        # Keep polling progress/queue while waiting for follow-up prompt outputs.
+                    else:
+                        image_outputs = ComfyClient.extract_file_outputs(history_entry, save_node_ids=save_node_ids)
+                        if not image_outputs and save_node_ids:
+                            # Fallback for workflows whose output node ids shift or emit non-standard keys.
+                            image_outputs = ComfyClient.extract_file_outputs(history_entry, save_node_ids=None)
+                        self.progress_changed.emit(job_id, 100)
+                        self._job_prompts.pop(job_id, None)
+                        self.job_finished.emit(job_id, True, False, "", image_outputs)
+                        return
 
                 # Query ComfyUI's live progress values when available.
                 try:
@@ -422,7 +503,7 @@ class _GenerationWorker(QObject):
                 QThread.msleep(500)
         except Exception as ex:
             self._job_prompts.pop(job_id, None)
-            self.job_finished.emit(job_id, False, False, str(ex), [])
+            self.job_finished.emit(job_id, False, False, ComfyClient.summarize_error_text(ex), [])
         finally:
             if ws_client is not None:
                 ws_client.close()

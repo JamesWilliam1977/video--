@@ -251,6 +251,7 @@ class ComfyProgressSocket:
 
 class ComfyClient:
     """Minimal ComfyUI client using stdlib HTTP."""
+    ERROR_MAX_CHARS = 1800
 
     def __init__(self, base_url):
         self.base_url = str(base_url or "").rstrip("/")
@@ -321,16 +322,16 @@ class ComfyClient:
                 if node_error_text:
                     details = "{}\n{}".format(details or "prompt validation failed", node_error_text)
                 elif not details:
-                    details = json.dumps(error_data, ensure_ascii=True)
+                    details = ComfyClient.summarize_error_text(error_data)
                 else:
-                    details = "{}\n{}".format(details, json.dumps(error_data, ensure_ascii=True))
+                    details = "{}\n{}".format(details, ComfyClient.summarize_error_text(error_data))
             except Exception:
                 details = str(ex)
-            raise RuntimeError("ComfyUI prompt rejected: {}".format(details))
+            raise RuntimeError("ComfyUI prompt rejected: {}".format(ComfyClient.summarize_error_text(details)))
         return data.get("prompt_id")
 
     def _rewrite_prompt_local_file_inputs(self, prompt_graph):
-        """Rewrite local absolute paths for LoadImage/LoadVideo nodes to uploaded [input] refs."""
+        """Rewrite local absolute paths for image/video loader nodes to uploaded Comfy input refs."""
         if not isinstance(prompt_graph, dict):
             return prompt_graph
         rewritten = dict(prompt_graph)
@@ -363,6 +364,24 @@ class ComfyClient:
                     node["inputs"] = inputs
                     rewritten[node_id] = node
                     log.debug("ComfyClient rewrote LoadVideo input node=%s path=%s -> %s", str(node_id), video_path, uploaded)
+            elif class_type in ("VHS_LoadVideo", "VHS_LoadVideoPath", "VHS_LoadVideoFFmpegPath"):
+                video_path = str(inputs.get("video", "")).strip()
+                if video_path and os.path.isabs(video_path) and os.path.exists(video_path) and not _annotated(video_path):
+                    uploaded = self.upload_input_file(video_path)
+                    # VHS_LoadVideo expects a plain filename from Comfy input options.
+                    # Path-based VHS loaders accept a plain relative path as well.
+                    if uploaded.endswith(" [input]"):
+                        uploaded = uploaded[:-8].strip()
+                    inputs["video"] = uploaded
+                    node["inputs"] = inputs
+                    rewritten[node_id] = node
+                    log.debug(
+                        "ComfyClient rewrote %s input node=%s path=%s -> %s",
+                        class_type,
+                        str(node_id),
+                        video_path,
+                        uploaded,
+                    )
 
         return rewritten
 
@@ -393,6 +412,72 @@ class ComfyClient:
         if not lines:
             return ""
         return "Node validation errors: {}".format(" | ".join(lines))
+
+    @staticmethod
+    def summarize_error_text(value, max_chars=None):
+        """Return a compact Comfy error text safe for UI display."""
+        if max_chars is None:
+            max_chars = ComfyClient.ERROR_MAX_CHARS
+
+        if isinstance(value, (dict, list, tuple)):
+            value = ComfyClient._limit_error_structure(value)
+            try:
+                text = json.dumps(value, ensure_ascii=True)
+            except Exception:
+                text = str(value)
+        else:
+            text = str(value or "")
+
+        # Remove huge numeric/tensor dumps that make dialogs unreadable.
+        text = re.sub(r"tensor\(\[[\s\S]{250,}?\]\)", "tensor([<omitted>])", text)
+        text = re.sub(r"array\(\[[\s\S]{250,}?\]\)", "array([<omitted>])", text)
+        text = re.sub(r"\[[\d\.\-eE,\s]{350,}\]", "[<numeric array omitted>]", text)
+        text = re.sub(r"\s+", " ", text).strip()
+
+        max_chars = max(300, int(max_chars))
+        if len(text) > max_chars:
+            truncated = len(text) - max_chars
+            text = "{} ... [truncated {} chars]".format(text[:max_chars], truncated)
+        return text
+
+    @staticmethod
+    def _limit_error_structure(value, depth=0, max_depth=4, max_items=10, max_str=260):
+        if depth >= max_depth:
+            return "<...>"
+        if isinstance(value, dict):
+            out = {}
+            for index, key in enumerate(value.keys()):
+                if index >= max_items:
+                    out["<truncated_keys>"] = len(value) - max_items
+                    break
+                out[str(key)] = ComfyClient._limit_error_structure(
+                    value.get(key),
+                    depth=depth + 1,
+                    max_depth=max_depth,
+                    max_items=max_items,
+                    max_str=max_str,
+                )
+            return out
+        if isinstance(value, (list, tuple)):
+            out = []
+            for index, item in enumerate(value):
+                if index >= max_items:
+                    out.append("<truncated_items:{}>".format(len(value) - max_items))
+                    break
+                out.append(
+                    ComfyClient._limit_error_structure(
+                        item,
+                        depth=depth + 1,
+                        max_depth=max_depth,
+                        max_items=max_items,
+                        max_str=max_str,
+                    )
+                )
+            return out
+        text = str(value)
+        if len(text) > max_str:
+            return text[:max_str] + "...<truncated>"
+        return text
 
     def list_checkpoints(self):
         """Return available checkpoint names from ComfyUI object info."""
@@ -516,6 +601,10 @@ class ComfyClient:
 
     def history(self, prompt_id):
         with urlopen("{}/history/{}".format(self.base_url, quote(str(prompt_id))), timeout=10.0) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    def history_all(self):
+        with urlopen("{}/history".format(self.base_url), timeout=10.0) as response:
             return json.loads(response.read().decode("utf-8"))
 
     def progress(self):
@@ -645,7 +734,7 @@ class ComfyClient:
             if save_node_ids and str(node_id) not in save_node_ids:
                 continue
             if isinstance(node_out, dict):
-                for key in ("images", "videos", "video", "audios", "audio", "files"):
+                for key in ("images", "videos", "video", "gifs", "audios", "audio", "files", "filenames"):
                     refs = node_out.get(key, [])
                     if not isinstance(refs, list):
                         continue

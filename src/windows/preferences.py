@@ -43,6 +43,7 @@ from PyQt5.QtGui import QKeySequence, QIcon
 from classes import info, ui_util, tabstops
 from classes import openshot_rc  # noqa
 from classes.app import get_app
+from classes.comfy_client import ComfyClient
 from classes.language import get_all_languages
 from classes.logger import log
 from classes.metrics import track_metric_screen
@@ -284,6 +285,10 @@ class Preferences(QDialog):
                         # Add filesystem browser button
                         extraWidget = QPushButton(_("Browse..."))
                         extraWidget.clicked.connect(functools.partial(self.selectExecutable, widget, param))
+                    elif param.get("setting") == "comfy-ui-url":
+                        # Add an explicit connectivity check for ComfyUI URL.
+                        extraWidget = QPushButton(_("Check"))
+                        extraWidget.clicked.connect(functools.partial(self.check_comfy_ui_url, widget, param))
 
                 elif param["type"] == "bool":
                     # create spinner
@@ -672,6 +677,55 @@ class Preferences(QDialog):
 
         # Check for restart
         self.check_for_restart(param)
+
+    def check_comfy_ui_url(self, widget, param):
+        _ = get_app()._tr
+        url = str(widget.text() or "").strip().rstrip("/")
+        if not url:
+            log.info("ComfyUI URL check failed: empty URL")
+            QMessageBox.warning(self, _("Comfy UI URL"), _("Comfy UI URL is empty."))
+            return
+
+        # Persist normalized URL before validation.
+        self.s.set(param["setting"], url)
+        widget.setText(url)
+
+        available = False
+        error_text = ""
+        try:
+            available = ComfyClient(url).ping(timeout=2.0)
+        except Exception as ex:
+            error_text = str(ex)
+
+        # Refresh cached availability so context menus update immediately.
+        try:
+            if getattr(get_app(), "window", None):
+                get_app().window.is_comfy_available(force=True)
+        except Exception:
+            log.debug("ComfyUI availability cache refresh failed", exc_info=1)
+
+        if available:
+            log.info("ComfyUI URL check succeeded at %s", url)
+            QMessageBox.information(
+                self,
+                _("Comfy UI URL"),
+                _("Connection successful. AI menus are enabled."),
+            )
+        else:
+            if error_text:
+                log.info("ComfyUI URL check failed at %s (%s)", url, error_text)
+                message = _("Connection failed: {}").format(error_text)
+            else:
+                log.info("ComfyUI URL check failed at %s", url)
+                message = _("Connection failed.")
+            QMessageBox.warning(
+                self,
+                _("Comfy UI URL"),
+                "{}\n{}".format(
+                    message,
+                    _("AI menus are disabled until ComfyUI is reachable."),
+                ),
+            )
 
     def dropdown_index_changed(self, widget, param, index):
         # Save setting

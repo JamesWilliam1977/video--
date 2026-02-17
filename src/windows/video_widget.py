@@ -660,7 +660,27 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 painter.setTransform(self.region_transform)
 
                 cs = self.cs
-                if self.regionTopLeftHandle and self.regionBottomRightHandle:
+                if self.region_selection_mode == "point":
+                    point_radius = max(2.0, (cs * 0.4) / max(self.zoom, 0.001))
+                    if self.region_points_positive:
+                        pos_color = QColor("#53a0ed")
+                        pos_color.setAlphaF(self.handle_opacity)
+                        pos_pen = QPen(QBrush(pos_color), 1.5)
+                        pos_pen.setCosmetic(True)
+                        painter.setPen(pos_pen)
+                        painter.setBrush(QBrush(pos_color))
+                        for pt in self.region_points_positive:
+                            painter.drawEllipse(pt, point_radius, point_radius)
+                    if self.region_points_negative:
+                        neg_color = QColor("#e05757")
+                        neg_color.setAlphaF(self.handle_opacity)
+                        neg_pen = QPen(QBrush(neg_color), 1.5)
+                        neg_pen.setCosmetic(True)
+                        painter.setPen(neg_pen)
+                        painter.setBrush(QBrush(neg_color))
+                        for pt in self.region_points_negative:
+                            painter.drawEllipse(pt, point_radius, point_radius)
+                elif self.regionTopLeftHandle and self.regionBottomRightHandle:
                     color = QColor("#53a0ed")
                     color.setAlphaF(self.handle_opacity)
                     pen = QPen(QBrush(color), 1.5)
@@ -737,6 +757,21 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         self.rotation_drag_value = None
         self.setCursor(self.hover_cursor)
 
+        if self.region_enabled and self.region_selection_mode == "point" and event.button() == Qt.LeftButton:
+            self._ensure_region_transform()
+            point = self.region_transform_inverted.map(event.pos())
+            point = self._clamp_region_point(point)
+            mods = int(QCoreApplication.instance().keyboardModifiers())
+            if mods & Qt.ControlModifier:
+                self.region_points_negative.append(point)
+            elif mods & Qt.ShiftModifier:
+                self.region_points_positive.append(point)
+            else:
+                # Default click resets to a single positive point.
+                self.region_points_positive = [point]
+                self.region_points_negative = []
+            self.update()
+
         # Ignore undo/redo history temporarily (to avoid a huge pile of undo/redo history)
         get_app().updates.ignore_history = True
 
@@ -765,7 +800,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
         # Save region image data (as QImage)
         # This can be used other widgets to display the selected region
-        if self.region_enabled:
+        if self.region_enabled and self.region_selection_mode != "point":
             # Get region coordinates
             region_rect = QRectF(
                 self.regionTopLeftHandle.x(),
@@ -1189,6 +1224,12 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.update()
 
         if self.region_enabled:
+            if self.region_selection_mode == "point":
+                self.setCursor(Qt.CrossCursor)
+                self.mouse_position = event.pos()
+                self.mutex.unlock()
+                return
+
             # Modify region selection (x, y, width, height)
             # Corner size
             cs = self.cs
@@ -1579,6 +1620,30 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             if refresh:
                 get_app().window.refreshFrameSignal.emit()
 
+    def _ensure_region_transform(self):
+        if self.region_transform:
+            return
+        viewport = self.centeredViewport(self.width(), self.height())
+        self.region_transform = QTransform()
+        rx = viewport.x()
+        ry = viewport.y()
+        if rx or ry:
+            self.region_transform.translate(rx, ry)
+        if self.zoom:
+            self.region_transform.scale(self.zoom, self.zoom)
+        self.region_transform_inverted = self.region_transform.inverted()[0]
+
+    def _clamp_region_point(self, point):
+        max_w = float(self.curr_frame_size.width()) if self.curr_frame_size else 0.0
+        max_h = float(self.curr_frame_size.height()) if self.curr_frame_size else 0.0
+        if max_w <= 0.0 or max_h <= 0.0:
+            viewport = self.centeredViewport(self.width(), self.height())
+            max_w = float(viewport.width()) / max(self.zoom, 0.001)
+            max_h = float(viewport.height()) / max(self.zoom, 0.001)
+        x = min(max(float(point.x()), 0.0), max(max_w - 1.0, 0.0))
+        y = min(max(float(point.y()), 0.0), max(max_h - 1.0, 0.0))
+        return QPointF(x, y)
+
     def updateEffectProperty(self, effect_id, frame_number, obj_id, property_key, new_value, refresh=True):
         """Update a keyframe property to a new value, adding or updating keyframes as needed"""
         found_point = False
@@ -1919,6 +1984,12 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         """Handle the 'select region' signal when it's emitted"""
         # Clear transform
         self.region_enabled = bool(clip_id)
+        if not self.region_enabled:
+            self.region_points = []
+            self.region_points_positive = []
+            self.region_points_negative = []
+            self.regionTopLeftHandle = None
+            self.regionBottomRightHandle = None
         get_app().window.refreshFrameSignal.emit()
         self.update_title()
 
@@ -2029,7 +2100,12 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         self.original_effect_data = None
         self.region_qimage = None
         self.region_transform = None
+        self.region_transform_inverted = None
         self.region_enabled = False
+        self.region_selection_mode = "rect"
+        self.region_points = []
+        self.region_points_positive = []
+        self.region_points_negative = []
         self.region_mode = None
         self.regionTopLeftHandle = None
         self.regionBottomRightHandle = None

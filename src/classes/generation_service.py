@@ -28,6 +28,7 @@
 import os
 import re
 import tempfile
+import json
 from time import time
 from urllib.parse import unquote
 from fractions import Fraction
@@ -81,7 +82,8 @@ class GenerationService:
     def __init__(self, win):
         self.win = win
         self._generation_temp_files = []
-        self._comfy_status_cache = {"checked_at": 0.0, "available": False}
+        self._comfy_status_cache = {"checked_at": 0.0, "available": False, "url": ""}
+        self._last_logged_comfy_state = None
         self.template_registry = ComfyTemplateRegistry()
 
     def cleanup_temp_files(self):
@@ -104,13 +106,29 @@ class GenerationService:
 
         url = self.comfy_ui_url()
         available = False
+        error_text = ""
         try:
             available = ComfyClient(url).ping(timeout=0.5)
-        except Exception:
+        except Exception as ex:
             available = False
+            error_text = str(ex)
 
+        previous_available = bool(self._comfy_status_cache.get("available"))
+        previous_url = str(self._comfy_status_cache.get("url", ""))
         self._comfy_status_cache["checked_at"] = now
         self._comfy_status_cache["available"] = available
+        self._comfy_status_cache["url"] = url
+
+        state = (url, bool(available))
+        if force or state != self._last_logged_comfy_state or previous_url != url or previous_available != available:
+            if available:
+                log.info("ComfyUI check passed at %s", url)
+            else:
+                if error_text:
+                    log.info("ComfyUI check failed at %s (%s)", url, error_text)
+                else:
+                    log.info("ComfyUI check failed at %s", url)
+            self._last_logged_comfy_state = state
         return available
 
     def can_open_generate_dialog(self):
@@ -198,7 +216,16 @@ class GenerationService:
     def icon_for_template(self, template):
         return self.template_registry.output_icon_name(template)
 
-    def _prepare_nonlegacy_workflow(self, template, payload_name, prompt_text, source_file, source_path):
+    def _prepare_nonlegacy_workflow(
+        self,
+        template,
+        payload_name,
+        prompt_text,
+        source_file,
+        source_path,
+        coordinates_positive_text="",
+        coordinates_negative_text="",
+    ):
         workflow = self.template_registry.get_workflow_copy(template.get("id"))
         if not workflow:
             raise ValueError("Template workflow not found.")
@@ -221,7 +248,10 @@ class GenerationService:
                 return candidate
             return ""
 
+        template_id = str((template or {}).get("id") or "").strip().lower()
         prompt_text = str(prompt_text or "").strip()
+        coordinates_positive_text = str(coordinates_positive_text or "").strip()
+        coordinates_negative_text = str(coordinates_negative_text or "").strip()
         media_type = str(source_file.data.get("media_type", "")).strip().lower() if source_file else ""
         applied_prompt = False
         loadimage_node_ids = []
@@ -234,7 +264,7 @@ class GenerationService:
             class_flat = str(node.get("class_type", "")).strip().lower()
             if class_flat == "loadimage":
                 loadimage_node_ids.append(str(node_id))
-            elif class_flat in ("loadvideo", "load video", "vhs_loadvideo"):
+            elif class_flat in ("loadvideo", "load video", "vhs_loadvideo", "vhs_loadvideopath", "vhs_loadvideoffmpegpath"):
                 loadvideo_node_ids.append(str(node_id))
             elif class_flat in ("loadaudio", "load audio"):
                 loadaudio_node_ids.append(str(node_id))
@@ -242,6 +272,60 @@ class GenerationService:
         def _is_placeholder_value(path_text):
             path_text = str(path_text or "").strip().lower()
             return path_text in ("__openshot_input__", "{{openshot_input}}", "$openshot_input")
+
+        def _is_prompt_placeholder_value(text_value):
+            text_value = str(text_value or "").strip().lower()
+            return text_value in ("__openshot_prompt__", "{{openshot_prompt}}", "$openshot_prompt")
+
+        def _normalize_sam2_coords_input(text_value, fallback_value):
+            text_value = str(text_value or "").strip()
+            fallback_value = str(fallback_value or "").strip()
+            if not text_value:
+                return fallback_value
+            # Accept raw JSON list format expected by Sam2VideoSegmentationAddPoints.
+            if text_value.startswith("[") and "x" in text_value and "y" in text_value:
+                return text_value
+
+            # Also accept "x,y; x,y" shorthand and convert to JSON list.
+            points = []
+            for chunk in text_value.split(";"):
+                chunk = chunk.strip()
+                if not chunk:
+                    continue
+                parts = [p.strip() for p in chunk.split(",")]
+                if len(parts) != 2:
+                    return fallback_value
+                try:
+                    x_val = float(parts[0])
+                    y_val = float(parts[1])
+                except (TypeError, ValueError):
+                    return fallback_value
+                points.append({"x": x_val, "y": y_val})
+            if not points:
+                return fallback_value
+            return str(points).replace("'", "\"")
+
+        def _parse_sam2_points(coords_text):
+            coords_text = str(coords_text or "").strip()
+            if not coords_text:
+                return []
+            try:
+                parsed = json.loads(coords_text.replace("'", "\""))
+            except Exception:
+                return []
+            if not isinstance(parsed, list):
+                return []
+            points = []
+            for item in parsed:
+                if not isinstance(item, dict):
+                    continue
+                if "x" not in item or "y" not in item:
+                    continue
+                try:
+                    points.append({"x": float(item["x"]), "y": float(item["y"])})
+                except Exception:
+                    continue
+            return points
 
         def _select_bind_nodes(node_ids, path_key, preferred_upload=None):
             explicit = []
@@ -291,9 +375,51 @@ class GenerationService:
                 else:
                     inputs["filename_prefix"] = payload_name
 
-            if prompt_text and class_flat == "cliptextencode" and "text" in inputs and not applied_prompt:
-                inputs["text"] = prompt_text
-                applied_prompt = True
+            if prompt_text:
+                text_value = inputs.get("text", None)
+                prompt_value = inputs.get("prompt", None)
+
+                if isinstance(text_value, str) and _is_prompt_placeholder_value(text_value):
+                    inputs["text"] = prompt_text
+                    applied_prompt = True
+                elif isinstance(prompt_value, str) and _is_prompt_placeholder_value(prompt_value):
+                    inputs["prompt"] = prompt_text
+                    applied_prompt = True
+                elif class_flat == "cliptextencode" and "text" in inputs and not applied_prompt:
+                    inputs["text"] = prompt_text
+                    applied_prompt = True
+                elif "prompt" in inputs and isinstance(prompt_value, str) and not prompt_value.strip() and not applied_prompt:
+                    # Support prompt-driven custom nodes (e.g. GroundingDINO/SAM2) that expose a plain string prompt input.
+                    inputs["prompt"] = prompt_text
+                    applied_prompt = True
+
+            coords_value = inputs.get("coordinates_positive", None)
+            if (
+                class_flat in ("sam2videosegmentationaddpoints", "sam2segmentation")
+                and "coordinates_positive" in inputs
+                and isinstance(coords_value, str)
+            ):
+                coords_text = coordinates_positive_text or prompt_text
+                points = _parse_sam2_points(coords_text)
+                if ("blur-anything-sam2" in template_id) and (not points):
+                    raise ValueError("No SAM2 points were provided. Use Mask > Pick Point(s) on Source.")
+                inputs["coordinates_positive"] = _normalize_sam2_coords_input(coords_text, coords_value)
+                if class_flat == "sam2segmentation" and "individual_objects" in inputs:
+                    # For Blur Anything, treat points as a single combined prompt.
+                    # This is more stable with mixed positive/negative points and avoids
+                    # per-object mask selection quirks in the current SAM2 single-image node.
+                    if "blur-anything-sam2" in template_id:
+                        inputs["individual_objects"] = False
+                    else:
+                        # Non-Blur-Anything templates keep multi-object behavior.
+                        inputs["individual_objects"] = bool(len(points) > 1)
+                if coordinates_negative_text:
+                    neg_value = inputs.get("coordinates_negative", "")
+                    if isinstance(neg_value, str) or "coordinates_negative" not in inputs:
+                        inputs["coordinates_negative"] = _normalize_sam2_coords_input(
+                            coordinates_negative_text,
+                            str(neg_value or ""),
+                        )
 
             if not source_path:
                 continue
@@ -327,12 +453,12 @@ class GenerationService:
                             "Comfy template missing LoadImage asset (%s). Falling back to selected source image.",
                             configured_image,
                         )
-            elif class_flat in ("loadvideo", "load video") and media_type == "video" and node_id in video_bind_nodes:
+            elif class_flat in ("loadvideo", "load video", "vhs_loadvideopath", "vhs_loadvideoffmpegpath") and media_type == "video" and node_id in video_bind_nodes:
                 if "file" in inputs:
                     inputs["file"] = source_path
                 elif "video" in inputs:
                     inputs["video"] = source_path
-            elif class_flat in ("loadvideo", "load video"):
+            elif class_flat in ("loadvideo", "load video", "vhs_loadvideopath", "vhs_loadvideoffmpegpath"):
                 local_video = _resolve_template_local_file(inputs.get("file", ""))
                 if local_video and "file" in inputs:
                     inputs["file"] = local_video
@@ -369,7 +495,7 @@ class GenerationService:
             class_type = str(node.get("class_type", "")).strip().lower()
             if not class_type:
                 continue
-            if class_type.startswith("save") or class_type in ("previewany", "transnetv2_run"):
+            if class_type.startswith("save") or class_type in ("previewany", "transnetv2_run", "vhs_videocombine"):
                 save_nodes.append(str(node_id))
         return save_nodes
 
@@ -603,6 +729,8 @@ class GenerationService:
                     prompt_text=payload.get("prompt"),
                     source_file=source_file,
                     source_path=source_path,
+                    coordinates_positive_text=payload.get("coordinates_positive"),
+                    coordinates_negative_text=payload.get("coordinates_negative"),
                 )
             except Exception as ex:
                 QMessageBox.information(self.win, "Invalid Input", str(ex))
@@ -666,7 +794,7 @@ class GenerationService:
             return
 
         if status == "failed":
-            error_text = str(job.get("error") or "ComfyUI generation failed.")
+            error_text = ComfyClient.summarize_error_text(job.get("error") or "ComfyUI generation failed.")
             self.win.statusBar.showMessage("Generation failed", 5000)
             QMessageBox.warning(self.win, "Generation Failed", error_text)
 

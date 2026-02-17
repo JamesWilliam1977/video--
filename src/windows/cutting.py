@@ -75,6 +75,13 @@ class Cutting(QDialog):
 
         # Init UI
         ui_util.init_ui(self)
+        self.setWindowFlags(
+            (self.windowFlags() & ~Qt.Dialog)
+            | Qt.Window
+            | Qt.WindowMinMaxButtonsHint
+            | Qt.WindowMaximizeButtonHint
+        )
+        self.setSizeGripEnabled(True)
 
         # Track metrics
         track_metric_screen("cutting-screen")
