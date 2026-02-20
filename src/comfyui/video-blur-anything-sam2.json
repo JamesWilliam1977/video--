@@ -29,32 +29,31 @@
       }
     },
     "3": {
-      "class_type": "DownloadAndLoadSAM2Model",
+      "class_type": "OpenShotDownloadAndLoadSAM2Model",
       "inputs": {
-        "model": "sam2.1_hiera_tiny.safetensors",
+        "model": "sam2.1_hiera_base_plus.safetensors",
         "segmentor": "video",
         "device": "cuda",
         "precision": "fp16"
       }
     },
     "4": {
-      "class_type": "Sam2VideoSegmentationAddPoints",
+      "class_type": "OpenShotSam2VideoSegmentationAddPoints",
       "inputs": {
         "sam2_model": [
           "3",
           0
         ],
-        "image": [
-          "1",
-          0
-        ],
         "coordinates_positive": "",
         "frame_index": 0,
-        "object_index": 0
+        "object_index": 0,
+        "windowed_mode": true,
+        "offload_video_to_cpu": false,
+        "offload_state_to_cpu": false
       }
     },
     "5": {
-      "class_type": "Sam2VideoSegmentation",
+      "class_type": "OpenShotSam2VideoSegmentationChunked",
       "inputs": {
         "sam2_model": [
           "4",
@@ -64,7 +63,17 @@
           "4",
           1
         ],
-        "keep_model_loaded": true
+        "image": [
+          "10",
+          0
+        ],
+        "start_frame": 0,
+        "chunk_size_frames": 96,
+        "keep_model_loaded": true,
+        "meta_batch": [
+          "9",
+          0
+        ]
       }
     },
     "6": {
@@ -91,7 +100,11 @@
         "filename_prefix": "video/openshot_mask",
         "format": "video/ffv1-mkv",
         "pingpong": false,
-        "save_output": true
+        "save_output": true,
+        "meta_batch": [
+          "9",
+          0
+        ]
       }
     },
     "8": {
@@ -107,7 +120,7 @@
     "9": {
       "class_type": "VHS_BatchManager",
       "inputs": {
-        "frames_per_batch": 32
+        "frames_per_batch": 96
       }
     },
     "10": {
@@ -156,10 +169,14 @@
       }
     },
     "13": {
-      "class_type": "ImageBlur",
+      "class_type": "OpenShotImageBlurMasked",
       "inputs": {
         "image": [
           "10",
+          0
+        ],
+        "mask": [
+          "5",
           0
         ],
         "blur_radius": 12,
@@ -178,7 +195,7 @@
           0
         ],
         "mask": [
-          "12",
+          "5",
           0
         ],
         "x": 0,
@@ -190,7 +207,7 @@
       "class_type": "VHS_VideoCombine",
       "inputs": {
         "images": [
-          "14",
+          "13",
           0
         ],
         "frame_rate": [

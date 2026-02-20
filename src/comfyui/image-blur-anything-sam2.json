@@ -15,7 +15,7 @@
       }
     },
     "2": {
-      "class_type": "DownloadAndLoadSAM2Model",
+      "class_type": "OpenShotDownloadAndLoadSAM2Model",
       "inputs": {
         "model": "sam2.1_hiera_small.safetensors",
         "segmentor": "single_image",
@@ -24,7 +24,7 @@
       }
     },
     "3": {
-      "class_type": "Sam2Segmentation",
+      "class_type": "OpenShotSam2Segmentation",
       "inputs": {
         "sam2_model": [
           "2",
@@ -35,7 +35,6 @@
           0
         ],
         "coordinates_positive": "",
-        "individual_objects": true,
         "keep_model_loaded": false
       }
     },

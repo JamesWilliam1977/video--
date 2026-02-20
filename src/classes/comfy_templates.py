@@ -102,6 +102,12 @@ KNOWN_NODE_TYPES = {
     "sam2autosegmentation",
     "sam2videosegmentationaddpoints",
     "sam2videosegmentation",
+    # OpenShot-ComfyUI (custom SAM2)
+    "openshotdownloadandloadsam2model",
+    "openshotsam2segmentation",
+    "openshotsam2videosegmentationaddpoints",
+    "openshotsam2videosegmentationchunked",
+    "openshotimageblurmasked",
 }
 
 

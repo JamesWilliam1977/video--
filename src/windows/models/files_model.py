@@ -852,9 +852,12 @@ class FilesModel(QObject, updates.UpdateInterface):
         name = str(job.get("name") or "generation")
         status = str(job.get("status") or "queued")
         progress = int(job.get("progress", 0))
+        progress_detail = str(job.get("progress_detail") or "").strip()
         label = name
         if status == "running":
             label = "{} ({}%)".format(name, progress)
+            if progress_detail:
+                label = "{} [{}]".format(label, progress_detail)
         elif status == "queued":
             label = "{} (Queued)".format(name)
         elif status == "canceling":
@@ -904,9 +907,12 @@ class FilesModel(QObject, updates.UpdateInterface):
         name = str(job.get("name") or "generation")
         status = str(job.get("status") or "queued")
         progress = int(job.get("progress", 0))
+        progress_detail = str(job.get("progress_detail") or "").strip()
         label = name
         if status == "running":
             label = "{} ({}%)".format(name, progress)
+            if progress_detail:
+                label = "{} [{}]".format(label, progress_detail)
         elif status == "queued":
             label = "{} (Queued)".format(name)
         elif status == "canceling":

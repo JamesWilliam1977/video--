@@ -40,6 +40,8 @@ class _GenerationWorker(QObject):
     """Background worker that simulates generation progress for queued jobs."""
 
     progress_changed = pyqtSignal(str, int)
+    progress_detail_changed = pyqtSignal(str, str)
+    progress_sub_changed = pyqtSignal(str, int)
     job_finished = pyqtSignal(str, bool, bool, str, object)
 
     def __init__(self):
@@ -182,6 +184,8 @@ class _GenerationWorker(QObject):
             ws_stale_reconnect_s = 60.0
             ws_stale_reconnect_max_s = 300.0
             prompt_key = str(prompt_id)
+            last_progress_signature = None
+            last_progress_detail = ""
 
             while True:
                 if self._is_cancel_requested(job_id, cancel_event):
@@ -328,7 +332,8 @@ class _GenerationWorker(QObject):
 
                     if ws_client is not None:
                         try:
-                            progress_event = ws_client.poll_progress(prompt_id)
+                            # Accept progress from follow-up prompts as well (meta-batch).
+                            progress_event = ws_client.poll_progress(prompt_id=None)
                         except Exception:
                             progress_event = None
                             try:
@@ -385,17 +390,35 @@ class _GenerationWorker(QObject):
                                 )
                             else:
                                 accepted_progress_started = True
-                                log.debug(
-                                    "Comfy WS progress emit job=%s prompt=%s node=%s type=%s value=%s max=%s percent=%s",
-                                    job_id,
-                                    prompt_key,
-                                    progress_node,
+                                progress_signature = (
                                     progress_type,
-                                    raw_value,
-                                    raw_max,
-                                    progress,
+                                    progress_node,
+                                    int(progress),
+                                    round(raw_value, 3),
+                                    round(raw_max, 3),
                                 )
-                                self.progress_changed.emit(job_id, progress)
+                                if progress_signature != last_progress_signature:
+                                    inferred_progress = int(max(0, min(99, progress)))
+                                    detail_text = ""
+                                    if progress_node:
+                                        detail_text = "node {} {}%".format(progress_node, int(progress))
+
+                                    log.debug(
+                                        "Comfy WS progress emit job=%s prompt=%s node=%s type=%s value=%s max=%s percent=%s",
+                                        job_id,
+                                        prompt_key,
+                                        progress_node,
+                                        progress_type,
+                                        raw_value,
+                                        raw_max,
+                                        inferred_progress,
+                                    )
+                                    self.progress_changed.emit(job_id, inferred_progress)
+                                    self.progress_sub_changed.emit(job_id, int(max(0, min(99, progress))))
+                                    if detail_text != last_progress_detail:
+                                        self.progress_detail_changed.emit(job_id, detail_text)
+                                        last_progress_detail = detail_text
+                                    last_progress_signature = progress_signature
                                 ws_progress_emitted = True
                                 ws_last_progress_time = monotonic()
                                 ws_stale_reconnect_s = 60.0
@@ -423,12 +446,15 @@ class _GenerationWorker(QObject):
                                 next_stale_reconnect_s,
                             )
                             ws_stale_reconnect_s = next_stale_reconnect_s
-                    if ws_client is None or not ws_progress_emitted:
+                    # Use HTTP /progress only when websocket progress is unavailable.
+                    # If websocket is connected but temporarily quiet, keep waiting for WS
+                    # instead of spamming a misleading 404 fallback warning.
+                    if ws_client is None:
                         progress_data = client.progress()
                         if progress_data is None:
                             if not progress_endpoint_unavailable:
                                 log.debug(
-                                    "Comfy progress endpoint unavailable (404). Progress bar updates disabled for this job=%s",
+                                    "Comfy progress endpoint unavailable (404); waiting for websocket progress for job=%s",
                                     job_id,
                                 )
                             progress_endpoint_unavailable = True
@@ -461,15 +487,22 @@ class _GenerationWorker(QObject):
 
                         if maximum > 0 and prompt_matches:
                             progress = int(max(0, min(99, round((value / maximum) * 100.0))))
-                            log.debug(
-                                "Comfy progress emit job=%s prompt=%s value=%s max=%s percent=%s",
-                                job_id,
-                                prompt_key,
-                                value,
-                                maximum,
-                                progress,
-                            )
-                            self.progress_changed.emit(job_id, progress)
+                            progress_signature = ("poll", "", int(progress), round(value, 3), round(maximum, 3))
+                            if progress_signature != last_progress_signature:
+                                log.debug(
+                                    "Comfy progress emit job=%s prompt=%s value=%s max=%s percent=%s",
+                                    job_id,
+                                    prompt_key,
+                                    value,
+                                    maximum,
+                                    progress,
+                                )
+                                self.progress_changed.emit(job_id, progress)
+                                self.progress_sub_changed.emit(job_id, int(max(0, min(99, progress))))
+                                if last_progress_detail:
+                                    self.progress_detail_changed.emit(job_id, "")
+                                    last_progress_detail = ""
+                                last_progress_signature = progress_signature
                             last_contact_time = monotonic()
                 except Exception:
                     # Keep polling history and queue even if /progress is unavailable.
@@ -568,6 +601,8 @@ class GenerationQueueManager(QObject):
         self._run_job.connect(self._worker.run_job)
         self._cancel_job.connect(self._worker.cancel_job)
         self._worker.progress_changed.connect(self._on_progress_changed)
+        self._worker.progress_detail_changed.connect(self._on_progress_detail_changed)
+        self._worker.progress_sub_changed.connect(self._on_progress_sub_changed)
         self._worker.job_finished.connect(self._on_job_finished)
         self._thread.start()
 
@@ -588,6 +623,8 @@ class GenerationQueueManager(QObject):
             "source_file_id": source_file_id,
             "status": "queued",
             "progress": 0,
+            "sub_progress": 0,
+            "progress_detail": "",
             "error": "",
             "request": job_request,
             "cancel_event": cancel_event,
@@ -694,16 +731,26 @@ class GenerationQueueManager(QObject):
 
         status = job.get("status")
         progress = int(job.get("progress", 0))
+        sub_progress = int(job.get("sub_progress", 0))
+        detail = str(job.get("progress_detail", "") or "").strip()
         if status == "queued":
             label = "Queued"
         elif status == "running":
             label = "Generating {}%".format(progress)
+            if detail:
+                label = "{} ({})".format(label, detail)
         elif status == "canceling":
             label = "Canceling..."
         else:
             label = status.capitalize()
 
-        return {"status": status, "progress": progress, "label": label, "job_id": job.get("id")}
+        return {
+            "status": status,
+            "progress": progress,
+            "sub_progress": sub_progress,
+            "label": label,
+            "job_id": job.get("id"),
+        }
 
     def shutdown(self):
         if self._thread.isRunning():
@@ -725,6 +772,7 @@ class GenerationQueueManager(QObject):
         self._running_job_id = next_job_id
         job["status"] = "running"
         job["progress"] = int(job.get("progress", 0))
+        job["sub_progress"] = int(job.get("sub_progress", 0))
         self.job_updated.emit(next_job_id, "running", int(job["progress"]))
         self._emit_file_changed(job.get("source_file_id", ""))
         self.queue_changed.emit()
@@ -749,6 +797,36 @@ class GenerationQueueManager(QObject):
             return
         job["progress"] = int(progress)
         self.job_updated.emit(job_id, job.get("status"), int(progress))
+        self._emit_file_changed(job.get("source_file_id", ""))
+        self.queue_changed.emit()
+
+    @pyqtSlot(str, str)
+    def _on_progress_detail_changed(self, job_id, detail):
+        job = self.jobs.get(job_id)
+        if not job:
+            return
+        if job.get("status") not in ("running", "canceling"):
+            return
+        detail_text = str(detail or "").strip()
+        if str(job.get("progress_detail", "") or "") == detail_text:
+            return
+        job["progress_detail"] = detail_text
+        self.job_updated.emit(job_id, job.get("status"), int(job.get("progress", 0)))
+        self._emit_file_changed(job.get("source_file_id", ""))
+        self.queue_changed.emit()
+
+    @pyqtSlot(str, int)
+    def _on_progress_sub_changed(self, job_id, progress):
+        job = self.jobs.get(job_id)
+        if not job:
+            return
+        if job.get("status") not in ("running", "canceling"):
+            return
+        p = int(max(0, min(99, progress)))
+        if int(job.get("sub_progress", 0)) == p:
+            return
+        job["sub_progress"] = p
+        self.job_updated.emit(job_id, job.get("status"), int(job.get("progress", 0)))
         self._emit_file_changed(job.get("source_file_id", ""))
         self.queue_changed.emit()
 

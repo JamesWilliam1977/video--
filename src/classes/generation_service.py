@@ -374,6 +374,13 @@ class GenerationService:
 
             class_flat = class_type.lower().strip()
 
+            # Resolve generic OpenShot source placeholders in any string input
+            # (custom nodes may use keys like `video_path` instead of `video`/`file`).
+            if source_path:
+                for input_key, input_value in list(inputs.items()):
+                    if isinstance(input_value, str) and _is_placeholder_value(input_value):
+                        inputs[input_key] = source_path
+
             if "filename_prefix" in inputs:
                 prefix_value = str(inputs.get("filename_prefix", "")).strip()
                 if "/" in prefix_value:
@@ -402,7 +409,12 @@ class GenerationService:
 
             coords_value = inputs.get("coordinates_positive", None)
             if (
-                class_flat in ("sam2videosegmentationaddpoints", "sam2segmentation")
+                class_flat in (
+                    "sam2videosegmentationaddpoints",
+                    "sam2segmentation",
+                    "openshotsam2videosegmentationaddpoints",
+                    "openshotsam2segmentation",
+                )
                 and "coordinates_positive" in inputs
                 and isinstance(coords_value, str)
             ):
@@ -411,7 +423,7 @@ class GenerationService:
                 if ("blur-anything-sam2" in template_id) and (not points):
                     raise ValueError("No SAM2 points were provided. Use Mask > Pick Point(s) on Source.")
                 inputs["coordinates_positive"] = _normalize_sam2_coords_input(coords_text, coords_value)
-                if class_flat == "sam2segmentation" and "individual_objects" in inputs:
+                if class_flat in ("sam2segmentation", "openshotsam2segmentation") and "individual_objects" in inputs:
                     # For Blur Anything, treat points as a single combined prompt.
                     # This is more stable with mixed positive/negative points and avoids
                     # per-object mask selection quirks in the current SAM2 single-image node.

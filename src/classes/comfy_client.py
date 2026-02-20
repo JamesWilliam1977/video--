@@ -100,12 +100,18 @@ class ComfyProgressSocket:
                 pass
             self.sock = None
 
-    def poll_progress(self, prompt_id, max_messages=8):
-        """Read available frames and return latest progress payload for prompt_id."""
+    def poll_progress(self, prompt_id=None, max_messages=8):
+        """Read available frames and return latest progress payload.
+
+        If prompt_id is provided, events are filtered to that prompt id.
+        If prompt_id is None/empty, events from any prompt on this websocket
+        are accepted (useful for meta-batch follow-up prompts).
+        """
         if not self.sock:
             return None
         latest = None
-        prompt_key = str(prompt_id)
+        latest_rank = None
+        prompt_key = str(prompt_id or "").strip()
         for _ in range(max_messages):
             frame = self._recv_frame_nonblocking()
             if frame is None:
@@ -134,30 +140,38 @@ class ComfyProgressSocket:
                 if not isinstance(event_data, dict):
                     continue
                 event_prompt = str(event_data.get("prompt_id", ""))
-                if not event_prompt or event_prompt != prompt_key:
+                if prompt_key and (not event_prompt or event_prompt != prompt_key):
                     continue
                 value = float(event_data.get("value", 0.0))
                 maximum = float(event_data.get("max", 0.0))
                 if maximum > 0:
-                    latest = {
+                    candidate = {
                         "percent": int(max(0, min(99, round((value / maximum) * 100.0)))),
                         "value": value,
                         "max": maximum,
                         "node": str(event_data.get("node", "")),
                         "type": "progress",
+                        "prompt_id": event_prompt,
                     }
+                    # Prefer unfinished progress, and prefer explicit "progress" events.
+                    unfinished = (value + 1e-6) < maximum
+                    rank = (1 if unfinished else 0, 2, maximum)
+                    if latest is None or rank > latest_rank:
+                        latest = candidate
+                        latest_rank = rank
             elif event_type == "progress_state":
                 # Newer Comfy events: data={prompt_id, nodes={node_id:{value,max}}}
                 if not isinstance(event_data, dict):
                     continue
                 event_prompt = str(event_data.get("prompt_id", ""))
-                if not event_prompt or event_prompt != prompt_key:
+                if prompt_key and (not event_prompt or event_prompt != prompt_key):
                     continue
                 nodes = event_data.get("nodes", {})
                 if not isinstance(nodes, dict):
                     continue
-                # Pick node state with the largest max to avoid setup-node 1/1 spikes.
+                # Prefer unfinished node progress; only fall back to completed states.
                 best = None
+                best_rank = None
                 for node_id, node_state in nodes.items():
                     if not isinstance(node_state, dict):
                         continue
@@ -170,11 +184,18 @@ class ComfyProgressSocket:
                             "max": maximum,
                             "node": str(node_id),
                             "type": "progress_state",
+                            "prompt_id": event_prompt,
                         }
-                        if best is None or maximum > float(best.get("max", 0.0)):
+                        unfinished = (value + 1e-6) < maximum
+                        rank = (1 if unfinished else 0, maximum)
+                        if best is None or rank > best_rank:
                             best = candidate
+                            best_rank = rank
                 if best is not None:
-                    latest = best
+                    rank = (best_rank[0], 1, float(best.get("max", 0.0)))
+                    if latest is None or rank > latest_rank:
+                        latest = best
+                        latest_rank = rank
         return latest
 
     def _recv_http_headers(self):
