@@ -226,6 +226,12 @@ class GenerationService:
         rectangles_negative_text="",
         auto_mode=False,
         tracking_selection=None,
+        highlight_color="",
+        highlight_opacity=0.0,
+        border_color="",
+        border_width=0,
+        mask_brightness=1.0,
+        background_brightness=1.0,
     ):
         workflow = self.template_registry.get_workflow_copy(template.get("id"))
         if not workflow:
@@ -257,6 +263,24 @@ class GenerationService:
         rectangles_negative_text = str(rectangles_negative_text or "").strip()
         auto_mode = bool(auto_mode)
         tracking_selection = tracking_selection if isinstance(tracking_selection, dict) else {}
+        highlight_color = str(highlight_color or "").strip()
+        border_color = str(border_color or "").strip()
+        try:
+            highlight_opacity = float(highlight_opacity)
+        except (TypeError, ValueError):
+            highlight_opacity = 0.0
+        try:
+            border_width = int(border_width)
+        except (TypeError, ValueError):
+            border_width = 0
+        try:
+            mask_brightness = float(mask_brightness)
+        except (TypeError, ValueError):
+            mask_brightness = 1.0
+        try:
+            background_brightness = float(background_brightness)
+        except (TypeError, ValueError):
+            background_brightness = 1.0
         media_type = str(source_file.data.get("media_type", "")).strip().lower() if source_file else ""
         applied_prompt = False
         loadimage_node_ids = []
@@ -389,8 +413,9 @@ class GenerationService:
             if "filename_prefix" in inputs:
                 prefix_value = str(inputs.get("filename_prefix", "")).strip()
                 if "/" in prefix_value:
-                    head = prefix_value.rsplit("/", 1)[0]
-                    inputs["filename_prefix"] = "{}/{}".format(head, payload_name)
+                    head, tail = prefix_value.rsplit("/", 1)
+                    tail = str(tail or "output").strip()
+                    inputs["filename_prefix"] = "{}/{}_{}".format(head, tail, payload_name)
                 else:
                     inputs["filename_prefix"] = payload_name
 
@@ -434,15 +459,18 @@ class GenerationService:
                         inputs["tracking_selection_json"] = json.dumps(tracking_selection or {})
                     except Exception:
                         inputs["tracking_selection_json"] = "{}"
+                if "dino_prompt" in inputs:
+                    inputs["dino_prompt"] = str(prompt_text or "")
 
-                coords_text = coordinates_positive_text or prompt_text
+                coords_text = coordinates_positive_text
                 points = _parse_sam2_points(coords_text)
                 has_positive_rects = bool(rectangles_positive_text)
+                has_dino_prompt = bool(str(prompt_text or "").strip()) and ("dino_prompt" in inputs)
 
                 auto_enabled = bool(inputs.get("auto_mode", False)) or auto_mode
                 if "auto_mode" in inputs:
                     inputs["auto_mode"] = bool(auto_enabled)
-                if ("blur-anything-sam2" in template_id) and (not points) and (not has_positive_rects) and (not auto_enabled):
+                if ("anything-sam2" in template_id) and (not points) and (not has_positive_rects) and (not auto_enabled) and (not has_dino_prompt):
                     raise ValueError("No SAM2 seed was provided. Use Points, Rectangle, or Auto mode.")
 
                 # New OpenShot node contract.
@@ -489,6 +517,20 @@ class GenerationService:
                     inputs.get("negative_rects_json", None), str
                 ):
                     inputs["negative_rects_json"] = rectangles_negative_text
+
+            if class_flat in ("openshotimagehighlightmasked",) or class_type.strip() == "OpenShotImageHighlightMasked":
+                if "highlight_color" in inputs and highlight_color:
+                    inputs["highlight_color"] = highlight_color
+                if "highlight_opacity" in inputs:
+                    inputs["highlight_opacity"] = float(max(0.0, min(1.0, highlight_opacity)))
+                if "border_color" in inputs and border_color:
+                    inputs["border_color"] = border_color
+                if "border_width" in inputs:
+                    inputs["border_width"] = int(max(0, border_width))
+                if "mask_brightness" in inputs:
+                    inputs["mask_brightness"] = float(max(0.0, min(3.0, mask_brightness)))
+                if "background_brightness" in inputs:
+                    inputs["background_brightness"] = float(max(0.0, min(3.0, background_brightness)))
 
             if not source_path:
                 continue
@@ -556,7 +598,8 @@ class GenerationService:
 
         return workflow
 
-    def _save_nodes_for_workflow(self, workflow):
+    def _save_nodes_for_workflow(self, workflow, template_id=None):
+        template_id = str(template_id or "").strip().lower()
         save_nodes = []
         for node_id, node in workflow.items():
             if not isinstance(node, dict):
@@ -570,6 +613,22 @@ class GenerationService:
                 "openshottransnetscenedetect",
                 "vhs_videocombine",
             ):
+                if class_type == "vhs_videocombine":
+                    inputs = node.get("inputs", {}) if isinstance(node.get("inputs", {}), dict) else {}
+                    prefix = str(inputs.get("filename_prefix", "")).strip().lower()
+                    is_mask_output = ("openshot_mask" in prefix)
+                    is_track_template = template_id in (
+                        "video-blur-anything-sam2",
+                        "video-highlight-anything-sam2",
+                        "video-mask-anything-sam2",
+                    )
+                    if is_track_template:
+                        if template_id == "video-mask-anything-sam2":
+                            if not is_mask_output:
+                                continue
+                        else:
+                            if is_mask_output:
+                                continue
                 save_nodes.append(str(node_id))
         return save_nodes
 
@@ -809,6 +868,12 @@ class GenerationService:
                     rectangles_negative_text=payload.get("rectangles_negative"),
                     auto_mode=payload.get("auto_mode"),
                     tracking_selection=payload.get("tracking_selection"),
+                    highlight_color=payload.get("highlight_color"),
+                    highlight_opacity=payload.get("highlight_opacity"),
+                    border_color=payload.get("border_color"),
+                    border_width=payload.get("border_width"),
+                    mask_brightness=payload.get("mask_brightness"),
+                    background_brightness=payload.get("background_brightness"),
                 )
             except Exception as ex:
                 QMessageBox.information(self.win, "Invalid Input", str(ex))
@@ -818,7 +883,8 @@ class GenerationService:
             "workflow": workflow,
             "client_id": "openshot-qt",
             "timeout_s": 21600,
-            "save_node_ids": self._save_nodes_for_workflow(workflow),
+            "save_node_ids": self._save_nodes_for_workflow(workflow, template_id=payload.get("template_id")),
+            "template_id": str(payload.get("template_id") or ""),
         }
         job_id = self.win.generation_queue.enqueue(
             payload_name,

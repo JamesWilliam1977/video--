@@ -113,6 +113,7 @@ KNOWN_NODE_TYPES = {
     "openshotsam2videosegmentationaddpoints",
     "openshotsam2videosegmentationchunked",
     "openshotimageblurmasked",
+    "openshotimagehighlightmasked",
 }
 
 
@@ -245,6 +246,7 @@ class ComfyTemplateRegistry:
             )
 
         override_category = str(payload.get("menu_category") or payload.get("category") or "").strip().lower()
+        override_menu_parent = str(payload.get("menu_parent") or "").strip()
         override_output_type = str(payload.get("output_type") or payload.get("media_output") or "").strip().lower()
         override_icon = str(payload.get("action_icon") or payload.get("icon") or "").strip()
         override_open_dialog = payload.get("open_dialog", None)
@@ -305,6 +307,7 @@ class ComfyTemplateRegistry:
             "needs_prompt": needs_prompt,
             "action_icon": override_icon,
             "open_dialog": open_dialog,
+            "menu_parent": override_menu_parent,
         }
 
     def _primary_output_type(self, output_types):

@@ -80,7 +80,20 @@ class _GenerationWorker(QObject):
         create_time = int(client_payload.get("create_time", 0) or 0)
         return client_id, create_time
 
-    def _find_related_meta_batch_outputs(self, client, history_entry, save_node_ids):
+    @staticmethod
+    def _allow_unfiltered_output_fallback(template_id):
+        template_id = str(template_id or "").strip().lower()
+        # Track-object templates intentionally have multiple save nodes
+        # (mask/debug + final), so we must not relax save-node filtering.
+        if template_id in (
+            "video-blur-anything-sam2",
+            "video-mask-anything-sam2",
+            "video-highlight-anything-sam2",
+        ):
+            return False
+        return True
+
+    def _find_related_meta_batch_outputs(self, client, history_entry, save_node_ids, template_id=""):
         base_client_id, base_create_time = self._history_prompt_meta(history_entry)
         if not base_client_id:
             return []
@@ -109,7 +122,7 @@ class _GenerationWorker(QObject):
                 continue
 
             outputs = ComfyClient.extract_file_outputs(entry, save_node_ids=save_node_ids)
-            if not outputs and save_node_ids:
+            if (not outputs) and save_node_ids and self._allow_unfiltered_output_fallback(template_id):
                 outputs = ComfyClient.extract_file_outputs(entry, save_node_ids=None)
             if not outputs:
                 continue
@@ -155,6 +168,7 @@ class _GenerationWorker(QObject):
         client_id = request.get("client_id") or "openshot-qt"
         timeout_s = int(request.get("timeout_s") or 86400)  # default 24 hours safety cap
         save_node_ids = list(request.get("save_node_ids") or [])
+        template_id = str(request.get("template_id") or "")
         cancel_event = request.get("cancel_event")
         client = ComfyClient(comfy_url)
         ws_client = None
@@ -289,7 +303,12 @@ class _GenerationWorker(QObject):
                         self.job_finished.emit(job_id, False, False, error_text, [])
                         return
                     if self._is_unfinished_meta_batch(history_entry):
-                        image_outputs = self._find_related_meta_batch_outputs(client, history_entry, save_node_ids)
+                        image_outputs = self._find_related_meta_batch_outputs(
+                            client,
+                            history_entry,
+                            save_node_ids,
+                            template_id=template_id,
+                        )
                         if image_outputs:
                             self.progress_changed.emit(job_id, 100)
                             self._job_prompts.pop(job_id, None)
@@ -299,7 +318,7 @@ class _GenerationWorker(QObject):
                         # Keep polling progress/queue while waiting for follow-up prompt outputs.
                     else:
                         image_outputs = ComfyClient.extract_file_outputs(history_entry, save_node_ids=save_node_ids)
-                        if not image_outputs and save_node_ids:
+                        if (not image_outputs) and save_node_ids and self._allow_unfiltered_output_fallback(template_id):
                             # Fallback for workflows whose output node ids shift or emit non-standard keys.
                             image_outputs = ComfyClient.extract_file_outputs(history_entry, save_node_ids=None)
                         self.progress_changed.emit(job_id, 100)

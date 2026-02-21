@@ -27,18 +27,21 @@
 
 import os
 import json
+import functools
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon, QPixmap
+from PyQt5.QtGui import QIcon, QPixmap, QColor
 from PyQt5.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QLabel, QLineEdit,
-    QComboBox, QTextEdit, QTabWidget, QWidget, QPushButton, QMessageBox
+    QComboBox, QTextEdit, QTabWidget, QWidget, QPushButton, QMessageBox,
+    QDoubleSpinBox, QSpinBox
 )
 
 from classes import info
 from classes.logger import log
 from classes.thumbnail import GetThumbPath
 from windows.region import SelectRegion
+from windows.color_picker import ColorPicker
 
 
 class GenerateMediaDialog(QDialog):
@@ -80,8 +83,10 @@ class GenerateMediaDialog(QDialog):
         self.tabs.setObjectName("generateTabs")
         self.page_prompt = self._build_prompt_tab()
         self.page_points = self._build_points_tab()
+        self.page_highlight = self._build_highlight_tab()
         self.prompt_tab_index = self.tabs.addTab(self.page_prompt, "Prompt")
-        self.points_tab_index = self.tabs.addTab(self.page_points, "Points")
+        self.points_tab_index = self.tabs.addTab(self.page_points, "Tracking")
+        self.highlight_tab_index = self.tabs.addTab(self.page_highlight, "Highlight")
         root.addWidget(self.tabs, 1)
 
         button_row = QHBoxLayout()
@@ -118,13 +123,16 @@ class GenerateMediaDialog(QDialog):
                 except Exception:
                     pass
         prompt_text = self.prompt_edit.toPlainText().strip()
-        # Backward-compatible fallback: if prompt itself contains point JSON, treat it as coordinates.
-        if (not coordinates_positive) and prompt_text.startswith("[") and ("\"x\"" in prompt_text or "'x'" in prompt_text):
-            coordinates_positive = prompt_text
         return coordinates_positive, coordinates_negative, rects_positive, rects_negative, auto_mode, tracking_payload, prompt_text
 
     def get_payload(self):
         coordinates_positive, coordinates_negative, rects_positive, rects_negative, auto_mode, tracking_payload, prompt_text = self._current_coordinates_text()
+        highlight_color = self.highlight_color.name(QColor.HexArgb) if hasattr(self, "highlight_color") else ""
+        border_color = self.border_color.name(QColor.HexArgb) if hasattr(self, "border_color") else ""
+        border_width = int(self.border_width_spin.value()) if hasattr(self, "border_width_spin") else 0
+        highlight_opacity = float(self.highlight_opacity_spin.value()) if hasattr(self, "highlight_opacity_spin") else 0.0
+        mask_brightness = float(self.mask_brightness_spin.value()) if hasattr(self, "mask_brightness_spin") else 1.0
+        background_brightness = float(self.background_brightness_spin.value()) if hasattr(self, "background_brightness_spin") else 1.0
         return {
             "name": self.name_edit.text().strip(),
             "template_id": self.template_combo.currentData() or self.template_combo.currentText(),
@@ -135,6 +143,12 @@ class GenerateMediaDialog(QDialog):
             "rectangles_negative": rects_negative,
             "auto_mode": bool(auto_mode),
             "tracking_selection": tracking_payload,
+            "highlight_color": highlight_color,
+            "highlight_opacity": highlight_opacity,
+            "border_color": border_color,
+            "border_width": border_width,
+            "mask_brightness": mask_brightness,
+            "background_brightness": background_brightness,
         }
 
     def _build_top_block(self):
@@ -194,7 +208,7 @@ class GenerateMediaDialog(QDialog):
         layout = QVBoxLayout(tab)
         layout.setContentsMargins(8, 8, 8, 8)
         self.prompt_edit = QTextEdit()
-        self.prompt_edit.setPlaceholderText("Describe what to generate...")
+        self.prompt_edit.setPlaceholderText("Prompt (optional)")
         self.prompt_edit.setMinimumHeight(140)
         layout.addWidget(self.prompt_edit)
         return tab
@@ -204,14 +218,8 @@ class GenerateMediaDialog(QDialog):
         tab.setObjectName("pagePoints")
         layout = QVBoxLayout(tab)
         layout.setContentsMargins(8, 8, 8, 8)
-        self.mask_hint = QLabel(
-            "Open tracking selection tools to choose object regions across frames."
-        )
-        self.mask_hint.setWordWrap(True)
-        layout.addWidget(self.mask_hint)
-
         controls = QHBoxLayout()
-        self.pick_points_button = QPushButton("Choose object(s) for tracking")
+        self.pick_points_button = QPushButton("Select objects for tracking")
         self.clear_points_button = QPushButton("Clear")
         self.pick_points_button.clicked.connect(self._choose_tracking_clicked)
         self.clear_points_button.clicked.connect(self._clear_points_clicked)
@@ -226,6 +234,103 @@ class GenerateMediaDialog(QDialog):
         layout.addWidget(self.points_preview)
         layout.addStretch(1)
         return tab
+
+    def _build_highlight_tab(self):
+        tab = QWidget(self)
+        tab.setObjectName("pageHighlight")
+        layout = QFormLayout(tab)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setVerticalSpacing(8)
+        self.highlight_color = QColor("#2EA6FF")
+        self.highlight_color.setAlphaF(0.70)
+        self.border_color = QColor("#FFFFFF")
+        self.border_color.setAlphaF(1.0)
+        self.highlight_color_button = QPushButton("Choose Color")
+        self.highlight_color_button.clicked.connect(self._pick_highlight_color)
+        self.border_color_button = QPushButton("Choose Color")
+        self.border_color_button.clicked.connect(self._pick_border_color)
+        self.highlight_opacity_spin = QDoubleSpinBox()
+        self.highlight_opacity_spin.setRange(0.0, 1.0)
+        self.highlight_opacity_spin.setSingleStep(0.05)
+        self.highlight_opacity_spin.setValue(0.28)
+        self.border_width_spin = QSpinBox()
+        self.border_width_spin.setRange(0, 64)
+        self.border_width_spin.setValue(2)
+        self.mask_brightness_spin = QDoubleSpinBox()
+        self.mask_brightness_spin.setRange(0.0, 3.0)
+        self.mask_brightness_spin.setSingleStep(0.05)
+        self.mask_brightness_spin.setValue(1.15)
+        self.background_brightness_spin = QDoubleSpinBox()
+        self.background_brightness_spin.setRange(0.0, 3.0)
+        self.background_brightness_spin.setSingleStep(0.05)
+        self.background_brightness_spin.setValue(0.75)
+        layout.addRow("Background Color", self.highlight_color_button)
+        layout.addRow("Background Opacity", self.highlight_opacity_spin)
+        layout.addRow("Border Color", self.border_color_button)
+        layout.addRow("Border Width", self.border_width_spin)
+        layout.addRow("Mask Brightness", self.mask_brightness_spin)
+        layout.addRow("Background Brightness", self.background_brightness_spin)
+        self._update_highlight_color_button()
+        self._update_border_color_button()
+        return tab
+
+    @staticmethod
+    def _best_contrast(bg):
+        colrgb = bg.getRgbF()
+        lum = (0.299 * colrgb[0] + 0.587 * colrgb[1] + 0.114 * colrgb[2])
+        return QColor(Qt.white) if lum < 0.5 else QColor(Qt.black)
+
+    def _color_callback(self, setter_fn, refresh_fn, color):
+        if not color or not color.isValid():
+            return
+        setter_fn(color)
+        refresh_fn()
+
+    def _pick_highlight_color(self):
+        callback = functools.partial(
+            self._color_callback,
+            self._set_highlight_color,
+            self._update_highlight_color_button,
+        )
+        ColorPicker(
+            self.highlight_color,
+            parent=self,
+            title="Select a Color",
+            callback=callback,
+        )
+
+    def _pick_border_color(self):
+        callback = functools.partial(
+            self._color_callback,
+            self._set_border_color,
+            self._update_border_color_button,
+        )
+        ColorPicker(
+            self.border_color,
+            parent=self,
+            title="Select a Color",
+            callback=callback,
+        )
+
+    def _set_highlight_color(self, color):
+        self.highlight_color = QColor(color)
+
+    def _set_border_color(self, color):
+        self.border_color = QColor(color)
+
+    def _update_highlight_color_button(self):
+        fg = self._best_contrast(self.highlight_color)
+        self.highlight_color_button.setStyleSheet(
+            "QPushButton{background-color:%s;color:%s;}" %
+            (self.highlight_color.name(QColor.HexArgb), fg.name())
+        )
+
+    def _update_border_color_button(self):
+        fg = self._best_contrast(self.border_color)
+        self.border_color_button.setStyleSheet(
+            "QPushButton{background-color:%s;color:%s;}" %
+            (self.border_color.name(QColor.HexArgb), fg.name())
+        )
 
     def _load_thumbnail(self):
         path = ""
@@ -251,39 +356,46 @@ class GenerateMediaDialog(QDialog):
         if not self.name_edit.text().strip():
             self.name_edit.setFocus(Qt.TabFocusReason)
             return
-        if self._is_sam2_point_template():
-            coordinates_positive, _coordinates_negative, rects_positive, _rects_negative, auto_mode, _tracking_payload, _prompt_text = self._current_coordinates_text()
-            if (not auto_mode) and (not coordinates_positive) and (not rects_positive):
+        if self._is_track_object_template():
+            coordinates_positive, _coordinates_negative, rects_positive, _rects_negative, auto_mode, _tracking_payload, prompt_text = self._current_coordinates_text()
+            if (not auto_mode) and (not coordinates_positive) and (not rects_positive) and (not str(prompt_text or "").strip()):
                 QMessageBox.warning(
                     self,
                     "Missing Selection",
-                    "No SAM2 seed was provided. Click 'Choose object(s) for tracking' in the Points tab.",
+                    "No SAM2 seed was provided. Add tracking points/rectangles or enter a prompt.",
                 )
                 self.tabs.setCurrentWidget(self.page_points)
                 return
         self.accept()
 
-    def _is_sam2_point_template(self):
+    def _is_track_object_template(self):
         template_id = str(self.template_combo.currentData() or "").strip().lower()
-        return "sam2" in template_id and "blur-anything" in template_id
+        return template_id in (
+            "video-blur-anything-sam2",
+            "video-mask-anything-sam2",
+            "video-highlight-anything-sam2",
+        )
+
+    def _is_highlight_template(self):
+        template_id = str(self.template_combo.currentData() or "").strip().lower()
+        return template_id == "video-highlight-anything-sam2"
 
     def _on_template_changed(self, index):
         _ = index
-        is_point_template = self._is_sam2_point_template()
-        self._set_tab_visible(self.prompt_tab_index, not is_point_template)
-        self._set_tab_visible(self.points_tab_index, is_point_template)
-        self.pick_points_button.setEnabled(bool(self.source_file) and is_point_template)
-        self.clear_points_button.setEnabled(is_point_template)
-        if is_point_template:
-            self.mask_hint.setText(
-                "Use tracking tools to choose positive/negative points or rectangles on any frame."
-            )
-            self.pick_points_button.setText("Choose object(s) for tracking")
+        is_track_template = self._is_track_object_template()
+        is_highlight_template = self._is_highlight_template()
+        self._set_tab_visible(self.prompt_tab_index, is_track_template)
+        self._set_tab_visible(self.points_tab_index, is_track_template)
+        self._set_tab_visible(self.highlight_tab_index, is_track_template and is_highlight_template)
+        self.pick_points_button.setEnabled(bool(self.source_file) and is_track_template)
+        self.clear_points_button.setEnabled(is_track_template)
+        if is_track_template:
+            self.pick_points_button.setText("Select objects for tracking")
             self.tabs.setCurrentWidget(self.page_points)
         else:
-            self.mask_hint.setText(
-                "Point selection is available for SAM2 Blur Anything templates."
-            )
+            self._set_tab_visible(self.prompt_tab_index, True)
+            self._set_tab_visible(self.points_tab_index, False)
+            self._set_tab_visible(self.highlight_tab_index, False)
             self.tabs.setCurrentWidget(self.page_prompt)
 
     def _choose_tracking_clicked(self):
@@ -434,7 +546,8 @@ QDialog#generateDialog {
     color: #91C3FF;
 }
 QDialog#generateDialog QTabWidget#generateTabs QWidget#pagePrompt,
-QDialog#generateDialog QTabWidget#generateTabs QWidget#pagePoints {
+QDialog#generateDialog QTabWidget#generateTabs QWidget#pagePoints,
+QDialog#generateDialog QTabWidget#generateTabs QWidget#pageHighlight {
     background-color: #141923;
     border: none;
 }
