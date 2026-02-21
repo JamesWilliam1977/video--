@@ -227,6 +227,7 @@ class SelectRegion(QDialog):
         self._selected_payload = {}
         self._selected_rect_normalized = None
         self._selected_region_qimage = None
+        self.loop_playback = False
         self.frame_annotations = {}
         self._last_annotation_frame = 1
         self._frame_has_local_keyframe = False
