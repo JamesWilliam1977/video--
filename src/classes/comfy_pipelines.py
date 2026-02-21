@@ -297,17 +297,17 @@ def build_workflow(
             },
             "8": {
                 "inputs": {
-                    "index": 0,
                     "segment_paths": ["1", 0],
+                    "source_video_path": source_path,
                 },
-                "class_type": "SelectVideo",
-                "_meta": {"title": "MiaoshouAI Select Video"},
+                "class_type": "OpenShotSceneRangesFromSegments",
+                "_meta": {"title": "OpenShot Build Scene Ranges"},
             },
             "9": {
                 "inputs": {
                     "preview": "",
                     "previewMode": None,
-                    "source": ["1", 0],
+                    "source": ["8", 0],
                 },
                 "class_type": "PreviewAny",
                 "_meta": {"title": "Preview Any"},

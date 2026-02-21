@@ -785,9 +785,15 @@ class GenerationService:
             imported = int(result.get("imported", 0))
             caption_saved = bool(result.get("caption_saved", False))
             scenes_labeled = int(result.get("scenes_labeled", 0))
+            scene_splits_created = int(result.get("scene_splits_created", 0))
             if imported > 0 and caption_saved:
                 self.win.statusBar.showMessage(
                     "Generation completed, imported {} file(s), and saved file caption data".format(imported),
+                    5000,
+                )
+            elif scene_splits_created > 0:
+                self.win.statusBar.showMessage(
+                    "Generation completed and created {} scene split file(s)".format(scene_splits_created),
                     5000,
                 )
             elif imported > 0 and scenes_labeled > 0:
@@ -817,13 +823,14 @@ class GenerationService:
     def _import_generation_outputs(self, job):
         outputs = list(job.get("outputs", []) or [])
         if not outputs:
-            return {"imported": 0, "caption_saved": False}
+            return {"imported": 0, "caption_saved": False, "scene_splits_created": 0}
 
         request = job.get("request", {}) or {}
         comfy_url = str(request.get("comfy_url") or self.comfy_ui_url())
         client = ComfyClient(comfy_url)
         output_dir = info.COMFYUI_OUTPUT_PATH
         os.makedirs(output_dir, exist_ok=True)
+        template_id = str(job.get("template_id") or "").strip().lower()
 
         name_raw = str(job.get("name") or "generation")
         safe_name = re.sub(r"[^A-Za-z0-9._-]+", "_", name_raw).strip("._")
@@ -832,11 +839,22 @@ class GenerationService:
 
         saved_paths = []
         text_outputs = []
+        scene_splits_created = 0
         video_path_exts = {".mp4", ".mov", ".mkv", ".webm", ".avi", ".m4v"}
         seen_video_payload_paths = set()
         for index, output_ref in enumerate(outputs, start=1):
             text_payload = str(output_ref.get("text", "")).strip()
             if text_payload:
+                if template_id == "video-segment-scenes-transnet":
+                    scene_ranges = self._extract_scene_ranges_from_text(text_payload)
+                    if scene_ranges:
+                        created = self._create_scene_split_files(
+                            source_file_id=job.get("source_file_id"),
+                            scene_ranges=scene_ranges,
+                        )
+                        scene_splits_created += created
+                        if created > 0:
+                            continue
                 payload_video_paths = self._extract_video_paths_from_text(text_payload)
                 if not payload_video_paths:
                     payload_ext = os.path.splitext(text_payload)[1].lower()
@@ -908,30 +926,36 @@ class GenerationService:
             except Exception as ex:
                 log.warning("Failed to download Comfy output %s: %s", output_ref, ex)
 
-        if not saved_paths:
-            return {"imported": 0, "caption_saved": False}
+        if saved_paths:
+            self.win.files_model.add_files(
+                saved_paths,
+                quiet=True,
+                prevent_image_seq=True,
+                prevent_recent_folder=True,
+            )
 
-        self.win.files_model.add_files(
-            saved_paths,
-            quiet=True,
-            prevent_image_seq=True,
-            prevent_recent_folder=True,
-        )
+        if not saved_paths and scene_splits_created <= 0:
+            return {"imported": 0, "caption_saved": False, "scene_splits_created": 0}
 
         caption_saved = False
         scenes_labeled = 0
-        if str(job.get("template_id") or "") == "video-whisper-srt":
+        if template_id == "video-whisper-srt":
             caption_text = self._resolve_caption_text(saved_paths, text_outputs)
             caption_saved = self._store_caption_on_file(
                 source_file_id=job.get("source_file_id"),
                 caption_text=caption_text,
             )
-        if str(job.get("template_id") or "") == "video-segment-scenes-transnet":
+        if template_id == "video-segment-scenes-transnet" and saved_paths:
             scenes_labeled = self._apply_scene_segment_metadata(
                 source_file_id=job.get("source_file_id"),
                 saved_paths=saved_paths,
             )
-        return {"imported": len(saved_paths), "caption_saved": caption_saved, "scenes_labeled": scenes_labeled}
+        return {
+            "imported": len(saved_paths),
+            "caption_saved": caption_saved,
+            "scenes_labeled": scenes_labeled,
+            "scene_splits_created": scene_splits_created,
+        }
 
     def _extract_video_paths_from_text(self, text_payload):
         """Extract absolute video file paths from log/text payloads."""
@@ -943,6 +967,116 @@ class GenerationService:
             re.IGNORECASE,
         )
         return [match.strip() for match in pattern.findall(text_payload) if match.strip()]
+
+    def _extract_scene_ranges_from_text(self, text_payload):
+        """Parse scene range metadata JSON from text output payloads."""
+        text_payload = str(text_payload or "").strip()
+        if not text_payload:
+            return []
+        if not text_payload.startswith("{"):
+            first = text_payload.find("{")
+            last = text_payload.rfind("}")
+            if first >= 0 and last > first:
+                text_payload = text_payload[first:last + 1]
+            else:
+                return []
+        try:
+            payload = json.loads(text_payload)
+        except Exception:
+            return []
+
+        segment_entries = payload.get("segments") if isinstance(payload, dict) else None
+        if not isinstance(segment_entries, list):
+            return []
+
+        scene_ranges = []
+        for segment in segment_entries:
+            if not isinstance(segment, dict):
+                continue
+            start_seconds = segment.get("start_seconds", segment.get("start"))
+            end_seconds = segment.get("end_seconds", segment.get("end"))
+            try:
+                start_value = float(start_seconds)
+                end_value = float(end_seconds)
+            except (TypeError, ValueError):
+                continue
+            if end_value <= start_value:
+                continue
+            scene_ranges.append((max(0.0, start_value), max(0.0, end_value)))
+        return scene_ranges
+
+    def _create_scene_split_files(self, source_file_id, scene_ranges):
+        """Create split-style file entries pointing to the same source media path."""
+        source_file = File.get(id=source_file_id) if source_file_id else None
+        if source_file is None:
+            source_file = File.get(id=str(source_file_id or ""))
+        if source_file is None:
+            return 0
+
+        source_data = source_file.data if isinstance(source_file.data, dict) else {}
+        source_path = str(source_data.get("path", "") or "")
+        if not source_path:
+            return 0
+        if str(source_data.get("media_type", "")).lower() != "video":
+            return 0
+
+        fps_data = source_data.get("fps", {})
+        fps_fraction = Fraction(30, 1)
+        try:
+            fps_num = int(fps_data.get("num", 30))
+            fps_den = int(fps_data.get("den", 1) or 1)
+            if fps_num > 0 and fps_den > 0:
+                fps_fraction = Fraction(fps_num, fps_den)
+        except (TypeError, ValueError, ZeroDivisionError):
+            fps_fraction = Fraction(30, 1)
+
+        source_duration = float(source_data.get("duration") or 0.0)
+        base_name = os.path.splitext(os.path.basename(source_path))[0] or "scene"
+
+        created = 0
+        for start_seconds, end_seconds in scene_ranges:
+            start_seconds = max(0.0, float(start_seconds or 0.0))
+            end_seconds = max(start_seconds, float(end_seconds or start_seconds))
+            if source_duration > 0.0:
+                start_seconds = min(start_seconds, source_duration)
+                end_seconds = min(end_seconds, source_duration)
+            if end_seconds <= start_seconds:
+                continue
+
+            include_hours = int(end_seconds // 3600) > 0
+            include_minutes = include_hours or int((end_seconds % 3600) // 60) > 0
+            start_tc = self._seconds_to_compact_timecode(
+                start_seconds,
+                fps_fraction,
+                include_hours=include_hours,
+                include_minutes=include_minutes,
+            )
+            end_tc = self._seconds_to_compact_timecode(
+                end_seconds,
+                fps_fraction,
+                include_hours=include_hours,
+                include_minutes=include_minutes,
+            )
+
+            split_data = json.loads(json.dumps(source_data))
+            split_data.pop("id", None)
+            split_data["start"] = start_seconds
+            split_data["end"] = end_seconds
+            split_data["name"] = "{} ({} to {})".format(
+                base_name,
+                start_tc,
+                end_tc,
+            )
+
+            split_file = File()
+            split_file.id = None
+            split_file.key = None
+            split_file.type = "insert"
+            split_file.data = split_data
+            self._append_scene_tag(split_file)
+            split_file.save()
+            created += 1
+        return created
 
     def _resolve_caption_text(self, saved_paths, text_outputs):
         srt_path = ""
