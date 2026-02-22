@@ -437,6 +437,7 @@ class FilesModel(QObject, updates.UpdateInterface):
 
         # Select all new files (clear previous selection)
         self.selection_model.clearSelection()
+        last_selected_index = QModelIndex()
         for file_object in scroll_to_files:
             # Get the index of the newly added file in the proxy model
             index = self.proxy_model.get_file_index(file_object.id)
@@ -444,6 +445,11 @@ class FilesModel(QObject, updates.UpdateInterface):
                 # Select & scroll to selection
                 self.selection_model.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
                 get_app().window.filesView.scrollTo(index.siblingAtColumn(0), QAbstractItemView.PositionAtCenter)
+                last_selected_index = index
+        if last_selected_index.isValid():
+            # Keep current index aligned with the newly selected file so actions
+            # (preview/properties/etc.) resolve to the expected item.
+            self.selection_model.setCurrentIndex(last_selected_index, QItemSelectionModel.NoUpdate)
 
         message = _("Imported %(count)d files") % {"count": len(files) - 1}
         app.window.statusBar.showMessage(message, 3000)
@@ -638,10 +644,16 @@ class FilesModel(QObject, updates.UpdateInterface):
         # switching between details/list views with separate selection models.
         selected_rows = self.selection_model.selectedRows(5)
         if selected_rows:
+            selected_ids = set()
+            for row_index in selected_rows:
+                file_id = row_index.data()
+                if file_id and not self._is_generation_placeholder(file_id):
+                    selected_ids.add(file_id)
+
             current = self.selection_model.currentIndex()
             if current and current.isValid():
                 current_id = current.sibling(current.row(), 5).data()
-                if current_id and not self._is_generation_placeholder(current_id):
+                if current_id and current_id in selected_ids:
                     return current_id
             for row_index in selected_rows:
                 file_id = row_index.data()
