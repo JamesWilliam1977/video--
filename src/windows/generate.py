@@ -99,7 +99,7 @@ class GenerateMediaDialog(QDialog):
         button_row.addWidget(self.cancel_button)
         button_row.addWidget(self.generate_button)
         root.addLayout(button_row)
-        self._apply_dialog_theme()
+        self._initialize_dialog_state()
 
     def _current_coordinates_text(self):
         coordinates_positive = str(self._coordinates_positive_text or "").strip()
@@ -543,52 +543,5 @@ class GenerateMediaDialog(QDialog):
         else:
             self.tabs.setTabEnabled(index, bool(visible))
 
-    def _apply_dialog_theme(self):
-        self.setStyleSheet("""
-QDialog#generateDialog {
-    background-color: #192332;
-    color: #91C3FF;
-}
-QDialog#generateDialog QTabWidget#generateTabs QWidget#pagePrompt,
-QDialog#generateDialog QTabWidget#generateTabs QWidget#pagePoints,
-QDialog#generateDialog QTabWidget#generateTabs QWidget#pageHighlight {
-    background-color: #141923;
-    border: none;
-}
-QDialog#generateDialog QTabWidget#generateTabs QTabBar::tab {
-    margin-left: 14px;
-    margin-top: 10px;
-    padding: 6px 2px;
-    color: rgba(145, 195, 255, 0.5);
-}
-QDialog#generateDialog QTabWidget#generateTabs QTabBar::tab:selected {
-    color: rgba(145, 195, 255, 1.0);
-    border-bottom: 1.2px solid #53a0ed;
-}
-QDialog#generateDialog QLineEdit,
-QDialog#generateDialog QTextEdit,
-QDialog#generateDialog QComboBox {
-    background-color: #141923;
-    color: #91C3FF;
-    border: 1px solid rgba(145, 195, 255, 0.20);
-    border-radius: 4px;
-    padding: 6px 8px;
-}
-QDialog#generateDialog QPushButton {
-    background-color: #283241;
-    color: #91C3FF;
-    border: 1px solid rgba(145, 195, 255, 0.20);
-    border-radius: 4px;
-    padding: 6px 10px;
-}
-QDialog#generateDialog QPushButton:hover {
-    background-color: #323C50;
-}
-QDialog#generateDialog QPushButton:focus,
-QDialog#generateDialog QLineEdit:focus,
-QDialog#generateDialog QTextEdit:focus,
-QDialog#generateDialog QComboBox:focus {
-    border: 1px solid #53a0ed;
-}
-""")
+    def _initialize_dialog_state(self):
         self._on_template_changed(self.template_combo.currentIndex())

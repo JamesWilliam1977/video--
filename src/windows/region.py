@@ -386,11 +386,38 @@ class SelectRegion(QDialog):
         self.btnPlay.click()
 
     def _icon_path(self, name):
-        for theme_name in ("cosmic", "cosmic-dusk"):
-            path = os.path.join(info.PATH, "themes", theme_name, "images", name)
-            if os.path.exists(path):
-                return path
+        icon_names = [str(name or "").strip()]
+        if self._is_retro_theme() and icon_names[0].startswith("ai-track-"):
+            icon_names.insert(0, f"retro-{icon_names[0]}")
+
+        current_theme_dir = self._current_theme_dir()
+        theme_search_order = [current_theme_dir]
+        if current_theme_dir == "cosmic":
+            theme_search_order.append("cosmic-dusk")
+
+        for icon_name in icon_names:
+            for theme_name in theme_search_order:
+                path = os.path.join(info.PATH, "themes", theme_name, "images", icon_name)
+                if os.path.exists(path):
+                    return path
         return ""
+
+    def _current_theme_name(self):
+        theme_name = ""
+        app = get_app()
+        if app and getattr(app, "theme_manager", None):
+            current_theme = app.theme_manager.get_current_theme()
+            theme_name = str(getattr(current_theme, "name", "") or "")
+        return theme_name
+
+    def _current_theme_dir(self):
+        theme_name = self._current_theme_name().lower()
+        if "cosmic" in theme_name:
+            return "cosmic"
+        return "humanity"
+
+    def _is_retro_theme(self):
+        return self._current_theme_name().strip().lower() == "retro"
 
     def _build_annotation_toolbar(self):
         _ = get_app()._tr
@@ -400,20 +427,11 @@ class SelectRegion(QDialog):
 
         self.annotation_tool_group = QButtonGroup(self)
         self.annotation_tool_group.setExclusive(True)
-        tool_style = (
-            "QToolButton {"
-            "  background-color: rgba(20, 25, 35, 0.95);"
-            "  color: #91C3FF;"
-            "  border: 1px solid rgba(145, 195, 255, 0.22);"
-            "  border-radius: 4px;"
-            "  padding: 4px;"
-            "}"
-            "QToolButton:hover {"
-            "  border: 1px solid rgba(145, 195, 255, 0.55);"
-            "}"
+        checked_style = (
             "QToolButton:checked {"
-            "  background-color: #1F3952;"
-            "  border: 2px solid #53A0ED;"
+            "  background-color: palette(highlight);"
+            "  color: palette(highlighted-text);"
+            "  border: 1px solid palette(highlight);"
             "}"
         )
 
@@ -435,7 +453,7 @@ class SelectRegion(QDialog):
                 btn.setIcon(QIcon(icon_path))
             else:
                 btn.setText(tooltip)
-            btn.setStyleSheet(tool_style)
+            btn.setStyleSheet(checked_style)
             btn.clicked.connect(lambda checked=False, t=tool_id: self._on_annotation_tool_changed(t))
             self.annotation_tool_group.addButton(btn)
             self.annotation_tool_buttons[tool_id] = btn
@@ -450,7 +468,6 @@ class SelectRegion(QDialog):
             self.btnClearAnnotation.setIcon(QIcon(trash_icon))
         else:
             self.btnClearAnnotation.setText(_("Reset"))
-        self.btnClearAnnotation.setStyleSheet(tool_style)
         self.btnClearAnnotation.clicked.connect(self._clear_current_frame_annotations)
         self.annotation_toolbar.addSpacing(8)
         self.annotation_toolbar.addWidget(self.btnClearAnnotation)
