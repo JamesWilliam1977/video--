@@ -2,7 +2,7 @@
   "action_icon": "ai-action-create-audio.svg",
   "menu_category": "create",
   "menu_order": 30,
-  "name": "Audio...",
+  "name": "Sound...",
   "open_dialog": true,
   "output_type": "audio",
   "template_id": "txt2audio-stable-open",

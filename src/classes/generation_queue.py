@@ -89,6 +89,7 @@ class _GenerationWorker(QObject):
             "video-blur-anything-sam2",
             "video-mask-anything-sam2",
             "video-highlight-anything-sam2",
+            "txt2music-ace-step",
         ):
             return False
         return True

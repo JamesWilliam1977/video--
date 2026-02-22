@@ -29,6 +29,7 @@ import os
 import re
 import tempfile
 import json
+import random
 from time import time
 from urllib.parse import unquote
 from fractions import Fraction
@@ -257,6 +258,19 @@ class GenerationService:
 
         template_id = str((template or {}).get("id") or "").strip().lower()
         prompt_text = str(prompt_text or "").strip()
+        music_prompt_text = prompt_text
+        music_lyrics_text = ""
+        if template_id == "txt2music-ace-step" and prompt_text:
+            # Optional inline format:
+            #   <style/tags text>
+            #   Lyrics:
+            #   <lyrics lines...>
+            split_match = re.split(r"(?im)^\s*lyrics\s*:\s*", prompt_text, maxsplit=1)
+            if len(split_match) == 2:
+                music_prompt_text = str(split_match[0] or "").strip()
+                music_lyrics_text = str(split_match[1] or "").strip()
+            if not music_prompt_text:
+                music_prompt_text = prompt_text
         coordinates_positive_text = str(coordinates_positive_text or "").strip()
         coordinates_negative_text = str(coordinates_negative_text or "").strip()
         rectangles_positive_text = str(rectangles_positive_text or "").strip()
@@ -282,6 +296,7 @@ class GenerationService:
         except (TypeError, ValueError):
             background_brightness = 1.0
         media_type = str(source_file.data.get("media_type", "")).strip().lower() if source_file else ""
+        music_seed = random.randint(1, 2**31 - 1)
         applied_prompt = False
         loadimage_node_ids = []
         loadvideo_node_ids = []
@@ -305,6 +320,10 @@ class GenerationService:
         def _is_prompt_placeholder_value(text_value):
             text_value = str(text_value or "").strip().lower()
             return text_value in ("__openshot_prompt__", "{{openshot_prompt}}", "$openshot_prompt")
+
+        def _is_lyrics_placeholder_value(text_value):
+            text_value = str(text_value or "").strip().lower()
+            return text_value in ("__openshot_lyrics__", "{{openshot_lyrics}}", "$openshot_lyrics")
 
         def _normalize_sam2_coords_input(text_value, fallback_value):
             text_value = str(text_value or "").strip()
@@ -419,9 +438,18 @@ class GenerationService:
                 else:
                     inputs["filename_prefix"] = payload_name
 
+            if template_id == "txt2music-ace-step" and "seed" in inputs:
+                try:
+                    node_seed_offset = int(inputs.get("seed", 0))
+                except Exception:
+                    node_seed_offset = 0
+                inputs["seed"] = int((music_seed + node_seed_offset) % (2**31 - 1)) or 1
+
             if prompt_text:
                 text_value = inputs.get("text", None)
                 prompt_value = inputs.get("prompt", None)
+                tags_value = inputs.get("tags", None)
+                lyrics_value = inputs.get("lyrics", None)
 
                 if isinstance(text_value, str) and _is_prompt_placeholder_value(text_value):
                     inputs["text"] = prompt_text
@@ -429,6 +457,18 @@ class GenerationService:
                 elif isinstance(prompt_value, str) and _is_prompt_placeholder_value(prompt_value):
                     inputs["prompt"] = prompt_text
                     applied_prompt = True
+                elif isinstance(tags_value, str) and _is_prompt_placeholder_value(tags_value):
+                    # Support non-legacy music nodes that use "tags" instead of "text"/"prompt".
+                    if template_id == "txt2music-ace-step":
+                        inputs["tags"] = music_prompt_text
+                    else:
+                        inputs["tags"] = prompt_text
+                    applied_prompt = True
+                elif isinstance(lyrics_value, str) and _is_lyrics_placeholder_value(lyrics_value):
+                    if template_id == "txt2music-ace-step":
+                        inputs["lyrics"] = music_lyrics_text
+                    else:
+                        inputs["lyrics"] = ""
                 elif class_flat == "cliptextencode" and "text" in inputs and not applied_prompt:
                     inputs["text"] = prompt_text
                     applied_prompt = True
