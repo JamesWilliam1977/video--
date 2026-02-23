@@ -39,9 +39,13 @@ def find_missing_file(file_path, prompt_state=None):
     _ = get_app()._tr
     modified = False
     skipped = False
+    if prompt_state is not None:
+        prompt_state["last_skip"] = None
 
     # If user cancelled prompts, skip searching
     if prompt_state and prompt_state.get("cancelled"):
+        if prompt_state is not None:
+            prompt_state["last_skip"] = "all"
         return ("", modified, True)
 
     # Bail if path is already valid
@@ -70,16 +74,25 @@ def find_missing_file(file_path, prompt_state=None):
         message_box.setWindowTitle(_("Missing File (%s)") % file_name)
         message_box.setText(_("%s cannot be found.") % file_name)
         browse_button = message_box.addButton(_("Browse..."), QMessageBox.AcceptRole)
-        cancel_button = message_box.addButton(QMessageBox.Cancel)
+        skip_file_button = message_box.addButton(_("Skip File"), QMessageBox.DestructiveRole)
+        skip_all_button = message_box.addButton(_("Skip All"), QMessageBox.RejectRole)
         message_box.setDefaultButton(browse_button)
         message_box.exec_()
         modified = True
 
-        if message_box.clickedButton() == cancel_button:
-            # User cancelled all missing file prompts
+        if message_box.clickedButton() == skip_all_button:
+            # User skipped all missing file prompts
             skipped = True
             if prompt_state is not None:
                 prompt_state["cancelled"] = True
+                prompt_state["last_skip"] = "all"
+            return ("", modified, skipped)
+
+        if message_box.clickedButton() == skip_file_button:
+            # User skipped this missing file only
+            skipped = True
+            if prompt_state is not None:
+                prompt_state["last_skip"] = "file"
             return ("", modified, skipped)
 
         folder_to_check = QFileDialog.getExistingDirectory(None, _("Find directory that contains: %s" % file_name),
@@ -87,8 +100,10 @@ def find_missing_file(file_path, prompt_state=None):
         if folder_to_check and folder_to_check not in known_paths:
             known_paths.append(folder_to_check)
         if folder_to_check == "":
-            # User hit cancel
+            # User hit cancel on folder dialog - treat as skip this file.
             skipped = True
+            if prompt_state is not None:
+                prompt_state["last_skip"] = "file"
             return ("", modified, skipped)
         file_path = os.path.join(folder_to_check, file_name)
 

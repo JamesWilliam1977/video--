@@ -1091,53 +1091,113 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
         _ = app._tr
 
         log.info("checking project files...")
-        prompt_state = {"cancelled": False}
+        prompt_state = {"cancelled": False, "missing_path_decisions": {}}
 
         def _path_is_missing(path):
             return bool(path) and "%" not in path and not os.path.exists(path)
-
-        def _reader_path(item):
-            if not isinstance(item, dict):
-                return ""
-            reader = item.get("reader")
-            if isinstance(reader, dict):
-                return reader.get("path", "")
-            return ""
 
         def _resolve_missing_path(path):
             """Prompt to locate a missing path, returning resolved path or empty when skipped."""
             if not _path_is_missing(path):
                 return path, False
+
+            # Reuse prior decision for this exact missing path in this load pass.
+            # This avoids duplicate prompts when the same asset path appears in
+            # multiple places (e.g. top-level effect + clip effect).
+            missing_path_decisions = prompt_state.setdefault("missing_path_decisions", {})
+            if path in missing_path_decisions:
+                cached_path = missing_path_decisions[path]
+                if cached_path:
+                    return cached_path, False
+                return "", True
+
             found_path, is_modified, is_skipped = find_missing_file(path, prompt_state)
             if found_path and is_modified and not is_skipped:
                 settings.setDefaultPath(settings.actionType.IMPORT, found_path)
+                missing_path_decisions[path] = found_path
                 return found_path, False
+            if is_skipped:
+                missing_path_decisions[path] = ""
+                skip_mode = prompt_state.get("last_skip")
+                if skip_mode == "all":
+                    skip_detail = " (user selected Skip All)"
+                else:
+                    skip_detail = " (user selected Skip File)"
+                # Use warning level so this is visible even when info logs are filtered.
+                log.warning(
+                    "Missing path skipped during project load%s: %s",
+                    skip_detail,
+                    path,
+                )
             return "", True
 
+        def _collect_effect_path_refs(effect):
+            """Collect mutable refs to path-like fields used by effects."""
+            refs = []
+            seen = set()
+
+            def _add_ref(container, key):
+                if not isinstance(container, dict):
+                    return
+                value = container.get(key, "")
+                if not isinstance(value, str) or not value:
+                    return
+                ref_id = (id(container), key)
+                if ref_id in seen:
+                    return
+                seen.add(ref_id)
+                refs.append((container, key, value))
+
+            def _walk(obj, parent_key=""):
+                if isinstance(obj, dict):
+                    for key, value in obj.items():
+                        if isinstance(value, dict):
+                            if isinstance(value.get("path"), str) and "reader" in key.lower():
+                                _add_ref(value, "path")
+                            _walk(value, key)
+                        elif isinstance(value, list):
+                            _walk(value, key)
+                        elif isinstance(value, str):
+                            if key in {"resource", "protobuf_data_path", "lut_path", "image"}:
+                                _add_ref(obj, key)
+                            elif key == "path" and "reader" in parent_key.lower():
+                                _add_ref(obj, key)
+                elif isinstance(obj, list):
+                    for item in obj:
+                        _walk(item, parent_key)
+
+            _walk(effect)
+            return refs
+
+        def _first_missing_effect_path(effect):
+            for _, _, path in _collect_effect_path_refs(effect):
+                if _path_is_missing(path):
+                    return path
+            return ""
+
         def _repair_effect_paths(effect):
-            """Prompt for missing reader/resource paths on an effect-like dict."""
+            """Prompt for missing paths on an effect-like dict."""
             if not isinstance(effect, dict):
                 return False
 
-            reader = effect.get("reader")
-            reader_path = reader.get("path", "") if isinstance(reader, dict) else ""
-            resource_path = effect.get("resource", "")
-
-            # Process unique missing paths in stable order.
+            path_refs = _collect_effect_path_refs(effect)
             missing_paths = []
-            if _path_is_missing(reader_path):
-                missing_paths.append(reader_path)
-            if _path_is_missing(resource_path) and resource_path not in missing_paths:
-                missing_paths.append(resource_path)
+            for _, _, path in path_refs:
+                if _path_is_missing(path) and path not in missing_paths:
+                    missing_paths.append(path)
 
             for missing_path in missing_paths:
                 resolved_path, should_remove = _resolve_missing_path(missing_path)
                 if should_remove:
+                    log.warning(
+                        "Removing effect with unresolved path. effect_id=%s missing_path=%s",
+                        effect.get("id", ""),
+                        missing_path,
+                    )
                     return False
-                if isinstance(effect.get("reader"), dict) and effect["reader"].get("path") == missing_path:
-                    effect["reader"]["path"] = resolved_path
-                if effect.get("resource", "") == missing_path:
-                    effect["resource"] = resolved_path
+                for container, key, current_path in path_refs:
+                    if current_path == missing_path:
+                        container[key] = resolved_path
 
             return True
 
@@ -1152,23 +1212,15 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
 
             log.info("checking file %s", path)
             if not os.path.exists(path) and "%" not in path:
-                # File is missing
-                if prompt_state.get("cancelled"):
-                    # User already cancelled prompts, just remove missing file
+                # File is missing - prompt/resolve using the shared path-decision cache.
+                resolved_path, should_remove = _resolve_missing_path(path)
+                if should_remove:
                     log.info('Removed missing file: %s', file_name_with_ext)
                     self._data["files"].remove(file)
-                    continue
-
-                path, is_modified, is_skipped = find_missing_file(path, prompt_state)
-                if path and is_modified and not is_skipped:
-                    # Found file, update path
-                    file["path"] = path
-                    settings.setDefaultPath(settings.actionType.IMPORT, path)
-                    log.info("Auto-updated missing file: %s", path)
-                elif is_skipped:
-                    # Remove missing file
-                    log.info('Removed missing file: %s', file_name_with_ext)
-                    self._data["files"].remove(file)
+                elif resolved_path and resolved_path != path:
+                    file["path"] = resolved_path
+                    settings.setDefaultPath(settings.actionType.IMPORT, resolved_path)
+                    log.info("Auto-updated missing file: %s", resolved_path)
 
         # Build a lookup of valid file IDs after any removals/updates
         file_paths_by_id = {file.get("id"): file.get("path") for file in self._data["files"]}
@@ -1202,9 +1254,7 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
         # Loop through top-level effects/transitions and prompt for missing reader/resource paths.
         for effect in reversed(self._data["effects"]):
             if not _repair_effect_paths(effect):
-                reader_path = _reader_path(effect)
-                resource_path = effect.get("resource", "") if isinstance(effect, dict) else ""
-                missing_path = reader_path if _path_is_missing(reader_path) else resource_path
+                missing_path = _first_missing_effect_path(effect)
                 effect_name = os.path.basename(missing_path) if missing_path else effect.get("id", "")
                 log.info("Removed missing effect: %s", effect_name)
                 self._data["effects"].remove(effect)
@@ -1216,9 +1266,7 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
                 continue
             for effect in reversed(effects):
                 if not _repair_effect_paths(effect):
-                    reader_path = _reader_path(effect)
-                    resource_path = effect.get("resource", "") if isinstance(effect, dict) else ""
-                    missing_path = reader_path if _path_is_missing(reader_path) else resource_path
+                    missing_path = _first_missing_effect_path(effect)
                     effect_name = os.path.basename(missing_path) if missing_path else effect.get("id", "")
                     log.info("Removed missing clip effect on %s: %s", clip.get("id", ""), effect_name)
                     effects.remove(effect)
