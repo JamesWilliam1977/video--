@@ -46,6 +46,13 @@ import argparse
 import json
 import logging
 
+# Ensure Qt plugin DLL dependencies are found on Windows packaged builds.
+if os.name == "nt":
+    _exe_dir = os.path.dirname(os.path.abspath(sys.executable))
+    _pyqt_dll_dir = os.path.join(_exe_dir, "lib", "PyQt5")
+    if os.path.isdir(_pyqt_dll_dir):
+        os.environ["PATH"] = _pyqt_dll_dir + os.pathsep + os.environ.get("PATH", "")
+
 try:
     # This needs to be imported before PyQt5
     # To prevent some issues on AppImage build: wrapping/forcing older glibc versions
