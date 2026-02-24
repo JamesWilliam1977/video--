@@ -318,6 +318,23 @@ class QueryTests(unittest.TestCase):
         file = File.get(id="invalidID")
         self.assertEqual(file, None)
 
+    def test_get_File_by_path_with_alternate_separators(self):
+        """File.get(path=...) should ignore slash direction differences."""
+        file_obj = File.get(id=self.file_ids[0])
+        self.assertTrue(file_obj)
+
+        original_path = file_obj.data.get("path")
+        self.assertTrue(original_path)
+
+        if "\\" in original_path:
+            alt_path = original_path.replace("\\", "/")
+        else:
+            alt_path = original_path.replace("/", "\\")
+
+        matched = File.get(path=alt_path)
+        self.assertTrue(matched)
+        self.assertEqual(matched.id, file_obj.id)
+
     def test_add_file(self):
 
         # Find number of files in project
