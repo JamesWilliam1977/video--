@@ -1604,6 +1604,13 @@ class TimelineWidgetBase(QWidget):
             return
         for idx, item_id in enumerate(self.item_ids):
             self.win.addSelection(str(item_id), item_type, clear_existing=(idx == 0))
+        # A timeline drop should leave timeline items as the sole active selection,
+        # so Delete removes the new clip/transition and not project files.
+        files_model = getattr(self.win, "files_model", None)
+        if files_model:
+            files_model.selection_model.clearSelection()
+            files_model.list_selection_model.clearSelection()
+        self.setFocus(Qt.OtherFocusReason)
         # Geometry was already rebuilt by changed() before the selection was
         # set, so mark it dirty so the next repaint reflects the new state.
         self.geometry.mark_dirty()
