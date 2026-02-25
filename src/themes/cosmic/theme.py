@@ -78,6 +78,11 @@ QDialog {
     color: #91C3FF;
 }
 
+QLabel#lblMissingFileHint,
+QLabel#lblMissingFilePath {
+    color: #9bb2cc;
+}
+
 QWidget#Simple, QWidget#Advanced, QWidget#PreferencePanel {
     background-color: #141923;
     border: none;

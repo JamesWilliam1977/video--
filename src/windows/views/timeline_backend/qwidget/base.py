@@ -217,6 +217,7 @@ class TimelineWidgetBase(QWidget):
 
         # Guard against re-entrant paintEvent calls
         self._in_paint_event = False
+        self._repaint_after_paint = False
 
         # Strong references to dynamically created state transitions
         self._transitions = []
@@ -795,7 +796,7 @@ class TimelineWidgetBase(QWidget):
         if self._in_paint_event:
             log.warning("TimelineWidgetBase paintEvent skipped due to re-entrancy")
             event.accept()
-            self.update()
+            self._repaint_after_paint = True
             return
 
         self._in_paint_event = True
@@ -847,6 +848,9 @@ class TimelineWidgetBase(QWidget):
             if painter.isActive():
                 painter.end()
             self._in_paint_event = False
+            if self._repaint_after_paint:
+                self._repaint_after_paint = False
+                QTimer.singleShot(0, self.update)
 
     def _paint_drag_preview(self, painter):
         """Paint transient drag previews without inserting real timeline items."""
