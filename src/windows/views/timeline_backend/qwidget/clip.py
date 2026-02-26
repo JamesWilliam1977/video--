@@ -646,8 +646,6 @@ class ClipInteractionMixin:
 
     def _startResize(self):
         if self._press_hit == "clip-edge" and self._resizing_item:
-            if hasattr(self.win, "TrimPreviewMode"):
-                self.win.TrimPreviewMode.emit()
             self._startItemResize()
         elif self._press_hit == "timeline-handle":
             self._startProjectResize()
@@ -724,6 +722,8 @@ class ClipInteractionMixin:
             self._resize_edge = None
             self._release_cursor()
             return
+        if hasattr(self.win, "TrimPreviewMode"):
+            self.win.TrimPreviewMode.emit()
         self.snap.reset()
         self._fix_cursor(self.cursors["resize_x"])
         world_rect = self.geometry.calc_item_rect(item)

@@ -472,16 +472,20 @@ class PlayerWorker(QObject):
             return
         frame = max(1, int(number))
         seek_request = (frame, bool(start_preroll))
-        if self._last_queued_seek_request == seek_request:
-            return
-        self._last_queued_seek_request = seek_request
         with self._seek_lock:
+            if self._last_queued_seek_request == seek_request:
+                return
+            self._last_queued_seek_request = seek_request
             self._pending_seek = seek_request
 
     def _take_pending_seek(self):
         with self._seek_lock:
             seek_request = self._pending_seek
             self._pending_seek = None
+            if seek_request is not None:
+                # Reset dedup key once the queued seek is consumed so future
+                # refreshes at the same frame can trigger another render.
+                self._last_queued_seek_request = None
             return seek_request
 
     def _apply_seek(self, frame, start_preroll):
