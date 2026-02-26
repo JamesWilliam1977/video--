@@ -26,6 +26,7 @@
  """
 
 import time
+import threading
 import sip
 import math
 
@@ -82,9 +83,13 @@ class PreviewParent(QObject, UpdateInterface):
                     self.parent.PauseSignal.emit()
                     self.worker.Seek(1)
 
+    @pyqtSlot(int, bool)
+    def QueueSeek(self, frame, start_preroll=True):
+        """Queue latest seek request for worker loop (non-blocking)."""
+        self.worker.queue_seek(frame, start_preroll)
+
     # Signal when the playback mode changes in the preview player (i.e PLAY, PAUSE, STOP)
     def onModeChanged(self, current_mode):
-        log.debug('Playback mode changed to %s', current_mode)
         try:
             if current_mode == openshot.PLAYBACK_PLAY:
                 self.parent.SetPlayheadFollow(False)
@@ -148,7 +153,7 @@ class PreviewParent(QObject, UpdateInterface):
         self.parent.LoadFileSignal.connect(self.worker.LoadFile)
         self.parent.PlaySignal.connect(self.worker.Play)
         self.parent.PauseSignal.connect(self.worker.Pause)
-        self.parent.SeekSignal.connect(self.worker.Seek)
+        self.parent.SeekSignal.connect(self.QueueSeek)
         self.parent.LoadTimelineAndSeekSignal.connect(self.worker.LoadTimelineAndSeek)
         self.parent.SpeedSignal.connect(self.worker.Speed)
         self.parent.StopSignal.connect(self.worker.Stop)
@@ -186,6 +191,9 @@ class PlayerWorker(QObject):
         self.current_frame = None
         self.current_mode = None
         self.reader_mode = "timeline"
+        self._seek_lock = threading.Lock()
+        self._pending_seek = None
+        self._last_queued_seek_request = None
 
         # Create QtPlayer class from libopenshot
         self.player = openshot.QtPlayer()
@@ -267,6 +275,10 @@ class PlayerWorker(QObject):
 
         # Main loop, waiting for frames to process
         while self.is_running:
+            seek_request = self._take_pending_seek()
+            if seek_request is not None:
+                seek_frame, start_preroll = seek_request
+                self._apply_seek(seek_frame, start_preroll)
 
             # Emit position changed signal (if needed)
             if self.current_frame != self.player.Position():
@@ -286,7 +298,7 @@ class PlayerWorker(QObject):
                 self.mode_changed.emit(self.current_mode)
 
             # wait for a small delay
-            time.sleep(0.01)
+            time.sleep(0.005)
             QCoreApplication.processEvents()
 
         self.finished.emit()
@@ -311,14 +323,8 @@ class PlayerWorker(QObject):
         # Mark frame number for processing
         self.Seek(number)
 
-        log.debug(
-            "previewFrame: %s, player Position(): %s",
-            number, self.player.Position())
-
     def refreshFrame(self):
         """ Refresh a certain frame """
-        log.debug("refreshFrame")
-
         # Selection/UI refresh signals can arrive during active playback.
         # Avoid seeking while playing, which can perturb frame progression.
         if self.player.Mode() == openshot.PLAYBACK_PLAY and self.player.Speed() != 0.0:
@@ -327,10 +333,8 @@ class PlayerWorker(QObject):
         # Always load back in the timeline reader
         self.parent.LoadFileSignal.emit('')
 
-        # Mark frame number for processing (if parent is done initializing)
-        self.Seek(self.player.Position())
-
-        log.debug("player Position(): %s", self.player.Position())
+        # Mark frame number for processing (if parent is done initializing).
+        self.Seek(self.player.Position(), True)
 
     def LoadFile(self, path=None):
         """ Load a media file into the video player """
@@ -441,6 +445,11 @@ class PlayerWorker(QObject):
 
         # Start playback
         if self.parent.initialized:
+            pending = self._take_pending_seek()
+            if pending is not None:
+                seek_frame, _start_preroll = pending
+                # Always commit pending preview seek before entering playback.
+                self._apply_seek(seek_frame, True)
             self.player.Play()
 
     def Pause(self):
@@ -457,12 +466,38 @@ class PlayerWorker(QObject):
         if self.parent.initialized:
             self.player.Stop()
 
-    def Seek(self, number):
-        """ Seek to a specific frame """
+    def queue_seek(self, number, start_preroll=True):
+        """Queue latest seek request (latest-wins, thread-safe)."""
+        if not self.parent.initialized:
+            return
+        frame = max(1, int(number))
+        seek_request = (frame, bool(start_preroll))
+        if self._last_queued_seek_request == seek_request:
+            return
+        self._last_queued_seek_request = seek_request
+        with self._seek_lock:
+            self._pending_seek = seek_request
 
-        # Seek to frame
-        if self.parent.initialized:
-            self.player.Seek(number)
+    def _take_pending_seek(self):
+        with self._seek_lock:
+            seek_request = self._pending_seek
+            self._pending_seek = None
+            return seek_request
+
+    def _apply_seek(self, frame, start_preroll):
+        try:
+            self.player.Seek(frame, start_preroll)
+        except TypeError:
+            # Backward compatibility with older libopenshot builds exposing
+            # only Seek(frame).
+            self.player.Seek(frame)
+        self.current_frame = frame
+
+    @pyqtSlot(int)
+    @pyqtSlot(int, bool)
+    def Seek(self, number, start_preroll=True):
+        """Seek to a specific frame (queued for worker loop application)."""
+        self.queue_seek(number, start_preroll)
 
     @pyqtSlot(int)
     def LoadTimelineAndSeek(self, frame):

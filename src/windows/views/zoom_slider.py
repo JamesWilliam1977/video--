@@ -564,8 +564,8 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         """Callback when position is changed"""
         self.current_frame = currentFrame
 
-        # Force re-paint
-        self.repaint()
+        # Schedule repaint (non-blocking)
+        self.update()
 
     def handle_play(self):
         """Callback when play button is clicked"""

@@ -2758,6 +2758,10 @@ class TimelineWidgetBase(QWidget):
             self._updateMiddlePan(event.pos())
             return
 
+        if self.dragging_playhead:
+            self.events.moved.emit(event)
+            return
+
         pos = event.pos()
         if self._toolbar_pressed_key:
             self._update_toolbar_pressed_state(pos)

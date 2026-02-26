@@ -1498,7 +1498,7 @@ class KeyframePanelMixin:
             frame_seek = int(round(anchor_pending * fps_seek)) + 1
             frame_seek = max(1, frame_seek)
             if hasattr(self.win, "SeekSignal"):
-                self.win.SeekSignal.emit(frame_seek)
+                self.win.SeekSignal.emit(frame_seek, True)
         self.update()
 
     def _panel_seek_to_point(self, info, point):
@@ -1544,7 +1544,7 @@ class KeyframePanelMixin:
             return
 
         if hasattr(self.win, "SeekSignal"):
-            self.win.SeekSignal.emit(frame_seek)
+            self.win.SeekSignal.emit(frame_seek, True)
 
     def _finish_panel_keyframe_drag(self):
         drag = self._dragging_panel_keyframes

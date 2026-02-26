@@ -105,7 +105,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     PlaySignal = pyqtSignal()
     PauseSignal = pyqtSignal()
     StopSignal = pyqtSignal()
-    SeekSignal = pyqtSignal(int)
+    SeekSignal = pyqtSignal(int, bool)
     LoadTimelineAndSeekSignal = pyqtSignal(int)
     SpeedSignal = pyqtSignal(float)
     SeekPreviousFrame = pyqtSignal()
@@ -380,7 +380,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.SetWindowTitle()
 
         # Seek to frame 0
-        self.SeekSignal.emit(1)
+        self.SeekSignal.emit(1, True)
 
         # Update max size (for fast previews)
         self.MaxSizeChanged.emit(self.videoPreview.size())
@@ -1220,7 +1220,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.SpeedSignal.emit(0)
 
         # Seek to the 1st frame
-        self.SeekSignal.emit(min_frame)
+        self.SeekSignal.emit(min_frame, True)
         QTimer.singleShot(50, self.actionCenterOnPlayhead_trigger)
 
         # If playing, continue playing
@@ -1235,7 +1235,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Determine last frame (based on clips) & seek there
         max_frame = get_app().window.timeline_sync.timeline.GetMaxFrame()
-        self.SeekSignal.emit(max_frame)
+        self.SeekSignal.emit(max_frame, True)
         QTimer.singleShot(50, self.actionCenterOnPlayhead_trigger)
 
     def onPlayCallback(self):
@@ -1722,7 +1722,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if closest_position is not None:
             # Seek
             frame_to_seek = round(closest_position * fps_float) + 1
-            self.SeekSignal.emit(frame_to_seek)
+            self.SeekSignal.emit(frame_to_seek, True)
 
             # Update the preview and reselect current frame in properties
             get_app().window.refreshFrameSignal.emit()
@@ -1754,7 +1754,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if closest_position is not None:
             # Seek
             frame_to_seek = round(closest_position * fps_float) + 1
-            self.SeekSignal.emit(frame_to_seek)
+            self.SeekSignal.emit(frame_to_seek, True)
 
             # Update the preview and reselct current frame in properties
             get_app().window.refreshFrameSignal.emit()
@@ -1968,7 +1968,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             get_app().updates.transaction_id = None
 
             # Seek to the same location, adjusted for new frame rate
-            self.SeekSignal.emit(adjusted_frame)
+            self.SeekSignal.emit(adjusted_frame, True)
 
             # Refresh frame (since size of preview might have changed)
             QTimer.singleShot(500, lambda: self.refreshFrameSignal.emit())
@@ -3324,10 +3324,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         from classes import sentry
         sentry.init_tracing()
 
-    def handleSeek(self, frame):
+    def handleSeek(self, frame, _start_preroll=True):
         """ Always update the property view when we seek to a new position """
         # Notify properties dialog
-        self.propertyTableView.select_frame(frame)
+        if self.propertyTableView:
+            self.propertyTableView.select_frame(frame)
 
     def moveEvent(self, event):
         """ Move tutorial dialogs also (if any)"""

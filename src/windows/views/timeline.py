@@ -2818,7 +2818,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
             if new_starting_frame != -1:
                 # Seek to new position (if needed)
-                self.window.SeekSignal.emit(round(new_starting_frame))
+                self.window.SeekSignal.emit(round(new_starting_frame), True)
 
     def ripple_delete_gap(self, ripple_start, layer, ripple_gap):
         """Remove the ripple gap and adjust subsequent items"""
@@ -3593,8 +3593,6 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
     @pyqtSlot()
     def EnableCacheThread(self):
-        log.debug('EnableCacheThread: Start caching frames on timeline')
-
         # Enable video caching
         openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
 
@@ -3605,8 +3603,6 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
     @pyqtSlot()
     def DisableCacheThread(self):
-        log.debug('DisableCacheThread: Stop caching frames on timeline')
-
         # Disable video caching
         openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
 
@@ -3741,14 +3737,14 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         self.window.SpeedSignal.emit(0)
 
         # Seek to frame
-        self.window.SeekSignal.emit(frame_number)
+        self.window.SeekSignal.emit(frame_number, True)
 
     @pyqtSlot(int)
     def SeekToKeyframe(self, frame_number):
         """Seek to a specific frame when a keyframe point is clicked"""
 
         # Seek to frame
-        self.window.SeekSignal.emit(frame_number)
+        self.window.SeekSignal.emit(frame_number, True)
 
         # Display properties (if not visible)
         self.window.actionProperties.trigger()
@@ -3764,7 +3760,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             self.last_position_frames = position_frames
 
             # Notify main window of current frame
-            self.window.SeekSignal.emit(position_frames)
+            self.window.SeekSignal.emit(position_frames, True)
 
     @pyqtSlot(int)
     def movePlayhead(self, position_frames):

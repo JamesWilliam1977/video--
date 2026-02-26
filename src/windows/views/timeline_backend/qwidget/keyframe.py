@@ -1804,7 +1804,7 @@ class KeyframeMixin:
             base_position = float(data.get("position", 0.0) or 0.0)
         absolute = round(base_position * fps) + frame - round(clip_start * fps)
         absolute = max(1, int(absolute))
-        self.win.SeekSignal.emit(absolute)
+        self.win.SeekSignal.emit(absolute, True)
 
     def _finishKeyframeDrag(self):
         if self._dragging_panel_keyframes:
