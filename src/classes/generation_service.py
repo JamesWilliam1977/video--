@@ -42,40 +42,27 @@ from classes import time_parts
 from classes.app import get_app
 from classes.comfy_client import ComfyClient
 from classes.comfy_templates import ComfyTemplateRegistry
-from classes.comfy_pipelines import (
-    build_workflow,
-    is_supported_img2img_path,
-    pipeline_requires_checkpoint,
-    pipeline_requires_svd_checkpoint,
-    pipeline_requires_stable_audio_clip,
-    pipeline_requires_rife_model,
-    pipeline_requires_upscale_model,
-    DEFAULT_RIFE_VFI_MODEL,
-    DEFAULT_SD_CHECKPOINT,
-    DEFAULT_SD_BASE_CHECKPOINT,
-    DEFAULT_STABLE_AUDIO_CHECKPOINT,
-    DEFAULT_STABLE_AUDIO_CLIP,
-    DEFAULT_SVD_CHECKPOINT,
-    DEFAULT_UPSCALE_MODEL,
-)
 from classes.logger import log
 from classes.query import File
 from windows.generate import GenerateMediaDialog
 
 
+RASTER_IMAGE_EXTENSIONS = {
+    ".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tif", ".tiff", ".gif",
+}
+
+
+def is_supported_img2img_path(path):
+    path_text = str(path or "").strip()
+    # Comfy annotated paths can look like: "image.jpg [input]"
+    if path_text.endswith("]") and " [" in path_text:
+        path_text = path_text.rsplit(" [", 1)[0].strip()
+    ext = os.path.splitext(path_text)[1].lower()
+    return ext in RASTER_IMAGE_EXTENSIONS
+
+
 class GenerationService:
     """Encapsulates generation-specific UI + workflow behavior."""
-
-    LEGACY_PIPELINE_IDS = {
-        "txt2audio-stable-open",
-        "img2img-basic",
-        "upscale-realesrgan-x4",
-        "video-segment-scenes-transnet",
-        "video-frame-interpolation-rife2x",
-        "video-upscale-gan",
-        "video2video-basic",
-        "video-whisper-srt",
-    }
     SAM2_DEFAULT_TARGET_BATCH_BYTES = 4 * 1024 * 1024 * 1024  # 4 GiB
     SAM2_ESTIMATED_BYTES_PER_PIXEL = 24.0
     SAM2_ESTIMATED_BYTES_PER_PIXEL_HIGHLIGHT = 64.0
@@ -165,34 +152,6 @@ class GenerationService:
                 pass
             raise
 
-    def _prepare_generation_video_input(self, source_file, client):
-        if not source_file:
-            raise ValueError("A source video is required.")
-        source_path = source_file.data.get("path", "")
-        if not source_path:
-            raise ValueError("Source video path is invalid.")
-        return client.upload_input_file(source_path)
-
-    def _prepare_generation_image_input(self, local_image_path, client):
-        local_image_path = str(local_image_path or "").strip()
-        if not local_image_path:
-            raise ValueError("A source image is required.")
-        return client.upload_input_file(local_image_path)
-
-    def _get_source_fps(self, source_file):
-        if not source_file:
-            return None
-        fps_data = source_file.data.get("fps")
-        if isinstance(fps_data, dict):
-            try:
-                num = float(fps_data.get("num", 0))
-                den = float(fps_data.get("den", 0))
-            except (TypeError, ValueError):
-                num = den = 0.0
-            if num > 0 and den > 0:
-                return num / den
-        return None
-
     def _default_generation_name(self, source_file):
         default_name = "generation"
         if source_file:
@@ -259,7 +218,7 @@ class GenerationService:
 
     def _apply_dynamic_sam2_meta_batch(self, workflow, source_file, template_id=None):
         template_id = str(template_id or "").strip().lower()
-        # Only adjust non-legacy SAM2 video tracking templates/workflows.
+        # Only adjust SAM2 video tracking template workflows.
         if template_id and template_id not in (
             "video-blur-anything-sam2",
             "video-highlight-anything-sam2",
@@ -346,7 +305,7 @@ class GenerationService:
     def icon_for_template(self, template):
         return self.template_registry.output_icon_name(template)
 
-    def _prepare_nonlegacy_workflow(
+    def _prepare_template_workflow(
         self,
         template,
         payload_name,
@@ -428,7 +387,8 @@ class GenerationService:
         except (TypeError, ValueError):
             background_brightness = 1.0
         media_type = str(source_file.data.get("media_type", "")).strip().lower() if source_file else ""
-        music_seed = random.randint(1, 2**31 - 1)
+        run_seed_base = random.randint(1, 2**31 - 1)
+        seed_counter = 0
         applied_prompt = False
         loadimage_node_ids = []
         loadvideo_node_ids = []
@@ -457,6 +417,28 @@ class GenerationService:
             text_value = str(text_value or "").strip().lower()
             return text_value in ("__openshot_lyrics__", "{{openshot_lyrics}}", "$openshot_lyrics")
 
+        def _replace_prompt_placeholders(text_value):
+            text_value = str(text_value or "")
+            if not text_value:
+                return text_value
+            return (
+                text_value
+                .replace("__openshot_prompt__", prompt_text)
+                .replace("{{openshot_prompt}}", prompt_text)
+                .replace("$openshot_prompt", prompt_text)
+            )
+
+        def _replace_lyrics_placeholders(text_value):
+            text_value = str(text_value or "")
+            if not text_value:
+                return text_value
+            return (
+                text_value
+                .replace("__openshot_lyrics__", music_lyrics_text)
+                .replace("{{openshot_lyrics}}", music_lyrics_text)
+                .replace("$openshot_lyrics", music_lyrics_text)
+            )
+
         def _normalize_sam2_coords_input(text_value, fallback_value):
             text_value = str(text_value or "").strip()
             fallback_value = str(fallback_value or "").strip()
@@ -484,6 +466,15 @@ class GenerationService:
             if not points:
                 return fallback_value
             return str(points).replace("'", "\"")
+
+        def _next_random_seed(existing_value):
+            nonlocal seed_counter
+            seed_counter += 1
+            try:
+                seed_offset = int(existing_value)
+            except Exception:
+                seed_offset = 0
+            return int((run_seed_base + seed_offset + (seed_counter * 7919)) % (2**31 - 1)) or 1
 
         def _parse_sam2_points(coords_text):
             coords_text = str(coords_text or "").strip()
@@ -570,18 +561,33 @@ class GenerationService:
                 else:
                     inputs["filename_prefix"] = payload_name
 
-            if template_id == "txt2music-ace-step" and "seed" in inputs:
-                try:
-                    node_seed_offset = int(inputs.get("seed", 0))
-                except Exception:
-                    node_seed_offset = 0
-                inputs["seed"] = int((music_seed + node_seed_offset) % (2**31 - 1)) or 1
+            if "seed" in inputs and not isinstance(inputs.get("seed", None), (list, dict)):
+                inputs["seed"] = _next_random_seed(inputs.get("seed"))
 
             if prompt_text:
                 text_value = inputs.get("text", None)
                 prompt_value = inputs.get("prompt", None)
                 tags_value = inputs.get("tags", None)
                 lyrics_value = inputs.get("lyrics", None)
+
+                if isinstance(text_value, str):
+                    replaced_text = _replace_prompt_placeholders(text_value)
+                    if replaced_text != text_value:
+                        inputs["text"] = replaced_text
+                        applied_prompt = True
+                        text_value = replaced_text
+                if isinstance(prompt_value, str):
+                    replaced_prompt = _replace_prompt_placeholders(prompt_value)
+                    if replaced_prompt != prompt_value:
+                        inputs["prompt"] = replaced_prompt
+                        applied_prompt = True
+                        prompt_value = replaced_prompt
+                if isinstance(tags_value, str):
+                    replaced_tags = _replace_prompt_placeholders(tags_value)
+                    if replaced_tags != tags_value:
+                        inputs["tags"] = replaced_tags
+                        applied_prompt = True
+                        tags_value = replaced_tags
 
                 if isinstance(text_value, str) and _is_prompt_placeholder_value(text_value):
                     inputs["text"] = prompt_text
@@ -590,7 +596,7 @@ class GenerationService:
                     inputs["prompt"] = prompt_text
                     applied_prompt = True
                 elif isinstance(tags_value, str) and _is_prompt_placeholder_value(tags_value):
-                    # Support non-legacy music nodes that use "tags" instead of "text"/"prompt".
+                    # Support music nodes that use "tags" instead of "text"/"prompt".
                     if template_id == "txt2music-ace-step":
                         inputs["tags"] = music_prompt_text
                     else:
@@ -608,6 +614,12 @@ class GenerationService:
                     # Support prompt-driven custom nodes (e.g. GroundingDINO/SAM2) that expose a plain string prompt input.
                     inputs["prompt"] = prompt_text
                     applied_prompt = True
+
+            if isinstance(inputs.get("lyrics", None), str):
+                lyrics_value = inputs.get("lyrics", "")
+                replaced_lyrics = _replace_lyrics_placeholders(lyrics_value)
+                if replaced_lyrics != lyrics_value:
+                    inputs["lyrics"] = replaced_lyrics
 
             if class_flat in (
                 "sam2videosegmentationaddpoints",
@@ -869,190 +881,29 @@ class GenerationService:
                 "OpenShot could not convert this image into PNG for ComfyUI.\n\n{}".format(ex),
             )
             return
-        pipeline_id = payload.get("template_id")
-        checkpoint_name = None
-        upscale_model_name = None
-        stable_audio_clip_name = None
-        svd_checkpoint_name = None
-        rife_model_name = None
-        client = ComfyClient(self.comfy_ui_url())
-        workflow_source = source_path
-
-        if pipeline_id in (
-            "video-upscale-gan",
-            "video2video-basic",
-            "video-whisper-srt",
-            "video-frame-interpolation-rife2x",
-            "video-segment-scenes-transnet",
-        ):
-            if not source_file or source_file.data.get("media_type") != "video":
-                QMessageBox.information(self.win, "Invalid Input", "This pipeline requires a source video file.")
-                return
-            try:
-                workflow_source = self._prepare_generation_video_input(source_file, client)
-            except Exception as ex:
-                QMessageBox.warning(
-                    self.win,
-                    "Video Upload Failed",
-                    "OpenShot could not upload the source video into ComfyUI input.\n\n{}".format(ex),
-                )
-                return
-        elif pipeline_id in ("img2img-basic", "upscale-realesrgan-x4", "img2video-svd"):
-            try:
-                workflow_source = self._prepare_generation_image_input(source_path, client)
-            except Exception as ex:
-                QMessageBox.warning(
-                    self.win,
-                    "Image Upload Failed",
-                    "OpenShot could not upload the source image into ComfyUI input.\n\n{}".format(ex),
-                )
-                return
-
-        if pipeline_id in self.LEGACY_PIPELINE_IDS:
-            try:
-                checkpoint_names = []
-                if pipeline_requires_checkpoint(pipeline_id) or pipeline_requires_svd_checkpoint(pipeline_id):
-                    checkpoint_names = client.list_checkpoints()
-                    if checkpoint_names:
-                        preferred_checkpoint = DEFAULT_SD_CHECKPOINT
-                        if pipeline_id == "txt2audio-stable-open":
-                            preferred_checkpoint = DEFAULT_STABLE_AUDIO_CHECKPOINT
-                        elif pipeline_id == "video2video-basic":
-                            preferred_checkpoint = DEFAULT_SD_BASE_CHECKPOINT
-                        checkpoint_name = (
-                            preferred_checkpoint if preferred_checkpoint in checkpoint_names else checkpoint_names[0]
-                        )
-                    if pipeline_requires_svd_checkpoint(pipeline_id):
-                        if DEFAULT_SVD_CHECKPOINT in checkpoint_names:
-                            svd_checkpoint_name = DEFAULT_SVD_CHECKPOINT
-                        else:
-                            svd_candidates = [name for name in checkpoint_names if "svd" in str(name).lower()]
-                            if svd_candidates:
-                                svd_checkpoint_name = svd_candidates[0]
-            except Exception as ex:
-                log.warning("Failed to query ComfyUI checkpoints: %s", ex)
-
-            if pipeline_requires_checkpoint(pipeline_id) and not checkpoint_name:
-                QMessageBox.information(
-                    self.win,
-                    "No Checkpoints Found",
-                    "ComfyUI has no checkpoints available for CheckpointLoaderSimple.\n"
-                    "Add a model to ComfyUI/models/checkpoints and try again.",
-                )
-                return
-
-            if pipeline_requires_svd_checkpoint(pipeline_id) and not svd_checkpoint_name:
-                QMessageBox.information(
-                    self.win,
-                    "No SVD Checkpoint Found",
-                    "ComfyUI could not find the SVD checkpoint required for the selected video generation template.\n"
-                    "Add an SVD checkpoint (for example {}) to ComfyUI/models/checkpoints and try again.".format(DEFAULT_SVD_CHECKPOINT),
-                )
-                return
-
-            try:
-                if pipeline_requires_upscale_model(pipeline_id):
-                    upscale_models = client.list_upscale_models()
-                    if upscale_models:
-                        upscale_model_name = (
-                            DEFAULT_UPSCALE_MODEL if DEFAULT_UPSCALE_MODEL in upscale_models else upscale_models[0]
-                        )
-            except Exception as ex:
-                log.warning("Failed to query ComfyUI upscale models: %s", ex)
-
-            if pipeline_requires_upscale_model(pipeline_id) and not upscale_model_name:
-                QMessageBox.information(
-                    self.win,
-                    "No Upscale Models Found",
-                    "ComfyUI has no upscaler models available for UpscaleModelLoader.\n"
-                    "Add a model such as RealESRGAN_x4plus.safetensors to ComfyUI/models/upscale_models and try again.",
-                )
-                return
-
-            try:
-                if pipeline_requires_stable_audio_clip(pipeline_id):
-                    clip_names = client.list_clip_models()
-                    if clip_names:
-                        for preferred in (DEFAULT_STABLE_AUDIO_CLIP, "t5_base.safetensors"):
-                            if preferred in clip_names:
-                                stable_audio_clip_name = preferred
-                                break
-                        if not stable_audio_clip_name:
-                            stable_audio_clip_name = clip_names[0]
-            except Exception as ex:
-                log.warning("Failed to query ComfyUI CLIP models: %s", ex)
-
-            if pipeline_requires_stable_audio_clip(pipeline_id) and not stable_audio_clip_name:
-                QMessageBox.information(
-                    self.win,
-                    "No Text Encoders Found",
-                    "ComfyUI has no CLIP/text-encoder models available for CLIPLoader.\n"
-                    "Add a text encoder such as t5-base.safetensors and try again.",
-                )
-                return
-
-            try:
-                if pipeline_requires_rife_model(pipeline_id):
-                    rife_models = client.list_rife_vfi_models()
-                    if rife_models:
-                        for preferred in (DEFAULT_RIFE_VFI_MODEL, "rife49.pth"):
-                            if preferred in rife_models:
-                                rife_model_name = preferred
-                                break
-                        if not rife_model_name:
-                            rife_model_name = rife_models[0]
-            except Exception as ex:
-                log.warning("Failed to query ComfyUI RIFE VFI models: %s", ex)
-
-            if pipeline_requires_rife_model(pipeline_id) and not rife_model_name:
-                QMessageBox.information(
-                    self.win,
-                    "RIFE VFI Not Available",
-                    "ComfyUI could not find the RIFE VFI node/models required for frame interpolation.\n"
-                    "Install ComfyUI-Frame-Interpolation and add models such as rife47.pth.",
-                )
-                return
-
-            try:
-                workflow = build_workflow(
-                    pipeline_id,
-                    payload.get("prompt"),
-                    workflow_source,
-                    payload_name,
-                    checkpoint_name=checkpoint_name,
-                    upscale_model_name=upscale_model_name,
-                    stable_audio_clip_name=stable_audio_clip_name,
-                    svd_checkpoint_name=svd_checkpoint_name,
-                    source_fps=self._get_source_fps(source_file),
-                    rife_model_name=rife_model_name,
-                )
-            except Exception as ex:
-                QMessageBox.information(self.win, "Invalid Input", str(ex))
-                return
-        else:
-            try:
-                workflow = self._prepare_nonlegacy_workflow(
-                    template_meta,
-                    payload_name=payload_name,
-                    prompt_text=payload.get("prompt"),
-                    source_file=source_file,
-                    source_path=source_path,
-                    coordinates_positive_text=payload.get("coordinates_positive"),
-                    coordinates_negative_text=payload.get("coordinates_negative"),
-                    rectangles_positive_text=payload.get("rectangles_positive"),
-                    rectangles_negative_text=payload.get("rectangles_negative"),
-                    auto_mode=payload.get("auto_mode"),
-                    tracking_selection=payload.get("tracking_selection"),
-                    highlight_color=payload.get("highlight_color"),
-                    highlight_opacity=payload.get("highlight_opacity"),
-                    border_color=payload.get("border_color"),
-                    border_width=payload.get("border_width"),
-                    mask_brightness=payload.get("mask_brightness"),
-                    background_brightness=payload.get("background_brightness"),
-                )
-            except Exception as ex:
-                QMessageBox.information(self.win, "Invalid Input", str(ex))
-                return
+        try:
+            workflow = self._prepare_template_workflow(
+                template_meta,
+                payload_name=payload_name,
+                prompt_text=payload.get("prompt"),
+                source_file=source_file,
+                source_path=source_path,
+                coordinates_positive_text=payload.get("coordinates_positive"),
+                coordinates_negative_text=payload.get("coordinates_negative"),
+                rectangles_positive_text=payload.get("rectangles_positive"),
+                rectangles_negative_text=payload.get("rectangles_negative"),
+                auto_mode=payload.get("auto_mode"),
+                tracking_selection=payload.get("tracking_selection"),
+                highlight_color=payload.get("highlight_color"),
+                highlight_opacity=payload.get("highlight_opacity"),
+                border_color=payload.get("border_color"),
+                border_width=payload.get("border_width"),
+                mask_brightness=payload.get("mask_brightness"),
+                background_brightness=payload.get("background_brightness"),
+            )
+        except Exception as ex:
+            QMessageBox.information(self.win, "Invalid Input", str(ex))
+            return
         request = {
             "comfy_url": self.comfy_ui_url(),
             "workflow": workflow,

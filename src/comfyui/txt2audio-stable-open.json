@@ -74,7 +74,7 @@
     "4": {
       "class_type": "CheckpointLoaderSimple",
       "inputs": {
-        "ckpt_name": "sd_xl_turbo_1.0_fp16.safetensors"
+        "ckpt_name": "stable-audio-open-1.0.safetensors"
       }
     },
     "6": {
