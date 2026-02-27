@@ -516,13 +516,12 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 if getattr(eff_info, 'has_tracked_object', False):
                     objs = raw_eff.get("objects", {}) or {}
                     if objs:
-                        oid = next(iter(objs))
-                        eprops = objs[oid]
-                        if eprops.get("visible", {}).get("value") == 1:
-                            x1_abs = clip_rect.x() + eprops["x1"]["value"] * clip_rect.width()
-                            y1_abs = clip_rect.y() + eprops["y1"]["value"] * clip_rect.height()
-                            x2_abs = clip_rect.x() + eprops["x2"]["value"] * clip_rect.width()
-                            y2_abs = clip_rect.y() + eprops["y2"]["value"] * clip_rect.height()
+                        oid, eprops = self._resolve_tracked_object(objs)
+                        if oid and eprops and self._tracked_object_visible(eprops):
+                            x1_abs = clip_rect.x() + eprops.get("x1", {}).get("value", 0.0) * clip_rect.width()
+                            y1_abs = clip_rect.y() + eprops.get("y1", {}).get("value", 0.0) * clip_rect.height()
+                            x2_abs = clip_rect.x() + eprops.get("x2", {}).get("value", 0.0) * clip_rect.width()
+                            y2_abs = clip_rect.y() + eprops.get("y2", {}).get("value", 0.0) * clip_rect.height()
                             effect_rect = QRectF(QPointF(x1_abs, y1_abs), QPointF(x2_abs, y2_abs))
                             union_rect = effect_rect if union_rect is None else union_rect.united(effect_rect)
                             first_props = first_props or default_props
@@ -1415,11 +1414,11 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 if not objects:
                     return
 
-                selected_idx = self.transforming_effect.data.get('selected_object_index')
-                obj_id = str(selected_idx) if selected_idx is not None else list(objects.keys())[0]
-                raw_properties = objects.get(obj_id) or next(iter(objects.values()))
+                obj_id, raw_properties = self._resolve_tracked_object(objects)
+                if not obj_id or not raw_properties:
+                    return
 
-                if not raw_properties.get('visible'):
+                if not self._tracked_object_visible(raw_properties):
                     self.mouse_position = event.pos()
                     self.mutex.unlock()
                     return
@@ -1978,6 +1977,41 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         rect = self._clip_display_rect(base_width, base_height, clip, raw_properties, viewport_rect)
 
         return rect, raw_properties
+
+    def _tracked_object_visible(self, object_props):
+        visible_prop = object_props.get("visible")
+        if isinstance(visible_prop, dict):
+            return int(visible_prop.get("value", 1)) == 1
+        if visible_prop is None:
+            return True
+        return bool(visible_prop)
+
+    def _resolve_tracked_object(self, objects):
+        """Resolve selected tracked-object key from effect data."""
+        if not objects:
+            return None, None
+
+        selected_idx = None
+        if self.transforming_effect:
+            selected_idx = self.transforming_effect.data.get("selected_object_index")
+
+        if selected_idx not in (None, "", "None"):
+            selected_idx = str(selected_idx)
+            if selected_idx in objects:
+                return selected_idx, objects[selected_idx]
+
+            # Newer object IDs are "<effect-uuid>-<index>".
+            suffix = f"-{selected_idx}"
+            for object_id, object_props in objects.items():
+                if object_id.endswith(suffix):
+                    return object_id, object_props
+
+        for object_id, object_props in objects.items():
+            if self._tracked_object_visible(object_props):
+                return object_id, object_props
+
+        object_id = next(iter(objects))
+        return object_id, objects.get(object_id)
 
     def refreshTriggered(self):
         """Signal to refresh viewport (i.e. a property might have changed that effects the preview)"""

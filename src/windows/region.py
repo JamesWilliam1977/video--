@@ -31,7 +31,7 @@ import functools
 import math
 
 from PyQt5.QtCore import *
-from PyQt5.QtGui import QIcon, QPainter, QColor, QPen, QBrush
+from PyQt5.QtGui import QIcon, QPainter, QColor, QPen, QBrush, QKeySequence
 from PyQt5.QtWidgets import *
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
@@ -192,6 +192,9 @@ class SelectRegion(QDialog):
 
         # Init UI
         ui_util.init_ui(self)
+        self._esc_shortcut = QShortcut(QKeySequence("Esc"), self)
+        self._esc_shortcut.setContext(Qt.WidgetWithChildrenShortcut)
+        self._esc_shortcut.activated.connect(self.reject)
         if parent is None:
             self.setWindowFlags(
                 (self.windowFlags() & ~Qt.Dialog)
@@ -384,6 +387,13 @@ class SelectRegion(QDialog):
     def actionPlay_Triggered(self):
         # Trigger play button (This action is invoked from the preview thread, so it must exist here)
         self.btnPlay.click()
+
+    def keyPressEvent(self, event):
+        if event and event.key() == Qt.Key_Escape:
+            self.reject()
+            event.accept()
+            return
+        return super(SelectRegion, self).keyPressEvent(event)
 
     def _icon_path(self, name):
         icon_name = str(name or "").strip()

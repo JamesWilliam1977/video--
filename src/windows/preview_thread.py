@@ -83,6 +83,7 @@ class PreviewParent(QObject, UpdateInterface):
                     self.parent.PauseSignal.emit()
                     self.worker.Seek(1)
 
+    @pyqtSlot(int)
     @pyqtSlot(int, bool)
     def QueueSeek(self, frame, start_preroll=True):
         """Queue latest seek request for worker loop (non-blocking)."""

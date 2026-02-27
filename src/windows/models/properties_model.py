@@ -67,6 +67,26 @@ class ClipStandardItemModel(QStandardItemModel):
 
 
 class PropertiesModel(updates.UpdateInterface):
+    def _resolve_tracked_object_id(self, raw_properties, tracked_objects_raw_properties):
+        """Resolve selected tracked object ID from properties payload."""
+        if not tracked_objects_raw_properties:
+            return None
+
+        selected_idx = raw_properties.get("selected_object_index", {}).get("value")
+        if selected_idx not in (None, "", "None"):
+            selected_idx = str(selected_idx)
+            if selected_idx in tracked_objects_raw_properties:
+                return selected_idx
+
+            # Newer tracked-object IDs are "<effect-uuid>-<index>".
+            suffix = f"-{selected_idx}"
+            for object_id in tracked_objects_raw_properties.keys():
+                if object_id.endswith(suffix):
+                    return object_id
+
+        # Fallback to first tracked object
+        return next(iter(tracked_objects_raw_properties.keys()))
+
     # This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface)
     def changed(self, action):
 
@@ -1009,7 +1029,8 @@ class PropertiesModel(updates.UpdateInterface):
                 if len(all_raw_properties) == 1:
                     tracked_objects_raw_properties = raw_properties.pop('objects', None)
                     if tracked_objects_raw_properties:
-                        tracked_object_id = list(tracked_objects_raw_properties.keys())[0]
+                        tracked_object_id = self._resolve_tracked_object_id(
+                            raw_properties, tracked_objects_raw_properties)
                         tracked_object_properties = tracked_objects_raw_properties[tracked_object_id]
                         raw_properties.update(tracked_object_properties)
                 else:
