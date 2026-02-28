@@ -70,7 +70,7 @@
     "37": {
       "class_type": "UNETLoader",
       "inputs": {
-        "unet_name": "wan2.1_t2v_1.3B_fp16.safetensors",
+        "unet_name": "wan2.2_ti2v_5B_fp16.safetensors",
         "weight_dtype": "default"
       }
     },
@@ -85,7 +85,7 @@
     "39": {
       "class_type": "VAELoader",
       "inputs": {
-        "vae_name": "wan_2.1_vae.safetensors"
+        "vae_name": "wan2.2_vae.safetensors"
       }
     },
     "40": {
