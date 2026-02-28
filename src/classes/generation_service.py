@@ -1057,6 +1057,10 @@ class GenerationService:
                                 continue
                         except Exception as ex:
                             log.warning("Failed to download/read SRT from Comfy path output %s: %s", text_payload, ex)
+                    if self._looks_like_filesystem_path(text_payload):
+                        # Some Whisper/SRT nodes return only a server-side output path.
+                        # Don't treat that path string as caption text.
+                        continue
 
                 ext = ".srt" if str(output_ref.get("format", "")).lower() == "srt" else ".txt"
                 local_name = "{}_{}{}".format(safe_name, str(index).zfill(3), ext)
@@ -1121,6 +1125,15 @@ class GenerationService:
             re.IGNORECASE,
         )
         return [match.strip() for match in pattern.findall(text_payload) if match.strip()]
+
+    def _looks_like_filesystem_path(self, text_payload):
+        text_payload = str(text_payload or "").strip()
+        if not text_payload:
+            return False
+        normalized = text_payload.replace("\\", "/")
+        if re.match(r"^[A-Za-z]:/", normalized):
+            return True
+        return normalized.startswith("/")
 
     def _extract_scene_ranges_from_text(self, text_payload):
         """Parse scene range metadata JSON from text output payloads."""
