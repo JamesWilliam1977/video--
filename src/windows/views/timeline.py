@@ -4096,6 +4096,16 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         # Track the added clip
         self.item_ids.append(new_clip.get('id'))
 
+        # Generate waveform data by default for audio-only clips.
+        reader = new_clip.get("reader", {}) if isinstance(new_clip.get("reader"), dict) else {}
+        has_video = reader.get("has_video")
+        has_video = True if has_video is None else bool(has_video)
+        has_audio = reader.get("has_audio")
+        has_audio = True if has_audio is None else bool(has_audio)
+        clip_id = new_clip.get("id")
+        if has_audio and not has_video and clip_id:
+            self.Show_Waveform_Triggered([clip_id])
+
         # Trigger manual move event to initialize UI snapping
         if call_manual_move:
             self.run_js(JS_SCOPE_SELECTOR + ".startManualMove('{}', '{}');".format(self.item_type, json.dumps(self.item_ids)))

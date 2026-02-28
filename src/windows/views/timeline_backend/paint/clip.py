@@ -257,6 +257,28 @@ class ClipPainter(BasePainter):
         file_id = data.get("file_id")
         return str(file_id) if file_id else None
 
+    def _clip_is_audio_only(self, clip):
+        data = clip.data if isinstance(clip.data, dict) else {}
+        reader = data.get("reader") if isinstance(data.get("reader"), dict) else {}
+
+        has_video = reader.get("has_video")
+        has_video = True if has_video is None else bool(has_video)
+
+        has_audio = reader.get("has_audio")
+        has_audio = True if has_audio is None else bool(has_audio)
+        return has_audio and not has_video
+
+    def _audio_thumbnail_pixmap(self):
+        key = ("_fallback_", "audio")
+        cached = self.thumb_cache.get(key)
+        if cached and not cached.isNull():
+            return cached
+
+        path = os.path.join(info.PATH, "images", "AudioThumbnail.svg")
+        pix = QPixmap(path) if os.path.exists(path) else QPixmap()
+        self.thumb_cache[key] = pix
+        return pix if not pix.isNull() else None
+
     def _clip_time_bounds(self, clip):
         data = clip.data if isinstance(clip.data, dict) else {}
         start = self._to_float(data.get("start"), 0.0)
@@ -956,6 +978,14 @@ class ClipPainter(BasePainter):
         static_frame = 1 if static_image else None
 
         for time_offset, rect in slots:
+            if self._clip_is_audio_only(clip):
+                pix = self._audio_thumbnail_pixmap()
+                if pix:
+                    self._paint_thumbnail_pixmap(painter, pix, rect, inner)
+                else:
+                    pending = True
+                continue
+
             slot_start_time = float(time_offset)
             slot_end_time = slot_start_time + slot_duration_seconds
             slot_center_time = slot_start_time + half_slot_duration
