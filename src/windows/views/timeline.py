@@ -3835,6 +3835,13 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
     def AddSelectionJS(self, item_id, item_type, clear_existing=False):
         """Invoke JavaScript selection routine"""
+        if ViewClass == TimelineWidget:
+            if clear_existing:
+                TimelineWidget.clear_all_selections(self)
+                clear_existing = False
+            self.addSelection(str(item_id), item_type, clear_existing)
+            return
+
         clear_js = 'true' if clear_existing else 'false'
         if item_type == "clip":
             self.run_js(JS_SCOPE_SELECTOR + ".selectClip('{}', {}, null);".format(item_id, clear_js))
