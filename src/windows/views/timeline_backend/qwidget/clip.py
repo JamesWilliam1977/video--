@@ -734,34 +734,26 @@ class ClipInteractionMixin:
 
     def _snap_trim_delta(self, delta_seconds, edge=None):
         """
-        Apply drag-style snapping to a trim delta so clip edges snap just like moves.
+        Apply directional edge snapping to trim deltas.
 
-        _startItemResize() already places the active item id in _snap_ignore_ids,
-        so we only need to provide a temporary drag bbox for snap_dx.
+        Uses the trim edge's original timeline position (left/right) and lets
+        SnapHelper.snap_edge() handle direction-aware target selection.
         """
-        bbox = getattr(self, "_resize_initial_rect", None)
-        if not isinstance(bbox, QRectF) or bbox.isNull():
+        initial = getattr(self, "_resize_initial", None)
+        if not isinstance(initial, dict):
             return delta_seconds
 
         edge_label = edge or getattr(self, "_resize_edge", None)
         if edge_label not in ("left", "right"):
             return delta_seconds
 
-        # Limit bbox to the moving edge to avoid snapping against the static edge
         if edge_label == "left":
-            edge_px = bbox.left()
+            edge_sec = float(initial.get("position", 0.0) or 0.0)
         else:
-            edge_px = bbox.right()
-        edge_bbox = QRectF(edge_px, bbox.y(), 0.0, bbox.height())
-        if edge_bbox.height() <= 0.0:
-            edge_bbox.setHeight(self.vertical_factor or 1.0)
+            edge_sec = float(initial.get("position", 0.0) or 0.0)
+            edge_sec += float(initial.get("end", 0.0) or 0.0) - float(initial.get("start", 0.0) or 0.0)
 
-        original_bbox = getattr(self, "drag_bbox", None)
-        try:
-            self.drag_bbox = edge_bbox
-            return self.snap.snap_dx(delta_seconds)
-        finally:
-            self.drag_bbox = original_bbox
+        return self.snap.snap_edge(edge_sec, delta_seconds)
 
     def _startResize(self):
         if self._press_hit == "clip-edge" and self._resizing_item:
@@ -901,6 +893,8 @@ class ClipInteractionMixin:
         self.win.addSelection(item.id, sel_type, False)
 
         if isinstance(item, Clip) and not self.enable_timing:
+            # Rebuild markers before collecting trim snap targets.
+            self._keyframes_dirty = True
             self._update_snap_keyframe_targets(item)
 
     def _itemResizeMove(self):
@@ -942,7 +936,6 @@ class ClipInteractionMixin:
                         frame_seconds = self._snap_time(end)
                     frame = int(round(frame_seconds * self.fps_float)) + 1
                     timeline.PreviewClipFrame(str(clip_id), max(1, frame))
-                self._update_snap_keyframe_targets(item)
             else:
                 self._snap_keyframe_seconds = []
         else:

@@ -136,22 +136,11 @@ class SnapHelper:
         snap_px = self._snap_tolerance_px()
         extra_seconds = getattr(self.widget, "_snap_keyframe_seconds", None)
         if extra_seconds:
-            fps = getattr(self.widget, "fps_float", 0.0) or 0.0
-            frame_sec = 1.0 / float(fps) if fps else 0.0
-            base_sec = max(frame_sec, 0.02)
-            default_sec = snap_px / pps if pps > 0.0 else 0.0
-            if default_sec > 0.0:
-                base_sec = min(base_sec, default_sec)
-            keyframe_tol_px = base_sec * pps
-            if not math.isfinite(keyframe_tol_px) or keyframe_tol_px <= 0.0:
-                keyframe_tol_px = snap_px
-            keyframe_tol_px = max(1.0, min(snap_px, keyframe_tol_px))
+            keyframe_tol_px = snap_px
 
             for value in extra_seconds:
-                tolerance_override = None
                 if isinstance(value, dict):
                     sec_value = value.get("seconds")
-                    tolerance_override = value.get("tolerance")
                 else:
                     sec_value = value
                 try:
@@ -163,17 +152,7 @@ class SnapHelper:
                     + sec * pps
                     - h_offset
                 )
-                tolerance_px = keyframe_tol_px
-                if tolerance_override is not None:
-                    try:
-                        tol_sec = float(tolerance_override)
-                        tolerance_px = tol_sec * pps
-                    except (TypeError, ValueError):
-                        tolerance_px = keyframe_tol_px
-                if not math.isfinite(tolerance_px) or tolerance_px <= 0.0:
-                    tolerance_px = keyframe_tol_px
-                tolerance_px = max(1.0, min(snap_px, abs(tolerance_px)))
-                keyframe_targets.append((px, tolerance_px))
+                keyframe_targets.append((px, keyframe_tol_px))
 
         frame = float(getattr(self.widget, "current_frame", 1) or 1.0)
         playhead_seconds = max(0.0, (max(1.0, frame) - 1.0) / self.widget.fps_float)
