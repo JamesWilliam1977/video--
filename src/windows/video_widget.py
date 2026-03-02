@@ -2061,9 +2061,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self.transforming_effect_object = None
                 need_refresh = True
 
-        # Update the preview and reselect current frame in properties
+        # Selection/transform changes affect overlay UI, not timeline frame.
         if need_refresh:
-            win.refreshFrameSignal.emit()
+            self.update()
         self.update_title()
 
     def keyFrameTransformTriggered(self, effect_id, clip_id):
@@ -2101,9 +2101,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
             need_refresh = True
 
-        # Update the preview and reselct current frame in properties
+        # Transform target changes affect overlay UI, not timeline frame.
         if need_refresh:
-            win.refreshFrameSignal.emit()
+            self.update()
             win.propertyTableView.select_frame(win.preview_thread.player.Position())
         self.update_title()
 
@@ -2121,7 +2121,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.region_rect_drag_current = None
             self.regionTopLeftHandle = None
             self.regionBottomRightHandle = None
-        get_app().window.refreshFrameSignal.emit()
+        self.update()
         self.update_title()
 
     def resizeEvent(self, event):

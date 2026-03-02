@@ -3593,13 +3593,13 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
     @pyqtSlot()
     def EnableCacheThread(self):
-        # Enable video caching
+        # Enable video caching without forcing a refresh seek.
         openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
 
-        # Refresh frame to ensure our last frame after scrubbing
-        # is the final frame shown. Due to some unknown reason, this
-        # is required for an accurate end to srubbing
-        QTimer.singleShot(50, lambda: self.window.refreshFrameSignal.emit())
+    @pyqtSlot()
+    def EnableCacheThreadNoRefresh(self):
+        """Enable playback caching without forcing an extra refresh seek."""
+        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
 
     @pyqtSlot()
     def DisableCacheThread(self):
@@ -3749,18 +3749,21 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         # Display properties (if not visible)
         self.window.actionProperties.trigger()
 
-    @pyqtSlot(int)
-    def PlayheadMoved(self, position_frames):
-
+    @pyqtSlot(int, bool)
+    def PlayheadMoved(self, position_frames, start_preroll=True):
         # Load the timeline into the Player (ignored if this has already happened)
         self.window.LoadFileSignal.emit('')
 
-        if self.last_position_frames != position_frames:
-            # Update time code (to prevent duplicate previews)
-            self.last_position_frames = position_frames
+        seek_state = (int(position_frames), bool(start_preroll))
+        if self._last_playhead_seek_state == seek_state:
+            return
 
-            # Notify main window of current frame
-            self.window.SeekSignal.emit(position_frames, True)
+        # Update time code (to prevent duplicate previews)
+        self.last_position_frames = position_frames
+        self._last_playhead_seek_state = seek_state
+
+        # Notify main window of current frame
+        self.window.SeekSignal.emit(position_frames, bool(start_preroll))
 
     @pyqtSlot(int)
     def movePlayhead(self, position_frames):
@@ -4528,6 +4531,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         self.window = window
         self.setAcceptDrops(True)
         self.last_position_frames = None
+        self._last_playhead_seek_state = None
         self.context_menu_cursor_position = None
         self._pending_trim_refresh = None
 

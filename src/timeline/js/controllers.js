@@ -145,7 +145,6 @@ App.controller("TimelineCtrl", function ($scope) {
     // Update internal scope (in seconds)
     $scope.project.playhead_position = snapToFPSGridTime($scope, position_seconds);
     $scope.playheadTime = secondsToTime(position_seconds, $scope.project.fps.num, $scope.project.fps.den);
-
     // Use JQuery to move playhead (for performance reasons) - scope.apply is too expensive here
     $(".playhead-top").css("left", ($scope.project.playhead_position * $scope.pixelsPerSecond) + "px");
     $(".playhead-line").css("left", ($scope.project.playhead_position * $scope.pixelsPerSecond) + "px");
@@ -168,14 +167,15 @@ App.controller("TimelineCtrl", function ($scope) {
   };
 
   // Move the playhead to a specific time
-  $scope.previewFrame = function (position_seconds) {
+  $scope.previewFrame = function (position_seconds, start_preroll) {
     // Determine frame
     var frames_per_second = $scope.project.fps.num / $scope.project.fps.den;
     var frame = Math.round(position_seconds * frames_per_second) + 1;
 
     // Update GUI with position (so the preview can be updated)
     if ($scope.Qt) {
-      timeline.PlayheadMoved(frame);
+      const usePreroll = (start_preroll !== false);
+      timeline.PlayheadMoved(frame, usePreroll);
     }
   };
 
