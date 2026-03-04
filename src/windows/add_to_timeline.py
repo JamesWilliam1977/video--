@@ -393,8 +393,18 @@ class AddToTimeline(QDialog):
         # Clear transaction
         get_app().updates.transaction_id = None
 
-        # Auto-select newly added clips
         win = get_app().window
+
+        # Ensure project duration grows to include all newly-added items.
+        timeline_view = getattr(win, "timeline", None)
+        extend_timeline = getattr(timeline_view, "_extend_timeline_to_fit_items", None)
+        if callable(extend_timeline):
+            try:
+                extend_timeline()
+            except Exception:
+                log.warning("Failed to extend timeline after Add to Timeline", exc_info=1)
+
+        # Auto-select newly added clips
         for idx, clip_id in enumerate(added_clip_ids):
             if clip_id:
                 win.addSelection(str(clip_id), "clip", clear_existing=(idx == 0))
