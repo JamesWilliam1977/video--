@@ -192,6 +192,7 @@ class ClipPainter(BasePainter):
         )
 
         self.w._effect_icon_rects = []
+        self.w._clip_text_rects = []
         painter.save()
         painter.setClipRect(area)
         for rect, clip, selected in self.w.geometry.iter_clips():
@@ -489,7 +490,11 @@ class ClipPainter(BasePainter):
             cached = self.clip_cache[key]
             if isinstance(cached, tuple) and len(cached) == 3:
                 pix, blur, icons = cached
-                cached = (pix, blur, icons, False)
+                cached = (pix, blur, icons, False, None)
+                self.clip_cache[key] = cached
+            elif isinstance(cached, tuple) and len(cached) == 4:
+                pix, blur, icons, pending = cached
+                cached = (pix, blur, icons, pending, None)
                 self.clip_cache[key] = cached
             return cached
 
@@ -516,10 +521,11 @@ class ClipPainter(BasePainter):
         inner_rect = QRectF(blur, blur, w, h)
 
         icon_entries = []
+        text_entry = None
         pending_thumbs = False
         if not tiny:
             self._fill_clip_background(painter, inner_rect, segment_info)
-            icon_entries, pending_thumbs = self._draw_clip_contents(
+            icon_entries, pending_thumbs, text_entry = self._draw_clip_contents(
                 painter, clip, inner_rect, segment_info
             )
 
@@ -528,7 +534,7 @@ class ClipPainter(BasePainter):
         pix = QPixmap.fromImage(img)
         if ratio != 1.0:
             pix.setDevicePixelRatio(ratio)
-        result = (pix, blur, icon_entries, pending_thumbs)
+        result = (pix, blur, icon_entries, pending_thumbs, text_entry)
         if use_cache and key is not None and not pending_thumbs:
             self.clip_cache[key] = result
         return result
@@ -664,6 +670,7 @@ class ClipPainter(BasePainter):
         left = inner.x() + self.menu_margin
         right = inner.right() - self.menu_margin
         icon_entries = []
+        text_entry = None
         pending_thumbs = False
 
         has_waveform = self._draw_waveform(painter, clip, inner, segment)
@@ -682,10 +689,10 @@ class ClipPainter(BasePainter):
             content_x = self._draw_effect_icons(
                 painter, clip, inner, content_x, right, icon_entries
             )
-            self._draw_clip_text(painter, clip, inner, content_x, right)
+            text_entry = self._draw_clip_text(painter, clip, inner, content_x, right)
 
         painter.restore()
-        return icon_entries, pending_thumbs
+        return icon_entries, pending_thumbs, text_entry
 
     def _add_slot_if_valid(self, slots, seen, center_clip_time, half_interval, segment_start,
                            segment_end, trim_start, media_duration, inner_x, top,
@@ -1297,19 +1304,31 @@ class ClipPainter(BasePainter):
 
     def _draw_clip_text(self, painter, clip, inner, x, right):
         text_width = right - x
-        if text_width <= 4:
-            return
-        painter.setPen(self.w.theme.clip.font_color)
+        if text_width <= 0:
+            return None
         text_rect = QRectF(x, inner.y(), text_width, inner.height())
+        title_raw = str((clip.data.get("title", "") if isinstance(clip.data, dict) else "") or "")
+        if text_width <= 4:
+            hit_rect = QRectF(text_rect.adjusted(2, 2, -2, -2))
+            if hit_rect.width() < 1.0:
+                hit_rect.setWidth(1.0)
+            if hit_rect.height() < 1.0:
+                hit_rect.setHeight(1.0)
+            return {"rect": hit_rect, "title": title_raw}
+
+        painter.setPen(self.w.theme.clip.font_color)
         metrics = QFontMetrics(painter.font())
         title = metrics.elidedText(
-            clip.data.get("title", ""), Qt.ElideRight, int(text_width - 4)
+            title_raw, Qt.ElideRight, int(text_width - 4)
         )
-        painter.drawText(
-            text_rect.adjusted(2, 2, -2, -2),
-            self.w._clip_text_flags,
-            title,
-        )
+        text_draw_rect = text_rect.adjusted(2, 2, -2, -2)
+        painter.drawText(text_draw_rect, self.w._clip_text_flags, title)
+
+        # Restrict hover to actual rendered text, not the entire clip region.
+        text_advance = float(metrics.horizontalAdvance(title))
+        hit_width = min(max(1.0, text_advance), max(1.0, text_draw_rect.width()))
+        hit_rect = QRectF(text_draw_rect.x(), text_draw_rect.y(), hit_width, max(1.0, text_draw_rect.height()))
+        return {"rect": hit_rect, "title": title_raw}
 
     def _draw_waveform(self, painter, clip, inner, segment=None):
         data = clip.data if isinstance(clip.data, dict) else {}
@@ -1471,7 +1490,8 @@ class ClipPainter(BasePainter):
         result = self._clip_pixmap(full_rect, segment_rect, clip)
         if not result:
             return
-        pix, shadow_spread, icons, _ = result
+        pix, shadow_spread, icons, _, text_entry = result
+        includes_start = (segment_rect.left() - full_rect.left()) <= 0.5
         if pix:
             offset = QPointF(segment_rect.x() - shadow_spread, segment_rect.y() - shadow_spread)
             painter.drawPixmap(offset, pix)
@@ -1491,7 +1511,34 @@ class ClipPainter(BasePainter):
                             "effect_id": entry.get("effect_id"),
                         }
                     )
-        includes_start = (segment_rect.left() - full_rect.left()) <= 0.5
+            if isinstance(text_entry, dict):
+                rect_local = text_entry.get("rect")
+                if isinstance(rect_local, QRectF):
+                    global_rect = QRectF(rect_local)
+                    global_rect.translate(offset.x(), offset.y())
+                    self.w._clip_text_rects.append(
+                        {
+                            "rect": global_rect,
+                            "clip": clip,
+                            "title": str(text_entry.get("title", "") or ""),
+                        }
+                    )
+        elif includes_start and segment_rect.width() <= 8.0:
+            # Keep tiny clips hoverable even when no text is painted.
+            bw = float(self.border_width or 0.0)
+            self.w._clip_text_rects.append(
+                {
+                    "rect": QRectF(
+                        segment_rect.x() + bw,
+                        segment_rect.y() + bw,
+                        max(1.0, segment_rect.width() - (bw * 2.0)),
+                        max(1.0, segment_rect.height() - (bw * 2.0)),
+                    ),
+                    "clip": clip,
+                    "title": str((clip.data.get("title", "") if isinstance(clip.data, dict) else "") or ""),
+                }
+            )
+
         includes_end = (full_rect.right() - segment_rect.right()) <= 0.5
 
         border_pen = pen if isinstance(pen, QPen) else (self.sel_pen if selected else self.clip_pen)

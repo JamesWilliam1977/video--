@@ -51,7 +51,7 @@ from PyQt5.QtGui import (
     QIcon,
     QColor,
 )
-from PyQt5.QtWidgets import QSizePolicy, QWidget
+from PyQt5.QtWidgets import QSizePolicy, QWidget, QToolTip
 
 from ..geometry import Geometry
 from ..paint import (
@@ -382,6 +382,8 @@ class TimelineWidgetBase(QWidget):
 
         # Effect icon hit targets (populated by the clip painter)
         self._effect_icon_rects = []
+        self._clip_text_rects = []
+        self._hover_tooltip_text = ""
 
         # Middle-mouse panning helpers
         self._middle_panning = False
@@ -2279,6 +2281,106 @@ class TimelineWidgetBase(QWidget):
             height,
         )
 
+    def _set_hover_tooltip(self, text):
+        text = str(text or "")
+        if text == self._hover_tooltip_text:
+            return
+        self._hover_tooltip_text = text
+        self.setToolTip(text)
+        if not text:
+            QToolTip.hideText()
+
+    def _clip_text_at(self, pos):
+        for entry in reversed(self._clip_text_rects):
+            rect = entry.get("rect") if isinstance(entry, dict) else None
+            if isinstance(rect, QRectF) and rect.contains(pos):
+                return entry
+        return None
+
+    def _transition_at(self, pos):
+        for rect, tran, _selected in self.geometry.iter_transitions(reverse=True):
+            if rect.contains(pos):
+                return tran
+        return None
+
+    def _transition_label(self, tran):
+        data = tran.data if isinstance(getattr(tran, "data", None), dict) else {}
+        title = str(data.get("title", "") or "").strip()
+        if title and title.lower() != "transition":
+            return title
+        reader = data.get("reader") if isinstance(data.get("reader"), dict) else {}
+        path = str(reader.get("path", "") or "").strip()
+        if path:
+            base = os.path.basename(path)
+            stem, ext = os.path.splitext(base)
+            image_exts = {".svg", ".png", ".jpg", ".jpeg", ".bmp", ".webp"}
+            if ext.lower() in image_exts and stem:
+                return stem.replace("_", " ")
+            return base
+        tran_type = str(data.get("type", "") or "").strip()
+        if tran_type:
+            return tran_type
+        return title
+
+    def _effect_label(self, effect):
+        if not isinstance(effect, dict):
+            return ""
+        for key in ("name", "type", "effect", "class_name"):
+            value = str(effect.get(key, "") or "").strip()
+            if value:
+                return value
+        return ""
+
+    def _track_button_tooltip(self, button):
+        if not isinstance(button, dict):
+            return ""
+        key = str(button.get("key", "") or "")
+        track = button.get("track")
+        _ = get_app()._tr
+        if key == "lock-toggle":
+            locked = bool(getattr(track, "data", {}).get("lock")) if track else False
+            return _("Unlock track") if locked else _("Lock track")
+        if key == "keyframe-panel":
+            track_num = button.get("track_num")
+            enabled = bool(self._track_panel_enabled.get(track_num, False))
+            return _("Hide keyframes") if enabled else _("Show keyframes")
+        return ""
+
+    def _hover_tooltip_for_pos(self, pos):
+        _ = get_app()._tr
+        button = self._track_toolbar_button_at(pos)
+        if button:
+            return self._track_button_tooltip(button)
+
+        icon_entry = self._effect_icon_at(pos)
+        if isinstance(icon_entry, dict):
+            effect_label = self._effect_label(icon_entry.get("effect"))
+            if effect_label:
+                return _("Effect: %s") % effect_label
+            return _("Effect")
+
+        tran = self._transition_at(pos)
+        if tran is not None:
+            label = self._transition_label(tran)
+            if label:
+                return _("Transition: %s") % label
+            return _("Transition")
+
+        entry = self._clip_text_at(pos)
+        if not isinstance(entry, dict):
+            return ""
+        title = str(entry.get("title", "") or "").strip()
+        if not title:
+            clip_obj = entry.get("clip")
+            if clip_obj and isinstance(getattr(clip_obj, "data", None), dict):
+                title = str(clip_obj.data.get("title", "") or "").strip()
+        if not title:
+            title = _("Clip")
+        return _("Clip: %s") % title
+
+    def _update_hover_tooltip(self, pos):
+        self._set_hover_tooltip(self._hover_tooltip_for_pos(pos))
+
     def _marker_identifier(self, entry):
         if not isinstance(entry, dict):
             return None
@@ -2572,6 +2674,7 @@ class TimelineWidgetBase(QWidget):
         self.events.pressed.emit(event)
 
     def leaveEvent(self, event):
+        self._set_hover_tooltip("")
         if self._toolbar_hover_key is not None or self._toolbar_pressed_inside:
             self._toolbar_hover_key = None
             if self._toolbar_pressed_key:
@@ -2736,6 +2839,7 @@ class TimelineWidgetBase(QWidget):
         self._last_event = event
 
         if self.scroll_bar_dragging:
+            self._set_hover_tooltip("")
             view_w = self.scrollbar_position[3] or 1.0
             width_norm = self.scrollbar_position_previous[1] - self.scrollbar_position_previous[0]
             handle_w = width_norm * view_w
@@ -2756,6 +2860,7 @@ class TimelineWidgetBase(QWidget):
             return
 
         if self.v_scroll_bar_dragging:
+            self._set_hover_tooltip("")
             view_h = self.v_scrollbar_position[3] or 1.0
             height_norm = self.v_scrollbar_position_previous[1] - self.v_scrollbar_position_previous[0]
             handle_h = height_norm * view_h
@@ -2773,10 +2878,12 @@ class TimelineWidgetBase(QWidget):
             return
 
         if self._middle_panning:
+            self._set_hover_tooltip("")
             self._updateMiddlePan(event.pos())
             return
 
         if self.dragging_playhead:
+            self._set_hover_tooltip("")
             self.events.moved.emit(event)
             return
 
@@ -2784,6 +2891,7 @@ class TimelineWidgetBase(QWidget):
         if self._toolbar_pressed_key:
             self._update_toolbar_pressed_state(pos)
         self._update_toolbar_hover(pos)
+        self._update_hover_tooltip(pos)
 
         self._updateCursor(pos)
         self.events.moved.emit(event)
