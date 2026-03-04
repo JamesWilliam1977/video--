@@ -242,7 +242,7 @@ class Cutting(QDialog):
         self.horizontalLayout_3.insertWidget(2, self.btnRepeat)
 
         icon = ui_util.get_icon("media-playlist-repeat")
-        if not icon:
+        if icon is None or icon.isNull():
             icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-media-repeat.svg")
             icon = QIcon(icon_path)
         self.btnRepeat.setIcon(icon)
