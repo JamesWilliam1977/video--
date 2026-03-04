@@ -45,7 +45,6 @@ import os
 import time
 
 from classes.app import get_app
-from classes.logger import log
 from classes.time_parts import secondsToTime
 from classes import info
 
@@ -1123,7 +1122,6 @@ class ClipPainter(BasePainter):
             self.w.thumbnail_manager.request_thumbnail(clip_key, file_id, frame, generation)
             if key not in self._thumb_missing_logged:
                 self._thumb_missing_logged.add(key)
-                log.debug("Thumbnail miss queued %s gen=%s", key, generation)
 
         return None
 
