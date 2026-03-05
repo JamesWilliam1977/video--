@@ -232,6 +232,55 @@ class ClipInteractionMixin:
         span = end - start
         return span if span > 0.0 else None
 
+    def _selection_anchor_from_item(self, item, sel_type=None):
+        """Build a normalized selection anchor for clips/transitions."""
+        data = item.data if isinstance(item.data, dict) else {}
+        item_type = sel_type or ("transition" if isinstance(item, Transition) else "clip")
+        position = float(data.get("position", 0.0) or 0.0)
+        layer = int(data.get("layer", 0) or 0)
+        start = float(data.get("start", 0.0) or 0.0)
+        end = float(data.get("end", start) or start)
+        duration = max(0.0, end - start)
+        return {
+            "type": item_type,
+            "position": position,
+            "end_position": position + duration,
+            "layer": layer,
+        }
+
+    def _normalize_selection_anchor(self, anchor):
+        """Convert legacy tuple anchors into the normalized anchor dict format."""
+        if isinstance(anchor, dict):
+            try:
+                position = float(anchor.get("position", 0.0) or 0.0)
+                end_position = float(anchor.get("end_position", position) or position)
+                layer = int(anchor.get("layer", 0) or 0)
+            except (TypeError, ValueError):
+                return None
+            if end_position < position:
+                end_position = position
+            return {
+                "type": anchor.get("type"),
+                "position": position,
+                "end_position": end_position,
+                "layer": layer,
+            }
+
+        if isinstance(anchor, (tuple, list)) and len(anchor) >= 2:
+            try:
+                position = float(anchor[0] or 0.0)
+                layer = int(anchor[1] or 0)
+            except (TypeError, ValueError):
+                return None
+            return {
+                "type": None,
+                "position": position,
+                "end_position": position,
+                "layer": layer,
+            }
+
+        return None
+
     def _startClipDrag(self):
         """Begin a drag operation on one or many selected clips/transitions."""
         e = self._last_event
@@ -262,6 +311,7 @@ class ClipInteractionMixin:
         alt = bool(modifiers & Qt.AltModifier)
         shift = bool(modifiers & Qt.ShiftModifier)
         sel_type = "transition" if isinstance(clicked_item, Transition) else "clip"
+        last_anchor = self._normalize_selection_anchor(getattr(self, "_last_click_pos", None))
         already = (
             clicked_item.id in self.win.selected_clips or
             clicked_item.id in self.win.selected_transitions
@@ -279,39 +329,46 @@ class ClipInteractionMixin:
             self.changed(None)
             return
 
-        elif shift and not already and getattr(self, "_last_click_pos", None) is not None:
-            # SHIFT+Click: box-select all clips/transitions whose start position
-            # falls between the anchor and this click, across layers between them.
-            last_pos, last_layer = self._last_click_pos
-            curr_data = clicked_item.data if isinstance(clicked_item.data, dict) else {}
-            curr_pos = float(curr_data.get("position", 0.0) or 0.0)
-            curr_layer = int(curr_data.get("layer", 0) or 0)
+        elif shift and last_anchor:
+            # SHIFT+Click: simple rectangular range-select between anchor and
+            # click (position + layer), across both clips and transitions.
+            current_anchor = self._selection_anchor_from_item(clicked_item, sel_type)
+            min_pos = min(last_anchor["position"], current_anchor["position"])
+            max_pos = max(last_anchor["position"], current_anchor["position"])
+            min_layer = min(last_anchor["layer"], current_anchor["layer"])
+            max_layer = max(last_anchor["layer"], current_anchor["layer"])
+            eps = 1e-9
+            matched_items = []
+            for item in Clip.filter() + Transition.filter():
+                d = item.data if isinstance(item.data, dict) else {}
+                try:
+                    item_pos = float(d.get("position", 0.0) or 0.0)
+                    item_layer = int(d.get("layer", 0) or 0)
+                    if (min_pos - eps <= item_pos <= max_pos + eps and
+                            min_layer <= item_layer <= max_layer):
+                        item_type = "transition" if isinstance(item, Transition) else "clip"
+                        matched_items.append((item.id, item_type))
+                except (TypeError, ValueError):
+                    pass
 
-            min_pos = min(last_pos, curr_pos)
-            max_pos = max(last_pos, curr_pos)
-            min_layer = min(last_layer, curr_layer)
-            max_layer = max(last_layer, curr_layer)
+            if not matched_items:
+                # Fallback: always keep clicked item selected for this SHIFT action.
+                matched_items = [(clicked_item.id, sel_type)]
 
             if not ctrl:
-                self.win.clearSelections()
-            for clip in Clip.filter():
-                d = clip.data if isinstance(clip.data, dict) else {}
-                try:
-                    if (min_pos <= float(d.get("position", 0.0)) <= max_pos and
-                            min_layer <= int(d.get("layer", 0)) <= max_layer):
-                        self.win.addSelection(clip.id, "clip", False)
-                except (TypeError, ValueError):
-                    pass
-            for tran in Transition.filter():
-                d = tran.data if isinstance(tran.data, dict) else {}
-                try:
-                    if (min_pos <= float(d.get("position", 0.0)) <= max_pos and
-                            min_layer <= int(d.get("layer", 0)) <= max_layer):
-                        self.win.addSelection(tran.id, "transition", False)
-                except (TypeError, ValueError):
-                    pass
+                self.win.selected_items = []
 
-            self._last_click_pos = (curr_pos, curr_layer)
+            for item_id, item_type in matched_items:
+                self.win.addSelection(str(item_id), item_type, False)
+
+            self.clip_painter.clear_cache()
+            self.geometry.mark_dirty()
+            self._keyframes_dirty = True
+            self.update()
+
+            # Keep the original anchor during SHIFT range operations.
+            # This prevents repeated SHIFT press events from collapsing the
+            # selection to a single clicked item.
             self.changed(None)
             # Fall through to drag setup; SHIFT+drag freezes horizontal movement.
 
@@ -322,11 +379,7 @@ class ClipInteractionMixin:
                 time.monotonic() - getattr(self, "_ctrl_just_selected_time", 0.0) < dbl
             )
             self._ctrl_just_selected_id = None
-            data = clicked_item.data if isinstance(clicked_item.data, dict) else {}
-            self._last_click_pos = (
-                float(data.get("position", 0.0) or 0.0),
-                int(data.get("layer", 0) or 0),
-            )
+            self._last_click_pos = self._selection_anchor_from_item(clicked_item, sel_type)
             if just_added:
                 # Second press of a double-click: clip was just CTRL-added;
                 # don't immediately toggle it back off — preserve selection.
@@ -352,11 +405,7 @@ class ClipInteractionMixin:
             if just_deselected:
                 # Second press of a double-click: clip was just CTRL-deselected;
                 # don't immediately re-add it — preserve deselected state.
-                data = clicked_item.data if isinstance(clicked_item.data, dict) else {}
-                self._last_click_pos = (
-                    float(data.get("position", 0.0) or 0.0),
-                    int(data.get("layer", 0) or 0),
-                )
+                self._last_click_pos = self._selection_anchor_from_item(clicked_item, sel_type)
             else:
                 # Regular click clears+selects; CTRL+click adds to selection.
                 self.win.addSelection(clicked_item.id, sel_type, not ctrl)
@@ -365,11 +414,7 @@ class ClipInteractionMixin:
                     self._ctrl_just_selected_time = time.monotonic()
                 else:
                     self._ctrl_just_selected_id = None
-                data = clicked_item.data if isinstance(clicked_item.data, dict) else {}
-                self._last_click_pos = (
-                    float(data.get("position", 0.0) or 0.0),
-                    int(data.get("layer", 0) or 0),
-                )
+                self._last_click_pos = self._selection_anchor_from_item(clicked_item, sel_type)
                 self.changed(None)
 
         else:
@@ -377,11 +422,7 @@ class ClipInteractionMixin:
             # preserve multi-selection for group drag, but collapse to this
             # one item if this ends as a plain click (no drag movement).
             self._ctrl_just_selected_id = None
-            data = clicked_item.data if isinstance(clicked_item.data, dict) else {}
-            self._last_click_pos = (
-                float(data.get("position", 0.0) or 0.0),
-                int(data.get("layer", 0) or 0),
-            )
+            self._last_click_pos = self._selection_anchor_from_item(clicked_item, sel_type)
             selected_count = (
                 len(getattr(self.win, "selected_clips", []) or [])
                 + len(getattr(self.win, "selected_transitions", []) or [])
