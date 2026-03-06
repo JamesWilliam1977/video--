@@ -31,6 +31,7 @@ import uuid
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QApplication
 from classes.app import get_app
+from classes.clip_utils import is_single_image_media
 from classes.query import Clip, Transition
 from classes.waveform import SAMPLES_PER_SECOND as WAVEFORM_SAMPLES_PER_SECOND
 
@@ -170,22 +171,12 @@ class ClipInteractionMixin:
         reader = self._clip_data_dict(clip).get("reader")
         return reader if isinstance(reader, dict) else {}
 
-    @staticmethod
-    def _media_type_is_image(value):
-        if not isinstance(value, str):
-            return False
-        return value.strip().lower() == "image"
-
     def _clip_is_single_image(self, clip):
         data = self._clip_data_dict(clip)
-        if data.get("has_single_image"):
-            return True
-        if self._media_type_is_image(data.get("media_type")):
+        if is_single_image_media(data):
             return True
         reader = self._clip_reader_dict(clip)
-        if reader.get("has_single_image"):
-            return True
-        if self._media_type_is_image(reader.get("media_type")):
+        if is_single_image_media(reader):
             return True
         return False
 

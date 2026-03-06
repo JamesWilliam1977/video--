@@ -57,7 +57,11 @@ from .timeline_backend.enums import (
 from .timeline_backend.qwidget import TimelineWidget
 from .timeline_backend.colors import effect_color_hex
 from .menu import StyledContextMenu
-from classes.clip_utils import clamp_timing_to_media, apply_file_caption_to_clip
+from classes.clip_utils import (
+    clamp_timing_to_media,
+    apply_file_caption_to_clip,
+    is_single_image_media,
+)
 from .retime import retime_clip
 from .repeat import apply_repeat, reset_repeat, RepeatDialog
 
@@ -3134,12 +3138,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                         except (TypeError, ValueError):
                             duration_sec = 0.0
 
-                    is_single_image = False
-                    if c_obj and getattr(c_obj.Reader().info, "has_single_image", False):
-                        is_single_image = True
-                    elif reader.get("has_single_image") or reader.get("media_type") == "image":
-                        is_single_image = True
-                    if is_single_image:
+                    if is_single_image_media(reader):
                         duration_sec = float(get_app().get_settings().get("default-image-length") or 10.0)
 
                     if duration_sec <= 0.0:
@@ -4051,7 +4050,6 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         apply_file_caption_to_clip(new_clip, file)
 
         # Determine start, duration, and end using file metadata
-        media_type = (file.data or {}).get("media_type")
         start_value = file.data.get("start", new_clip.get("start", 0.0))
         try:
             start_sec = float(start_value)
@@ -4069,7 +4067,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             duration_sec = 0.0
 
         default_img_len = get_app().get_settings().get("default-image-length") or 10.0
-        if media_type == "image" or new_clip["reader"].get("has_single_image"):
+        if is_single_image_media(new_clip["reader"]):
             duration_sec = float(default_img_len)
 
         end_override = file.data.get("end")

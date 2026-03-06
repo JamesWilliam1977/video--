@@ -75,6 +75,7 @@ from windows.views.menu import StyledContextMenu
 from classes.app import get_app
 from classes.query import Clip, Transition, File
 from classes.logger import log
+from classes.clip_utils import is_single_image_media
 from .thumbnails import TimelineThumbnailManager
 
 
@@ -1446,7 +1447,6 @@ class TimelineWidgetBase(QWidget):
             return frame_sec
         data = file_obj.data if isinstance(file_obj.data, dict) else {}
         reader = data if isinstance(data, dict) else {}
-        media_type = (data or {}).get("media_type")
         start_value = data.get("start", 0.0)
         try:
             start_sec = float(start_value)
@@ -1463,7 +1463,7 @@ class TimelineWidgetBase(QWidget):
             duration_sec = 0.0
 
         default_img_len = get_app().get_settings().get("default-image-length") or 10.0
-        if media_type == "image" or reader.get("has_single_image"):
+        if is_single_image_media(reader):
             duration_sec = float(default_img_len)
 
         end_override = data.get("end")
