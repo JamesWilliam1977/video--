@@ -1144,38 +1144,25 @@ class ClipPainter(BasePainter):
         if rect_width <= 0.0:
             return
 
-        width = max(1, int(round(rect_width)))
-        height = max(1, int(round(rect.height())))
-        scaled = pixmap.scaled(
-            width,
-            height,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation,
-        )
-        full_width = float(scaled.width())
-        scaled_height = float(scaled.height())
+        scaled = self.scaled_pixmap(pixmap, rect_width, rect.height())
+        if not scaled or scaled.isNull():
+            return
+        full_width, scaled_height = self.logical_size(scaled)
+        if full_width <= 0.0 or scaled_height <= 0.0:
+            return
 
-        # Compute fractions for source clipping
-        frac_left = max(0.0, (visible_rect.left() - rect.left()) / rect_width)
-        frac_width = visible_rect.width() / rect_width
-
-        source_x = frac_left * full_width
-        draw_width = frac_width * full_width
-
-        # Target rect within visible area
-        target_x = visible_rect.x()
-        target_y = visible_rect.y() + (visible_rect.height() - scaled_height) / 2.0
-        target = QRectF(target_x, target_y, visible_rect.width(), scaled_height)
-
-        # Source rect from scaled pixmap
-        source = QRectF(source_x, 0.0, draw_width, scaled_height)
+        target_x = rect.x()
+        target_y = rect.y() + (rect.height() - scaled_height) / 2.0
 
         had_hint = bool(painter.renderHints() & QPainter.SmoothPixmapTransform)
+        painter.save()
+        painter.setClipRect(visible_rect, Qt.IntersectClip)
         if not had_hint:
             painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
-        painter.drawPixmap(target, scaled, source)
+        painter.drawPixmap(QPointF(target_x, target_y), scaled)
         if not had_hint:
             painter.setRenderHint(QPainter.SmoothPixmapTransform, False)
+        painter.restore()
 
     def _slot_is_visible(self, rect):
         """Return True if a thumbnail slot rect intersects the current viewport."""
