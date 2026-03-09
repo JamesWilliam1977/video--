@@ -37,6 +37,18 @@ from classes.waveform import SAMPLES_PER_SECOND as WAVEFORM_SAMPLES_PER_SECOND
 
 
 class ClipInteractionMixin:
+    def _transition_uses_static_mask(self, transition_data):
+        reader = {}
+        if isinstance(transition_data, dict):
+            for key in ("mask_reader", "reader"):
+                candidate = transition_data.get(key)
+                if isinstance(candidate, dict):
+                    reader = candidate
+                    break
+        if isinstance(reader, dict) and "has_single_image" in reader:
+            return bool(reader.get("has_single_image"))
+        return bool(is_single_image_media(reader))
+
     def _set_trim_thumbnail_suspension(self, enabled, clip_id=None):
         """Pause thumbnail generation while trimming and drop stale queued work."""
         self._suspend_thumbnail_requests = bool(enabled)
@@ -888,6 +900,7 @@ class ClipInteractionMixin:
             sel_type = "clip"
         else:
             sel_type = "transition"
+            static_mask = self._transition_uses_static_mask(item.data)
             self._pending_transition_overrides[item.id] = {
                 "position": self._resize_initial["position"],
                 "start": self._resize_initial["start"],
@@ -895,7 +908,7 @@ class ClipInteractionMixin:
                 "initial_start": self._resize_initial["start"],
                 "initial_end": self._resize_initial["end"],
                 # Transition keyframes should preview as scaled while trimming.
-                "scale": True,
+                "scale": static_mask,
             }
             self._snap_keyframe_seconds = []
         # Ensure item is selected
@@ -948,6 +961,7 @@ class ClipInteractionMixin:
             else:
                 self._snap_keyframe_seconds = []
         else:
+            static_mask = self._transition_uses_static_mask(item.data)
             override = self._pending_transition_overrides.setdefault(
                 item.id,
                 {
@@ -961,7 +975,7 @@ class ClipInteractionMixin:
             override["position"] = position
             override["start"] = start
             override["end"] = end
-            override["scale"] = True
+            override["scale"] = static_mask
             self._keyframes_dirty = True
         self.update()
 
@@ -971,8 +985,11 @@ class ClipInteractionMixin:
         min_len = 1.0 / self.fps_float
         rect = self._resize_initial_rect
         world_rect = getattr(self, "_resize_initial_world_rect", rect)
-        width = self._resize_initial["end"]
+        start = self._resize_initial["start"]
+        end = self._resize_initial["end"]
+        width = max(end - start, min_len)
         pos = self._resize_initial["position"]
+        static_mask = self._transition_uses_static_mask(item.data)
 
         if self._resize_edge == "left":
             delta_sec = (event.pos().x() - rect.left()) / pps
@@ -982,10 +999,14 @@ class ClipInteractionMixin:
             if delta_sec > max_delta:
                 delta_sec = max_delta
             new_position = pos + delta_sec
-            new_end = width - delta_sec
+            new_start = 0.0 if static_mask else start + delta_sec
+            new_end = (width - delta_sec) if static_mask else end
             if new_position < 0:
                 new_position = 0
-                new_end = (pos + width) - new_position
+                if static_mask:
+                    new_end = (pos + width) - new_position
+                else:
+                    new_start = start + (new_position - pos)
             rect_left = self.track_name_width + new_position * pps
         else:
             delta_sec = (event.pos().x() - rect.right()) / pps
@@ -994,13 +1015,14 @@ class ClipInteractionMixin:
             min_delta = -(width - min_len)
             if delta_sec < min_delta:
                 delta_sec = min_delta
-            new_end = width + delta_sec
+            new_start = 0.0 if static_mask else start
+            new_end = (width + delta_sec) if static_mask else end + delta_sec
             new_position = pos
             rect_left = self.track_name_width + new_position * pps
 
-        rect_width = new_end * pps
+        rect_width = max(new_end - new_start, min_len) * pps
         geom_rect = QRectF(rect_left, world_rect.y(), rect_width, world_rect.height())
-        return geom_rect, 0.0, new_end, new_position
+        return geom_rect, new_start, new_end, new_position
 
     def _compute_clip_resize(self, item):
         event = self._last_event
@@ -1131,15 +1153,16 @@ class ClipInteractionMixin:
                 self.update_clip_data(item.data, only_basic_props=True, ignore_reader=True)
         else:
             setattr(self.win, "_trim_refresh_pending", True)
+            static_mask = self._transition_uses_static_mask(item.data)
             # Use a copied payload so update_transition_data() can compare
             # existing transition timing against the new timing and scale
             # keyframes correctly during trim/resize.
             transition_data = json.loads(json.dumps(item.data))
             transition_data["position"] = self._snap_time(position)
-            transition_data["start"] = 0.0
+            transition_data["start"] = self._snap_time(start)
             transition_data["end"] = self._snap_time(end)
-            transition_data["duration"] = self._snap_time(end)
-            transition_data["_auto_direction"] = True
+            transition_data["duration"] = self._snap_time(transition_data["end"] - transition_data["start"])
+            transition_data["_auto_direction"] = static_mask
             self.update_transition_data(transition_data, only_basic_props=True)
             item.data = transition_data
 

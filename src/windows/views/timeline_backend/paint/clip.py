@@ -47,6 +47,7 @@ import time
 from classes.app import get_app
 from classes.time_parts import secondsToTime
 from classes import info
+from classes.clip_utils import is_single_image_media
 
 from .base import BasePainter
 
@@ -747,10 +748,23 @@ class ClipPainter(BasePainter):
             # Clear pending override after update to ensure consistency
             self._pending_clip_overrides.pop(item.id, None)
         else:
+            reader = {}
+            if isinstance(item.data, dict):
+                for key in ("mask_reader", "reader"):
+                    candidate = item.data.get(key)
+                    if isinstance(candidate, dict):
+                        reader = candidate
+                        break
+            static_mask = False
+            if isinstance(reader, dict):
+                static_mask = bool(reader.get("has_single_image")) if "has_single_image" in reader else bool(
+                    is_single_image_media(reader)
+                )
             item.data["position"] = self._snap_time(position)
-            item.data["start"] = 0.0
+            item.data["start"] = self._snap_time(start)
             item.data["end"] = self._snap_time(end)
-            item.data["duration"] = self._snap_time(end)
+            item.data["duration"] = self._snap_time(item.data["end"] - item.data["start"])
+            item.data["_auto_direction"] = static_mask
             self.update_transition_data(item.data, only_basic_props=True)
 
         self._resizing_item = None

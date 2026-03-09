@@ -880,11 +880,21 @@ class PropertiesTableView(QTableView):
                         continue
                     icon = idx.data(Qt.DecorationRole)
                     name = idx.sibling(i, 1).data()
-                    path = os.path.join(idx.sibling(i, 4).data(), name)
+                    file_id = idx.sibling(i, 5).data()
+                    file_obj = File.get(id=file_id) if file_id else None
+                    path = file_obj.absolute_path() if file_obj else ""
+                    if not path:
+                        continue
+                    file_data = getattr(file_obj, "data", {}) or {}
 
                     # Append file choice
                     file_choices.append({"name": name,
-                                         "value": path,
+                                         "value": {
+                                             "file_id": file_id,
+                                             "path": path,
+                                             "start": file_data.get("start"),
+                                             "end": file_data.get("end"),
+                                         },
                                          "selected": False,
                                          "icon": icon
                                          })

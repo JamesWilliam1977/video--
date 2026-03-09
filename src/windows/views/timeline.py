@@ -605,24 +605,11 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
         transition_details = json.loads(transition_json)
 
-        # Get FPS from project
-        fps = get_app().project.get("fps")
-        fps_float = float(fps["num"]) / float(fps["den"])
-
         transition_path = os.path.join(info.PATH, "transitions", "common", "fade.svg")
         reader_data = self._load_transition_reader_data(transition_path)
         if not reader_data:
             log.warning("Unable to load default transition image: %s", transition_path)
             return
-
-        # Generate transition object
-        transition_object = openshot.Mask()
-
-        # Set brightness and contrast, to correctly transition for overlapping clips
-        brightness = transition_object.brightness
-        brightness.AddPoint(1, 1.0, openshot.BEZIER)
-        brightness.AddPoint(round(transition_details["end"] * fps_float) + 1, -1.0, openshot.BEZIER)
-        contrast = openshot.Keyframe(3.0)
 
         # Create transition dictionary
         transitions_data = {
@@ -633,11 +620,10 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             "position": transition_details["position"],
             "start": transition_details["start"],
             "end": transition_details["end"],
-            "brightness": json.loads(brightness.Json()),
-            "contrast": json.loads(contrast.Json()),
             "reader": reader_data,
             "replace_image": False
         }
+        self._set_transition_mask_defaults(transitions_data)
 
         # Send to update manager
         self.update_transition_data(transitions_data, only_basic_props=False)
@@ -720,6 +706,85 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         for point in keyframe.get("Points", []):
             if "co" in point and "X" in point["co"] and point["co"]["X"] != 1:
                 point["co"]["X"] = round((point["co"]["X"] - 1) * factor) + 1
+
+    def _transition_mask_reader(self, transition_data, fallback_data=None):
+        """Return reader metadata for a transition payload."""
+        if isinstance(transition_data, dict):
+            for key in ("mask_reader", "reader"):
+                reader = transition_data.get(key)
+                if isinstance(reader, dict):
+                    return reader
+        if isinstance(fallback_data, dict):
+            for key in ("mask_reader", "reader"):
+                reader = fallback_data.get(key)
+                if isinstance(reader, dict):
+                    return reader
+        return {}
+
+    def _transition_uses_static_mask(self, transition_data, fallback_data=None):
+        """Return True when a transition uses a static single-image mask."""
+        reader = self._transition_mask_reader(transition_data, fallback_data)
+        if "has_single_image" in reader:
+            return bool(reader.get("has_single_image"))
+        return bool(is_single_image_media(reader))
+
+    def _transition_reader_changed(self, transition_data, fallback_data=None):
+        """Return True when the transition reader source changed."""
+        new_reader = self._transition_mask_reader(transition_data, fallback_data)
+        old_reader = self._transition_mask_reader(fallback_data, None)
+
+        if not isinstance(fallback_data, dict):
+            return False
+        if not new_reader and not old_reader:
+            return False
+
+        for key in ("id", "path", "type", "has_single_image", "video_length", "duration"):
+            if new_reader.get(key) != old_reader.get(key):
+                return True
+        return new_reader != old_reader
+
+    def _build_transition_default_keyframes(self, duration, start_value, end_value, contrast_value):
+        """Build default brightness/contrast keyframes for a transition."""
+        fps = get_app().project.get("fps")
+        fps_float = float(fps["num"]) / float(fps["den"])
+        duration = max(0.0, float(duration or 0.0))
+
+        brightness = openshot.Keyframe()
+        brightness.AddPoint(1, float(start_value), openshot.BEZIER)
+        if float(start_value) != float(end_value):
+            brightness.AddPoint(round(duration * fps_float) + 1, float(end_value), openshot.BEZIER)
+        contrast = openshot.Keyframe(float(contrast_value))
+        return json.loads(brightness.Json()), json.loads(contrast.Json())
+
+    def _set_transition_mask_defaults(self, transition_data, fallback_data=None):
+        """Normalize timing/keyframes for static vs animated transition masks."""
+        if not isinstance(transition_data, dict):
+            return transition_data
+
+        start = float(transition_data.get("start", 0.0) or 0.0)
+        end = float(transition_data.get("end", start) or start)
+        if end < start:
+            end = start
+        duration = max(0.0, end - start)
+
+        if self._transition_uses_static_mask(transition_data, fallback_data):
+            transition_data["start"] = 0.0
+            transition_data["end"] = duration
+            brightness, contrast = self._build_transition_default_keyframes(duration, 1.0, -1.0, 3.0)
+            mode = "static"
+        else:
+            transition_data["start"] = start
+            transition_data["end"] = end
+            brightness, contrast = self._build_transition_default_keyframes(duration, 0.0, 0.0, 0.0)
+            mode = "animated"
+
+        transition_data["duration"] = max(
+            0.0,
+            float(transition_data.get("end", 0.0) or 0.0) - float(transition_data.get("start", 0.0) or 0.0),
+        )
+        transition_data["brightness"] = brightness
+        transition_data["contrast"] = contrast
+        return transition_data
 
     def _reverse_keyframes(self, keyframe, total_frames):
         """Reverse keyframe positions, swapping handles"""
@@ -811,6 +876,8 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
     def _auto_orient_transition_keyframes(self, transition_data):
         """Apply fade-in orientation on left-edge drops (right edge keeps default orientation)."""
+        if not self._transition_uses_static_mask(transition_data):
+            return
         target_side = self._infer_transition_drop_side(transition_data)
         if target_side not in ("left", "right"):
             return
@@ -893,6 +960,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         new_duration = existing_item.data.get("end", 0.0) - existing_item.data.get("start", 0.0)
         old_frames = round(old_duration * fps_float) if old_duration > 0 else 0
         new_frames = round(new_duration * fps_float) if new_duration > 0 else 0
+        uses_static_mask = self._transition_uses_static_mask(existing_item.data, old_data)
 
         if old_data and only_basic_props:
             if "brightness" in old_data:
@@ -900,13 +968,15 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             if "contrast" in old_data:
                 existing_item.data["contrast"] = old_data["contrast"]
 
-            if old_frames and new_frames and old_frames != new_frames:
+            if uses_static_mask and old_frames and new_frames and old_frames != new_frames:
                 scale = new_frames / old_frames
                 for prop in ("brightness", "contrast"):
                     if prop in existing_item.data:
                         self._scale_keyframes(existing_item.data[prop], scale)
+        elif old_data and self._transition_reader_changed(existing_item.data, old_data):
+            self._set_transition_mask_defaults(existing_item.data, old_data)
 
-        if auto_direction:
+        if auto_direction and uses_static_mask:
             self._auto_orient_transition_keyframes(existing_item.data)
 
         # Only include the basic properties (performance boost)
@@ -4176,13 +4246,6 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         if not isinstance(reader_json, dict):
             reader_json = {"path": file_path}
 
-        # Create Keyframes for brightness and contrast
-        brightness = openshot.Keyframe()
-        brightness.AddPoint(1, 1.0, openshot.BEZIER)
-        brightness.AddPoint(round(duration * fps_float) + 1, -1.0, openshot.BEZIER)
-
-        contrast = openshot.Keyframe(3.0)
-
         # Create transition dictionary
         transition_data = {
             "id": get_app().project.generate_id(),
@@ -4193,11 +4256,10 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             "start": 0,
             "end": duration,
             "resource": file_path,
-            "brightness": json.loads(brightness.Json()),
-            "contrast": json.loads(contrast.Json()),
             "reader": deepcopy(reader_json),
             "replace_image": False
         }
+        self._set_transition_mask_defaults(transition_data)
 
         # Default transition to fade-in on clip left edge, fade-out on right edge.
         self._auto_orient_transition_keyframes(transition_data)

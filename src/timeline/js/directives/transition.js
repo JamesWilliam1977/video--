@@ -52,6 +52,11 @@ App.directive("tlTransition", function () {
         originalWidth: 0
       };
 
+      function transitionUsesStaticMask(transition) {
+        var reader = (transition && (transition.mask_reader || transition.reader)) || {};
+        return !!reader.has_single_image;
+      }
+
       function ensureTransitionPreviewContainer() {
         if (!scope.transition) {
           return null;
@@ -248,15 +253,22 @@ App.directive("tlTransition", function () {
           let delta_time = delta_x / scope.pixelsPerSecond;
 
           //change the end/start based on which side was dragged
+          var static_mask = transitionUsesStaticMask(scope.transition);
           var new_position = scope.transition.position;
-          var new_right = scope.transition.end;
+          var new_start = scope.transition.start;
+          var new_end = scope.transition.end;
 
           if (dragLoc === "left") {
             // changing the start
             new_position -= delta_time;
-            new_right += delta_time;
+            if (static_mask) {
+              new_start = 0.0;
+              new_end += delta_time;
+            } else {
+              new_start -= delta_time;
+            }
           } else {
-            new_right -= delta_time;
+            new_end -= delta_time;
           }
 
           // Hide snapline (if any)
@@ -264,24 +276,20 @@ App.directive("tlTransition", function () {
 
           //apply the new start, end and length to the transition's scope
           var snappedPosition = typeof snapToFPSGridTime === "function" ? snapToFPSGridTime(scope, new_position) : new_position;
-          var snappedEnd = typeof snapToFPSGridTime === "function" ? snapToFPSGridTime(scope, new_right) : new_right;
+          var snappedStart = typeof snapToFPSGridTime === "function" ? snapToFPSGridTime(scope, new_start) : new_start;
+          var snappedEnd = typeof snapToFPSGridTime === "function" ? snapToFPSGridTime(scope, new_end) : new_end;
 
           scope.$apply(function () {
-            if (dragLoc === "right") {
-              scope.transition.end = snappedEnd;
-            }
-            if (dragLoc === "left") {
-              scope.transition.position = snappedPosition;
-              scope.transition.start = 0.0;
-              scope.transition.end = snappedEnd;
-            }
+            scope.transition.position = snappedPosition;
+            scope.transition.start = snappedStart;
+            scope.transition.end = snappedEnd;
           });
 
           // update transition in Qt (very important =)
           if (scope.Qt) {
             timeline.BeginTrimRefresh();
             var transitionPayload = Object.assign({}, scope.transition, {
-              _auto_direction: true
+              _auto_direction: static_mask
             });
             timeline.update_transition_data(JSON.stringify(transitionPayload), true, false, null);
           }
