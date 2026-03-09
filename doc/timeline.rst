@@ -27,10 +27,11 @@ layer visuals, and make timing decisions here. If you are new to editing, think
 of the timeline as a simple left-to-right story: earlier moments on the left,
 later moments on the right.
 
-.. image:: images/timeline.jpg
+.. image:: images/timeline-with-keyframe-panel.jpg
 
 If you are just getting started, read :ref:`quick_tutorial_ref` first, then come
 back here for more detail.
+For a labeled breakdown of toolbar controls, see :ref:`timeline_toolbar_ref`.
 
 Timeline Basics
 ---------------
@@ -84,16 +85,8 @@ See :ref:`clips_ref` for the full list and examples.
 Timeline Toolbar and Zoom
 -------------------------
 
-The timeline toolbar helps with common navigation and editing actions, including:
-
-- Snapping
-- Timing Tool (retime)
-- Razor Tool
-- Marker controls (add, previous, next)
-- Center timeline on playhead
-- Zoom slider
-
-For complete descriptions of each button, see :ref:`timeline_toolbar_ref`.
+The timeline toolbar helps with common navigation and editing actions (snapping,
+retime, razor, markers, centering, and zoom).
 
 Tip: If timeline editing feels crowded, zoom in with the timeline slider to make
 small clip adjustments easier.

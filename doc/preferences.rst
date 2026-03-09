@@ -95,6 +95,8 @@ to reset certain preferences without affecting others.
 Timeline
 --------
 
+.. image:: images/preferences-timeline.jpg
+
 The Timeline tab controls default timeline behavior, clip/transition insertion defaults, and whether
 to use the new timeline backend or the legacy web-based timeline.
 
@@ -220,15 +222,28 @@ Please keep in mind that GPU hardware acceleration is experimental at the moment
 encoding acceleration. For more information take a look at our `Github HW-ACCEL Doc <https://github.com/OpenShot/libopenshot/blob/develop/doc/HW-ACCEL.md>`_.
 NOTE: On systems with older graphics cards, hardware acceleration may not always be faster than CPU encoding.
 
-.. TODO Performance settings
-  Process Video Frame Rates in Parallel
-  OMP Threads = Open Multi-Processing? https://en.wikipedia.org/wiki/OpenMP
-  FFmpeg Threads 
-        (NB: it states 0=default, but the actually default upon installation is 8 ?)
-         Advices is N(cores-1) or N(Threads-1) ?
- Hardware Decoder max width/height  Can be found where? Link to HW manufacturers?
- Use Blender GPU rendering: Default = on?
-    (Check current Blender defaults; may backfire if system has multiple GPUs and high-end GPU is auto-detected)
+.. list-table::
+   :widths: 36 80
+   :header-rows: 1
+
+   * - Setting
+     - Description
+   * - Hardware Decoder Mode
+     - Select the hardware decoding backend to use. Use :guilabel:`Test` to verify the selected decoder mode.
+   * - Hardware Decoder Graphics Card
+     - Choose which GPU device is used for hardware decoding.
+   * - Hardware Encoder Graphics Card
+     - Choose which GPU device is used for hardware encoding.
+   * - OMP Threads (0 = Default)
+     - Number of OpenMP worker threads used by performance-sensitive processing. Use ``0`` to let OpenShot choose automatically.
+   * - FFmpeg Threads (0 = Default)
+     - Number of FFmpeg threads used for decoding/encoding. Use ``0`` for automatic thread selection.
+   * - Hardware Decoder Max Width (0 = Default)
+     - Optional maximum width for hardware decoding. Use ``0`` for no explicit limit.
+   * - Hardware Decoder Max Height (0 = Default)
+     - Optional maximum height for hardware decoding. Use ``0`` for no explicit limit.
+   * - Use Blender GPU rendering for Animated Titles (Experimental)
+     - Enable GPU rendering for Blender-based animated titles (experimental).
 
 .. _preferences_keyboard_ref:
 
@@ -319,7 +334,7 @@ The Advanced tab includes ComfyUI integration and debugging options.
      - Enabled
      - Display the Export Video window when export completes
 
-The ComfyUI **Check** button updates an inline status icon (no popup dialogs).
+The ComfyUI **Check** button updates an inline status icon: green checkmark for success, red icon for failure.
 If OpenShot cannot reach this server, AI context menu options are hidden.
 See :ref:`ai_ref` for setup details, requirements, and workflow options.
 

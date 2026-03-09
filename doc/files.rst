@@ -77,20 +77,36 @@ file menu.
 
 .. image:: images/file-menu.jpg
 
-====================  ============
-File Context Option   Description
-====================  ============
-Import Files...       Import files into your project
-Thumbnail/Detail      Toggle the view between details and thumbnails
-Preview File          Preview a media file
-Split File            Split a file into many smaller files. The new trimmed files appear in the Project Files list.
-Edit Title            Edit an existing title SVG file
-Duplicate Title       Make a copy, and then edit the copied title SVG file
-Add to Timeline       Add many files to the timeline in one step, including transitions or alternating tracks.
-Choose Profile        Change the current project profile to match the selected file. If the file's profile does not match a known profile, it will give you the option to create a custom profile.
-File Properties       View the properties of a file, such as frame rate, size, etc...
-Remove from Project   Remove a file from the project
-====================  ============
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - File Context Option
+     - Description
+   * - Import Files...
+     - Import files into your project
+   * - Create with AI / Enhance with AI (Optional)
+     - AI menu actions for generating or enhancing media files. These options are shown only when AI is enabled and the selected file type supports the workflow. See :ref:`ai_ref`.
+   * - Details View
+     - Switch the Project Files panel to details view
+   * - Preview File
+     - Preview a media file
+   * - Split File
+     - Split a file into many smaller files. The new trimmed files appear in the Project Files list.
+   * - Export Files
+     - Export selected files (and split segments) to a destination folder
+   * - Add to Timeline
+     - Add many files to the timeline in one step, including transitions or alternating tracks.
+   * - Choose Profile
+     - Change the current project profile to match the selected file. If the file's profile does not match a known profile, it will give you the option to create a custom profile.
+   * - File Properties
+     - View the properties of a file, such as frame rate, size, etc...
+   * - Remove from Project
+     - Remove a file from the project
+   * - Edit Title
+     - Edit an existing title SVG file (shown when an SVG title is selected)
+   * - Duplicate Title
+     - Make a copy, and then edit the copied title SVG file (shown when an SVG title is selected)
 
 Preview File
 ------------
@@ -139,8 +155,6 @@ NOTE: This will export each file or file segment using its **original video prof
 also supports any :ref:`split_clip_ref` (described above). For example, if you have split a long video file into
 many different segments (and named them), you can now export all the segments as separate video files (using the original
 file's video profile).
-
-.. image:: images/export-clips-dialog.jpg
 
 Add to Timeline
 ---------------

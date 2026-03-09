@@ -93,22 +93,34 @@ Timeline Toolbar
 For a beginner-friendly overview of timeline editing (selection, tracks,
 keyframes, and common workflows), see :ref:`timeline_ref`.
 
-.. table::
-   :widths: 20 73
+.. list-table::
+   :widths: 5 28 67
+   :header-rows: 1
 
-   ===========================  ============
-   Name                         Description
-   ===========================  ============
-   Add Track                    Add a new track to the timeline. New projects start with 5 tracks by default.
-   Snapping                     Toggle between snapping and non-snapping modes. Snapping makes it easier to place clips next to other clips.
-   Timing Tool                  Toggle retiming mode. Drag clip edges to slow down or speed up playback without trimming; all keyframes are scaled to fit the new length.
-   Razor Tool                   Toggle the razor tool on and off. This tool will cut a clip exactly where you click on it, splitting a clip into 2 clips.
-   Add Marker                   Add a marker to the timeline at the current playhead position. This can be useful for returning to a specific position on the timeline.
-   Previous Marker              Jump to the previous marker. This moves the playhead to the left, seeking to the next marker or important position (i.e. start / end positions of clips).
-   Next Marker                  Jump to the next marker. This moves the playhead to the right, seeking to the next marker or important position (i.e. start / end positions of clips).
-   Center Timeline on Playhead  This centers the timeline on the playhead position. This can be useful if the playhead is not visible and you want to quickly scroll the timeline to that position.
-   Zoom Slider                  This controls the visible portion of the timeline. Adjusting the left/right handles will zoom in/out of your timeline, keeping a specific section of your project in view. Double click to zoom to your entire timeline.
-   ===========================  ============
+   * - #
+     - Control Group
+     - Description
+   * - 1
+     - Add Track
+     - Add a new track to the timeline. New projects start with 5 tracks by default.
+   * - 2
+     - Undo / Redo
+     - Undo or redo your latest timeline edits.
+   * - 3
+     - Snap, Retime, Razor
+     - Snapping toggles magnetic alignment. Timing Tool enables retiming by dragging clip edges. Razor Tool cuts clips at the clicked position.
+   * - 4
+     - Add Marker, Next/Prev Marker
+     - Add a marker at the playhead and jump to previous or next marker/clip boundaries.
+   * - 5
+     - Center on Playhead
+     - Center the visible timeline area around the current playhead position.
+   * - 6
+     - Zoom Slider
+     - Control the visible timeline range. Drag handles to zoom in/out, drag center to pan, and double-click to fit timeline.
+   * - 7
+     - Track toggles (Lock, Keyframe Panel)
+     - Per-track controls such as lock and keyframe panel visibility.
 
 .. _keyboard_shortcut_ref:
 

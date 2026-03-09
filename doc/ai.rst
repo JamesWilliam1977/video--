@@ -108,7 +108,16 @@ What Users See in OpenShot
 When ComfyUI is available, OpenShot shows AI tools in context menus:
 
 - :guilabel:`Create with AI` for creating new assets
-- :guilabel:`Enhance with AI` for processing existing assets
+
+  .. image:: images/create-with-ai.jpg
+
+- :guilabel:`Enhance with AI (images)` for processing image assets
+
+  .. image:: images/enhance-with-ai-image.jpg
+
+- :guilabel:`Enhance with AI (videos)` for processing video assets
+
+  .. image:: images/enhance-with-ai-video.jpg
 
 Generated files are added to :guilabel:`Project Files` with progress text and
 queue badges. Outputs are saved under ``.openshot_qt/comfyui-output/``.
@@ -140,6 +149,8 @@ AI Action Dialog
 Both :guilabel:`Create with AI` and :guilabel:`Enhance with AI` open the same
 generation dialog.
 
+.. image:: images/comfyui-prompt-dialog.jpg
+
 Why this dialog matters:
 
 - It keeps all AI inputs in one place.
@@ -152,34 +163,82 @@ What you can do in the dialog:
 - Enter the prompt text.
 - Preview the selected source file (for enhance workflows).
 - Set the output name for generated media.
-- Provide tracking points/rectangles for SAM2 workflows:
-  positive and negative points, positive and negative rectangles.
+- Provide tracking points/rectangles for tracking workflows.
 - Start the job with :guilabel:`Generate` or close with :guilabel:`Cancel`.
 
-Tracking Region Screen (SAM2)
------------------------------
+Tracking (Mask, Blur, Highlight)
+--------------------------------
 
 Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`,
-:guilabel:`Mask...`) use a region screen to collect tracking inputs.
+:guilabel:`Mask...`) use a region screen where you mark what to include and
+what to ignore.
 
-Why this screen matters:
+.. image:: images/comfyui-tracking-dialog-blue-red-dots.jpg
 
-- Good tracking starts with clean seed inputs.
-- Better seed points usually mean cleaner masks and fewer artifacts.
+Why this matters
+^^^^^^^^^^^^^^^^
 
-How to use it:
+Tracking helps your effect stay attached to a moving subject over time.
+For example, you can blur a face, highlight a player, or generate a clean mask
+that follows the same object across many frames.
+
+Tracking Icons
+^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 35 65
+   :header-rows: 1
+
+   * - Icon / Marker
+     - Meaning
+   * - Blue dot
+     - Positive tracking coordinate (foreground/subject seed point).
+   * - Red dot
+     - Negative tracking coordinate (background/exclusion seed point).
+   * - Blue rectangle
+     - Positive region seed (broad subject hint).
+   * - Red rectangle
+     - Negative region seed (broad exclusion hint).
+   * - Delete icon
+     - Clear all current tracking seeds (points/rectangles) and start over.
+
+How Tracking Works
+^^^^^^^^^^^^^^^^^^
+
+OpenShot sends your positive and negative markers as seed coordinates to the
+tracking model, which builds a mask for the subject and then follows it over
+time. Better seeds usually produce cleaner masks and less drift. [sam2]_
+
+How to use it
+^^^^^^^^^^^^^
 
 1. Pick a frame where the subject is clearly visible.
-2. Add positive points on the subject.
-3. Add negative points on nearby background.
+2. Start with one blue dot on the subject.
+3. Add red dots on nearby background only if needed.
 4. Add rectangles when you need faster broad selection.
 5. Repeat on additional frames when motion/shape changes.
 
-Tips for better SAM2 jobs:
+Adjusting over time (frame slider):
+
+- Move the frame slider to different moments in the clip.
+- Add or adjust dots/rectangles on frames where tracking starts to drift.
+- Use additional seed points only where needed, especially on occlusions, fast motion, or major shape changes.
+
+**Mask Preview Output (from this tracking process):**
+
+.. image:: images/comfyui-mask-example-preview.jpg
+
+Best Practices
+^^^^^^^^^^^^^^
 
 - Use a short test clip first.
-- Start with fewer points, then add only where tracking fails.
+- Start simple: a single blue dot is often enough.
+- Add more points only where tracking fails.
+- If needed, add a more nuanced set of positive/negative points and rectangles.
 - Keep positive and negative points separated clearly.
+- If tracking becomes messy, use the Delete icon and restart with cleaner seeds.
+
+.. [sam2] *SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 <https://github.com/facebookresearch/sam2>`_
 
 Job Queue, Progress, and Cancel
 -------------------------------
