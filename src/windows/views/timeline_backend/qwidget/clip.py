@@ -977,6 +977,15 @@ class ClipInteractionMixin:
             override["end"] = end
             override["scale"] = static_mask
             self._keyframes_dirty = True
+            timeline = getattr(self.win, "timeline", None)
+            transition_id = getattr(item, "id", None)
+            if timeline and self.fps_float and transition_id:
+                if self._resize_edge == "left":
+                    frame_seconds = self._snap_time(start)
+                else:
+                    frame_seconds = self._snap_time(end)
+                frame = int(round(frame_seconds * self.fps_float)) + 1
+                timeline.PreviewTransitionFrame(str(transition_id), max(1, frame))
         self.update()
 
     def _compute_transition_resize(self, item):

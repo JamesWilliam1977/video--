@@ -3808,6 +3808,30 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         # Seek to frame
         self.window.SeekSignal.emit(frame_number, True)
 
+    @pyqtSlot(str, int)
+    def PreviewTransitionFrame(self, transition_id, frame_number):
+        """Preview a specific source frame from a transition mask."""
+
+        transition = Transition.get(id=transition_id)
+        if not transition:
+            return
+
+        transition_data = transition.data if isinstance(transition.data, dict) else {}
+        reader = self._transition_mask_reader(transition_data)
+        preview_path = reader.get("path") if isinstance(reader, dict) else None
+        if not preview_path:
+            return
+
+        frame_number = max(int(frame_number or 1), 1)
+
+        # Load the mask source into the Player using stretch scaling so masks
+        # match transition rendering instead of preserving source aspect ratio.
+        self.window.LoadFilePreviewSignal.emit(preview_path, True)
+        self.window.SpeedSignal.emit(0)
+
+        # Seek to frame
+        self.window.SeekSignal.emit(frame_number, True)
+
     @pyqtSlot(int)
     def SeekToKeyframe(self, frame_number):
         """Seek to a specific frame when a keyframe point is clicked"""

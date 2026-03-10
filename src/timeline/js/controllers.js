@@ -194,6 +194,16 @@ App.controller("TimelineCtrl", function ($scope) {
     }
   };
 
+  $scope.previewTransitionFrame = function (transition_id, position_seconds) {
+    var position_seconds_rounded = (Math.round((position_seconds * $scope.project.fps.num) / $scope.project.fps.den) * $scope.project.fps.den ) / $scope.project.fps.num;
+    var frames_per_second = $scope.project.fps.num / $scope.project.fps.den;
+    var frame = Math.round(position_seconds_rounded * frames_per_second) + 1;
+
+    if ($scope.Qt) {
+      timeline.PreviewTransitionFrame(transition_id, frame);
+    }
+  };
+
   // Get keyframe interpolation type
   $scope.lookupInterpolation = function(interpolation_number) {
     if (parseInt(interpolation_number) === 0) {

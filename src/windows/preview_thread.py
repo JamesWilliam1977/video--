@@ -166,6 +166,8 @@ class PreviewParent(QObject, UpdateInterface):
         self.parent.previewFrameSignal.connect(self.worker.previewFrame)
         self.parent.refreshFrameSignal.connect(self.worker.refreshFrame)
         self.parent.LoadFileSignal.connect(self.worker.LoadFile)
+        if hasattr(self.parent, "LoadFilePreviewSignal"):
+            self.parent.LoadFilePreviewSignal.connect(self.worker.LoadFilePreview)
         self.parent.PlaySignal.connect(self.worker.Play)
         self.parent.PauseSignal.connect(self.worker.Pause)
         self.parent.SeekSignal.connect(self.QueueSeek)
@@ -206,6 +208,7 @@ class PlayerWorker(QObject):
         self.current_frame = None
         self.current_mode = None
         self.reader_mode = "timeline"
+        self.preview_stretch = False
         self._seek_lock = threading.Lock()
         self._pending_seek = None
         self._last_queued_seek_request = None
@@ -356,14 +359,20 @@ class PlayerWorker(QObject):
 
     def LoadFile(self, path=None):
         """ Load a media file into the video player """
+        self.LoadFilePreview(path, False)
+
+    @pyqtSlot(str, bool)
+    def LoadFilePreview(self, path=None, stretch=False):
+        """Load a media file into the video player with optional stretch scaling."""
         # Check to see if this path is already loaded
         if path == self.clip_path:
-            if self.reader_mode == "clip":
+            if self.reader_mode == "clip" and self.preview_stretch == bool(stretch):
                 return
             if self.clip_reader:
                 self.original_position = self.player.Position()
                 self.player.Reader(self.clip_reader)
                 self.reader_mode = "clip"
+                self.preview_stretch = bool(stretch)
                 self.Seek(1)
             return
         if not path and not self.clip_path and self.reader_mode == "timeline":
@@ -383,6 +392,7 @@ class PlayerWorker(QObject):
             log.debug("Set timeline reader again in player: %s" % self.timeline)
             self.player.Reader(self.timeline)
             self.reader_mode = "timeline"
+            self.preview_stretch = False
 
             # Clear clip reader reference
             self.clip_reader = None
@@ -428,6 +438,9 @@ class PlayerWorker(QObject):
                         new_clip.Reader().info.has_audio = False
                 except Exception:
                     log.debug("Failed to check has_video on clip reader for %s", path)
+                if stretch:
+                    new_clip.scale = openshot.SCALE_STRETCH
+                    new_clip.gravity = openshot.GRAVITY_CENTER
                 self.clip_reader.AddClip(new_clip)
             except:
                 log.warning('Failed to load media file into video player: %s' % path)
@@ -435,6 +448,7 @@ class PlayerWorker(QObject):
             # Assign new clip_reader
             self.clip_path = path
             self.reader_mode = "clip"
+            self.preview_stretch = bool(stretch)
 
             # Keep track of previous clip readers (so we can Close it later)
             self.previous_clips.append(new_clip)

@@ -102,6 +102,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     refreshTransitionsSignal = pyqtSignal()
     refreshEffectsSignal = pyqtSignal()
     LoadFileSignal = pyqtSignal(str)
+    LoadFilePreviewSignal = pyqtSignal(str, bool)
     PlaySignal = pyqtSignal()
     PauseSignal = pyqtSignal()
     StopSignal = pyqtSignal()

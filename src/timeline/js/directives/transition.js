@@ -57,6 +57,13 @@ App.directive("tlTransition", function () {
         return !!reader.has_single_image;
       }
 
+      function previewTransitionFrame(position_seconds) {
+        if (!scope.transition) {
+          return;
+        }
+        scope.previewTransitionFrame(scope.transition.id, position_seconds);
+      }
+
       function ensureTransitionPreviewContainer() {
         if (!scope.transition) {
           return null;
@@ -336,11 +343,18 @@ App.directive("tlTransition", function () {
             // Adjust left side of transition
             ui.element.css("left", ui.originalPosition.left - delta_x);
             ui.element.width(new_right - (new_left - delta_x));
+            previewTransitionFrame(snapToFPSGridTime(scope, (new_left - delta_x) / scope.pixelsPerSecond));
           }
           else {
             // Adjust right side of transition
             new_right -= delta_x;
             ui.element.width((new_right - new_left));
+            var frame_duration = scope.project.fps.den / scope.project.fps.num;
+            var preview_right = (new_right / scope.pixelsPerSecond) - frame_duration;
+            if (preview_right < 0) {
+              preview_right = 0;
+            }
+            previewTransitionFrame(snapToFPSGridTime(scope, preview_right));
           }
 
           updateTransitionKeyframePreview(ui.element.width());
