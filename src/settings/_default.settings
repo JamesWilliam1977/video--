@@ -592,7 +592,7 @@
   },
   {
     "value": true,
-    "title": "Use Blender GPU rendering for Animated Titles (Experimental)",
+    "title": "Use Blender GPU rendering for Animated Titles",
     "type": "bool",
     "restart": false,
     "category": "Performance",

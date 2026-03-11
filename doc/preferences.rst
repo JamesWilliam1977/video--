@@ -242,8 +242,8 @@ NOTE: On systems with older graphics cards, hardware acceleration may not always
      - Optional maximum width for hardware decoding. Use ``0`` for no explicit limit.
    * - Hardware Decoder Max Height (0 = Default)
      - Optional maximum height for hardware decoding. Use ``0`` for no explicit limit.
-   * - Use Blender GPU rendering for Animated Titles (Experimental)
-     - Enable GPU rendering for Blender-based animated titles (experimental).
+   * - Use Blender GPU rendering for Animated Titles
+     - Enable GPU rendering for Blender-based animated titles.
 
 .. _preferences_keyboard_ref:
 
