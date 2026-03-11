@@ -50,6 +50,7 @@ from classes.query import File, Clip, Transition, Track, Effect
 from classes.clipboard import ClipboardManager
 from classes.thumbnail import GetThumbPath
 from classes.waveform import get_audio_data
+from classes.path_utils import absolute_media_path
 from .timeline_backend.enums import (
     MenuFade, MenuRotate, MenuLayout, MenuAlign, MenuAnimate, MenuVolume,
     MenuTime, MenuCopy, MenuSlice, MenuSplitAudio
@@ -3758,7 +3759,20 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             # Invalid clip
             return
 
-        preview_path = clip.data['reader']['path']
+        reader = clip.data.get("reader", {}) if isinstance(clip.data, dict) else {}
+        preview_path = None
+
+        file_id = clip.data.get("file_id") if isinstance(clip.data, dict) else None
+        if file_id:
+            file_obj = File.get(id=file_id)
+            if file_obj:
+                preview_path = file_obj.absolute_path()
+
+        if not preview_path:
+            preview_path = absolute_media_path(reader.get("path"))
+
+        if not preview_path:
+            return
 
         # Adjust frame # to valid range
         frame_number = max(frame_number, 1)
@@ -3802,7 +3816,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
         transition_data = transition.data if isinstance(transition.data, dict) else {}
         reader = self._transition_mask_reader(transition_data)
-        preview_path = reader.get("path") if isinstance(reader, dict) else None
+        preview_path = absolute_media_path(reader.get("path")) if isinstance(reader, dict) else None
         if not preview_path:
             return
 

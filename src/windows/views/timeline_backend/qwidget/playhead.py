@@ -42,6 +42,10 @@ class PlayheadMixin:
         if not force and getattr(self, "_last_playhead_seek_state", None) == seek_state:
             return
         self._last_playhead_seek_state = seek_state
+        # Match the legacy timeline path: scrubbing should always restore the
+        # main timeline reader before seeking, in case some other interaction
+        # temporarily switched the preview player into clip-preview mode.
+        self.win.LoadFileSignal.emit("")
         self.win.SeekSignal.emit(seek_state[0], seek_state[1])
 
     def centerOnPlayhead(self, emit=True):
