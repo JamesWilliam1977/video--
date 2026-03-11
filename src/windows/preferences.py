@@ -860,13 +860,17 @@ class Preferences(QDialog):
             # Open reader
             reader.Open()
 
-            # Test decoded pixel values for a valid decode (based on hardware-example.mp4)
-            if reader.GetFrame(0).CheckPixel(0, 0, 2, 133, 255, 255, 5):
+            # Test decoded pixel values for a valid decode. For hardware-backed
+            # options, also require that the reader actually produced a hardware
+            # decoded frame instead of silently falling back to software decode.
+            pixel_ok = reader.GetFrame(1).CheckPixel(0, 0, 2, 133, 255, 255, 5)
+            hardware_ok = current_decoder == 0 or reader.HardwareDecodeSuccessful()
+            if pixel_ok and hardware_ok:
                 is_supported = True
                 log.debug("Successful test of hardware decoder: %s (Decoder Type: %s, Graphics Card: %s)",
                           current_decoder_name, current_decoder, current_decoder_card)
             else:
-                log.debug("Failed test of hardware decoder (incorrect pixel color found): "
+                log.debug("Failed test of hardware decoder (incorrect pixel color or software fallback used): "
                           "%s (Decoder Type: %s, Graphics Card: %s)",
                           current_decoder_name, current_decoder, current_decoder_card)
 
