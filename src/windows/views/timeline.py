@@ -622,6 +622,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             "start": transition_details["start"],
             "end": transition_details["end"],
             "reader": reader_data,
+            "fade_audio_hint": True,
             "replace_image": False
         }
         self._set_transition_mask_defaults(transitions_data)
