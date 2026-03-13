@@ -39,29 +39,36 @@ General
 
 The General tab of the Preferences window allows you to modify the settings that apply to OpenShot as a whole.
 
-.. table::
-   :widths: 30 15 60
+.. list-table::
+   :widths: 30 20 50
+   :header-rows: 1
 
-   ================================  =============  ===========
-   Setting                           Default        Description
-   ================================  =============  ===========
-   Language                          Default        Choose your preferred language for OpenShot menus and windows
-   Default Theme                     Humanity:Dark  Choose your theme for OpenShot, either Light, Dark or None
-   User Interface Scale              1.0            Adjust the size of OpenShot's interface (restart required; range 1–3; known issues on Windows)
-   Image Length (seconds)            10.00          How long the image displays on the screen when added to the timeline
-   Volume                            75.00          The percentage of the volume of the clip when added to the timeline
-   Blender Command (path)            *<blank>*      The path to the binary for Blender (version 5.0+)
-   Advanced Title Editor (path)      *<blank>*      The path to the binary for Inkscape
-   Show Export Dialog when Finished  *<checked>*    Displays the Export Video windows after the export is finished
-   ================================  =============  ===========
+   * - Setting
+     - Default
+     - Description
+   * - Language
+     - Default
+     - Choose your preferred language for OpenShot menus and windows
+   * - Default Theme
+     - Cosmic Dusk
+     - Choose your theme for OpenShot
+   * - Default Profile
+     - HD 720p 30 fps
+     - Select the default profile for new projects and exports
+   * - Blender Command (path)
+     - blender
+     - The path to the binary for Blender (version 5.0+)
+   * - Advanced Title Editor (path)
+     - inkscape
+     - The path to the binary for Inkscape
 
 Themes
 """"""
 OpenShot comes with 3 standard themes, which change the look and feel of the program.
 
+- **Cosmic Dusk:** [Default Theme] A bluish theme with a more modern UI design, enhancing the visual aesthetics of the editor. This theme features shades of blue and purple, giving the interface a contemporary and dynamic feel. It combines modern aesthetics with functionality, offering a fresh and visually appealing workspace for video editing.
+- **Humanity Dark:** A dark theme with dark gray tones, providing a modern and sleek look. This theme is designed for users who prefer working in low-light conditions or who enjoy a more subdued and professional appearance. The dark gray background reduces glare and eye strain, making it suitable for extended editing sessions.
 - **Retro:** A light theme that offers a classic and clean appearance. This theme uses light gray and white tones, making it ideal for users who prefer a bright and high-contrast interface. It provides a traditional look that is easy on the eyes, especially in well-lit environments.
-- **Humanity Dark:** [Default Theme] A dark theme with dark gray tones, providing a modern and sleek look. This theme is designed for users who prefer working in low-light conditions or who enjoy a more subdued and professional appearance. The dark gray background reduces glare and eye strain, making it suitable for extended editing sessions.
-- **Cosmic Dusk:** A bluish theme with a more modern UI design, enhancing the visual aesthetics of the editor. This theme features shades of blue and purple, giving the interface a contemporary and dynamic feel. It combines modern aesthetics with functionality, offering a fresh and visually appealing workspace for video editing.
 
 .. image:: images/themes.jpg
 
@@ -83,6 +90,29 @@ to reset certain preferences without affecting others.
 **Tip for Beginners:**
 - If you're not sure about a change you've made in a particular category, don’t hesitate to use the **Restore Defaults** button. It’s a simple way to undo changes and get back to the default settings for that specific category without affecting your overall setup.
 
+.. _preferences_timeline_ref:
+
+Timeline
+--------
+
+.. image:: images/preferences-timeline.jpg
+
+The Timeline tab controls default timeline behavior, clip/transition insertion defaults, and whether
+to use the new timeline backend or the legacy web-based timeline.
+
+.. table::
+   :widths: 30 15 60
+
+   ===================================  ==================  ===========
+   Setting                              Default             Description
+   ===================================  ==================  ===========
+   Thumbnail Style                      Entire Clip         Thumbnail density for the new timeline backend
+   Image Length (seconds)               10.00               Default duration for still images added to the timeline
+   Transition Length (seconds)          10.00               Default duration for newly added transitions
+   Auto-Transition (overlap clips)      Enabled             Automatically create transitions when clips overlap
+   Enable Legacy Timeline (web-based)   Disabled            Use the legacy web timeline (WebEngine/WebKit auto-select)
+   ===================================  ==================  ===========
+
 .. _preferences_preview_ref:
 
 Preview
@@ -90,9 +120,8 @@ Preview
 
 .. image:: images/preferences-2-preview.jpg
 
-The Preview tab of the Preferences window allows you to set a **Default Video Profile** for your project, if you have
-a preference for a specific editing profile. More about :ref:`profiles_ref`. Also, you can adjust the
-real-time preview audio settings, for example, which audio device and sample rate to use.
+The Preview tab of the Preferences window controls real-time preview audio behavior,
+including device selection, sample rate, channels, buffering, and playback volume.
 
 .. table::
    :widths: 30 15 60
@@ -100,11 +129,11 @@ real-time preview audio settings, for example, which audio device and sample rat
    ================================  ==================  ===========
    Setting                           Default             Description
    ================================  ==================  ===========
-   Default Video Profile             HD 720P 30 fps      Select the profile for Preview and Export defaults
-   Playback Audio Buffer Size        512                 Adjust how many audio samples must be buffered before audio playback begins. Allowed range of values is 128 to 4096. NOTE: If you are experiencing a large drift or delay in audio playback, try setting this value lower.
-   Playback Audio Device             Default             
-   Default Audio Sample Rate         44100               
-   Default Audio Channels            Stereo (2 Channel)  
+   Playback Audio Device             Default             Audio output device used during preview playback
+   Default Audio Sample Rate         48000               Default preview sample rate
+   Default Audio Channels            Stereo (2 Channel)  Default preview channel layout
+   Playback Audio Buffer Size        512                 Audio samples buffered before playback begins (128 to 4096)
+   Volume                            75                  Preview playback volume percentage
    ================================  ==================  ===========
 
 Autosave
@@ -177,16 +206,13 @@ set of cache values, which should allow most computers to playback video and aud
    Cache Pre-roll: Min Frames:       Minimum # of frames that must be cached before playback begins. The larger the #, the larger the wait before playback begins.
    Cache Pre-roll: Max Frames:       Maximum # of frames that can be cached during playback (in front of the playhead). The larger the #, the more CPU is required to cache ahead - vs display the already cached frames.
    Cache Ahead (Percent):            Between 0.0 and 1.0. This represents how much % we cache ahead of the playhead. For example, 0.5 would cache 50% behind and 50% ahead of the playhead. 0.8 would cache 20% behind and 80% ahead of the playhead.
-   Cache Max Frames:                 This is an override on the total allowed frames that can be cached by our caching thread. It is defaulted to 600 frames, but even if you give a huge amount of RAM to OpenShot's cache size, this will override the max # of frames cached. The reason is... sometimes when the preview window is very small, and the cache size is set very high, OpenShot might calculate that we can cache 30,000 frames, or something silly which will take a huge amount of CPU, lagging the system. This setting is designed to clamp the upper limit of the cache to something reasonable... even on systems that give OpenShot huge amounts of RAM to work with.
+   Cache Max Frames:                 This is an override on the total allowed frames that can be cached by our caching thread. It defaults to 900 frames, but even if you give a huge amount of RAM to OpenShot's cache size, this will override the max # of frames cached. The reason is... sometimes when the preview window is very small, and the cache size is set very high, OpenShot might calculate that we can cache 30,000 frames, or something silly which will take a huge amount of CPU, lagging the system. This setting is designed to clamp the upper limit of the cache to something reasonable... even on systems that give OpenShot huge amounts of RAM to work with.
    ================================  ==================
 
-Debug
------
-
-.. image:: images/preferences-5-debug.jpg
-
-Here you can modify how much data should be logged. Normally, *Debug Mode (verbose)* is off.
-The default port is 5556. If you want to help improve OpenShot you can enable **Send Anonymous Metrics and Errors**.
+OpenShot's default cache settings now target a balanced preview experience:
+roughly **50% behind / 50% ahead** of the playhead, **768 MB** cache memory,
+and **900** max frames. In practice, this improves scrubbing and seek behavior
+while reducing stale preview frames on slower systems.
 
 Performance
 -----------
@@ -196,15 +222,28 @@ Please keep in mind that GPU hardware acceleration is experimental at the moment
 encoding acceleration. For more information take a look at our `Github HW-ACCEL Doc <https://github.com/OpenShot/libopenshot/blob/develop/doc/HW-ACCEL.md>`_.
 NOTE: On systems with older graphics cards, hardware acceleration may not always be faster than CPU encoding.
 
-.. TODO Performance settings
-  Process Video Frame Rates in Parallel
-  OMP Threads = Open Multi-Processing? https://en.wikipedia.org/wiki/OpenMP
-  FFmpeg Threads 
-        (NB: it states 0=default, but the actually default upon installation is 8 ?)
-         Advices is N(cores-1) or N(Threads-1) ?
- Hardware Decoder max width/height  Can be found where? Link to HW manufacturers?
- Use Blender GPU rendering: Default = on?
-    (Check current Blender defaults; may backfire if system has multiple GPUs and high-end GPU is auto-detected)
+.. list-table::
+   :widths: 36 80
+   :header-rows: 1
+
+   * - Setting
+     - Description
+   * - Hardware Decoder Mode
+     - Select the hardware decoding backend to use. Use :guilabel:`Test` to verify the selected decoder mode.
+   * - Hardware Decoder Graphics Card
+     - Choose which GPU device is used for hardware decoding.
+   * - Hardware Encoder Graphics Card
+     - Choose which GPU device is used for hardware encoding.
+   * - OMP Threads (0 = Default)
+     - Number of OpenMP worker threads used by performance-sensitive processing. Use ``0`` to let OpenShot choose automatically.
+   * - FFmpeg Threads (0 = Default)
+     - Number of FFmpeg threads used for decoding/encoding. Use ``0`` for automatic thread selection.
+   * - Hardware Decoder Max Width (0 = Default)
+     - Optional maximum width for hardware decoding. Use ``0`` for no explicit limit.
+   * - Hardware Decoder Max Height (0 = Default)
+     - Optional maximum height for hardware decoding. Use ``0`` for no explicit limit.
+   * - Use Blender GPU rendering for Animated Titles
+     - Enable GPU rendering for Blender-based animated titles.
 
 .. _preferences_keyboard_ref:
 
@@ -259,6 +298,45 @@ starting folder (options described below).
    **Recent Folder**                 The last folder used for this same operation. Project folders, Import folders, and Export folders are tracked separately.
    **Project Folder**                The current project folder (or the user's home folder, if the project is not yet saved)
    ================================  ==================
+
+.. _preferences_advanced_ref:
+
+Advanced
+--------
+
+.. image:: images/preferences-5-debug.jpg
+
+The Advanced tab includes ComfyUI integration and debugging options.
+
+.. list-table::
+   :widths: 30 20 50
+   :header-rows: 1
+
+   * - Setting
+     - Default
+     - Description
+   * - Comfy UI URL
+     - ``http://127.0.0.1:8188``
+     - URL of your local or remote ComfyUI server
+   * - Debug Mode (Port)
+     - 5556
+     - Port used by debug logging features
+   * - Debug Mode (Verbose)
+     - Disabled
+     - Enable verbose debugging output
+   * - Send Anonymous Metrics and Errors
+     - Enabled
+     - Send anonymous telemetry and error reports
+   * - Show Playback Performance (FPS)
+     - Disabled
+     - Display live FPS in preview playback
+   * - Show Export Dialog when Finished
+     - Enabled
+     - Display the Export Video window when export completes
+
+The ComfyUI **Check** button updates an inline status icon: green checkmark for success, red icon for failure.
+If OpenShot cannot reach this server, AI context menu options are hidden.
+See :ref:`ai_ref` for setup details, requirements, and workflow options.
 
 .. _preferences_reset_ref:
 

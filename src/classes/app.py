@@ -203,7 +203,7 @@ class OpenShotApp(QApplication):
         ))
 
     def apply_timeline_backend_preference(self):
-        """Select QWidget timeline backend if enabled and no CLI override exists."""
+        """Select timeline backend based on preferences, unless CLI overrides it."""
         if not hasattr(self, "settings"):
             return
 
@@ -212,14 +212,14 @@ class OpenShotApp(QApplication):
             return
 
         try:
-            use_qwidget = bool(self.settings.get("qwidget-based-timeline"))
+            use_legacy = bool(self.settings.get("legacy-based-timeline"))
         except Exception:
-            self.log.debug("Unable to read qwidget-based timeline setting", exc_info=True)
+            self.log.debug("Unable to read legacy timeline setting", exc_info=True)
             return
 
-        if use_qwidget:
+        if not use_legacy:
             self.info.WEB_BACKEND = "qwidget"
-            self.log.info("Experimental timeline enabled via preferences; using QWidget backend.")
+            self.log.info("Legacy timeline disabled via preferences; using QWidget backend.")
 
     def gui(self):
         """

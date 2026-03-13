@@ -389,8 +389,13 @@ QTabBar::tab {
 
 QTabWidget#exportTabs QTabBar::tab,
 QTabWidget#tabCategories QTabBar::tab,
-QTabWidget#tabCredits QTabBar::tab{
+QTabWidget#tabCredits QTabBar::tab,
+QTabWidget#generateTabs QTabBar::tab {
     margin-bottom: 10px;
+}
+
+QTabWidget#generateTabs QTabBar::tab:selected {
+    border-bottom: 1.2px solid #53a0ed;
 }
 
 QTabBar::tab:selected {
@@ -419,6 +424,12 @@ QLineEdit#filesFilter, QLineEdit#effectsFilter, QLineEdit#transitionsFilter, QLi
     padding: 6px;
     padding-left: 8px;
     padding-right: 8px;
+}
+
+QLineEdit,
+QSpinBox,
+QDoubleSpinBox {
+    padding-left: 6px;
 }
 
 QLineEdit#filesFilter:focus, QLineEdit#effectsFilter:focus, QLineEdit#transitionsFilter:focus, QLineEdit#emojisFilter:focus, QLineEdit#txtPropertyFilter:focus {
@@ -571,6 +582,46 @@ QTabWidget QWidget#pageAdvancedOptions, QWidget#pageProfile, QWidget#pageImageSe
 
 QTabWidget QWidget#pageVideoDetails, QWidget#pageVideoFormat, QWidget#pageAudioFormat, QWidget#pageFrameSettings {
     background-color: #141923;
+}
+
+QDialog#generateDialog QTabWidget#generateTabs::pane {
+    border: none;
+    background-color: #141923;
+}
+
+QDialog#generateDialog QTabWidget#generateTabs QWidget#pagePrompt,
+QDialog#generateDialog QTabWidget#generateTabs QWidget#pagePoints,
+QDialog#generateDialog QTabWidget#generateTabs QWidget#pageHighlight {
+    background-color: #141923;
+    border: none;
+}
+
+QDialog#generateDialog QLineEdit,
+QDialog#generateDialog QTextEdit,
+QDialog#generateDialog QComboBox {
+    background-color: #141923;
+    color: #91C3FF;
+    border: 1.2px solid transparent;
+    border-radius: 4px;
+    padding: 6px 8px;
+}
+
+QDialog#generateDialog QLineEdit:focus,
+QDialog#generateDialog QTextEdit:focus,
+QDialog#generateDialog QComboBox:focus {
+    border: 1.2px solid #53a0ed;
+}
+
+QLineEdit:disabled,
+QTextEdit:disabled,
+QComboBox:disabled,
+QSpinBox:disabled,
+QDoubleSpinBox:disabled {
+    color: #808080;
+}
+
+QComboBox:disabled::drop-down {
+    opacity: 0.75;
 }
 
 QWidget#cutting QPushButton#btnStart,QPushButton#btnEnd  {

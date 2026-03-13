@@ -67,6 +67,8 @@ Below is a table listing the available titles and their descriptions:
      - A simple bar, centered, with 2 lines of text.
    * - Bar 3
      - Another variation of a simple bar with text, for lower 3rds.
+   * - Box
+     - A simple boxed title layout for centered text.
    * - Bubbles 1
      - A title with bubble graphics for a playful look.
    * - Bubbles 2
@@ -89,6 +91,8 @@ Below is a table listing the available titles and their descriptions:
      - Displays a film rating of "G" for general audiences.
    * - Film Rating 4
      - Displays a film rating of "PG-13", parents strongly cautioned.
+   * - Flare
+     - A title with a bright flare effect for a cinematic look.
    * - Flames
      - A title with flame graphics for a fiery effect.
    * - Footer 1
@@ -119,6 +123,8 @@ Below is a table listing the available titles and their descriptions:
      - A header bar for titles or section headers (center aligned).
    * - Header 3
      - A header bar for titles or section headers (top-right aligned).
+   * - OpenShot
+     - A title featuring OpenShot branding.
    * - Oval 1
      - An oval shape for highlighting or decorative purposes, text centered.
    * - Oval 2

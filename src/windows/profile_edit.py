@@ -96,6 +96,8 @@ class EditProfileDialog(QDialog):
         self.txtFrameRateDen.setValue(self.profile.info.fps.den)
         self.cboInterlaced.setCurrentText(_('Yes') if self.profile.info.interlaced_frame == 1 else _('No'))
         self.cboSpherical.setCurrentText(_('Yes') if self.profile.info.spherical else _('No'))
+        if not self.duplicate:
+            self.update_profile_path()
 
         # Connect all signals
         self.connect_signals()
@@ -191,6 +193,9 @@ class EditProfileDialog(QDialog):
         """Save the profile to a file when the user accepts the dialog."""
         # get translations
         _ = get_app()._tr
+
+        # Ensure a concrete output path exists even if the placeholder is still shown.
+        self.update_profile_path()
 
         # Prevent saving with no description
         error_title = _("Profile Error")

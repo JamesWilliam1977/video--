@@ -704,7 +704,13 @@ class GeometryBase:
             indices = list(reversed(backward)) + forward
             return [entries[i] for i in indices]
 
-        seq = _visible_sequence()
+        # `viewport=False` means callers need full timeline-space iteration
+        # (for example, group drag across off-screen selections). Do not cull
+        # by visible/search range in that mode.
+        if viewport:
+            seq = _visible_sequence()
+        else:
+            seq = list(entries)
 
         # Drag-preview items should always be topmost while creating new clips/transitions.
         preview_ids = {

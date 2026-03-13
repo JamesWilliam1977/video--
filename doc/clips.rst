@@ -153,7 +153,6 @@ the following menu options:
    Volume              Fade in or out the volume, reduce or increase the volume of a clip, or mute
    Separate Audio      Separate the audio from a clip. This preset can either create a single detached audio clip (positioned on a layer below the original clip), or multiple detached audio clips (one per audio track, positioned on multiple layers below the original clip)
    Slice               Cut the clip at the play-head position
-   Transform           Enable transform mode
    Display             Show waveform or thumbnail for a clip
    Properties          Show the properties panel for a clip
    Copy / Paste        Copy and paste key frames or duplicate an entire clip (with all key frames)
@@ -303,17 +302,14 @@ For a complete guide to slicing and all available keyboard shortcuts, see the :r
 
 Transform
 """""""""
-The :guilabel:`Transform` preset activates the **transform tool** for a clip, allowing for quick adjustments to 
-location, scale, rotation, shear, and rotation origin point.
-
-To quickly adjust the location, scale, rotation, and shear of a clip, select a
-clip on the timeline to activate the transform tool. By default, the selected
-clip appears in the preview window with transform controls (blue lines and
-squares). You can select multiple clips at once with :kbd:`Ctrl` or :kbd:`Shift`. The
-preview shows a single set of handles surrounding all selected clips, and any
-move, scale or rotation affects them together.
-Or if the transform tool is disabled, right click on a clip and choose
-**Transform**.
+The **Transform Tool** lets you quickly adjust a clip directly in the preview
+window, instead of changing location, scale, rotation, shear, and rotation
+origin values one property at a time. OpenShot shows the Transform Tool
+automatically whenever you select a clip on the timeline, with blue lines and
+handles drawn around the selected clip. You can also select multiple clips at
+once with :kbd:`Ctrl` or :kbd:`Shift`; in that case, the preview shows one set
+of handles around the full selection, and any move, scale, or rotation is
+applied to all selected clips together.
 
 - Dragging the blue squares will adjust the **scale** of the image.
 - Dragging the center will move the **location** of the image.
@@ -329,8 +325,8 @@ of your clip. You can also manually adjust these same clip properties in the pro
 
 .. image:: images/clip-transform.jpg
 
-- **Usage Example:** Using transform mode to resize and reposition a clip for a picture-in-picture effect.
-- **Tip:** Utilize this preset to precisely control a clip's appearance.
+- **Usage Example:** Use the transform handles to resize and reposition a clip for a picture-in-picture effect.
+- **Tip:** Use these handles to precisely control a clip's appearance.
 
 Crop
 """""

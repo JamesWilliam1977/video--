@@ -37,6 +37,7 @@ Table of Contents:
    quick_tutorial
    getting_started
    main_window
+   timeline
    files
    clips
    transitions
@@ -48,6 +49,7 @@ Table of Contents:
    import_export
    preferences
    playback
+   ai
    troubleshoot
    developers
    contributing

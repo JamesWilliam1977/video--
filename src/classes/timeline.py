@@ -98,7 +98,7 @@ class TimelineSync(UpdateInterface):
                 self.timeline.ApplyMapperToClips()
 
                 # Always seek back to frame 1
-                self.window.SeekSignal.emit(1)
+                self.window.SeekSignal.emit(1, True)
 
                 # Refresh current frame (since the entire timeline was updated)
                 self.window.refreshFrameSignal.emit()
@@ -142,3 +142,11 @@ class TimelineSync(UpdateInterface):
 
             # Refresh current frame (since the entire timeline was updated)
             self.window.refreshFrameSignal.emit()
+
+    def GetLastFrame(self):
+        """Return the last seekable/playable frame on the timeline."""
+        try:
+            max_frame = max(1, int(self.timeline.GetMaxFrame()))
+        except Exception:
+            return 1
+        return max(1, max_frame - 1)

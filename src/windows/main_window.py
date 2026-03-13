@@ -63,6 +63,8 @@ from classes.importers.final_cut_pro import import_xml
 from classes.logger import log
 from classes.metrics import track_metric_session, track_metric_screen
 from classes.query import File, Clip, Transition, Marker, Track, Effect
+from classes.generation_queue import GenerationQueueManager
+from classes.generation_service import GenerationService
 from classes.thumbnail import httpThumbnailServerThread, httpThumbnailException
 from classes.time_parts import secondsToTimecode
 from classes.timeline import TimelineSync
@@ -100,10 +102,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     refreshTransitionsSignal = pyqtSignal()
     refreshEffectsSignal = pyqtSignal()
     LoadFileSignal = pyqtSignal(str)
+    LoadFilePreviewSignal = pyqtSignal(str, bool)
     PlaySignal = pyqtSignal()
     PauseSignal = pyqtSignal()
     StopSignal = pyqtSignal()
-    SeekSignal = pyqtSignal(int)
+    SeekSignal = pyqtSignal(int, bool)
     LoadTimelineAndSeekSignal = pyqtSignal(int)
     SpeedSignal = pyqtSignal(float)
     SeekPreviousFrame = pyqtSignal()
@@ -178,6 +181,10 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Log the exit routine
         log.info('---------------- Shutting down -----------------')
 
+        # Flush and close UI trace recorder, if enabled
+        if getattr(self, "ui_trace_recorder", None):
+            self.ui_trace_recorder.close()
+
         if self.tutorial_manager:
             # Close any tutorial dialogs (if any)
             self.tutorial_manager.hide_dialog()
@@ -208,6 +215,15 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Stop thumbnail server thread (if any)
         if self.http_server_thread:
             self.http_server_thread.kill()
+
+        # Stop generation queue worker thread (if any)
+        if getattr(self, "generation_queue", None):
+            self.generation_queue.shutdown()
+
+        # Cleanup temporary generation source files
+        if getattr(self, "generation_service", None):
+            self.generation_service.shutdown()
+            self.generation_service.cleanup_temp_files()
 
         # Stop ZMQ polling thread (if any)
         if app.logger_libopenshot:
@@ -370,7 +386,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.SetWindowTitle()
 
         # Seek to frame 0
-        self.SeekSignal.emit(1)
+        self.SeekSignal.emit(1, True)
 
         # Update max size (for fast previews)
         self.MaxSizeChanged.emit(self.videoPreview.size())
@@ -699,6 +715,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 info.get_default_path("BLENDER_PATH"),
                 info.get_default_path("TITLE_PATH"),
                 info.get_default_path("CLIPBOARD_PATH"),
+                info.get_default_path("COMFYUI_OUTPUT_PATH"),
                 ]:
             try:
                 if os.path.exists(temp_dir):
@@ -780,13 +797,18 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
     def auto_save_project(self):
         """Auto save the project"""
-        import time
-
         app = get_app()
+        current_data_version = app.updates.data_version
 
         # Get current filepath (if any)
         file_path = app.project.current_filepath
         if not app.project.needs_save():
+            return
+
+        # Skip if no project mutations happened since the last autosave.
+        # This avoids rewriting the same backup.osp on every timer tick for
+        # untitled/recovered projects that remain "unsaved" by design.
+        if current_data_version == self.last_auto_save_data_version:
             return
 
         if file_path:
@@ -814,6 +836,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             # No saved project found
             log.info("Creating backup of project file: %s", info.BACKUP_FILE)
             app.project.save(info.BACKUP_FILE, backup_only=True)
+
+        self.last_auto_save_data_version = current_data_version
 
     def actionSaveAs_trigger(self):
         app = get_app()
@@ -1107,14 +1131,14 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         and the total number of frames in our timeline clips. For example,
         if we are at the end of our last clip, and the user clicks play, we
         do not want to start playback."""
-        # Get max frame (based on last clip) and current frame
+        # Get max frame (based on last clip) and current frame.
         timeline_sync = get_app().window.timeline_sync
         if timeline_sync and timeline_sync.timeline:
-            max_frame = timeline_sync.timeline.GetMaxFrame()
+            last_frame = timeline_sync.GetLastFrame()
             current_frame = self.preview_thread.current_frame
             if current_frame is not None:
                 next_frame = current_frame + requested_speed
-                return next_frame <= max_frame and next_frame > 0
+                return next_frame <= last_frame and next_frame > 0
         return False
 
     def actionPlay_trigger(self):
@@ -1136,8 +1160,13 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         """ Preview the selected media file """
         log.info('actionPreview_File_trigger')
 
-        # Loop through selected files (set 1 selected file if more than 1)
+        # Prefer current file, but fall back to selected real files when a generation
+        # placeholder row has focus.
         f = self.files_model.current_file()
+        if not f:
+            selected_files = self.files_model.selected_files()
+            if selected_files:
+                f = selected_files[0]
 
         # Bail out if no file selected
         if not f:
@@ -1204,7 +1233,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.SpeedSignal.emit(0)
 
         # Seek to the 1st frame
-        self.SeekSignal.emit(min_frame)
+        self.SeekSignal.emit(min_frame, True)
         QTimer.singleShot(50, self.actionCenterOnPlayhead_trigger)
 
         # If playing, continue playing
@@ -1218,8 +1247,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         log.debug("actionJumpEnd_trigger")
 
         # Determine last frame (based on clips) & seek there
-        max_frame = get_app().window.timeline_sync.timeline.GetMaxFrame()
-        self.SeekSignal.emit(max_frame)
+        self.SeekSignal.emit(get_app().window.timeline_sync.GetLastFrame(), True)
         QTimer.singleShot(50, self.actionCenterOnPlayhead_trigger)
 
     def onPlayCallback(self):
@@ -1577,6 +1605,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             "vector": "blue",
             }
         marker.save()
+        self.timeline.setFocus(Qt.OtherFocusReason)
 
     def findAllMarkerPositions(self):
         """Build and return a list of all seekable locations for the currently-selected timeline elements"""
@@ -1627,9 +1656,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # If nothing is selected, also add the end of the last clip
         if not self.selected_clips + self.selected_transitions + self.selected_effects:
-            all_marker_positions.append(
-                # last frame is -1 frame's duration
-                get_app().window.timeline_sync.timeline.GetMaxTime() - frame_duration)
+            last_frame = get_app().window.timeline_sync.GetLastFrame()
+            all_marker_positions.append((last_frame - 1) / fps_float)
 
         # Get list of marker and important positions (like selected clip bounds)
         for marker in Marker.filter():
@@ -1706,11 +1734,14 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if closest_position is not None:
             # Seek
             frame_to_seek = round(closest_position * fps_float) + 1
-            self.SeekSignal.emit(frame_to_seek)
+            frame_to_seek = min(frame_to_seek, get_app().window.timeline_sync.GetLastFrame())
+            self.SeekSignal.emit(frame_to_seek, True)
 
-            # Update the preview and reselect current frame in properties
-            get_app().window.refreshFrameSignal.emit()
+            # Keep properties in sync with the seek target. Avoid forcing
+            # refreshFrameSignal here: it can queue a stale seek to the old
+            # player position and overwrite this navigation jump.
             get_app().window.propertyTableView.select_frame(frame_to_seek)
+        self.timeline.setFocus(Qt.OtherFocusReason)
 
     def actionNextMarker_trigger(self, checked=True):
         log.info("actionNextMarker_trigger")
@@ -1738,11 +1769,14 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if closest_position is not None:
             # Seek
             frame_to_seek = round(closest_position * fps_float) + 1
-            self.SeekSignal.emit(frame_to_seek)
+            frame_to_seek = min(frame_to_seek, get_app().window.timeline_sync.GetLastFrame())
+            self.SeekSignal.emit(frame_to_seek, True)
 
-            # Update the preview and reselct current frame in properties
-            get_app().window.refreshFrameSignal.emit()
+            # Keep properties in sync with the seek target. Avoid forcing
+            # refreshFrameSignal here: it can queue a stale seek to the old
+            # player position and overwrite this navigation jump.
             get_app().window.propertyTableView.select_frame(frame_to_seek)
+        self.timeline.setFocus(Qt.OtherFocusReason)
 
     def actionCenterOnPlayhead_trigger(self, checked=True):
         """ Center the timeline on the current playhead position """
@@ -1928,8 +1962,21 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             # Group transactions
             tid = str(uuid.uuid4())
 
-            # Get current FPS (prior to changing)
+            # Detect whether the project profile is actually changing
+            current_profile_desc = proj.get("profile")
+            current_width = proj.get("width")
+            current_height = proj.get("height")
             current_fps = proj.get("fps")
+            profile_changed = any([
+                current_profile_desc != profile.info.description,
+                current_width != profile.info.width,
+                current_height != profile.info.height,
+                not current_fps,
+                current_fps.get("num") != profile.info.fps.num,
+                current_fps.get("den") != profile.info.fps.den
+            ])
+
+            # Get current FPS (prior to changing)
             current_fps_float = float(current_fps["num"]) / float(current_fps["den"])
             fps_factor = float(profile.info.fps.ToFloat() / current_fps_float)
 
@@ -1947,12 +1994,15 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             get_app().updates.update(["display_ratio"], {"num": profile.info.display_ratio.num, "den": profile.info.display_ratio.den})
             get_app().updates.update(["pixel_ratio"], {"num": profile.info.pixel_ratio.num, "den": profile.info.pixel_ratio.den})
             get_app().updates.update(["fps"], {"num": profile.info.fps.num, "den": profile.info.fps.den})
+            if profile_changed:
+                # Export dialog settings are profile-dependent; reset cache on profile changes.
+                get_app().updates.update(["export_settings"], None)
 
             # Clear transaction id
             get_app().updates.transaction_id = None
 
             # Seek to the same location, adjusted for new frame rate
-            self.SeekSignal.emit(adjusted_frame)
+            self.SeekSignal.emit(adjusted_frame, True)
 
             # Refresh frame (since size of preview might have changed)
             QTimer.singleShot(500, lambda: self.refreshFrameSignal.emit())
@@ -1984,6 +2034,48 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         else:
             log.info('Cutting Cancelled')
 
+    def comfy_ui_url(self):
+        return self.generation_service.comfy_ui_url()
+
+    def is_comfy_available(self, force=False):
+        return self.generation_service.is_comfy_available(force=force)
+
+    def refresh_comfy_availability_async(self, timeout=0.5, callback=None):
+        return self.generation_service.refresh_comfy_availability_async(timeout=timeout, callback=callback)
+
+    def can_open_generate_dialog(self):
+        return self.generation_service.can_open_generate_dialog()
+
+    def active_generation_job_for_file(self, file_id):
+        if not getattr(self, "generation_queue", None):
+            return None
+        return self.generation_queue.get_active_job_for_file(file_id)
+
+    def cancel_generation_job(self, job_id):
+        if not job_id:
+            log.debug("MainWindow cancel_generation_job ignored; empty job_id")
+            return
+        log.debug("MainWindow cancel_generation_job requested job=%s", str(job_id))
+        if self.generation_queue.cancel_job(job_id):
+            log.debug("MainWindow cancel_generation_job accepted job=%s", str(job_id))
+            self.statusBar.showMessage("Generation canceled", 3000)
+        else:
+            log.debug("MainWindow cancel_generation_job rejected job=%s", str(job_id))
+
+    def actionCancelGenerationJob_trigger(self, checked=True):
+        file_id = self.current_file_id()
+        if not file_id:
+            return
+        active_job = self.active_generation_job_for_file(file_id)
+        if active_job:
+            self.cancel_generation_job(active_job.get("id"))
+
+    def actionGenerate_trigger(self, checked=True):
+        self.generation_service.action_generate_trigger(checked=checked)
+
+    def _on_generation_job_finished(self, job_id, status):
+        self.generation_service.on_generation_job_finished(job_id, status)
+
     def actionRemove_from_Project_trigger(self):
         log.debug("actionRemove_from_Project_trigger")
 
@@ -1994,6 +2086,10 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         for f in self.selected_files():
             if not f:
                 continue
+
+            # Cancel queued/running generation jobs tied to this file
+            if getattr(self, "generation_queue", None):
+                self.generation_queue.cancel_jobs_for_file(f.data.get("id"))
 
             # Find matching clips (if any)
             clips = Clip.filter(file_id=f.data.get("id"))
@@ -2809,24 +2905,23 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Clear caption editor (if nothing is selected)
         get_app().window.CaptionTextLoaded.emit("", None)
 
-        # Update transform handles based on current selection
-        if get_app().get_settings().get("auto-transform"):
-            self.TransformSignal.emit(self.selected_clips)
+        # Always keep transform handles in sync with current selection.
+        self.TransformSignal.emit(self.selected_clips)
 
-            emitted_transform = False
-            for sel in self.selected_items:
-                if sel["type"] == "effect":
-                    effect = Effect.get(id=sel["id"])
-                    if effect and (
-                        effect.data.get("has_tracked_object")
-                        or effect.data.get("class_name") == "Crop"
-                    ):
-                        clip_id = effect.parent['id']
-                        self.KeyFrameTransformSignal.emit(sel["id"], clip_id)
-                        emitted_transform = True
+        emitted_transform = False
+        for sel in self.selected_items:
+            if sel["type"] == "effect":
+                effect = Effect.get(id=sel["id"])
+                if effect and (
+                    effect.data.get("has_tracked_object")
+                    or effect.data.get("class_name") == "Crop"
+                ):
+                    clip_id = effect.parent['id']
+                    self.KeyFrameTransformSignal.emit(sel["id"], clip_id)
+                    emitted_transform = True
 
-            if not emitted_transform:
-                self.KeyFrameTransformSignal.emit("", "")
+        if not emitted_transform:
+            self.KeyFrameTransformSignal.emit("", "")
 
     def selected_files(self):
         """ Return a list of File objects for the Project Files dock's selection """
@@ -3265,10 +3360,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         from classes import sentry
         sentry.init_tracing()
 
-    def handleSeek(self, frame):
+    def handleSeek(self, frame, _start_preroll=True):
         """ Always update the property view when we seek to a new position """
         # Notify properties dialog
-        self.propertyTableView.select_frame(frame)
+        if self.propertyTableView:
+            self.propertyTableView.select_frame(frame)
 
     def moveEvent(self, event):
         """ Move tutorial dialogs also (if any)"""
@@ -3399,7 +3495,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         s = get_app().get_settings()
 
         # Setup files tree and list view (both share a model)
-        self.files_model = FilesModel()
+        self.files_model = FilesModel(generation_queue=self.generation_queue)
         self.filesTreeView = FilesTreeView(self.files_model)
         self.filesListView = FilesListView(self.files_model)
         self.files_model.update_model()
@@ -3460,6 +3556,19 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.emojis_model.update_model()
         self.emojiListView = EmojisListView(self.emojis_model)
         self.tabEmojis.layout().addWidget(self.emojiListView)
+
+    def _init_generation_actions(self):
+        self.actionGenerate = QAction("Generate...", self)
+        self.actionGenerate.setObjectName("actionGenerate")
+        sparkle_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-generate-sparkle.svg")
+        self.actionGenerate.setIcon(QIcon(sparkle_icon_path))
+        self.actionGenerate.setShortcut(QKeySequence("Ctrl+G"))
+        self.actionGenerate.setShortcutContext(Qt.ApplicationShortcut)
+        self.actionGenerate.triggered.connect(self.actionGenerate_trigger)
+
+        self.actionCancelGenerationJob = QAction("Cancel Job", self)
+        self.actionCancelGenerationJob.setObjectName("actionCancelGenerationJob")
+        self.actionCancelGenerationJob.triggered.connect(self.actionCancelGenerationJob_trigger)
 
     def actionInsertKeyframe(self):
         log.debug("actionInsertKeyframe")
@@ -3996,6 +4105,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.shutting_down = False
         self.lock = threading.Lock()
         self.installEventFilter(self)
+        self.ui_trace_recorder = None
+        self.last_auto_save_data_version = -1
 
         # set window on app for reference during initialization of children
         app = get_app()
@@ -4048,6 +4159,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Create dock toolbars, set initial state of items, etc
         self.setup_toolbars()
+        self.generation_service = GenerationService(self)
+        self.generation_queue = GenerationQueueManager(self)
+        self.generation_queue.job_finished.connect(self._on_generation_job_finished)
+        self._init_generation_actions()
+        self.refresh_comfy_availability_async()
 
         # Add window as watcher to receive undo/redo status updates
         app.updates.add_watcher(self)
@@ -4248,6 +4364,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Connect Selection signals
         self.SelectionAdded.connect(self.addSelection)
         self.SelectionRemoved.connect(self.removeSelection)
+        self._init_ui_trace_recorder()
 
         # Connect 'ignore update' signal
         self.ignore_updates = False
@@ -4300,6 +4417,16 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self._schedule_tab_order_update()
         self._schedule_initial_focus()
         self._install_focus_debugger()
+
+    def _init_ui_trace_recorder(self):
+        """Enable env-configured UI trace recording for automated test capture."""
+        try:
+            from classes.ui_trace_recorder import UiTraceRecorder
+            recorder = UiTraceRecorder(self)
+            if recorder.enabled:
+                self.ui_trace_recorder = recorder
+        except Exception:
+            log.error("Failed to initialize UI trace recorder", exc_info=1)
 
     def _schedule_initial_focus(self):
         QTimer.singleShot(0, self._set_initial_focus)

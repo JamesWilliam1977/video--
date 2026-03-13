@@ -95,10 +95,6 @@ class MenuVolume(Enum):
     LEVEL = auto()
 
 
-class MenuTransform(Enum):
-    DEFAULT = 0
-
-
 class MenuTime(Enum):
     NONE = 0
     FORWARD = auto()

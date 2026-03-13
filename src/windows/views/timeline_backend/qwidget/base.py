@@ -51,7 +51,7 @@ from PyQt5.QtGui import (
     QIcon,
     QColor,
 )
-from PyQt5.QtWidgets import QSizePolicy, QWidget
+from PyQt5.QtWidgets import QSizePolicy, QWidget, QToolTip
 
 from ..geometry import Geometry
 from ..paint import (
@@ -75,6 +75,7 @@ from windows.views.menu import StyledContextMenu
 from classes.app import get_app
 from classes.query import Clip, Transition, File
 from classes.logger import log
+from classes.clip_utils import is_single_image_media
 from .thumbnails import TimelineThumbnailManager
 
 
@@ -248,6 +249,11 @@ class TimelineWidgetBase(QWidget):
         self._drag_moved = False
         self._drag_press_pos = None
         self._drag_threshold_met = False
+        self._last_click_pos = None          # (position, layer) stored for SHIFT+Click range selection
+        self._ctrl_just_selected_id = None   # ID of clip just CTRL-added; guards against double-click toggle
+        self._ctrl_just_selected_time = 0.0
+        self._ctrl_just_deselected_id = None # ID of clip just CTRL-removed; guards against double-click re-add
+        self._ctrl_just_deselected_time = 0.0
 
         # Resize / timing helpers
         self.enable_timing = False
@@ -378,6 +384,8 @@ class TimelineWidgetBase(QWidget):
 
         # Effect icon hit targets (populated by the clip painter)
         self._effect_icon_rects = []
+        self._clip_text_rects = []
+        self._hover_tooltip_text = ""
 
         # Middle-mouse panning helpers
         self._middle_panning = False
@@ -1443,7 +1451,6 @@ class TimelineWidgetBase(QWidget):
             return frame_sec
         data = file_obj.data if isinstance(file_obj.data, dict) else {}
         reader = data if isinstance(data, dict) else {}
-        media_type = (data or {}).get("media_type")
         start_value = data.get("start", 0.0)
         try:
             start_sec = float(start_value)
@@ -1460,7 +1467,7 @@ class TimelineWidgetBase(QWidget):
             duration_sec = 0.0
 
         default_img_len = get_app().get_settings().get("default-image-length") or 10.0
-        if media_type == "image" or reader.get("has_single_image"):
+        if is_single_image_media(reader):
             duration_sec = float(default_img_len)
 
         end_override = data.get("end")
@@ -2186,6 +2193,19 @@ class TimelineWidgetBase(QWidget):
         self._keyframes_dirty = True
         self.update()
 
+    def _deselect_timeline_item(self, item_id, item_type):
+        """Remove a single item from the selection."""
+        if item_id is None or not item_type:
+            return
+        item_id_str = str(item_id)
+        if not item_id_str:
+            return
+        self.win.removeSelection(item_id_str, item_type)
+        self.clip_painter.clear_cache()
+        self.geometry.mark_dirty()
+        self._keyframes_dirty = True
+        self.update()
+
     def select_all_items(self):
         """Select all clips and transitions currently laid out on the timeline."""
         self.geometry.ensure()
@@ -2264,6 +2284,106 @@ class TimelineWidgetBase(QWidget):
             width,
             height,
         )
+
+    def _set_hover_tooltip(self, text):
+        text = str(text or "")
+        if text == self._hover_tooltip_text:
+            return
+        self._hover_tooltip_text = text
+        self.setToolTip(text)
+        if not text:
+            QToolTip.hideText()
+
+    def _clip_text_at(self, pos):
+        for entry in reversed(self._clip_text_rects):
+            rect = entry.get("rect") if isinstance(entry, dict) else None
+            if isinstance(rect, QRectF) and rect.contains(pos):
+                return entry
+        return None
+
+    def _transition_at(self, pos):
+        for rect, tran, _selected in self.geometry.iter_transitions(reverse=True):
+            if rect.contains(pos):
+                return tran
+        return None
+
+    def _transition_label(self, tran):
+        data = tran.data if isinstance(getattr(tran, "data", None), dict) else {}
+        title = str(data.get("title", "") or "").strip()
+        if title and title.lower() != "transition":
+            return title
+        reader = data.get("reader") if isinstance(data.get("reader"), dict) else {}
+        path = str(reader.get("path", "") or "").strip()
+        if path:
+            base = os.path.basename(path)
+            stem, ext = os.path.splitext(base)
+            image_exts = {".svg", ".png", ".jpg", ".jpeg", ".bmp", ".webp"}
+            if ext.lower() in image_exts and stem:
+                return stem.replace("_", " ")
+            return base
+        tran_type = str(data.get("type", "") or "").strip()
+        if tran_type:
+            return tran_type
+        return title
+
+    def _effect_label(self, effect):
+        if not isinstance(effect, dict):
+            return ""
+        for key in ("name", "type", "effect", "class_name"):
+            value = str(effect.get(key, "") or "").strip()
+            if value:
+                return value
+        return ""
+
+    def _track_button_tooltip(self, button):
+        if not isinstance(button, dict):
+            return ""
+        key = str(button.get("key", "") or "")
+        track = button.get("track")
+        _ = get_app()._tr
+        if key == "lock-toggle":
+            locked = bool(getattr(track, "data", {}).get("lock")) if track else False
+            return _("Unlock track") if locked else _("Lock track")
+        if key == "keyframe-panel":
+            track_num = button.get("track_num")
+            enabled = bool(self._track_panel_enabled.get(track_num, False))
+            return _("Hide keyframes") if enabled else _("Show keyframes")
+        return ""
+
+    def _hover_tooltip_for_pos(self, pos):
+        _ = get_app()._tr
+        button = self._track_toolbar_button_at(pos)
+        if button:
+            return self._track_button_tooltip(button)
+
+        icon_entry = self._effect_icon_at(pos)
+        if isinstance(icon_entry, dict):
+            effect_label = self._effect_label(icon_entry.get("effect"))
+            if effect_label:
+                return _("Effect: %s") % effect_label
+            return _("Effect")
+
+        tran = self._transition_at(pos)
+        if tran is not None:
+            label = self._transition_label(tran)
+            if label:
+                return _("Transition: %s") % label
+            return _("Transition")
+
+        entry = self._clip_text_at(pos)
+        if not isinstance(entry, dict):
+            return ""
+        title = str(entry.get("title", "") or "").strip()
+        if not title:
+            clip_obj = entry.get("clip")
+            if clip_obj and isinstance(getattr(clip_obj, "data", None), dict):
+                title = str(clip_obj.data.get("title", "") or "").strip()
+        if not title:
+            title = _("Clip")
+        return _("Clip: %s") % title
+
+    def _update_hover_tooltip(self, pos):
+        self._set_hover_tooltip(self._hover_tooltip_for_pos(pos))
 
     def _marker_identifier(self, entry):
         if not isinstance(entry, dict):
@@ -2558,6 +2678,7 @@ class TimelineWidgetBase(QWidget):
         self.events.pressed.emit(event)
 
     def leaveEvent(self, event):
+        self._set_hover_tooltip("")
         if self._toolbar_hover_key is not None or self._toolbar_pressed_inside:
             self._toolbar_hover_key = None
             if self._toolbar_pressed_key:
@@ -2649,6 +2770,8 @@ class TimelineWidgetBase(QWidget):
         add_button = self._panel_add_button_at(pos)
         if add_button:
             self._press_hit = "panel-add"
+            add_button = dict(add_button)
+            add_button["modifiers"] = modifiers
             self._panel_press_info = add_button
             return
         panel_marker = self._panel_marker_at(pos)
@@ -2722,6 +2845,7 @@ class TimelineWidgetBase(QWidget):
         self._last_event = event
 
         if self.scroll_bar_dragging:
+            self._set_hover_tooltip("")
             view_w = self.scrollbar_position[3] or 1.0
             width_norm = self.scrollbar_position_previous[1] - self.scrollbar_position_previous[0]
             handle_w = width_norm * view_w
@@ -2742,6 +2866,7 @@ class TimelineWidgetBase(QWidget):
             return
 
         if self.v_scroll_bar_dragging:
+            self._set_hover_tooltip("")
             view_h = self.v_scrollbar_position[3] or 1.0
             height_norm = self.v_scrollbar_position_previous[1] - self.v_scrollbar_position_previous[0]
             handle_h = height_norm * view_h
@@ -2759,13 +2884,20 @@ class TimelineWidgetBase(QWidget):
             return
 
         if self._middle_panning:
+            self._set_hover_tooltip("")
             self._updateMiddlePan(event.pos())
+            return
+
+        if self.dragging_playhead:
+            self._set_hover_tooltip("")
+            self.events.moved.emit(event)
             return
 
         pos = event.pos()
         if self._toolbar_pressed_key:
             self._update_toolbar_pressed_state(pos)
         self._update_toolbar_hover(pos)
+        self._update_hover_tooltip(pos)
 
         self._updateCursor(pos)
         self.events.moved.emit(event)
@@ -2894,9 +3026,8 @@ class TimelineWidgetBase(QWidget):
     def _panel_show_property_menu_at(self, pos):
         lane = self._panel_lane_at(pos)
         if not lane:
-            return False
-        label_rect = lane.get("label_rect")
-        if not isinstance(label_rect, QRectF) or not label_rect.contains(pos):
+            lane = self._panel_lane_for_label_gap(pos)
+        if not lane:
             return False
         track_num = lane.get("track")
         key = self.normalize_track_number(track_num) if track_num is not None else None
@@ -2904,29 +3035,26 @@ class TimelineWidgetBase(QWidget):
             return False
         info = self._panel_properties.get(key)
         if not isinstance(info, dict):
-            return False
-        if info.get("item_type") == "multi":
-            return False
-        available = info.get("available_properties") or []
-        if not available:
-            return False
-
-        item_id = info.get("item_id", "")
+            info = {}
         item_type = info.get("item_type")
-        manual_entry = self._panel_manual_properties.get(key)
-        if (
-            not manual_entry
-            or manual_entry.get("item_id") != item_id
-            or manual_entry.get("item_type") != item_type
-        ):
-            manual_entry = {"item_id": item_id, "item_type": item_type, "properties": set()}
-        else:
-            manual_entry = {
-                "item_id": manual_entry.get("item_id", ""),
-                "item_type": manual_entry.get("item_type"),
-                "properties": set(manual_entry.get("properties") or []),
-            }
-        self._panel_manual_properties[key] = manual_entry
+        available = info.get("available_properties") or []
+        item_id = info.get("item_id", "")
+
+        if item_id or item_type:
+            manual_entry = self._panel_manual_properties.get(key)
+            if (
+                not manual_entry
+                or manual_entry.get("item_id") != item_id
+                or manual_entry.get("item_type") != item_type
+            ):
+                manual_entry = {"item_id": item_id, "item_type": item_type, "properties": set()}
+            else:
+                manual_entry = {
+                    "item_id": manual_entry.get("item_id", ""),
+                    "item_type": manual_entry.get("item_type"),
+                    "properties": set(manual_entry.get("properties") or []),
+                }
+            self._panel_manual_properties[key] = manual_entry
 
         available_sorted = sorted(
             (entry for entry in available if isinstance(entry, dict)),
@@ -2939,29 +3067,89 @@ class TimelineWidgetBase(QWidget):
         }
         title = get_app()._tr("Keyframe Properties")
         menu = StyledContextMenu(title=title, parent=self)
-        handled = False
-        for entry in available_sorted:
-            key_name = entry.get("key")
-            if key_name is None:
-                continue
-            key_str = str(key_name)
-            label = entry.get("display_name") or key_str
-            action = menu.addAction(label)
-            if key_str in visible_keys:
-                action.setEnabled(False)
-                action.setCheckable(True)
-                action.setChecked(True)
-                continue
-            action.triggered.connect(partial(self._panel_add_visible_property, key, key_str))
-            handled = True
+        if item_type == "multi":
+            visible_multi_keys = {
+                str(prop.get("key"))
+                for prop in (info.get("properties") or [])
+                if isinstance(prop, dict) and prop.get("key") is not None and not prop.get("placeholder")
+            }
+            for entry in available_sorted:
+                key_name = entry.get("key")
+                if key_name is None:
+                    continue
+                key_str = str(key_name)
+                label = entry.get("display_name") or key_str
+                if not label:
+                    continue
+                action = menu.addAction(label)
+                if key_str in visible_multi_keys:
+                    action.setEnabled(False)
+                    action.setCheckable(True)
+                    action.setChecked(True)
+                else:
+                    action.triggered.connect(partial(self._panel_add_visible_property, key, key_str))
+        else:
+            for entry in available_sorted:
+                key_name = entry.get("key")
+                if key_name is None:
+                    continue
+                key_str = str(key_name)
+                label = entry.get("display_name") or key_str
+                action = menu.addAction(label)
+                if key_str in visible_keys:
+                    action.setEnabled(False)
+                    action.setCheckable(True)
+                    action.setChecked(True)
+                    continue
+                action.triggered.connect(partial(self._panel_add_visible_property, key, key_str))
 
         if not menu.actions():
-            placeholder = menu.addAction(get_app()._tr("No keyframe properties available"))
+            message = get_app()._tr("No keyframes are avaialble")
+            placeholder = menu.addAction(message)
             placeholder.setEnabled(False)
 
         global_pos = self.mapToGlobal(pos)
         menu.exec_(global_pos)
-        return handled or bool(menu.actions())
+        return bool(menu.actions())
+
+    def _panel_lane_for_label_gap(self, pos):
+        """
+        Resolve clicks in tiny vertical gaps between panel rows to the nearest
+        row on the same track within the full keyframe panel band.
+        """
+        self.geometry.ensure()
+        for _track_rect, track, name_rect in self.geometry.iter_tracks():
+            track_num = self.normalize_track_number(track.data.get("number"))
+            panel_rect = self.geometry.panel_rect(track_num)
+            if not panel_rect or panel_rect.height() <= 0.0:
+                continue
+            full_panel_band = QRectF(
+                name_rect.x(),
+                panel_rect.y(),
+                name_rect.width() + panel_rect.width(),
+                panel_rect.height(),
+            )
+            if not full_panel_band.contains(pos):
+                continue
+
+            nearest_lane = None
+            nearest_dist = None
+            y_pos = float(pos.y())
+            for lane in (self._iter_panel_lanes() or []):
+                if self.normalize_track_number(lane.get("track")) != track_num:
+                    continue
+                label_rect = lane.get("label_rect")
+                if not isinstance(label_rect, QRectF):
+                    continue
+                center_y = float(label_rect.center().y())
+                dist = abs(y_pos - center_y)
+                if nearest_dist is None or dist < nearest_dist:
+                    nearest_dist = dist
+                    nearest_lane = lane
+            if nearest_lane:
+                return nearest_lane
+            return None
+        return None
 
     def _panel_add_visible_property(self, track_num, prop_key):
         key = self.normalize_track_number(track_num) if track_num is not None else None
@@ -2969,8 +3157,6 @@ class TimelineWidgetBase(QWidget):
             return False
         info = self._panel_properties.get(key)
         if not isinstance(info, dict):
-            return False
-        if info.get("item_type") == "multi":
             return False
         available = info.get("available_properties") or []
         available_map = {

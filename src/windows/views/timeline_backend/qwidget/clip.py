@@ -26,15 +26,29 @@
  """
 
 import json
+import time
 import uuid
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QApplication
 from classes.app import get_app
+from classes.clip_utils import is_single_image_media
 from classes.query import Clip, Transition
 from classes.waveform import SAMPLES_PER_SECOND as WAVEFORM_SAMPLES_PER_SECOND
 
 
 class ClipInteractionMixin:
+    def _transition_uses_static_mask(self, transition_data):
+        reader = {}
+        if isinstance(transition_data, dict):
+            for key in ("mask_reader", "reader"):
+                candidate = transition_data.get(key)
+                if isinstance(candidate, dict):
+                    reader = candidate
+                    break
+        if isinstance(reader, dict) and "has_single_image" in reader:
+            return bool(reader.get("has_single_image"))
+        return bool(is_single_image_media(reader))
+
     def _set_trim_thumbnail_suspension(self, enabled, clip_id=None):
         """Pause thumbnail generation while trimming and drop stale queued work."""
         self._suspend_thumbnail_requests = bool(enabled)
@@ -169,22 +183,12 @@ class ClipInteractionMixin:
         reader = self._clip_data_dict(clip).get("reader")
         return reader if isinstance(reader, dict) else {}
 
-    @staticmethod
-    def _media_type_is_image(value):
-        if not isinstance(value, str):
-            return False
-        return value.strip().lower() == "image"
-
     def _clip_is_single_image(self, clip):
         data = self._clip_data_dict(clip)
-        if data.get("has_single_image"):
-            return True
-        if self._media_type_is_image(data.get("media_type")):
+        if is_single_image_media(data):
             return True
         reader = self._clip_reader_dict(clip)
-        if reader.get("has_single_image"):
-            return True
-        if self._media_type_is_image(reader.get("media_type")):
+        if is_single_image_media(reader):
             return True
         return False
 
@@ -231,11 +235,62 @@ class ClipInteractionMixin:
         span = end - start
         return span if span > 0.0 else None
 
+    def _selection_anchor_from_item(self, item, sel_type=None):
+        """Build a normalized selection anchor for clips/transitions."""
+        data = item.data if isinstance(item.data, dict) else {}
+        item_type = sel_type or ("transition" if isinstance(item, Transition) else "clip")
+        position = float(data.get("position", 0.0) or 0.0)
+        layer = int(data.get("layer", 0) or 0)
+        start = float(data.get("start", 0.0) or 0.0)
+        end = float(data.get("end", start) or start)
+        duration = max(0.0, end - start)
+        return {
+            "type": item_type,
+            "position": position,
+            "end_position": position + duration,
+            "layer": layer,
+        }
+
+    def _normalize_selection_anchor(self, anchor):
+        """Convert legacy tuple anchors into the normalized anchor dict format."""
+        if isinstance(anchor, dict):
+            try:
+                position = float(anchor.get("position", 0.0) or 0.0)
+                end_position = float(anchor.get("end_position", position) or position)
+                layer = int(anchor.get("layer", 0) or 0)
+            except (TypeError, ValueError):
+                return None
+            if end_position < position:
+                end_position = position
+            return {
+                "type": anchor.get("type"),
+                "position": position,
+                "end_position": end_position,
+                "layer": layer,
+            }
+
+        if isinstance(anchor, (tuple, list)) and len(anchor) >= 2:
+            try:
+                position = float(anchor[0] or 0.0)
+                layer = int(anchor[1] or 0)
+            except (TypeError, ValueError):
+                return None
+            return {
+                "type": None,
+                "position": position,
+                "end_position": position,
+                "layer": layer,
+            }
+
+        return None
+
     def _startClipDrag(self):
         """Begin a drag operation on one or many selected clips/transitions."""
         e = self._last_event
 
         self.snap.reset()
+        self._collapse_selection_on_release = False
+        self._collapse_selection_target = None
         self._drag_moved = False
         self._drag_press_pos = e.pos() if e else None
         self._drag_threshold_met = False
@@ -254,22 +309,135 @@ class ClipInteractionMixin:
         # Each drag operation is grouped under a single undo transaction
         self._drag_transaction_id = str(uuid.uuid4())
 
-        ctrl = bool(e.modifiers() & Qt.ControlModifier)
+        modifiers = e.modifiers()
+        ctrl = bool(modifiers & Qt.ControlModifier)
+        alt = bool(modifiers & Qt.AltModifier)
+        shift = bool(modifiers & Qt.ShiftModifier)
+        sel_type = "transition" if isinstance(clicked_item, Transition) else "clip"
+        last_anchor = self._normalize_selection_anchor(getattr(self, "_last_click_pos", None))
         already = (
             clicked_item.id in self.win.selected_clips or
             clicked_item.id in self.win.selected_transitions
         )
 
-        if not already:
-            sel_type = "transition" if isinstance(clicked_item, Transition) else "clip"
-            # Replace existing selections unless the user is multi-selecting
-            self.win.addSelection(clicked_item.id, sel_type, not ctrl)
+        if alt:
+            # ALT+Click: select the clicked item plus everything to its right on
+            # the same layer.  CTRL+ALT keeps existing selection; plain ALT replaces.
+            if not ctrl:
+                self.win.clearSelections()
+            self.selectRipple(clicked_item.id, sel_type)
+            # ALT does not update _last_click_pos; nothing to drag.
+            self.dragging_items = []
+            self._drag_transaction_id = None
             self.changed(None)
+            return
+
+        elif shift and last_anchor:
+            # SHIFT+Click: simple rectangular range-select between anchor and
+            # click (position + layer), across both clips and transitions.
+            current_anchor = self._selection_anchor_from_item(clicked_item, sel_type)
+            min_pos = min(last_anchor["position"], current_anchor["position"])
+            max_pos = max(last_anchor["position"], current_anchor["position"])
+            min_layer = min(last_anchor["layer"], current_anchor["layer"])
+            max_layer = max(last_anchor["layer"], current_anchor["layer"])
+            eps = 1e-9
+            matched_items = []
+            for item in Clip.filter() + Transition.filter():
+                d = item.data if isinstance(item.data, dict) else {}
+                try:
+                    item_pos = float(d.get("position", 0.0) or 0.0)
+                    item_layer = int(d.get("layer", 0) or 0)
+                    if (min_pos - eps <= item_pos <= max_pos + eps and
+                            min_layer <= item_layer <= max_layer):
+                        item_type = "transition" if isinstance(item, Transition) else "clip"
+                        matched_items.append((item.id, item_type))
+                except (TypeError, ValueError):
+                    pass
+
+            if not matched_items:
+                # Fallback: always keep clicked item selected for this SHIFT action.
+                matched_items = [(clicked_item.id, sel_type)]
+
+            if not ctrl:
+                self.win.selected_items = []
+
+            for item_id, item_type in matched_items:
+                self.win.addSelection(str(item_id), item_type, False)
+
+            self.clip_painter.clear_cache()
+            self.geometry.mark_dirty()
+            self._keyframes_dirty = True
+            self.update()
+
+            # Keep the original anchor during SHIFT range operations.
+            # This prevents repeated SHIFT press events from collapsing the
+            # selection to a single clicked item.
+            self.changed(None)
+            # Fall through to drag setup; SHIFT+drag freezes horizontal movement.
+
+        elif ctrl and already:
+            dbl = QApplication.doubleClickInterval() / 1000.0
+            just_added = (
+                getattr(self, "_ctrl_just_selected_id", None) == clicked_item.id and
+                time.monotonic() - getattr(self, "_ctrl_just_selected_time", 0.0) < dbl
+            )
+            self._ctrl_just_selected_id = None
+            self._last_click_pos = self._selection_anchor_from_item(clicked_item, sel_type)
+            if just_added:
+                # Second press of a double-click: clip was just CTRL-added;
+                # don't immediately toggle it back off — preserve selection.
+                pass
+            else:
+                # Deliberate CTRL+Click on selected item: toggle off.
+                self._ctrl_just_deselected_id = clicked_item.id
+                self._ctrl_just_deselected_time = time.monotonic()
+                self._deselect_timeline_item(clicked_item.id, sel_type)
+                self.dragging_items = []
+                self._drag_transaction_id = None
+                self.changed(None)
+                return
+
+        elif not already:
+            dbl = QApplication.doubleClickInterval() / 1000.0
+            just_deselected = (
+                ctrl and
+                getattr(self, "_ctrl_just_deselected_id", None) == clicked_item.id and
+                time.monotonic() - getattr(self, "_ctrl_just_deselected_time", 0.0) < dbl
+            )
+            self._ctrl_just_deselected_id = None
+            if just_deselected:
+                # Second press of a double-click: clip was just CTRL-deselected;
+                # don't immediately re-add it — preserve deselected state.
+                self._last_click_pos = self._selection_anchor_from_item(clicked_item, sel_type)
+            else:
+                # Regular click clears+selects; CTRL+click adds to selection.
+                self.win.addSelection(clicked_item.id, sel_type, not ctrl)
+                if ctrl:
+                    self._ctrl_just_selected_id = clicked_item.id
+                    self._ctrl_just_selected_time = time.monotonic()
+                else:
+                    self._ctrl_just_selected_id = None
+                self._last_click_pos = self._selection_anchor_from_item(clicked_item, sel_type)
+                self.changed(None)
+
+        else:
+            # Clicking already-selected item (no special modifier):
+            # preserve multi-selection for group drag, but collapse to this
+            # one item if this ends as a plain click (no drag movement).
+            self._ctrl_just_selected_id = None
+            self._last_click_pos = self._selection_anchor_from_item(clicked_item, sel_type)
+            selected_count = (
+                len(getattr(self.win, "selected_clips", []) or [])
+                + len(getattr(self.win, "selected_transitions", []) or [])
+            )
+            if selected_count > 1:
+                self._collapse_selection_on_release = True
+                self._collapse_selection_target = (clicked_item.id, sel_type)
 
         # All selected clips and transitions participate in the drag
         self.dragging_items = [
             itm
-            for _rect, itm, selected, _type in self.geometry.iter_items()
+            for _rect, itm, selected, _type in self.geometry.iter_items(viewport=False)
             if selected
         ]
         if not self.dragging_items:
@@ -362,12 +530,17 @@ class ClipInteractionMixin:
         if pps <= 0.0:
             return
 
-        new_bbox_x = e.pos().x() - self.drag_clip_offset
-        delta_sec = (new_bbox_x - self.drag_bbox.x()) / pps
+        # SHIFT+Drag: freeze horizontal movement (track-only drag), matching JS behaviour.
+        shift_held = bool(e.modifiers() & Qt.ShiftModifier) if e else False
+        if shift_held:
+            delta_sec = 0.0
+        else:
+            new_bbox_x = e.pos().x() - self.drag_clip_offset
+            delta_sec = (new_bbox_x - self.drag_bbox.x()) / pps
 
-        # Snap horizontally ±1.5 s (pure x-axis)
-        if self.enable_snapping:
-            delta_sec = self._snap_delta(delta_sec)
+            # Snap horizontally ±1.5 s (pure x-axis)
+            if self.enable_snapping:
+                delta_sec = self._snap_delta(delta_sec)
 
         # -------- Vertical delta (track indexes) ----
         new_idx_under_cursor = self._track_index_at_viewport_y(
@@ -387,7 +560,7 @@ class ClipInteractionMixin:
             if max(orig_indices) + delta_idx >= len(self.track_list):
                 delta_idx = (len(self.track_list) - 1) - max(orig_indices)
 
-        # Clamp horizontal delta so all clips remain inside the timeline bounds
+        # Clamp horizontal delta so items do not move before t=0.
         start_positions = [info["position"] for info in self._drag_initial.values()]
         if start_positions:
             min_delta_sec = -min(start_positions)
@@ -488,6 +661,8 @@ class ClipInteractionMixin:
         """Persist all moved clips/transitions and refresh geometry."""
         items = getattr(self, "dragging_items", None) or []
         moved = bool(getattr(self, "_drag_moved", False))
+        collapse_selection = bool(getattr(self, "_collapse_selection_on_release", False))
+        collapse_target = getattr(self, "_collapse_selection_target", None)
 
         if items and moved:
             self._preserve_overrides_once = True
@@ -527,10 +702,16 @@ class ClipInteractionMixin:
         self.dragging_items = []
         self._drag_transaction_id = None
         self.snap.reset()
+        self._collapse_selection_on_release = False
+        self._collapse_selection_target = None
         if moved:
             self._update_project_duration()
             self.changed(None)
         else:
+            if collapse_selection and collapse_target:
+                target_id, target_type = collapse_target
+                self.win.addSelection(target_id, target_type, True)
+                self.changed(None)
             self.geometry.mark_dirty()
         self.update()
         self._release_cursor()
@@ -544,7 +725,7 @@ class ClipInteractionMixin:
         """Return a QRectF encompassing all currently-selected clips and transitions."""
         rects = [
             rect
-            for rect, _item, selected, _type in self.geometry.iter_items()
+            for rect, _item, selected, _type in self.geometry.iter_items(viewport=False)
             if selected
         ]
         if not rects:
@@ -574,39 +755,29 @@ class ClipInteractionMixin:
 
     def _snap_trim_delta(self, delta_seconds, edge=None):
         """
-        Apply drag-style snapping to a trim delta so clip edges snap just like moves.
+        Apply directional edge snapping to trim deltas.
 
-        _startItemResize() already places the active item id in _snap_ignore_ids,
-        so we only need to provide a temporary drag bbox for snap_dx.
+        Uses the trim edge's original timeline position (left/right) and lets
+        SnapHelper.snap_edge() handle direction-aware target selection.
         """
-        bbox = getattr(self, "_resize_initial_rect", None)
-        if not isinstance(bbox, QRectF) or bbox.isNull():
+        initial = getattr(self, "_resize_initial", None)
+        if not isinstance(initial, dict):
             return delta_seconds
 
         edge_label = edge or getattr(self, "_resize_edge", None)
         if edge_label not in ("left", "right"):
             return delta_seconds
 
-        # Limit bbox to the moving edge to avoid snapping against the static edge
         if edge_label == "left":
-            edge_px = bbox.left()
+            edge_sec = float(initial.get("position", 0.0) or 0.0)
         else:
-            edge_px = bbox.right()
-        edge_bbox = QRectF(edge_px, bbox.y(), 0.0, bbox.height())
-        if edge_bbox.height() <= 0.0:
-            edge_bbox.setHeight(self.vertical_factor or 1.0)
+            edge_sec = float(initial.get("position", 0.0) or 0.0)
+            edge_sec += float(initial.get("end", 0.0) or 0.0) - float(initial.get("start", 0.0) or 0.0)
 
-        original_bbox = getattr(self, "drag_bbox", None)
-        try:
-            self.drag_bbox = edge_bbox
-            return self.snap.snap_dx(delta_seconds)
-        finally:
-            self.drag_bbox = original_bbox
+        return self.snap.snap_edge(edge_sec, delta_seconds)
 
     def _startResize(self):
         if self._press_hit == "clip-edge" and self._resizing_item:
-            if hasattr(self.win, "TrimPreviewMode"):
-                self.win.TrimPreviewMode.emit()
             self._startItemResize()
         elif self._press_hit == "timeline-handle":
             self._startProjectResize()
@@ -683,6 +854,8 @@ class ClipInteractionMixin:
             self._resize_edge = None
             self._release_cursor()
             return
+        if hasattr(self.win, "TrimPreviewMode"):
+            self.win.TrimPreviewMode.emit()
         self.snap.reset()
         self._fix_cursor(self.cursors["resize_x"])
         world_rect = self.geometry.calc_item_rect(item)
@@ -727,6 +900,7 @@ class ClipInteractionMixin:
             sel_type = "clip"
         else:
             sel_type = "transition"
+            static_mask = self._transition_uses_static_mask(item.data)
             self._pending_transition_overrides[item.id] = {
                 "position": self._resize_initial["position"],
                 "start": self._resize_initial["start"],
@@ -734,13 +908,15 @@ class ClipInteractionMixin:
                 "initial_start": self._resize_initial["start"],
                 "initial_end": self._resize_initial["end"],
                 # Transition keyframes should preview as scaled while trimming.
-                "scale": True,
+                "scale": static_mask,
             }
             self._snap_keyframe_seconds = []
         # Ensure item is selected
         self.win.addSelection(item.id, sel_type, False)
 
         if isinstance(item, Clip) and not self.enable_timing:
+            # Rebuild markers before collecting trim snap targets.
+            self._keyframes_dirty = True
             self._update_snap_keyframe_targets(item)
 
     def _itemResizeMove(self):
@@ -782,10 +958,10 @@ class ClipInteractionMixin:
                         frame_seconds = self._snap_time(end)
                     frame = int(round(frame_seconds * self.fps_float)) + 1
                     timeline.PreviewClipFrame(str(clip_id), max(1, frame))
-                self._update_snap_keyframe_targets(item)
             else:
                 self._snap_keyframe_seconds = []
         else:
+            static_mask = self._transition_uses_static_mask(item.data)
             override = self._pending_transition_overrides.setdefault(
                 item.id,
                 {
@@ -799,8 +975,17 @@ class ClipInteractionMixin:
             override["position"] = position
             override["start"] = start
             override["end"] = end
-            override["scale"] = True
+            override["scale"] = static_mask
             self._keyframes_dirty = True
+            timeline = getattr(self.win, "timeline", None)
+            transition_id = getattr(item, "id", None)
+            if timeline and self.fps_float and transition_id:
+                if self._resize_edge == "left":
+                    frame_seconds = self._snap_time(start)
+                else:
+                    frame_seconds = self._snap_time(end)
+                frame = int(round(frame_seconds * self.fps_float)) + 1
+                timeline.PreviewTransitionFrame(str(transition_id), max(1, frame))
         self.update()
 
     def _compute_transition_resize(self, item):
@@ -809,8 +994,11 @@ class ClipInteractionMixin:
         min_len = 1.0 / self.fps_float
         rect = self._resize_initial_rect
         world_rect = getattr(self, "_resize_initial_world_rect", rect)
-        width = self._resize_initial["end"]
+        start = self._resize_initial["start"]
+        end = self._resize_initial["end"]
+        width = max(end - start, min_len)
         pos = self._resize_initial["position"]
+        static_mask = self._transition_uses_static_mask(item.data)
 
         if self._resize_edge == "left":
             delta_sec = (event.pos().x() - rect.left()) / pps
@@ -820,10 +1008,14 @@ class ClipInteractionMixin:
             if delta_sec > max_delta:
                 delta_sec = max_delta
             new_position = pos + delta_sec
-            new_end = width - delta_sec
+            new_start = 0.0 if static_mask else start + delta_sec
+            new_end = (width - delta_sec) if static_mask else end
             if new_position < 0:
                 new_position = 0
-                new_end = (pos + width) - new_position
+                if static_mask:
+                    new_end = (pos + width) - new_position
+                else:
+                    new_start = start + (new_position - pos)
             rect_left = self.track_name_width + new_position * pps
         else:
             delta_sec = (event.pos().x() - rect.right()) / pps
@@ -832,13 +1024,14 @@ class ClipInteractionMixin:
             min_delta = -(width - min_len)
             if delta_sec < min_delta:
                 delta_sec = min_delta
-            new_end = width + delta_sec
+            new_start = 0.0 if static_mask else start
+            new_end = (width + delta_sec) if static_mask else end + delta_sec
             new_position = pos
             rect_left = self.track_name_width + new_position * pps
 
-        rect_width = new_end * pps
+        rect_width = max(new_end - new_start, min_len) * pps
         geom_rect = QRectF(rect_left, world_rect.y(), rect_width, world_rect.height())
-        return geom_rect, 0.0, new_end, new_position
+        return geom_rect, new_start, new_end, new_position
 
     def _compute_clip_resize(self, item):
         event = self._last_event
@@ -934,6 +1127,22 @@ class ClipInteractionMixin:
             self._resizing_item = None
             self._snap_keyframe_seconds = []
             self.snap.reset()
+            if hasattr(self, "_resize_snap_ignore_backup"):
+                ignore_ids = set(self._resize_snap_ignore_backup)
+                del self._resize_snap_ignore_backup
+                item_id = getattr(item, "id", None)
+                if item_id is not None and item_id in ignore_ids:
+                    ignore_ids.discard(item_id)
+                self._snap_ignore_ids = ignore_ids
+            # Ensure selection visuals are fully refreshed even when resize
+            # starts/ends without movement (click on edge).
+            self.changed(None)
+            self.geometry.mark_dirty()
+            self._keyframes_dirty = True
+            self.update()
+            self._release_cursor()
+            if self._last_event:
+                self._updateCursor(self._last_event.pos())
             return
         start = self._resize_new_start
         end = self._resize_new_end
@@ -953,15 +1162,16 @@ class ClipInteractionMixin:
                 self.update_clip_data(item.data, only_basic_props=True, ignore_reader=True)
         else:
             setattr(self.win, "_trim_refresh_pending", True)
+            static_mask = self._transition_uses_static_mask(item.data)
             # Use a copied payload so update_transition_data() can compare
             # existing transition timing against the new timing and scale
             # keyframes correctly during trim/resize.
             transition_data = json.loads(json.dumps(item.data))
             transition_data["position"] = self._snap_time(position)
-            transition_data["start"] = 0.0
+            transition_data["start"] = self._snap_time(start)
             transition_data["end"] = self._snap_time(end)
-            transition_data["duration"] = self._snap_time(end)
-            transition_data["_auto_direction"] = True
+            transition_data["duration"] = self._snap_time(transition_data["end"] - transition_data["start"])
+            transition_data["_auto_direction"] = static_mask
             self.update_transition_data(transition_data, only_basic_props=True)
             item.data = transition_data
 

@@ -40,6 +40,7 @@ from classes.logger import log
 from classes.query import Clip, Transition
 from classes.app import get_app
 from classes.metrics import track_metric_screen
+from classes.clip_utils import apply_file_caption_to_clip
 from windows.views.add_to_timeline_treeview import TimelineTreeView
 
 import openshot
@@ -218,6 +219,9 @@ class AddToTimeline(QDialog):
             if not new_clip.get("reader"):
                 continue  # Skip to next file
 
+            # If the source file has stored caption text, attach a Caption effect to this new clip.
+            apply_file_caption_to_clip(new_clip, file)
+
             # Check for optional start and end attributes
             start_time = 0
             end_time = new_clip["reader"]["duration"]
@@ -389,20 +393,27 @@ class AddToTimeline(QDialog):
         # Clear transaction
         get_app().updates.transaction_id = None
 
-        # Ensure timeline extension behavior matches all other timeline add/move paths.
-        timeline_view = getattr(get_app().window, "timeline", None)
+        win = get_app().window
+
+        # Ensure project duration grows to include all newly-added items.
+        timeline_view = getattr(win, "timeline", None)
         extend_timeline = getattr(timeline_view, "_extend_timeline_to_fit_items", None)
         if callable(extend_timeline):
-            extend_timeline()
+            try:
+                extend_timeline()
+            except Exception:
+                log.warning("Failed to extend timeline after Add to Timeline", exc_info=1)
 
         # Auto-select newly added clips
-        win = get_app().window
         for idx, clip_id in enumerate(added_clip_ids):
             if clip_id:
                 win.addSelection(str(clip_id), "clip", clear_existing=(idx == 0))
-        if added_clip_ids and hasattr(win.timeline, "geometry"):
-            win.timeline.geometry.mark_dirty()
-            win.timeline.update()
+        if added_clip_ids:
+            timeline_geometry = getattr(win.timeline, "geometry", None)
+            if hasattr(timeline_geometry, "mark_dirty"):
+                timeline_geometry.mark_dirty()
+            if hasattr(win.timeline, "update"):
+                win.timeline.update()
 
         # Accept dialog
         super(AddToTimeline, self).accept()

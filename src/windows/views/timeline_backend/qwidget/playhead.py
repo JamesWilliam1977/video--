@@ -25,11 +25,29 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+import openshot
 from PyQt5.QtCore import QRectF
 from classes.app import get_app
 
 
 class PlayheadMixin:
+    def _is_playing(self):
+        player = getattr(getattr(self.win, "preview_thread", None), "player", None)
+        if not player:
+            return False
+        return player.Mode() == openshot.PLAYBACK_PLAY and player.Speed() != 0
+
+    def _emit_playhead_seek(self, frame, start_preroll=True, force=False):
+        seek_state = (int(max(1, frame)), bool(start_preroll))
+        if not force and getattr(self, "_last_playhead_seek_state", None) == seek_state:
+            return
+        self._last_playhead_seek_state = seek_state
+        # Match the legacy timeline path: scrubbing should always restore the
+        # main timeline reader before seeking, in case some other interaction
+        # temporarily switched the preview player into clip-preview mode.
+        self.win.LoadFileSignal.emit("")
+        self.win.SeekSignal.emit(seek_state[0], seek_state[1])
+
     def centerOnPlayhead(self, emit=True):
         anchor_seconds = 0.0
         if self.fps_float:
@@ -55,7 +73,7 @@ class PlayheadMixin:
         self.geometry.mark_dirty()
         self.update()
 
-    def _move_playhead(self, x_pos):
+    def _move_playhead(self, x_pos, start_preroll=True):
         fps = get_app().project.get("fps")
         fps_float = float(fps.get("num", 24)) / float(fps.get("den", 1) or 1)
         offset_px = getattr(self, "h_scroll_offset", 0.0)
@@ -68,10 +86,15 @@ class PlayheadMixin:
         else:
             frame = 1
         frame = max(1, frame)
-        self.win.SeekSignal.emit(frame)
+        if frame != self.current_frame:
+            self.current_frame = frame
+            self.update()
+        self._emit_playhead_seek(frame, start_preroll=start_preroll)
 
     def update_playhead_pos(self, currentFrame):
         """Callback when position is changed"""
+        if self.dragging_playhead:
+            return
         self.current_frame = currentFrame
 
         # Schedule repaint
@@ -152,15 +175,29 @@ class PlayheadMixin:
 
     def _startPlayhead(self):
         self.dragging_playhead = True
+        self._playhead_seek_commit_mode = self._is_playing()
         self._fix_cursor(self.cursors["hand"])
-        self._move_playhead(self._last_event.pos().x())
+        if self._last_event:
+            self._move_playhead(
+                self._last_event.pos().x(),
+                start_preroll=self._playhead_seek_commit_mode,
+            )
 
     def _playheadMove(self):
         if self.dragging_playhead:
-            self._move_playhead(self._last_event.pos().x())
+            self._move_playhead(
+                self._last_event.pos().x(),
+                start_preroll=getattr(self, "_playhead_seek_commit_mode", False),
+            )
 
     def _finishPlayhead(self):
         self.dragging_playhead = False
+        self._playhead_seek_commit_mode = False
+        self._emit_playhead_seek(
+            self.current_frame,
+            start_preroll=True,
+            force=True,
+        )
         self._release_cursor()
         if self._last_event:
             self._updateCursor(self._last_event.pos())

@@ -26,17 +26,119 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+import os
 import uuid
 
 from PyQt5.QtCore import QSize, Qt, QPoint, QRegExp, QItemSelectionModel
-from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon
-from PyQt5.QtWidgets import QListView, QAbstractItemView
+from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon, QColor, QFontMetrics
+from PyQt5.QtWidgets import QListView, QAbstractItemView, QStyledItemDelegate, QStyleOptionViewItem, QStyle
 
 from classes import info
 from classes.app import get_app
 from classes.logger import log
 from classes.query import File
+from .ai_tools_menu import add_ai_tools_menu
 from .menu import StyledContextMenu
+
+
+def _is_generation_placeholder(file_id):
+    return str(file_id or "").startswith("__genjob__:")
+
+
+def _job_id_from_placeholder(file_id):
+    file_id = str(file_id or "")
+    if not _is_generation_placeholder(file_id):
+        return None
+    return file_id.split(":", 1)[1]
+
+
+class FilesListProgressDelegate(QStyledItemDelegate):
+    """Paint a thin progress line over list-view thumbnails."""
+
+    def __init__(self, view):
+        super().__init__(view)
+        self.view = view
+
+    def paint(self, painter, option, index):
+        super().paint(painter, option, index)
+
+        # list_proxy_model index -> proxy_model index -> source model index
+        proxy_index = self.view.files_model.list_proxy_model.mapToSource(index)
+        if not proxy_index or not proxy_index.isValid():
+            return
+        source_index = self.view.files_model.proxy_model.mapToSource(proxy_index)
+        if not source_index or not source_index.isValid():
+            return
+
+        file_id = source_index.sibling(source_index.row(), 5).data(Qt.DisplayRole)
+        queue = getattr(self.view.win, "generation_queue", None)
+        if not file_id or not queue:
+            return
+        badge = queue.get_file_badge(file_id)
+        if not badge and _is_generation_placeholder(file_id):
+            job = queue.get_job(_job_id_from_placeholder(file_id))
+            if job and job.get("status") in ("queued", "running", "canceling"):
+                label = "Queued" if job.get("status") == "queued" else "Generating"
+                badge = {
+                    "status": job.get("status"),
+                    "progress": int(job.get("progress", 0)),
+                    "label": label,
+                    "job_id": job.get("id"),
+                }
+        if not badge:
+            return
+
+        progress = int(badge.get("progress", 0))
+        status = str(badge.get("status", "")).strip().lower()
+        if status in ("queued", "running", "canceling"):
+            # Keep active jobs visible even before numeric progress starts.
+            progress = max(progress, 2)
+        if progress <= 0:
+            return
+
+        opt = QStyleOptionViewItem(option)
+        self.initStyleOption(opt, index)
+        style = opt.widget.style() if opt.widget else self.view.style()
+        deco_rect = style.subElementRect(QStyle.SE_ItemViewItemDecoration, opt, opt.widget)
+        if not deco_rect.isValid():
+            return
+
+        bar_height = 3
+        bar_margin = 2
+        full_rect = deco_rect.adjusted(1, 0, -1, 0)
+        full_rect.setTop(deco_rect.bottom() - bar_height - bar_margin + 1)
+        full_rect.setHeight(bar_height)
+        if full_rect.width() <= 2:
+            return
+
+        fill_width = max(1, int((full_rect.width() * min(progress, 100)) / 100.0))
+        fill_rect = full_rect.adjusted(0, 0, -(full_rect.width() - fill_width), 0)
+
+        painter.save()
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QColor("#283241"))
+        painter.drawRect(full_rect)
+        painter.setBrush(QColor("#53A0ED"))
+        painter.drawRect(fill_rect)
+        if status == "queued":
+            label = "Queued"
+            fm = QFontMetrics(painter.font())
+            text_w = fm.horizontalAdvance(label)
+            text_h = fm.height()
+            pad_x = 5
+            pad_y = 2
+            badge_w = text_w + (pad_x * 2)
+            badge_h = text_h + (pad_y * 2)
+            badge_bottom = full_rect.top() - 3
+            badge_top = max(deco_rect.top() + 3, badge_bottom - badge_h + 1)
+            badge_rect = deco_rect.adjusted(3, badge_top - deco_rect.top(), 0, 0)
+            badge_rect.setWidth(badge_w)
+            badge_rect.setHeight(badge_h)
+            painter.setBrush(QColor(18, 22, 30, 220))
+            painter.drawRoundedRect(badge_rect, 4, 4)
+            painter.setPen(QColor("#EAF5FF"))
+            painter.drawText(badge_rect, Qt.AlignCenter, label)
+        painter.restore()
 
 
 class FilesListView(QListView):
@@ -62,6 +164,40 @@ class FilesListView(QListView):
         menu = StyledContextMenu(parent=self)
 
         menu.addAction(self.win.actionImportFiles)
+
+        source_file = None
+
+        active_job = None
+        file_id = None
+        if index.isValid():
+            model = self.model()
+            source_index = model.mapToSource(index)
+            id_index = source_index.sibling(source_index.row(), 5)
+            file_id = model.sourceModel().data(id_index, Qt.DisplayRole)
+            if _is_generation_placeholder(file_id):
+                job_id = _job_id_from_placeholder(file_id)
+                queue = getattr(self.win, "generation_queue", None)
+                active_job = queue.get_job(job_id) if queue else None
+                if active_job and active_job.get("status") not in ("queued", "running", "canceling"):
+                    active_job = None
+            else:
+                active_job = self.win.active_generation_job_for_file(file_id)
+                source_file = File.get(id=file_id)
+        add_ai_tools_menu(self.win, menu, source_file=source_file)
+
+        if not active_job:
+            self.win.actionGenerate.setEnabled(self.win.can_open_generate_dialog())
+        if active_job:
+            cancel_action = menu.addAction(_("Cancel Job"))
+            delete_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "track-delete-enabled.svg")
+            if os.path.exists(delete_icon_path):
+                cancel_action.setIcon(QIcon(delete_icon_path))
+            else:
+                cancel_action.setIcon(self.win.actionRemove_from_Project.icon())
+            cancel_action.triggered.connect(
+                lambda checked=False, job_id=active_job.get("id"): self.win.cancel_generation_job(job_id)
+            )
+        menu.addSeparator()
         menu.addAction(self.win.actionDetailsView)
 
         if index.isValid():
@@ -78,6 +214,9 @@ class FilesListView(QListView):
 
             # Add edit title option (if svg file)
             file = File.get(id=file_id)
+            if not file:
+                menu.popup(event.globalPos())
+                return
             if file and file.data.get("path").endswith(".svg"):
                 menu.addAction(self.win.actionEditTitle)
                 menu.addAction(self.win.actionDuplicate)
@@ -150,6 +289,12 @@ class FilesListView(QListView):
 
         # Get first column indexes for all selected rows
         selected = self.selectionModel().selectedRows(0)
+        selected = [
+            idx for idx in selected
+            if not _is_generation_placeholder(
+                self.model().sourceModel().data(self.model().mapToSource(idx).sibling(self.model().mapToSource(idx).row(), 5), Qt.DisplayRole)
+            )
+        ]
 
         # Check if there are any selected items
         if not selected:
@@ -266,6 +411,7 @@ class FilesListView(QListView):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.setSelectionModel(self.files_model.list_selection_model)
+        self.setItemDelegate(FilesListProgressDelegate(self))
 
         # Keep track of mouse press start position to determine when to start drag
         self.setAcceptDrops(True)

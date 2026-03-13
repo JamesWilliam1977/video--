@@ -86,7 +86,10 @@ def GenerateThumbnail(file_path, thumb_path, thumbnail_frame, width, height, mas
         log.warning(f"Failed to generate thumbnail for missing file: {file_path}")
         return
 
-    scale = get_app().devicePixelRatio()
+    try:
+        scale = float(get_app().devicePixelRatioF())
+    except Exception:
+        scale = 1.0
 
     if scale > 1.0:
         clip.scale_x.AddPoint(1.0, 1.0 * scale)

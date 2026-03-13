@@ -74,111 +74,115 @@ class PropertyDelegate(QItemDelegate):
 
     def paint(self, painter, option, index):
         painter.save()
-        painter.setRenderHint(QPainter.Antialiasing)
+        try:
+            painter.setRenderHint(QPainter.Antialiasing)
 
-        # Get data model and selection
-        model = self.model
-        row = model.itemFromIndex(index).row()
-        selected_label = model.item(row, 0)
-        selected_value = model.item(row, 1)
-        cur_property = selected_label.data()
+            # Get data model and selection
+            model = self.model
+            row = model.itemFromIndex(index).row()
+            selected_label = model.item(row, 0)
+            selected_value = model.item(row, 1)
+            cur_property = selected_label.data()
 
-        # Get min/max values for this property
-        property_type = cur_property[1]["type"]
-        property_max = cur_property[1]["max"]
-        property_min = cur_property[1]["min"]
-        readonly = cur_property[1]["readonly"]
-        points = cur_property[1]["points"]
-        interpolation = cur_property[1]["interpolation"]
+            # Get min/max values for this property
+            property_type = cur_property[1]["type"]
+            property_max = cur_property[1]["max"]
+            property_min = cur_property[1]["min"]
+            readonly = cur_property[1]["readonly"]
+            points = cur_property[1]["points"]
+            interpolation = cur_property[1]["interpolation"]
 
-        # Calculate percentage value
-        if property_type in ["float", "int"]:
-            # Get the current value
-            current_value = QLocale().system().toDouble(selected_value.text())[0]
+            # Calculate percentage value
+            if property_type in ["float", "int"]:
+                # Get the current value
+                current_value = QLocale().system().toDouble(selected_value.text())[0]
 
-            # Shift my range to be positive
-            if property_min < 0.0:
-                property_shift = 0.0 - property_min
-                property_min += property_shift
-                property_max += property_shift
-                current_value += property_shift
+                # Shift my range to be positive
+                if property_min < 0.0:
+                    property_shift = 0.0 - property_min
+                    property_min += property_shift
+                    property_max += property_shift
+                    current_value += property_shift
 
-            # Calculate current value as % of min/max range
-            min_max_range = float(property_max) - float(property_min)
-            value_percent = current_value / min_max_range
-        else:
-            value_percent = 0.0
-
-        # Get theme colors
-        if get_app().theme_manager:
-            theme = get_app().theme_manager.get_current_theme()
-            if not theme:
-                log.warning("No theme loaded yet. Skip rendering properties widget.")
-                return
-            foreground_color = theme.get_color(".property_value", "foreground-color")
-            background_color = theme.get_color(".property_value", "background-color")
-        else:
-            log.warning("No ThemeManager loaded yet. Skip rendering properties widget.")
-
-        # set background color
-        painter.setPen(QPen(Qt.NoPen))
-        if property_type == "color":
-            # Color keyframe
-            red = int(cur_property[1]["red"]["value"])
-            green = int(cur_property[1]["green"]["value"])
-            blue = int(cur_property[1]["blue"]["value"])
-            painter.setBrush(QColor(red, green, blue))
-        else:
-            # Normal Keyframe
-            if option.state & QStyle.State_Selected:
-                painter.setBrush(background_color)
+                # Calculate current value as % of min/max range
+                min_max_range = float(property_max) - float(property_min)
+                if abs(min_max_range) <= 1e-12:
+                    value_percent = 0.0
+                else:
+                    value_percent = current_value / min_max_range
             else:
-                painter.setBrush(background_color)
+                value_percent = 0.0
 
-        if readonly:
-            # Set text color for read only fields
-            painter.setPen(QPen(get_app().window.palette().color(QPalette.Disabled, QPalette.Text)))
-        else:
-            path = QPainterPath()
-            path.addRoundedRect(QRectF(option.rect), 15, 15)
-            painter.fillPath(path, background_color)
-            painter.drawPath(path)
+            # Get theme colors
+            if get_app().theme_manager:
+                theme = get_app().theme_manager.get_current_theme()
+                if not theme:
+                    log.warning("No theme loaded yet. Skip rendering properties widget.")
+                    return
+                foreground_color = theme.get_color(".property_value", "foreground-color")
+                background_color = theme.get_color(".property_value", "background-color")
+            else:
+                log.warning("No ThemeManager loaded yet. Skip rendering properties widget.")
 
-            # Render mask rectangle
-            painter.setBrush(QBrush(QColor("#000000")))
-            mask_rect = QRectF(option.rect)
-            mask_rect.setWidth(option.rect.width() * value_percent)
-            painter.setClipRect(mask_rect, Qt.IntersectClip)
+            # set background color
+            painter.setPen(QPen(Qt.NoPen))
+            if property_type == "color":
+                # Color keyframe
+                red = int(cur_property[1]["red"]["value"])
+                green = int(cur_property[1]["green"]["value"])
+                blue = int(cur_property[1]["blue"]["value"])
+                painter.setBrush(QColor(red, green, blue))
+            else:
+                # Normal Keyframe
+                if option.state & QStyle.State_Selected:
+                    painter.setBrush(background_color)
+                else:
+                    painter.setBrush(background_color)
 
-            # gradient for value box
-            gradient = QLinearGradient(option.rect.topLeft(), option.rect.topRight())
-            gradient.setColorAt(0, foreground_color)
-            gradient.setColorAt(1, foreground_color)
+            if readonly:
+                # Set text color for read only fields
+                painter.setPen(QPen(get_app().window.palette().color(QPalette.Disabled, QPalette.Text)))
+            else:
+                path = QPainterPath()
+                path.addRoundedRect(QRectF(option.rect), 15, 15)
+                painter.fillPath(path, background_color)
+                painter.drawPath(path)
 
-            # Render progress
-            painter.setBrush(gradient)
-            path = QPainterPath()
-            value_rect = QRectF(option.rect)
-            path.addRoundedRect(value_rect, 15, 15)
-            painter.fillPath(path, gradient)
-            painter.drawPath(path)
-            painter.setClipping(False)
+                # Render mask rectangle
+                painter.setBrush(QBrush(QColor("#000000")))
+                mask_rect = QRectF(option.rect)
+                mask_rect.setWidth(option.rect.width() * value_percent)
+                painter.setClipRect(mask_rect, Qt.IntersectClip)
 
-            if points > 1:
-                # Draw interpolation icon on top
-                painter.drawPixmap(
-                    int(option.rect.x() + option.rect.width() - 30.0),
-                    int(option.rect.y() + 4),
-                    self.curve_pixmaps[interpolation])
+                # gradient for value box
+                gradient = QLinearGradient(option.rect.topLeft(), option.rect.topRight())
+                gradient.setColorAt(0, foreground_color)
+                gradient.setColorAt(1, foreground_color)
 
-            # Set text color
-            painter.setPen(QPen(Qt.white))
+                # Render progress
+                painter.setBrush(gradient)
+                path = QPainterPath()
+                value_rect = QRectF(option.rect)
+                path.addRoundedRect(value_rect, 15, 15)
+                painter.fillPath(path, gradient)
+                painter.drawPath(path)
+                painter.setClipping(False)
 
-        value = index.data(Qt.DisplayRole)
-        if value:
-            painter.drawText(option.rect, Qt.AlignCenter, value)
+                if points > 1:
+                    # Draw interpolation icon on top
+                    painter.drawPixmap(
+                        int(option.rect.x() + option.rect.width() - 30.0),
+                        int(option.rect.y() + 4),
+                        self.curve_pixmaps[interpolation])
 
-        painter.restore()
+                # Set text color
+                painter.setPen(QPen(Qt.white))
+
+            value = index.data(Qt.DisplayRole)
+            if value:
+                painter.drawText(option.rect, Qt.AlignCenter, value)
+        finally:
+            painter.restore()
 
 
 class PropertiesTableView(QTableView):
@@ -428,7 +432,10 @@ class PropertiesTableView(QTableView):
             # Get the position of the cursor and % value
             value_column_x = self.columnViewportPosition(1)
             cursor_value = event.x() - value_column_x
-            cursor_value_percent = cursor_value / self.columnWidth(1)
+            value_column_width = self.columnWidth(1)
+            if value_column_width <= 0:
+                return
+            cursor_value_percent = cursor_value / value_column_width
 
             # Get data from selected item
             try:
@@ -873,11 +880,21 @@ class PropertiesTableView(QTableView):
                         continue
                     icon = idx.data(Qt.DecorationRole)
                     name = idx.sibling(i, 1).data()
-                    path = os.path.join(idx.sibling(i, 4).data(), name)
+                    file_id = idx.sibling(i, 5).data()
+                    file_obj = File.get(id=file_id) if file_id else None
+                    path = file_obj.absolute_path() if file_obj else ""
+                    if not path:
+                        continue
+                    file_data = getattr(file_obj, "data", {}) or {}
 
                     # Append file choice
                     file_choices.append({"name": name,
-                                         "value": path,
+                                         "value": {
+                                             "file_id": file_id,
+                                             "path": path,
+                                             "start": file_data.get("start"),
+                                             "end": file_data.get("end"),
+                                         },
                                          "selected": False,
                                          "icon": icon
                                          })

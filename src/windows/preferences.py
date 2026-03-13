@@ -68,7 +68,7 @@ class Preferences(QDialog):
         ui_util.init_ui(self)
 
         # Define the custom category order
-        self.custom_order = ["General", "Preview", "Autosave", "Cache", "Debug", "Keyboard", "Performance", "Location", "Experimental"]
+        self.custom_order = ["General", "Timeline", "Preview", "Autosave", "Cache", "Performance", "Keyboard", "Location", "Advanced"]
 
         # Get settings
         self.s = get_app().get_settings()
@@ -284,10 +284,17 @@ class Preferences(QDialog):
                         # Add filesystem browser button
                         extraWidget = QPushButton(_("Browse..."))
                         extraWidget.clicked.connect(functools.partial(self.selectExecutable, widget, param))
+                    elif param.get("setting") == "comfy-ui-url":
+                        # Add an explicit connectivity check for ComfyUI URL.
+                        extraWidget = QPushButton(_("Check"))
+                        extraWidget.clicked.connect(
+                            functools.partial(self.check_comfy_ui_url, widget, param, extraWidget)
+                        )
 
                 elif param["type"] == "bool":
                     # create spinner
                     widget = QCheckBox()
+                    widget.setMinimumHeight(24)
                     if param["value"] is True:
                         widget.setCheckState(Qt.Checked)
                     else:
@@ -298,6 +305,11 @@ class Preferences(QDialog):
 
                     # create spinner
                     widget = QComboBox()
+                    if param.get("setting") == "hw-decoder":
+                        # Icon-bearing entries need extra vertical room.
+                        widget.setMinimumHeight(34)
+                    else:
+                        widget.setFixedHeight(28)
                     widget.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLengthWithIcon)
 
                     # Get values
@@ -370,6 +382,9 @@ class Preferences(QDialog):
                     # Overwrite value list (for hardware acceleration modes)
                     os_platform = platform.system()
                     if param["setting"] == "hw-decoder":
+                        popup_view = widget.view()
+                        if hasattr(popup_view, "setSpacing"):
+                            popup_view.setSpacing(1)
                         for value_item in list(value_list):
                             v = value_item["value"]
                             # Remove items that are operating system specific
@@ -514,18 +529,36 @@ class Preferences(QDialog):
         for setting_name in list(self.dependency_map.keys()):
             self.apply_dependency_state(setting_name)
 
-    def apply_dependency_state(self, setting_name):
-        """Enable/disable dependent widgets based on controller state."""
-        controlled_widgets = self.dependency_map.get(setting_name, [])
+    def apply_dependencies_for_controller(self, controller_setting):
+        """Apply dependency states linked to a specific controller setting."""
+        if not controller_setting:
+            return
+        for dependency_key in list(self.dependency_map.keys()):
+            setting_name = dependency_key[1:] if dependency_key.startswith("!") else dependency_key
+            if setting_name == controller_setting:
+                self.apply_dependency_state(dependency_key)
+
+    def apply_dependency_state(self, dependency_key):
+        """Enable/disable dependent widgets based on controller state.
+
+        A dependency key can be prefixed with "!" to invert the controller value.
+        """
+        controlled_widgets = self.dependency_map.get(dependency_key, [])
         if not controlled_widgets:
             return
 
+        invert = False
+        setting_name = dependency_key
+        if isinstance(dependency_key, str) and dependency_key.startswith("!"):
+            invert = True
+            setting_name = dependency_key[1:]
+
         enabled = bool(self.s.get(setting_name))
+        if invert:
+            enabled = not enabled
         for widget, label in controlled_widgets:
             if widget:
                 widget.setEnabled(enabled)
-            if label:
-                label.setEnabled(enabled)
 
     def selectExecutable(self, widget, param):
         _ = get_app()._tr
@@ -605,7 +638,7 @@ class Preferences(QDialog):
 
         # Update any dependent widgets
         if param.get("setting"):
-            self.apply_dependency_state(param["setting"])
+            self.apply_dependencies_for_controller(param["setting"])
 
     def spinner_value_changed(self, param, value):
         # Save setting
@@ -672,6 +705,98 @@ class Preferences(QDialog):
 
         # Check for restart
         self.check_for_restart(param)
+
+    def check_comfy_ui_url(self, widget, param, btn=None):
+        _ = get_app()._tr
+        if btn and btn.property("comfy_check_pending"):
+            return
+        url = str(widget.text() or "").strip().rstrip("/")
+        if not url:
+            log.info("ComfyUI URL check failed: empty URL")
+            self._update_comfy_ui_check_button(
+                btn,
+                available=False,
+                tooltip=_("ComfyUI URL is empty."),
+                enabled=True,
+            )
+            return
+
+        # Persist normalized URL before validation.
+        self.s.set(param["setting"], url)
+        widget.setText(url)
+        self._update_comfy_ui_check_button(
+            btn,
+            available=False,
+            tooltip=_("Checking ComfyUI connection..."),
+            enabled=True,
+            clear_icon=True,
+            pending=True,
+        )
+
+        window = getattr(get_app(), "window", None)
+        if not window:
+            self._update_comfy_ui_check_button(
+                btn,
+                available=False,
+                tooltip=_("Connection failed."),
+                enabled=True,
+                pending=False,
+            )
+            return
+
+        def _handle_result(available, error_text, checked_url):
+            try:
+                current_url = str(widget.text() or "").strip().rstrip("/")
+                if checked_url != current_url:
+                    self._update_comfy_ui_check_button(
+                        btn,
+                        available=False,
+                        tooltip=_("ComfyUI URL changed. Click Check to validate the new value."),
+                        enabled=True,
+                        clear_icon=True,
+                        pending=False,
+                    )
+                    return
+                if available:
+                    self._update_comfy_ui_check_button(
+                        btn,
+                        available=True,
+                        tooltip=_("Connection successful. AI menus are enabled."),
+                        enabled=True,
+                        pending=False,
+                    )
+                    return
+
+                message = _("Connection failed: {}").format(error_text) if error_text else _("Connection failed.")
+                self._update_comfy_ui_check_button(
+                    btn,
+                    available=False,
+                    tooltip="{} {}".format(
+                        message,
+                        _("AI menus are disabled until ComfyUI is reachable."),
+                    ),
+                    enabled=True,
+                    pending=False,
+                )
+            except RuntimeError:
+                return
+
+        window.refresh_comfy_availability_async(timeout=2.0, callback=_handle_result)
+
+    def _update_comfy_ui_check_button(self, btn, available, tooltip, enabled, clear_icon=False, pending=None):
+        if not btn:
+            return
+        if clear_icon:
+            btn.setIcon(QIcon())
+        else:
+            icon = self.style().standardIcon(
+                QStyle.SP_DialogApplyButton if available else QStyle.SP_DialogCancelButton
+            )
+            btn.setIcon(icon)
+        btn.setToolTip(str(tooltip or ""))
+        btn.setEnabled(bool(enabled))
+        if pending is not None:
+            btn.setProperty("comfy_check_pending", bool(pending))
 
     def dropdown_index_changed(self, widget, param, index):
         # Save setting
@@ -774,13 +899,17 @@ class Preferences(QDialog):
             # Open reader
             reader.Open()
 
-            # Test decoded pixel values for a valid decode (based on hardware-example.mp4)
-            if reader.GetFrame(0).CheckPixel(0, 0, 2, 133, 255, 255, 5):
+            # Test decoded pixel values for a valid decode. For hardware-backed
+            # options, also require that the reader actually produced a hardware
+            # decoded frame instead of silently falling back to software decode.
+            pixel_ok = reader.GetFrame(1).CheckPixel(0, 0, 2, 133, 255, 255, 5)
+            hardware_ok = current_decoder == 0 or reader.HardwareDecodeSuccessful()
+            if pixel_ok and hardware_ok:
                 is_supported = True
                 log.debug("Successful test of hardware decoder: %s (Decoder Type: %s, Graphics Card: %s)",
                           current_decoder_name, current_decoder, current_decoder_card)
             else:
-                log.debug("Failed test of hardware decoder (incorrect pixel color found): "
+                log.debug("Failed test of hardware decoder (incorrect pixel color or software fallback used): "
                           "%s (Decoder Type: %s, Graphics Card: %s)",
                           current_decoder_name, current_decoder, current_decoder_card)
 

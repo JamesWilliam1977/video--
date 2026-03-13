@@ -30,7 +30,8 @@ import functools
 import json
 
 from PyQt5.QtCore import pyqtSignal, QTimer
-from PyQt5.QtWidgets import QDialog, QMessageBox, QSizePolicy, QSlider
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QDialog, QMessageBox, QSizePolicy, QSlider, QToolButton, QLineEdit
 from PyQt5.QtCore import Qt, QEvent
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
@@ -66,6 +67,7 @@ class Cutting(QDialog):
         self._preview_autoplay_attempts = 0
         self._shutdown_in_progress = False
         self._close_after_shutdown = False
+        self.loop_playback = bool(preview)
 
         # Create dialog class
         QDialog.__init__(self)
@@ -75,6 +77,13 @@ class Cutting(QDialog):
 
         # Init UI
         ui_util.init_ui(self)
+        self.setWindowFlags(
+            (self.windowFlags() & ~Qt.Dialog)
+            | Qt.Window
+            | Qt.WindowMinMaxButtonsHint
+            | Qt.WindowMaximizeButtonHint
+        )
+        self.setSizeGripEnabled(True)
 
         # Track metrics
         track_metric_screen("cutting-screen")
@@ -183,6 +192,8 @@ class Cutting(QDialog):
         self.sliderVideo.setMaximum(self.video_length)
         self.sliderVideo.setSingleStep(1)
         self.sliderVideo.setPageStep(24)
+        if self.is_preview_mode:
+            self._build_preview_repeat_button()
 
         # Initialize first frame display.
         # For cutting mode, preserve the legacy two-step seek refresh.
@@ -213,6 +224,42 @@ class Cutting(QDialog):
         self.slider_timer.setSingleShot(True)
         self.slider_timer.timeout.connect(self.sliderVideo_timeout)
         self.initialized = True
+
+    def _build_preview_repeat_button(self):
+        _ = get_app()._tr
+        self.btnRepeat = QToolButton(self)
+        self.btnRepeat.setObjectName("btnRepeat")
+        self.btnRepeat.setCheckable(True)
+        self.btnRepeat.setChecked(True)
+        self.btnRepeat.setAutoRaise(True)
+        self.btnRepeat.setFixedSize(24, 24)
+        self.btnRepeat.setToolTip(_("Repeat"))
+        self.btnRepeat.setStyleSheet(
+            "QToolButton#btnRepeat { border-radius: 4px; }"
+            "QToolButton#btnRepeat:checked { background-color: rgba(83,160,237,80); }"
+        )
+        self.btnRepeat.toggled.connect(self._on_repeat_toggled)
+        self.horizontalLayout_3.insertWidget(2, self.btnRepeat)
+
+        icon = ui_util.get_icon("media-playlist-repeat")
+        if icon is None or icon.isNull():
+            icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-media-repeat.svg")
+            icon = QIcon(icon_path)
+        self.btnRepeat.setIcon(icon)
+
+    def _on_repeat_toggled(self, checked):
+        self.loop_playback = bool(checked)
+
+    def keyPressEvent(self, event):
+        if event and event.key() == Qt.Key_Space:
+            focused = self.focusWidget()
+            if focused and isinstance(focused, QLineEdit):
+                return super(Cutting, self).keyPressEvent(event)
+            if hasattr(self, "btnPlay") and self.btnPlay is not None:
+                self.btnPlay.click()
+                event.accept()
+                return
+        return super(Cutting, self).keyPressEvent(event)
 
     def eventFilter(self, obj, event):
         if event.type() == event.KeyPress and obj is self.txtName:
@@ -264,6 +311,11 @@ class Cutting(QDialog):
     def movePlayhead(self, frame_number):
         """Update the playhead position"""
 
+        # Keep slider drag native; ignore async playhead pushes while dragging.
+        if self.sliderVideo.isSliderDown():
+            self.lblVideoTime.setText(self.frame_to_timestamp(self.sliderVideo.value()))
+            return
+
         # Move slider to correct frame position
         self.sliderIgnoreSignal = True
         self.sliderVideo.setValue(frame_number)
@@ -287,6 +339,14 @@ class Cutting(QDialog):
         if self.btnPlay.isChecked():
             log.info('play (icon to pause)')
             ui_util.setup_icon(self, self.btnPlay, "actionPlay", "media-playback-pause")
+            # In non-loop mode, replay from the beginning when currently at end.
+            if not self.loop_playback:
+                try:
+                    current_pos = int(self.preview_thread.player.Position())
+                except Exception:
+                    current_pos = 1
+                if current_pos >= int(self.video_length):
+                    self.SeekSignal.emit(1)
             self.PlaySignal.emit()
         else:
             log.info('pause (icon to play)')
@@ -332,9 +392,20 @@ class Cutting(QDialog):
             QTimer.singleShot(0, self._start_preview_autoplay)
 
     def _preview_mode_changed(self, mode):
+        play_mode = getattr(openshot, "PLAYBACK_PLAY", None)
+        paused_mode = getattr(openshot, "PLAYBACK_PAUSED", getattr(openshot, "PLAYBACK_PAUSE", None))
+        stop_mode = getattr(openshot, "PLAYBACK_STOPPED", getattr(openshot, "PLAYBACK_STOP", None))
+
+        # Keep the play button state visually in sync with current playback mode.
+        if mode == play_mode and not self.btnPlay.isChecked():
+            self.btnPlay.setChecked(True)
+            ui_util.setup_icon(self, self.btnPlay, "actionPlay", "media-playback-pause")
+        elif mode in (paused_mode, stop_mode) and self.btnPlay.isChecked():
+            self.btnPlay.setChecked(False)
+            ui_util.setup_icon(self, self.btnPlay, "actionPlay", "media-playback-start")
+
         if not self.is_preview_mode or not self._preview_autoplay_active:
             return
-        paused_mode = getattr(openshot, "PLAYBACK_PAUSED", getattr(openshot, "PLAYBACK_PAUSE", None))
         if paused_mode is not None and mode == paused_mode:
             QTimer.singleShot(0, self._start_preview_autoplay)
 

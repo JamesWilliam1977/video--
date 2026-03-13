@@ -599,7 +599,7 @@ function moveBoundingBox(scope, previous_x, previous_y, x_offset, y_offset, left
   var includeKeyframes = item_type === "trimming" && !(scope && scope.enable_timing);
   var results = scope.getNearbyPosition(
     [bounding_box.left, bounding_box.right],
-    10.0,
+    12.0,
     bounding_box.selected_ids,
     { includeKeyframes: includeKeyframes }
   );

@@ -865,30 +865,19 @@ class KeyframeMixin:
         self._ensure_keyframe_markers()
         clip_id_str = str(clip_id)
         seconds = []
-        active_edge = getattr(self, "_resize_edge", None)
-        frame_epsilon = 0.0
-        if self.fps_float:
-            frame_epsilon = 1.0 / float(self.fps_float)
-
         for marker in getattr(self, "_keyframe_markers", []):
             if marker.get("object_id") != clip_id_str:
                 continue
-            marker_seconds = marker.get("display_seconds", marker.get("seconds"))
+            # Use unclamped seconds so trimmed-off keyframes remain snap targets.
+            marker_seconds = marker.get("seconds")
+            if marker_seconds is None:
+                marker_seconds = marker.get("display_seconds")
             if marker_seconds is None:
                 continue
             try:
                 local_seconds = float(marker_seconds)
             except (TypeError, ValueError):
                 continue
-            if active_edge == "left":
-                epsilon = frame_epsilon if frame_epsilon > 0.0 else 1e-6
-                if local_seconds <= epsilon + 1e-9:
-                    # Skip the keyframe that sits at the clip's first frame when
-                    # trimming from the left edge so we don't continually snap back
-                    # to the original in-point before the user has moved away from
-                    # it. Other keyframes (including ones very near the start) are
-                    # still considered.
-                    continue
 
             seconds.append(position + local_seconds)
 
@@ -1804,7 +1793,7 @@ class KeyframeMixin:
             base_position = float(data.get("position", 0.0) or 0.0)
         absolute = round(base_position * fps) + frame - round(clip_start * fps)
         absolute = max(1, int(absolute))
-        self.win.SeekSignal.emit(absolute)
+        self.win.SeekSignal.emit(absolute, True)
 
     def _finishKeyframeDrag(self):
         if self._dragging_panel_keyframes:

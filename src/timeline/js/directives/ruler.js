@@ -156,31 +156,41 @@ App.directive("tlRuler", function ($timeout) {
     restrict: "A",
     link: function (scope, element, attrs) {
       var isDragging = false;
+      var pendingSeekSeconds = null;
+      var cacheSuppressed = false;
+      var didPreviewSeek = false;
 
       // Start dragging when mousedown on the ruler
       element.on("mousedown", function (e) {
+        // Ignore playhead-originated events (handled by tlPlayhead).
+        if ($(e.target).closest("#playhead").length) {
+          return;
+        }
+
         // Set bounding box for the playhead position
         setBoundingBox(scope, $("#playhead"), "playhead");
         isDragging = true;
-
-        if (scope.Qt) {
-            // Disable caching thread during scrubbing
-            timeline.DisableCacheThread();
-        }
+        cacheSuppressed = false;
+        didPreviewSeek = false;
 
         // Get playhead position
         var playhead_left = e.pageX - element.offset().left;
         var playhead_seconds = snapToFPSGridTime(scope, pixelToTime(scope, playhead_left));
         playhead_seconds = Math.min(Math.max(0.0, playhead_seconds), scope.project.duration);
+        pendingSeekSeconds = playhead_seconds;
         var playhead_snapped_target = playhead_seconds * scope.pixelsPerSecond;
 
-        // Immediately preview frame (don't wait for animated playhead)
-        scope.previewFrame(playhead_seconds);
-
         if (playhead_seconds == scope.project.playhead_position) {
-          // No animation (playhead didn't move)
+          // No-op click at current playhead position: do not emit seek.
+          isDragging = false;
+          pendingSeekSeconds = null;
           return;
         }
+
+        // Match qwidget behavior: immediate preview seek without preroll,
+        // then commit seek with preroll on release.
+        scope.previewFrame(playhead_seconds, false);
+        didPreviewSeek = true;
 
         // Animate to new position (and then update scope)
         scope.playhead_animating = true;
@@ -199,6 +209,11 @@ App.directive("tlRuler", function ($timeout) {
       // Global mousemove listener
       $(document).on("mousemove", function (e) {
         if (isDragging && e.which === 1 && !scope.playhead_animating && !scope.getDragging()) { // left button is held
+          if (scope.Qt && !cacheSuppressed) {
+            timeline.DisableCacheThread();
+            cacheSuppressed = true;
+          }
+
           // Calculate the playhead bounding box movement
           let cursor_position = e.pageX - $("#ruler").offset().left;
           let new_position = cursor_position;
@@ -215,8 +230,10 @@ App.directive("tlRuler", function ($timeout) {
           // Move playhead
           let playhead_seconds = new_position / scope.pixelsPerSecond;
           playhead_seconds = Math.min(Math.max(0.0, playhead_seconds), scope.project.duration);
+          pendingSeekSeconds = playhead_seconds;
           scope.movePlayhead(playhead_seconds);
-          scope.previewFrame(playhead_seconds);
+          scope.previewFrame(playhead_seconds, false);
+          didPreviewSeek = true;
         }
       });
 
@@ -225,10 +242,19 @@ App.directive("tlRuler", function ($timeout) {
         if (isDragging) {
           isDragging = false;
 
-          if (scope.Qt) {
-            // Enable caching thread after scrubbing
-            timeline.EnableCacheThread();
+          if (scope.Qt && didPreviewSeek) {
+            const commitSeconds = (pendingSeekSeconds !== null) ? pendingSeekSeconds : scope.project.playhead_position;
+            // Commit seek with preroll at release. The no-preroll preview seek
+            // has already been emitted on mousedown / mousemove.
+            scope.previewFrame(commitSeconds, true);
+            // Re-enable caching only if this interaction actually suppressed it.
+            if (cacheSuppressed) {
+              timeline.EnableCacheThreadNoRefresh();
+            }
           }
+          pendingSeekSeconds = null;
+          cacheSuppressed = false;
+          didPreviewSeek = false;
         }
       });
 
