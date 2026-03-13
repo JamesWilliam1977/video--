@@ -35,8 +35,8 @@ from urllib.parse import unquote
 from fractions import Fraction
 
 import openshot
-from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
-from PyQt5.QtWidgets import QMessageBox, QDialog
+from qt_api import QObject, QThread, pyqtSignal, pyqtSlot
+from qt_api import QMessageBox, QDialog
 
 from classes import info
 from classes import time_parts

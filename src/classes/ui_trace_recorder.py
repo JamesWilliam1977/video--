@@ -5,8 +5,8 @@ import threading
 import time
 from pathlib import Path
 
-from PyQt5.QtCore import QEvent, QObject, QTimer
-from PyQt5.QtWidgets import QAction, QDialog, QDockWidget
+from qt_api import QEvent, QObject, QTimer
+from qt_api import QAction, QDialog, QDockWidget
 
 from classes import info
 from classes.app import get_app

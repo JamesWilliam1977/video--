@@ -8,7 +8,7 @@
 
  @mainpage OpenShot Video Editor 2.0
 
- Welcome to the OpenShot Video Editor 2.0 PyQt5 documentation. OpenShot was developed to
+Welcome to the OpenShot Video Editor 2.0 Qt documentation. OpenShot was developed to
  make high-quality video editing and animation solutions freely available to the world. With a focus
  on stability, performance, and ease-of-use, we believe OpenShot is the best cross-platform,
  open-source video editing application in the world!
@@ -49,18 +49,22 @@ import logging
 # Ensure Qt plugin DLL dependencies are found on Windows packaged builds.
 if os.name == "nt":
     _exe_dir = os.path.dirname(os.path.abspath(sys.executable))
-    _pyqt_dll_dir = os.path.join(_exe_dir, "lib", "PyQt5")
-    if os.path.isdir(_pyqt_dll_dir):
-        os.environ["PATH"] = _pyqt_dll_dir + os.pathsep + os.environ.get("PATH", "")
+    _qt_dll_dirs = [
+        os.path.join(_exe_dir, "lib", binding_name)
+        for binding_name in ("PyQt{}".format(6), "PySide{}".format(6), "PyQt{}".format(5))
+    ]
+    _existing_qt_dll_dirs = [path for path in _qt_dll_dirs if os.path.isdir(path)]
+    if _existing_qt_dll_dirs:
+        os.environ["PATH"] = os.pathsep.join(_existing_qt_dll_dirs + [os.environ.get("PATH", "")])
 
 try:
-    # This needs to be imported before PyQt5
+    # This needs to be imported before the Qt binding
     # To prevent some issues on AppImage build: wrapping/forcing older glibc versions
     import openshot
 except ImportError:
     pass
 
-# Load user-configured UI scale before importing PyQt
+# Load user-configured UI scale before importing the Qt binding
 scale = 1.0
 logger = logging.getLogger(__name__)
 

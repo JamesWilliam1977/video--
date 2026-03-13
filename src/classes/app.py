@@ -121,7 +121,7 @@ class OpenShotApp(QApplication):
 
         # Log some basic system info
         self.log = log
-        # Clear any stale override cursor (can suppress widget cursors in PyQt5)
+        # Clear any stale override cursor (can suppress widget cursors in some Qt bindings)
         try:
             while QApplication.overrideCursor():
                 QApplication.restoreOverrideCursor()

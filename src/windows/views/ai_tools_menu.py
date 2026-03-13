@@ -6,7 +6,7 @@
 import os
 from functools import partial
 
-from PyQt5.QtGui import QIcon
+from qt_api import QIcon
 
 from classes.app import get_app
 from classes import info

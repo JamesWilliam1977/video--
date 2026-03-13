@@ -30,7 +30,7 @@ from collections import deque
 from threading import Event
 from time import monotonic
 
-from PyQt5.QtCore import QObject, QThread, pyqtSignal, pyqtSlot
+from qt_api import QObject, QThread, pyqtSignal, pyqtSlot
 
 from classes.comfy_client import ComfyClient
 from classes.logger import log
