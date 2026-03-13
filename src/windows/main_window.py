@@ -1271,6 +1271,18 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 if theme:
                     theme.togglePlayIcon(False)
 
+    def onTrimPreviewMode(self):
+        """Pause active playback before entering timeline trim preview."""
+        player = getattr(getattr(self, "preview_thread", None), "player", None)
+        if not player:
+            return
+        is_actively_playing = (
+            player.Mode() == openshot.PLAYBACK_PLAY and
+            player.Speed() != 0
+        )
+        if is_actively_playing:
+            self.PauseSignal.emit()
+
     def actionSaveFrame_trigger(self, checked=True):
         log.info("actionSaveFrame_trigger")
 
@@ -4279,6 +4291,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Set play/pause callbacks
         self.PauseSignal.connect(self.onPauseCallback)
         self.PlaySignal.connect(self.onPlayCallback)
+        self.TrimPreviewMode.connect(self.onTrimPreviewMode)
 
         # QTimer for Autosave
         minutes = 1000 * 60
