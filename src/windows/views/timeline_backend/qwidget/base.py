@@ -1211,7 +1211,7 @@ class TimelineWidgetBase(QWidget):
                 effect_names,
                 pos_seconds,
                 track_num,
-                drop_pos=event.pos(),
+                drop_pos=_event_posf(event),
             )
             self._reset_drag_preview()
             return

@@ -617,6 +617,14 @@ def _patch_enums_for_qt6():
                     setattr(QtCore.Qt, name, getattr(window_type, name))
                 except Exception:
                     pass
+        if not hasattr(QtCore.Qt, "WindowMinMaxButtonsHint"):
+            min_hint = getattr(QtCore.Qt, "WindowMinimizeButtonHint", None)
+            max_hint = getattr(QtCore.Qt, "WindowMaximizeButtonHint", None)
+            if min_hint is not None and max_hint is not None:
+                try:
+                    setattr(QtCore.Qt, "WindowMinMaxButtonsHint", min_hint | max_hint)
+                except Exception:
+                    pass
 
     tool_button_style = getattr(QtCore.Qt, "ToolButtonStyle", None)
     if tool_button_style:
@@ -1152,6 +1160,16 @@ def _patch_enums_for_qt6():
                         setattr(QStyle, name, getattr(state_flag, name))
                     except Exception:
                         pass
+    if QStyle and not hasattr(QStyle, "SP_DialogApplyButton"):
+        standard_pixmap = getattr(QStyle, "StandardPixmap", None)
+        if standard_pixmap:
+            for name, value in vars(standard_pixmap).items():
+                if not name.startswith("SP_") or hasattr(QStyle, name):
+                    continue
+                try:
+                    setattr(QStyle, name, value)
+                except Exception:
+                    pass
 
     QComboBox = getattr(QtWidgets, "QComboBox", None)
     if QComboBox and not hasattr(QComboBox, "AdjustToMinimumContentsLengthWithIcon"):

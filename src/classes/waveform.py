@@ -28,11 +28,12 @@
 import threading
 import uuid
 from functools import partial
+import openshot
 from classes.app import get_app
 from classes.logger import log
 from classes.query import File, Clip
 from classes.clip_utils import project_fps_fraction, video_length_to_project_frames
-from qt_api import QCursor
+from qt_api import Qt, QCursor
 
 # resolution of audio waveform
 SAMPLES_PER_SECOND = 20
