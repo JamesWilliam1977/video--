@@ -181,7 +181,7 @@ class TrackPainter(BasePainter):
                     bg2 = self.dimmed_color(bg2)
                 border_color = self.dimmed_color(border_color)
             if bg2.isValid() and bg2 != bg:
-                grad = QLinearGradient(vis.topLeft(), vis.bottomLeft())
+                grad = QLinearGradient(QPointF(vis.topLeft()), QPointF(vis.bottomLeft()))
                 grad.setColorAt(0, bg)
                 grad.setColorAt(1, bg2)
                 painter.fillRect(vis, QBrush(grad))
@@ -337,7 +337,7 @@ class TrackPainter(BasePainter):
                 if locked:
                     overlay_top = self.dimmed_color(overlay_top)
                     overlay_bottom = self.dimmed_color(overlay_bottom)
-                grad = QLinearGradient(name_rect.topLeft(), name_rect.bottomLeft())
+                grad = QLinearGradient(QPointF(name_rect.topLeft()), QPointF(name_rect.bottomLeft()))
                 grad.setColorAt(0.0, overlay_top)
                 grad.setColorAt(1.0, overlay_bottom)
                 painter.save()

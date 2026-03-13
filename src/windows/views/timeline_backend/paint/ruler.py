@@ -97,7 +97,7 @@ class RulerPainter(BasePainter):
         if left_rect.width() <= 0 or left_rect.height() <= 0:
             return left_rect
         if self.name_bg2 != self.name_bg:
-            grad = QLinearGradient(left_rect.topLeft(), left_rect.bottomLeft())
+            grad = QLinearGradient(QPointF(left_rect.topLeft()), QPointF(left_rect.bottomLeft()))
             grad.setColorAt(0, self.name_bg)
             grad.setColorAt(1, self.name_bg2)
             painter.fillRect(left_rect, QBrush(grad))
@@ -146,7 +146,7 @@ class RulerPainter(BasePainter):
 
         rect = QRectF(self.w.track_name_width, 0, width, self.w.ruler_height)
         if self.bg2.isValid() and self.bg != self.bg2:
-            grad = QLinearGradient(rect.topLeft(), rect.bottomLeft())
+            grad = QLinearGradient(QPointF(rect.topLeft()), QPointF(rect.bottomLeft()))
             grad.setColorAt(0, self.bg)
             grad.setColorAt(1, self.bg2)
             painter.fillRect(rect, QBrush(grad))

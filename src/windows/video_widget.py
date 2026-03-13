@@ -805,10 +805,10 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self._ensure_region_transform()
             point = self.region_transform_inverted.map(event.pos())
             point = self._clamp_region_point(point)
-            mods = int(QCoreApplication.instance().keyboardModifiers())
-            if mods & Qt.ControlModifier:
+            mods = QCoreApplication.instance().keyboardModifiers()
+            if modifiers_has(mods, Qt.ControlModifier):
                 self.region_points_negative.append(point)
-            elif mods & Qt.ShiftModifier:
+            elif modifiers_has(mods, Qt.ShiftModifier):
                 self.region_points_positive.append(point)
             else:
                 # Default click resets to a single positive point.
@@ -1272,7 +1272,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                     rotation += (y_adjust if is_on_right else -y_adjust)
 
                     self.rotation_drag_value = rotation
-                    if int(QCoreApplication.instance().keyboardModifiers() & (Qt.ControlModifier | Qt.ShiftModifier)) > 0:
+                    mods = QCoreApplication.instance().keyboardModifiers()
+                    if modifiers_has(mods, Qt.ControlModifier) or modifiers_has(mods, Qt.ShiftModifier):
                         rotation = self._snap_angle(rotation, 15.0)
 
                     # Update keyframe value (or create new one)
@@ -1507,7 +1508,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                         rotation += (y_adjust if is_on_right else -y_adjust)
 
                         self.rotation_drag_value = rotation
-                        if int(QCoreApplication.instance().keyboardModifiers() & (Qt.ControlModifier | Qt.ShiftModifier)) > 0:
+                        mods = QCoreApplication.instance().keyboardModifiers()
+                        if modifiers_has(mods, Qt.ControlModifier) or modifiers_has(mods, Qt.ShiftModifier):
                             rotation = self._snap_angle(rotation, 15.0)
 
                         # Update keyframe value (or create new one)

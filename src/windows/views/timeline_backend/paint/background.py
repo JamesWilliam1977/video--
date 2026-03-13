@@ -25,7 +25,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from qt_api import QRectF
+from qt_api import QPointF, QRectF
 from qt_api import QBrush, QColor, QLinearGradient, QPainter
 
 from .base import BasePainter
@@ -36,7 +36,7 @@ class BackgroundPainter(BasePainter):
         bg = self.w.theme.background
         bg2 = getattr(self.w.theme, "background2", QColor())
         if bg2.isValid() and bg2 != bg:
-            grad = QLinearGradient(rect.topLeft(), rect.bottomLeft())
+            grad = QLinearGradient(QPointF(rect.topLeft()), QPointF(rect.bottomLeft()))
             grad.setColorAt(0, bg)
             grad.setColorAt(1, bg2)
             painter.fillRect(rect, QBrush(grad))
