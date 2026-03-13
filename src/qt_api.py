@@ -1121,6 +1121,17 @@ def _patch_enums_for_qt6():
                     except Exception:
                         pass
 
+    QRegion = getattr(QtGui, "QRegion", None)
+    if QRegion and not hasattr(QRegion, "Rectangle"):
+        region_type = getattr(QRegion, "RegionType", None)
+        if region_type:
+            for name in ("Rectangle", "Ellipse"):
+                if hasattr(region_type, name) and not hasattr(QRegion, name):
+                    try:
+                        setattr(QRegion, name, getattr(region_type, name))
+                    except Exception:
+                        pass
+
     QStyle = getattr(QtWidgets, "QStyle", None)
     if QStyle and not hasattr(QStyle, "State_Selected"):
         state_flag = getattr(QStyle, "StateFlag", None)

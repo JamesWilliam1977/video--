@@ -160,7 +160,7 @@ class PropertyDelegate(QItemDelegate):
                 painter.setClipRect(mask_rect, Qt.IntersectClip)
 
                 # gradient for value box
-                gradient = QLinearGradient(option.rect.topLeft(), option.rect.topRight())
+                gradient = QLinearGradient(QPointF(option.rect.topLeft()), QPointF(option.rect.topRight()))
                 gradient.setColorAt(0, foreground_color)
                 gradient.setColorAt(1, foreground_color)
 
