@@ -26,9 +26,11 @@
  """
 
 import time
+import threading
 import math
 
 from qt_api import QObject, QThread, QTimer, pyqtSlot, pyqtSignal, QCoreApplication
+from qt_api import QMessageBox
 from qt_api import unwrapinstance, wrapinstance
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
@@ -47,34 +49,51 @@ class PreviewParent(QObject, UpdateInterface):
         if action and len(action.key) >= 1 and action.key[0].lower() in ["files", "history", "markers", "layers", "scale", "profile", "sample_rate", "export_settings"]:
             return
 
-        try:
-            # Keep track of max timeline frame # on any updates to the timeline
-            self.timeline_max_length = self.timeline.GetMaxFrame()
-            log.debug(f"Max timeline length/frames detected: {self.timeline_max_length}")
+        if not getattr(self, "_use_timeline_sync_max", True):
+            return
 
+        try:
+            # Keep track of max timeline frame # on any updates to the timeline.
+            self.timeline_max_length = max(1, int(get_app().window.timeline_sync.GetLastFrame() or 1))
+            log.debug(f"Max timeline length/frames detected: {self.timeline_max_length}")
         except Exception as e:
             log.info("Error calculating max timeline length on PreviewParent: %s. %s" % (e, action.json(is_array=True)))
 
     # Signal when the frame position changes in the preview player
     def onPositionChanged(self, current_frame):
-        self.parent.movePlayhead(current_frame)
+        timeline_last_frame = max(1, int(getattr(self, "timeline_max_length", 1) or 1))
+        self.parent.movePlayhead(max(1, int(current_frame)))
 
         # Check if we are at the end of the timeline
         if self.worker.player.Mode() == openshot.PLAYBACK_PLAY:
-            if self.worker.player.Speed() > 0.0 and current_frame >= self.timeline_max_length:
-                # Yes, pause the video
-                self.parent.PauseSignal.emit()
-                # If the player got past the end of the project, go back.
-                self.worker.Seek(self.timeline_max_length)
+            loop_preview = bool(getattr(self.parent, "loop_playback", False))
+            if self.worker.player.Speed() > 0.0 and current_frame >= timeline_last_frame:
+                if loop_preview:
+                    # Loop preview playback back to the beginning.
+                    self.worker.Seek(1)
+                else:
+                    # Yes, pause the video
+                    self.parent.PauseSignal.emit()
+                    # If the player got past the end of the project, go back.
+                    self.worker.Seek(timeline_last_frame)
             if self.worker.player.Speed() < 0.0 and current_frame <= 1:
-                # If rewinding, and the player got past the first frame,
-                # pause and go to frame 1
-                self.parent.PauseSignal.emit()
-                self.worker.Seek(1)
+                if loop_preview:
+                    # Loop rewind to the end frame.
+                    self.worker.Seek(timeline_last_frame)
+                else:
+                    # If rewinding, and the player got past the first frame,
+                    # pause and go to frame 1
+                    self.parent.PauseSignal.emit()
+                    self.worker.Seek(1)
+
+    @pyqtSlot(int)
+    @pyqtSlot(int, bool)
+    def QueueSeek(self, frame, start_preroll=True):
+        """Queue latest seek request for worker loop (non-blocking)."""
+        self.worker.queue_seek(frame, start_preroll)
 
     # Signal when the playback mode changes in the preview player (i.e PLAY, PAUSE, STOP)
     def onModeChanged(self, current_mode):
-        log.debug('Playback mode changed to %s', current_mode)
         try:
             if current_mode == openshot.PLAYBACK_PLAY:
                 self.parent.SetPlayheadFollow(False)
@@ -92,25 +111,37 @@ class PreviewParent(QObject, UpdateInterface):
         # Only JUCE audio errors bubble up here now
         QMessageBox.warning(self.parent, _("Audio Error"), _("Please fix the following error and restart OpenShot\n%s") % error)
 
-    def Stop(self):
+    def Stop(self, wait_for_thread=True):
         """Disconnect preview parent from update manager and stop worker thread"""
         get_app().updates.disconnect_listener(self)
 
-        # Stop preview thread (and wait for it to end)
+        # Stop preview thread
         self.worker.Stop()
         self.worker.kill()
         if self.background.isRunning():
             log.info("Stopping preview thread (running=%s)", self.background.isRunning())
         self.background.quit()
-        if not self.background.wait(5000):
-            log.warning("Preview thread did not stop within 5 seconds")
+        if wait_for_thread:
+            if not self.background.wait(5000):
+                log.warning("Preview thread did not stop within 5 seconds")
 
     @pyqtSlot(object, object)
     def Init(self, parent, timeline, video_widget, max_length=1):
         # Important vars
         self.parent = parent
         self.timeline = timeline
-        self.timeline_max_length = max_length
+        try:
+            max_len = max(1, int(max_length))
+        except (TypeError, ValueError):
+            max_len = 1
+
+        # Dialog previews (Split File / Region) pass their own max_length and
+        # should not be clamped by the main timeline's last frame.
+        self._use_timeline_sync_max = max_len <= 1
+        if self._use_timeline_sync_max and getattr(get_app().window, "timeline_sync", None):
+            self.timeline_max_length = max(1, int(get_app().window.timeline_sync.GetLastFrame() or 1))
+        else:
+            self.timeline_max_length = max_len
 
         # Background Worker Thread (for preview video process)
         self.background = QThread(self)
@@ -123,6 +154,10 @@ class PreviewParent(QObject, UpdateInterface):
         # Hook up signals to Background Worker
         self.worker.position_changed.connect(self.onPositionChanged)
         self.worker.mode_changed.connect(self.onModeChanged)
+        if hasattr(self.parent, "_preview_ready"):
+            self.worker.ready.connect(self.parent._preview_ready)
+        if hasattr(self.parent, "_preview_mode_changed"):
+            self.worker.mode_changed.connect(self.parent._preview_mode_changed)
         self.background.started.connect(self.worker.Start)
         self.worker.finished.connect(self.background.quit)
         self.worker.error_found.connect(self.onError)
@@ -131,9 +166,11 @@ class PreviewParent(QObject, UpdateInterface):
         self.parent.previewFrameSignal.connect(self.worker.previewFrame)
         self.parent.refreshFrameSignal.connect(self.worker.refreshFrame)
         self.parent.LoadFileSignal.connect(self.worker.LoadFile)
+        if hasattr(self.parent, "LoadFilePreviewSignal"):
+            self.parent.LoadFilePreviewSignal.connect(self.worker.LoadFilePreview)
         self.parent.PlaySignal.connect(self.worker.Play)
         self.parent.PauseSignal.connect(self.worker.Pause)
-        self.parent.SeekSignal.connect(self.worker.Seek)
+        self.parent.SeekSignal.connect(self.QueueSeek)
         self.parent.LoadTimelineAndSeekSignal.connect(self.worker.LoadTimelineAndSeek)
         self.parent.SpeedSignal.connect(self.worker.Speed)
         self.parent.StopSignal.connect(self.worker.Stop)
@@ -152,6 +189,7 @@ class PlayerWorker(QObject):
     position_changed = pyqtSignal(int)
     mode_changed = pyqtSignal(object)
     error_found = pyqtSignal(object)
+    ready = pyqtSignal()
     finished = pyqtSignal()
 
     @pyqtSlot(object, object)
@@ -170,6 +208,12 @@ class PlayerWorker(QObject):
         self.current_frame = None
         self.current_mode = None
         self.reader_mode = "timeline"
+        self.preview_stretch = False
+        self._seek_lock = threading.Lock()
+        self._pending_seek = None
+        self._last_queued_seek_request = None
+        self._last_applied_seek_request = None
+        self._last_applied_seek_time = 0.0
 
         # Create QtPlayer class from libopenshot
         self.player = openshot.QtPlayer()
@@ -244,6 +288,7 @@ class PlayerWorker(QObject):
         self.player.Reader(self.timeline)
         self.player.Play()
         self.player.Pause()
+        self.ready.emit()
 
         # Check for any Player initialization errors (only JUCE errors bubble up here now)
         # But slightly delay, to allow for correct audio thread initialization with the
@@ -252,6 +297,10 @@ class PlayerWorker(QObject):
 
         # Main loop, waiting for frames to process
         while self.is_running:
+            seek_request = self._take_pending_seek()
+            if seek_request is not None:
+                seek_frame, start_preroll = seek_request
+                self._apply_seek(seek_frame, start_preroll)
 
             # Emit position changed signal (if needed)
             if self.current_frame != self.player.Position():
@@ -271,7 +320,7 @@ class PlayerWorker(QObject):
                 self.mode_changed.emit(self.current_mode)
 
             # wait for a small delay
-            time.sleep(0.01)
+            time.sleep(0.005)
             QCoreApplication.processEvents()
 
         self.finished.emit()
@@ -296,14 +345,8 @@ class PlayerWorker(QObject):
         # Mark frame number for processing
         self.Seek(number)
 
-        log.debug(
-            "previewFrame: %s, player Position(): %s",
-            number, self.player.Position())
-
     def refreshFrame(self):
         """ Refresh a certain frame """
-        log.debug("refreshFrame")
-
         # Selection/UI refresh signals can arrive during active playback.
         # Avoid seeking while playing, which can perturb frame progression.
         if self.player.Mode() == openshot.PLAYBACK_PLAY and self.player.Speed() != 0.0:
@@ -312,21 +355,26 @@ class PlayerWorker(QObject):
         # Always load back in the timeline reader
         self.parent.LoadFileSignal.emit('')
 
-        # Mark frame number for processing (if parent is done initializing)
-        self.Seek(self.player.Position())
-
-        log.debug("player Position(): %s", self.player.Position())
+        # Refreshes should not trigger preroll/cache invalidation behavior.
+        refresh_frame = int(self.player.Position())
+        self.Seek(refresh_frame, False)
 
     def LoadFile(self, path=None):
         """ Load a media file into the video player """
+        self.LoadFilePreview(path, False)
+
+    @pyqtSlot(str, bool)
+    def LoadFilePreview(self, path=None, stretch=False):
+        """Load a media file into the video player with optional stretch scaling."""
         # Check to see if this path is already loaded
         if path == self.clip_path:
-            if self.reader_mode == "clip":
+            if self.reader_mode == "clip" and self.preview_stretch == bool(stretch):
                 return
             if self.clip_reader:
                 self.original_position = self.player.Position()
                 self.player.Reader(self.clip_reader)
                 self.reader_mode = "clip"
+                self.preview_stretch = bool(stretch)
                 self.Seek(1)
             return
         if not path and not self.clip_path and self.reader_mode == "timeline":
@@ -346,6 +394,7 @@ class PlayerWorker(QObject):
             log.debug("Set timeline reader again in player: %s" % self.timeline)
             self.player.Reader(self.timeline)
             self.reader_mode = "timeline"
+            self.preview_stretch = False
 
             # Clear clip reader reference
             self.clip_reader = None
@@ -391,6 +440,9 @@ class PlayerWorker(QObject):
                         new_clip.Reader().info.has_audio = False
                 except Exception:
                     log.debug("Failed to check has_video on clip reader for %s", path)
+                if stretch:
+                    new_clip.scale = openshot.SCALE_STRETCH
+                    new_clip.gravity = openshot.GRAVITY_CENTER
                 self.clip_reader.AddClip(new_clip)
             except:
                 log.warning('Failed to load media file into video player: %s' % path)
@@ -398,6 +450,7 @@ class PlayerWorker(QObject):
             # Assign new clip_reader
             self.clip_path = path
             self.reader_mode = "clip"
+            self.preview_stretch = bool(stretch)
 
             # Keep track of previous clip readers (so we can Close it later)
             self.previous_clips.append(new_clip)
@@ -426,6 +479,11 @@ class PlayerWorker(QObject):
 
         # Start playback
         if self.parent.initialized:
+            pending = self._take_pending_seek()
+            if pending is not None:
+                seek_frame, _start_preroll = pending
+                # Always commit pending preview seek before entering playback.
+                self._apply_seek(seek_frame, True)
             self.player.Play()
 
     def Pause(self):
@@ -442,12 +500,56 @@ class PlayerWorker(QObject):
         if self.parent.initialized:
             self.player.Stop()
 
-    def Seek(self, number):
-        """ Seek to a specific frame """
+    def queue_seek(self, number, start_preroll=True):
+        """Queue latest seek request (latest-wins, thread-safe)."""
+        if not self.parent.initialized:
+            return
+        frame = max(1, int(number))
+        seek_request = (frame, bool(start_preroll))
 
-        # Seek to frame
-        if self.parent.initialized:
-            self.player.Seek(number)
+        now = time.monotonic()
+
+        # Drop immediate duplicate seeks (same frame + preroll) that can be
+        # generated by UI signal fan-out during scrubbing/commit boundaries.
+        if (
+            self._last_applied_seek_request == seek_request
+            and (now - self._last_applied_seek_time) < 0.03
+        ):
+            return
+        with self._seek_lock:
+            if self._last_queued_seek_request == seek_request:
+                return
+            self._last_queued_seek_request = seek_request
+            self._pending_seek = seek_request
+
+    def _take_pending_seek(self):
+        with self._seek_lock:
+            seek_request = self._pending_seek
+            self._pending_seek = None
+            if seek_request is not None:
+                # Reset dedup key once the queued seek is consumed so future
+                # refreshes at the same frame can trigger another render.
+                self._last_queued_seek_request = None
+            return seek_request
+
+    def _apply_seek(self, frame, start_preroll):
+        try:
+            self.player.Seek(frame, start_preroll)
+        except TypeError:
+            # Backward compatibility with older libopenshot builds exposing
+            # only Seek(frame).
+            self.player.Seek(frame)
+        self._last_applied_seek_request = (int(max(1, frame)), bool(start_preroll))
+        self._last_applied_seek_time = time.monotonic()
+        # Force the main loop to publish a fresh position_changed event after
+        # each seek so timeline playheads stay in sync with queued seeks.
+        self.current_frame = None
+
+    @pyqtSlot(int)
+    @pyqtSlot(int, bool)
+    def Seek(self, number, start_preroll=True):
+        """Seek to a specific frame (queued for worker loop application)."""
+        self.queue_seek(number, start_preroll)
 
     @pyqtSlot(int)
     def LoadTimelineAndSeek(self, frame):

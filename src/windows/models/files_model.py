@@ -179,6 +179,7 @@ class FileFilterProxyModel(QSortFilterProxyModel):
 
 class FilesModel(QObject, updates.UpdateInterface):
     ModelRefreshed = pyqtSignal()
+    PLACEHOLDER_PREFIX = "__genjob__:"
 
     # This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface)
     def changed(self, action):
@@ -196,10 +197,10 @@ class FilesModel(QObject, updates.UpdateInterface):
                 # Update a single file (if found)
                 self.update_model(clear=False, update_file_id=action.key[1].get('id', ''))
             else:
-                # Clear existing items
-                self.update_model(clear=True)
+                # Clear existing items. For full project loads, batch updates for faster UI rebuild.
+                self.update_model(clear=True, progressive_ui=False)
 
-    def update_model(self, clear=True, delete_file_id=None, update_file_id=None):
+    def update_model(self, clear=True, delete_file_id=None, update_file_id=None, progressive_ui=True):
         log.debug("updating files model.")
         app = get_app()
 
@@ -327,17 +328,23 @@ class FilesModel(QObject, updates.UpdateInterface):
                 self.model_ids[id] = QPersistentModelIndex(row[5].index())
 
                 row_added_count += 1
-                if row_added_count % 2 == 0:
+                if progressive_ui and row_added_count % 25 == 0:
                     # Update every X items
                     get_app().processEvents(QEventLoop.ExcludeUserInputEvents)
 
-            # Refresh view and filters (to hide or show this new item)
-            get_app().window.resize_contents()
+            # Refresh view/filtering incrementally during interactive updates (i.e. imports)
+            if progressive_ui:
+                get_app().window.resize_contents()
 
         self.ignore_updates = False
 
+        # Single refresh after bulk updates (i.e. opening a project)
+        if not progressive_ui:
+            get_app().window.resize_contents()
+
         # Emit signal when model is updated
         self.ModelRefreshed.emit()
+        self._rebuild_generation_placeholders()
 
     def add_files(self, files, image_seq_details=None, quiet=False,
                   prevent_image_seq=False, prevent_recent_folder=False):
@@ -470,6 +477,7 @@ class FilesModel(QObject, updates.UpdateInterface):
 
         # Select all new files (clear previous selection)
         self.selection_model.clearSelection()
+        last_selected_index = QModelIndex()
         for file_object in scroll_to_files:
             # Get the index of the newly added file in the proxy model
             index = self.proxy_model.get_file_index(file_object.id)
@@ -477,6 +485,11 @@ class FilesModel(QObject, updates.UpdateInterface):
                 # Select & scroll to selection
                 self.selection_model.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
                 get_app().window.filesView.scrollTo(index.siblingAtColumn(0), QAbstractItemView.PositionAtCenter)
+                last_selected_index = index
+        if last_selected_index.isValid():
+            # Keep current index aligned with the newly selected file so actions
+            # (preview/properties/etc.) resolve to the expected item.
+            self.selection_model.setCurrentIndex(last_selected_index, QItemSelectionModel.NoUpdate)
 
         message = _("Imported %(count)d files") % {"count": len(files) - 1}
         app.window.statusBar.showMessage(message, 3000)
@@ -553,13 +566,18 @@ class FilesModel(QObject, updates.UpdateInterface):
         }
         return parameters
 
-    def process_urls(self, qurl_list, import_quietly=False, prevent_image_seq=False):
+    def process_urls(self, qurl_list, import_quietly=False, prevent_image_seq=False,
+                     transaction_id=None):
         """Recursively process QUrls from a QDropEvent"""
         media_paths = []
 
-        # Transaction
-        tid = str(uuid.uuid4())
-        get_app().updates.transaction_id = tid
+        # Transaction — use caller's transaction_id when provided so the
+        # caller can group file imports with subsequent operations (e.g.
+        # clip creation on timeline drop) into a single undo step.
+        owns_transaction = transaction_id is None
+        if owns_transaction:
+            transaction_id = str(uuid.uuid4())
+        get_app().updates.transaction_id = transaction_id
 
         for uri in qurl_list:
             filepath = uri.toLocalFile()
@@ -581,12 +599,15 @@ class FilesModel(QObject, updates.UpdateInterface):
             elif os.path.isfile(filepath):
                 media_paths.append(filepath)
         if not media_paths:
+            if owns_transaction:
+                get_app().updates.transaction_id = None
             return
         # Import all new media files
         media_paths.sort()
         log.debug("Importing file list: {}".format(media_paths))
         self.add_files(media_paths, quiet=import_quietly, prevent_image_seq=prevent_image_seq)
-        get_app().updates.transaction_id = None
+        if owns_transaction:
+            get_app().updates.transaction_id = None
 
     def update_file_thumbnail(self, file_id):
         """Update/re-generate the thumbnail of a specific file"""
@@ -642,8 +663,13 @@ class FilesModel(QObject, updates.UpdateInterface):
         """ Get a list of file IDs for all selected files """
         # Get the indexes for column 5 of all selected rows
         selected = self.selection_model.selectedRows(5)
-
-        return [idx.data() for idx in selected]
+        ids = []
+        for idx in selected:
+            file_id = idx.data()
+            if not file_id or self._is_generation_placeholder(file_id):
+                continue
+            ids.append(file_id)
+        return ids
 
     def selected_files(self):
         """ Get a list of File objects representing the current selection """
@@ -654,13 +680,31 @@ class FilesModel(QObject, updates.UpdateInterface):
 
     def current_file_id(self):
         """ Get the file ID of the current files-view item, or the first selection """
+        # Prefer selected rows first, since currentIndex can become stale when
+        # switching between details/list views with separate selection models.
+        selected_rows = self.selection_model.selectedRows(5)
+        if selected_rows:
+            selected_ids = set()
+            for row_index in selected_rows:
+                file_id = row_index.data()
+                if file_id and not self._is_generation_placeholder(file_id):
+                    selected_ids.add(file_id)
+
+            current = self.selection_model.currentIndex()
+            if current and current.isValid():
+                current_id = current.sibling(current.row(), 5).data()
+                if current_id and current_id in selected_ids:
+                    return current_id
+            for row_index in selected_rows:
+                file_id = row_index.data()
+                if file_id and not self._is_generation_placeholder(file_id):
+                    return file_id
+
         cur = self.selection_model.currentIndex()
-
-        if not cur or not cur.isValid() and self.selection_model.hasSelection():
-            cur = self.selection_model.selectedIndexes()[0]
-
         if cur and cur.isValid():
-            return cur.sibling(cur.row(), 5).data()
+            file_id = cur.sibling(cur.row(), 5).data()
+            if file_id and not self._is_generation_placeholder(file_id):
+                return file_id
 
     def current_file(self):
         """ Get the File object for the current files-view item, or the first selection """
@@ -689,14 +733,19 @@ class FilesModel(QObject, updates.UpdateInterface):
         try:
             # Map selected indexes from proxy_model to list_proxy_model
             list_selection = QItemSelection()
+            first_list_index = QModelIndex()
             for index in self.selection_model.selectedRows(0):
                 list_index = self.list_proxy_model.mapFromSource(index)
                 if list_index.isValid():
                     list_selection.select(list_index, list_index)
+                    if not first_list_index.isValid():
+                        first_list_index = list_index
             self.list_selection_model.select(
                 list_selection,
                 QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
             )
+            if first_list_index.isValid():
+                self.list_selection_model.setCurrentIndex(first_list_index, QItemSelectionModel.NoUpdate)
         finally:
             self._syncing_selection = False
 
@@ -708,18 +757,24 @@ class FilesModel(QObject, updates.UpdateInterface):
         try:
             # Map selected indexes from list_proxy_model to proxy_model
             tree_selection = QItemSelection()
+            first_tree_index = QModelIndex()
             for index in self.list_selection_model.selectedRows(0):
                 tree_index = self.list_proxy_model.mapToSource(index)
                 if tree_index.isValid():
                     tree_selection.select(tree_index, tree_index)
+                    if not first_tree_index.isValid():
+                        first_tree_index = tree_index
             self.selection_model.select(
                 tree_selection,
                 QItemSelectionModel.ClearAndSelect | QItemSelectionModel.Rows
             )
+            if first_tree_index.isValid():
+                self.selection_model.setCurrentIndex(first_tree_index, QItemSelectionModel.NoUpdate)
         finally:
             self._syncing_selection = False
 
-    def __init__(self, *args):
+    def __init__(self, generation_queue=None, *args):
+        self.generation_queue = generation_queue
 
         # Add self as listener to project data updates
         # (undo/redo, as well as normal actions handled within this class all update the model)
@@ -761,6 +816,13 @@ class FilesModel(QObject, updates.UpdateInterface):
         app.window.FileUpdated.connect(self.update_file_thumbnail)
         app.window.refreshFilesSignal.connect(
             functools.partial(self.update_model, clear=False))
+        if self.generation_queue:
+            self.generation_queue.file_job_changed.connect(self._refresh_file_generation_display)
+            self.generation_queue.queue_changed.connect(self._refresh_all_generation_displays)
+            self.generation_queue.job_added.connect(self._on_generation_job_added)
+            self.generation_queue.job_updated.connect(self._on_generation_job_updated)
+            self.generation_queue.job_finished.connect(self._on_generation_job_finished)
+            self.generation_queue.job_removed.connect(self._on_generation_job_removed)
 
         # Call init for superclass QObject
         super().__init__(*args)
@@ -780,3 +842,209 @@ class FilesModel(QObject, updates.UpdateInterface):
                 log.info("Enabled {} model tests for emoji data".format(len(self.model_tests)))
             except ImportError:
                 pass
+
+    def _is_generation_placeholder(self, file_id):
+        return str(file_id or "").startswith(self.PLACEHOLDER_PREFIX)
+
+    def _placeholder_id_for_job(self, job_id):
+        return "{}{}".format(self.PLACEHOLDER_PREFIX, str(job_id or ""))
+
+    def _job_id_from_placeholder(self, file_id):
+        file_id = str(file_id or "")
+        if not self._is_generation_placeholder(file_id):
+            return None
+        return file_id[len(self.PLACEHOLDER_PREFIX):]
+
+    def _placeholder_row_for_job(self, job_id):
+        placeholder_id = self._placeholder_id_for_job(job_id)
+        if placeholder_id not in self.model_ids:
+            return None
+        id_index = self.model_ids[placeholder_id]
+        if not id_index.isValid():
+            return None
+        return id_index.row()
+
+    def _generation_icon_for_job(self, job):
+        icon_name = "tool-generate-sparkle.svg"
+        try:
+            app = get_app()
+            window = getattr(app, "window", None)
+            generation_service = getattr(window, "generation_service", None)
+            if generation_service and isinstance(job, dict):
+                template_id = str(job.get("template_id") or "").strip()
+                template = generation_service.template_registry.get_template(template_id)
+                if template:
+                    resolved_icon = generation_service.icon_for_template(template)
+                    if resolved_icon:
+                        icon_name = resolved_icon
+        except Exception:
+            pass
+
+        icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", icon_name)
+        if os.path.exists(icon_path):
+            return QIcon(icon_path)
+
+        emoji_icon_path = os.path.join(info.PATH, "emojis", "color", "svg", "2728.svg")
+        if os.path.exists(emoji_icon_path):
+            return QIcon(emoji_icon_path)
+        return QIcon(":/icons/Humanity/actions/16/media-record.svg")
+
+    def _add_generation_placeholder(self, job_id):
+        job = self.generation_queue.get_job(job_id) if self.generation_queue else None
+        if not job:
+            return
+        if job.get("source_file_id"):
+            return
+
+        placeholder_id = self._placeholder_id_for_job(job_id)
+        if placeholder_id in self.model_ids and self.model_ids[placeholder_id].isValid():
+            self._update_generation_placeholder(job_id)
+            return
+
+        name = str(job.get("name") or "generation")
+        status = str(job.get("status") or "queued")
+        progress = int(job.get("progress", 0))
+        progress_detail = str(job.get("progress_detail") or "").strip()
+        label = name
+        if status == "running":
+            label = "{} ({}%)".format(name, progress)
+            if progress_detail:
+                label = "{} [{}]".format(label, progress_detail)
+        elif status == "queued":
+            label = "{} (Queued)".format(name)
+        elif status == "canceling":
+            label = "{} (Canceling...)".format(name)
+
+        row = []
+        icon = self._generation_icon_for_job(job)
+        flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemNeverHasChildren
+
+        col = QStandardItem(icon, label)
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem(label)
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem("generation")
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem("generation_job")
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem("")
+        col.setFlags(flags)
+        row.append(col)
+
+        col = QStandardItem(placeholder_id)
+        col.setFlags(flags)
+        row.append(col)
+
+        self.model.appendRow(row)
+        self.model_ids[placeholder_id] = QPersistentModelIndex(row[5].index())
+        self.ModelRefreshed.emit()
+
+    def _update_generation_placeholder(self, job_id):
+        row = self._placeholder_row_for_job(job_id)
+        if row is None:
+            self._add_generation_placeholder(job_id)
+            return
+        job = self.generation_queue.get_job(job_id) if self.generation_queue else None
+        if not job:
+            return
+
+        name = str(job.get("name") or "generation")
+        status = str(job.get("status") or "queued")
+        progress = int(job.get("progress", 0))
+        progress_detail = str(job.get("progress_detail") or "").strip()
+        label = name
+        if status == "running":
+            label = "{} ({}%)".format(name, progress)
+            if progress_detail:
+                label = "{} [{}]".format(label, progress_detail)
+        elif status == "queued":
+            label = "{} (Queued)".format(name)
+        elif status == "canceling":
+            label = "{} (Canceling...)".format(name)
+
+        self.model.item(row, 0).setIcon(self._generation_icon_for_job(job))
+        self.model.item(row, 0).setText(label)
+        self.model.item(row, 1).setText(label)
+        left = self.model.index(row, 0)
+        right = self.model.index(row, 1)
+        self.model.dataChanged.emit(left, right, [Qt.DisplayRole, Qt.AccessibleTextRole])
+        self.ModelRefreshed.emit()
+
+    def _remove_generation_placeholder(self, job_id):
+        placeholder_id = self._placeholder_id_for_job(job_id)
+        if placeholder_id not in self.model_ids:
+            return
+        id_index = self.model_ids.get(placeholder_id)
+        if not id_index or not id_index.isValid():
+            self.model_ids.pop(placeholder_id, None)
+            return
+        row = id_index.row()
+        self.model.removeRows(row, 1, id_index.parent())
+        self.model.submit()
+        self.model_ids.pop(placeholder_id, None)
+        self.ModelRefreshed.emit()
+
+    def _rebuild_generation_placeholders(self):
+        if not self.generation_queue:
+            return
+        for job in list(self.generation_queue.jobs.values()):
+            if job.get("source_file_id"):
+                continue
+            if job.get("status") in ("completed", "failed", "canceled"):
+                self._remove_generation_placeholder(job.get("id"))
+            else:
+                self._add_generation_placeholder(job.get("id"))
+
+    def _on_generation_job_added(self, job_id, source_file_id):
+        if source_file_id:
+            return
+        self._add_generation_placeholder(job_id)
+
+    def _on_generation_job_updated(self, job_id, status, progress):
+        job = self.generation_queue.get_job(job_id) if self.generation_queue else None
+        if not job or job.get("source_file_id"):
+            return
+        if status in ("completed", "failed", "canceled"):
+            self._remove_generation_placeholder(job_id)
+        else:
+            self._update_generation_placeholder(job_id)
+
+    def _on_generation_job_finished(self, job_id, status):
+        job = self.generation_queue.get_job(job_id) if self.generation_queue else None
+        if not job or job.get("source_file_id"):
+            return
+        self._remove_generation_placeholder(job_id)
+
+    def _on_generation_job_removed(self, job_id):
+        self._remove_generation_placeholder(job_id)
+
+    def _refresh_file_generation_display(self, file_id):
+        file_id = str(file_id or "")
+        if not file_id:
+            return
+        if file_id not in self.model_ids:
+            return
+        id_index = self.model_ids[file_id]
+        if not id_index.isValid():
+            return
+        row = id_index.row()
+        left = self.model.index(row, 0)
+        right = self.model.index(row, 0)
+        self.model.dataChanged.emit(left, right, [Qt.DisplayRole, Qt.AccessibleTextRole])
+        self.ModelRefreshed.emit()
+
+    def _refresh_all_generation_displays(self):
+        if self.model.rowCount() < 1:
+            return
+        left = self.model.index(0, 0)
+        right = self.model.index(self.model.rowCount() - 1, 0)
+        self.model.dataChanged.emit(left, right, [Qt.DisplayRole, Qt.AccessibleTextRole])
+        self.ModelRefreshed.emit()

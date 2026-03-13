@@ -103,6 +103,61 @@ class KeyframePanelMixin:
         height = self._panel_height_for_properties(len(props))
         return info, height
 
+    def _panel_multi_available_map(self, entries):
+        available_map = {}
+        for entry in entries or []:
+            for available_entry in entry.get("available") or []:
+                if not isinstance(available_entry, dict):
+                    continue
+                available_key = available_entry.get("key")
+                if available_key is None:
+                    continue
+                available_map[str(available_key)] = dict(available_entry)
+        return available_map
+
+    def _panel_multi_manual_entry(self, track_key, available_map):
+        manual_entry = self._panel_manual_properties.get(track_key)
+        if not manual_entry or manual_entry.get("item_type") != "multi":
+            manual_entry = {"item_id": "", "item_type": "multi", "properties": set()}
+        else:
+            manual_entry = {
+                "item_id": "",
+                "item_type": "multi",
+                "properties": set(manual_entry.get("properties") or []),
+            }
+        manual_entry["properties"] = {
+            prop_id for prop_id in manual_entry.get("properties", set()) if prop_id in available_map
+        }
+        self._panel_manual_properties[track_key] = manual_entry
+        return manual_entry
+
+    @staticmethod
+    def _panel_multi_row_from_available(track_key, prop_id, entry_obj):
+        return {
+            "key": prop_id,
+            "panel_key": prop_id,
+            "display_name": entry_obj.get("display_name") or prop_id,
+            "points": [],
+            "min_value": entry_obj.get("min_value"),
+            "max_value": entry_obj.get("max_value"),
+            "owner_type": entry_obj.get("owner_type"),
+            "source_meta": entry_obj.get("source_meta"),
+            "value": entry_obj.get("value"),
+            "value_type": entry_obj.get("value_type"),
+            "point_paths": [],
+            "context": {"item_type": "multi", "track": track_key},
+        }
+
+    def _panel_multi_manual_rows(self, track_key, available_map):
+        manual_entry = self._panel_multi_manual_entry(track_key, available_map)
+        rows = []
+        for prop_id in sorted(manual_entry["properties"], key=lambda value: str(value).lower()):
+            entry_obj = available_map.get(prop_id)
+            if not isinstance(entry_obj, dict):
+                continue
+            rows.append(self._panel_multi_row_from_available(track_key, prop_id, entry_obj))
+        return manual_entry, rows
+
     def is_keyframe_panel_visible(self, track_num):
         key = self.normalize_track_number(track_num)
         if not self._track_panel_enabled.get(key):
@@ -1498,7 +1553,7 @@ class KeyframePanelMixin:
             frame_seek = int(round(anchor_pending * fps_seek)) + 1
             frame_seek = max(1, frame_seek)
             if hasattr(self.win, "SeekSignal"):
-                self.win.SeekSignal.emit(frame_seek)
+                self.win.SeekSignal.emit(frame_seek, True)
         self.update()
 
     def _panel_seek_to_point(self, info, point):
@@ -1544,7 +1599,7 @@ class KeyframePanelMixin:
             return
 
         if hasattr(self.win, "SeekSignal"):
-            self.win.SeekSignal.emit(frame_seek)
+            self.win.SeekSignal.emit(frame_seek, True)
 
     def _finish_panel_keyframe_drag(self):
         drag = self._dragging_panel_keyframes
@@ -1577,6 +1632,17 @@ class KeyframePanelMixin:
     def _handle_panel_add_click(self, info):
         if not isinstance(info, dict):
             return False
+        modifiers = info.get("modifiers", Qt.NoModifier)
+        force_interpolation = None
+        if modifiers & Qt.AltModifier:
+            # ALT: Bezier
+            force_interpolation = 0
+        elif modifiers & Qt.ControlModifier:
+            # CTRL: Constant
+            force_interpolation = 2
+        elif modifiers & Qt.ShiftModifier:
+            # SHIFT: Linear
+            force_interpolation = 1
         prop = info.get("property")
         track_num = info.get("track")
         if not isinstance(prop, dict) or prop.get("placeholder"):
@@ -1731,7 +1797,10 @@ class KeyframePanelMixin:
                 if interp_val is not None:
                     interpolation = interp_val
                 break
-        if interpolation is None:
+        if force_interpolation is not None:
+            interpolation = force_interpolation
+        elif interpolation is None:
+            # Default interpolation when no nearby keyframe provides one.
             interpolation = 1
         try:
             interpolation_val = int(interpolation)
@@ -3120,6 +3189,7 @@ class KeyframePanelMixin:
                 continue
 
             grouped_props = {}
+            combined_available = self._panel_multi_available_map(entries)
             for entry in entries:
                 item_id = entry["item_id"]
                 item_type = entry["item_type"]
@@ -3173,6 +3243,20 @@ class KeyframePanelMixin:
 
             combined_props = list(grouped_props.values())
             if combined_props:
+                manual_entry = self._panel_multi_manual_entry(key, combined_available)
+                existing_multi_keys = {
+                    str(row.get("key"))
+                    for row in combined_props
+                    if isinstance(row, dict) and row.get("key") is not None
+                }
+                for prop_id in sorted(manual_entry["properties"], key=lambda v: str(v).lower()):
+                    if prop_id in existing_multi_keys:
+                        continue
+                    entry_obj = combined_available.get(prop_id)
+                    if not isinstance(entry_obj, dict):
+                        continue
+                    combined_props.append(self._panel_multi_row_from_available(key, prop_id, entry_obj))
+
                 for row in combined_props:
                     row["points"].sort(
                         key=lambda point: (
@@ -3187,22 +3271,58 @@ class KeyframePanelMixin:
                     "item_type": "multi",
                     "properties": combined_props,
                     "context": multi_context,
-                    "available_properties": [],
+                    "available_properties": sorted(
+                        combined_available.values(),
+                        key=lambda entry: str(entry.get("display_name") or entry.get("key") or "").lower(),
+                    ),
                     "base_properties": self._panel_capture_base_properties(combined_props),
                     "base_context": {},
                 }
                 new_props[key] = info
                 new_heights[key] = self._panel_height_for_properties(len(combined_props))
             else:
-                placeholder_label = translate("No Keyframes")
-                info, height = _placeholder_info(placeholder_label, "no-keyframes")
+                # Multi-selection with no grouped rows at this frame still
+                # needs available properties for the context menu.
+                available_multi = sorted(
+                    combined_available.values(),
+                    key=lambda entry: str(entry.get("display_name") or entry.get("key") or "").lower(),
+                )
+                _, manual_rows = self._panel_multi_manual_rows(key, combined_available)
+
+                if manual_rows:
+                    manual_rows.sort(key=lambda row: str(row.get("display_name") or "").lower())
+                    info = {
+                        "item_id": "",
+                        "item_type": "multi",
+                        "properties": manual_rows,
+                        "context": {"item_type": "multi", "track": key},
+                        "available_properties": available_multi,
+                        "base_properties": self._panel_capture_base_properties(manual_rows),
+                        "base_context": {},
+                    }
+                    height = self._panel_height_for_properties(len(manual_rows))
+                else:
+                    placeholder_label = translate("No Keyframes")
+                    placeholder_prop = {"display_name": placeholder_label, "points": [], "placeholder": True}
+                    info = {
+                        "item_id": "",
+                        "item_type": "multi",
+                        "properties": [placeholder_prop],
+                        "context": {"item_type": "multi", "track": key, "placeholder": "no-keyframes"},
+                        "available_properties": available_multi,
+                        "base_properties": {},
+                        "base_context": {},
+                    }
+                    height = self._panel_height_for_properties(1)
                 new_props[key] = info
                 new_heights[key] = height
         missing_tracks = enabled_tracks - set(new_props.keys())
         if missing_tracks:
-            reason = "no-selection" if not selection else "no-keyframes"
-            label = translate("No Selection") if not selection else translate("No Keyframes")
             for track_num in sorted(missing_tracks):
+                track_entries = grouped_entries.get(track_num, [])
+                has_track_selection = bool(track_entries)
+                reason = "no-keyframes" if has_track_selection else "no-selection"
+                label = translate("No Keyframes") if has_track_selection else translate("No Selection")
                 info, height = _placeholder_info(label, reason)
                 new_props[track_num] = info
                 new_heights[track_num] = height
@@ -3251,11 +3371,12 @@ class KeyframePanelMixin:
             for track_key, entry in self._panel_manual_properties.items():
                 info = new_props.get(track_key)
                 context = info.get("context") if isinstance(info, dict) else None
-                if (
-                    not info
-                    or (isinstance(context, dict) and context.get("placeholder"))
-                    or (isinstance(info, dict) and info.get("item_type") == "multi")
-                ):
+                if not info:
+                    continue
+                if isinstance(info, dict) and info.get("item_type") == "multi":
+                    filtered_manual[track_key] = entry
+                    continue
+                if isinstance(context, dict) and context.get("placeholder"):
                     continue
                 filtered_manual[track_key] = entry
             self._panel_manual_properties = filtered_manual

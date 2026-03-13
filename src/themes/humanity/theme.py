@@ -58,6 +58,11 @@ QComboBox {
 QWidget#videoPreview {
     background-color: #191919;
 }
+
+QLabel#lblMissingFileHint,
+QLabel#lblMissingFilePath {
+    color: #b8b8b8;
+}
         """
 
     def apply_theme(self):
@@ -115,6 +120,11 @@ QMainWindow::separator:hover {
 
 QWidget#videoPreview {
     background-color: #dedede;
+}
+
+QLabel#lblMissingFileHint,
+QLabel#lblMissingFilePath {
+    color: #5a5a5a;
 }
 
 QComboBox {

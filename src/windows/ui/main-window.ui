@@ -1540,18 +1540,6 @@
     <string>Unlock Track</string>
    </property>
   </action>
-  <action name="actionTransform">
-   <property name="icon">
-    <iconset resource="../../../images/openshot.qrc">
-     <normaloff>:/cursors/cursor_move.png</normaloff>:/cursors/cursor_move.png</iconset>
-   </property>
-   <property name="text">
-    <string>Transform</string>
-   </property>
-   <property name="toolTip">
-    <string>Transform</string>
-   </property>
-  </action>
   <action name="actionEditTitle">
    <property name="icon">
     <iconset theme="gtk-edit" resource="../../../images/openshot.qrc">

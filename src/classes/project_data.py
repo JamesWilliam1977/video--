@@ -420,6 +420,7 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
                 info.BLENDER_PATH = os.path.join(get_assets_path(self.current_filepath), "blender")
                 info.PROTOBUF_DATA_PATH = os.path.join(get_assets_path(self.current_filepath), "protobuf_data")
                 info.CLIPBOARD_PATH = os.path.join(get_assets_path(self.current_filepath), "clipboard")
+                info.COMFYUI_OUTPUT_PATH = os.path.join(get_assets_path(self.current_filepath), "comfyui-output")
 
             # Clear needs save flag
             self.has_unsaved_changes = False
@@ -897,6 +898,7 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
             info.TITLE_PATH = os.path.join(get_assets_path(self.current_filepath), "title")
             info.BLENDER_PATH = os.path.join(get_assets_path(self.current_filepath), "blender")
             info.CLIPBOARD_PATH = os.path.join(get_assets_path(self.current_filepath), "clipboard")
+            info.COMFYUI_OUTPUT_PATH = os.path.join(get_assets_path(self.current_filepath), "comfyui-output")
 
             self.add_to_recent_files(file_path)
             self.has_unsaved_changes = False
@@ -911,12 +913,13 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
             target_blender_path = os.path.join(asset_path, "blender")
             target_protobuf_path = os.path.join(asset_path, "protobuf_data")
             target_clipboard_path = os.path.join(asset_path, "clipboard")
+            target_comfy_output_path = os.path.join(asset_path, "comfyui-output")
 
             # Create any missing target paths
             try:
                 for target_dir in [asset_path, target_thumb_path, target_title_path,
                                    target_blender_path, target_protobuf_path,
-                                   target_clipboard_path]:
+                                   target_clipboard_path, target_comfy_output_path]:
                     if not os.path.exists(target_dir):
                         os.mkdir(target_dir)
             except OSError:
@@ -931,12 +934,14 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
                 info.BLENDER_PATH = os.path.join(previous_asset_path, "blender")
                 info.PROTOBUF_DATA_PATH = os.path.join(previous_asset_path, "protobuf_data")
                 info.CLIPBOARD_PATH = os.path.join(previous_asset_path, "clipboard")
+                info.COMFYUI_OUTPUT_PATH = os.path.join(previous_asset_path, "comfyui-output")
 
             # Track assets we copy/update
             copied_assets = {
                 "blender": set(),
                 "title": set(),
                 "clipboard": set(),
+                "comfyui_output": set(),
             }
             reader_paths = {}
 
@@ -973,6 +978,20 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
                     target_clipboard_filepath = os.path.join(target_clipboard_path, clipboard_path)
                     if not os.path.exists(target_clipboard_filepath):
                         shutil.copy2(working_clipboard_path, target_clipboard_filepath)
+
+            # Copy all ComfyUI output files/folders (fully) to assets folder
+            if os.path.exists(info.COMFYUI_OUTPUT_PATH) and (
+                os.path.abspath(info.COMFYUI_OUTPUT_PATH) != os.path.abspath(target_comfy_output_path)
+            ):
+                for output_name in os.listdir(info.COMFYUI_OUTPUT_PATH):
+                    working_output_path = os.path.join(info.COMFYUI_OUTPUT_PATH, output_name)
+                    target_output_path = os.path.join(target_comfy_output_path, output_name)
+                    if os.path.isdir(working_output_path):
+                        if os.path.exists(target_output_path):
+                            shutil.rmtree(target_output_path, True)
+                        shutil.copytree(working_output_path, target_output_path)
+                    else:
+                        shutil.copy2(working_output_path, target_output_path)
 
             # Copy all protobuf files (if not found in target asset folder)
             if os.path.abspath(info.PROTOBUF_DATA_PATH) != os.path.abspath(target_protobuf_path):
@@ -1020,6 +1039,16 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
                             copied_assets["clipboard"].add(asset_name)
                             log.info("Copied clipboard %s to %s", asset_name, target_clipboard_path)
                     new_asset_path = os.path.join(target_clipboard_path, asset_name)
+
+                comfy_output_abs = os.path.abspath(info.COMFYUI_OUTPUT_PATH)
+                path_abs = os.path.abspath(path)
+                if path_abs.startswith(comfy_output_abs + os.sep):
+                    if os.path.abspath(os.path.dirname(path)) != os.path.abspath(target_comfy_output_path):
+                        relative_output_path = os.path.relpath(path_abs, comfy_output_abs)
+                        if relative_output_path not in copied_assets["comfyui_output"]:
+                            copied_assets["comfyui_output"].add(relative_output_path)
+                            log.info("Copied ComfyUI output %s to %s", relative_output_path, target_comfy_output_path)
+                        new_asset_path = os.path.join(target_comfy_output_path, relative_output_path)
 
                 # Update path in File object to new location
                 if new_asset_path:
@@ -1091,7 +1120,115 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
         _ = app._tr
 
         log.info("checking project files...")
-        prompt_state = {"cancelled": False}
+        prompt_state = {"cancelled": False, "missing_path_decisions": {}}
+
+        def _path_is_missing(path):
+            return bool(path) and "%" not in path and not os.path.exists(path)
+
+        def _resolve_missing_path(path):
+            """Prompt to locate a missing path, returning resolved path or empty when skipped."""
+            if not _path_is_missing(path):
+                return path, False
+
+            # Reuse prior decision for this exact missing path in this load pass.
+            # This avoids duplicate prompts when the same asset path appears in
+            # multiple places (e.g. top-level effect + clip effect).
+            missing_path_decisions = prompt_state.setdefault("missing_path_decisions", {})
+            if path in missing_path_decisions:
+                cached_path = missing_path_decisions[path]
+                if cached_path:
+                    return cached_path, False
+                return "", True
+
+            found_path, is_modified, is_skipped = find_missing_file(path, prompt_state)
+            if found_path and is_modified and not is_skipped:
+                settings.setDefaultPath(settings.actionType.IMPORT, found_path)
+                missing_path_decisions[path] = found_path
+                return found_path, False
+            if is_skipped:
+                missing_path_decisions[path] = ""
+                skip_mode = prompt_state.get("last_skip")
+                if skip_mode == "all":
+                    skip_detail = " (user selected Skip All)"
+                else:
+                    skip_detail = " (user selected Skip File)"
+                # Use warning level so this is visible even when info logs are filtered.
+                log.warning(
+                    "Missing path skipped during project load%s: %s",
+                    skip_detail,
+                    path,
+                )
+            return "", True
+
+        def _collect_effect_path_refs(effect):
+            """Collect mutable refs to path-like fields used by effects."""
+            refs = []
+            seen = set()
+
+            def _add_ref(container, key):
+                if not isinstance(container, dict):
+                    return
+                value = container.get(key, "")
+                if not isinstance(value, str) or not value:
+                    return
+                ref_id = (id(container), key)
+                if ref_id in seen:
+                    return
+                seen.add(ref_id)
+                refs.append((container, key, value))
+
+            def _walk(obj, parent_key=""):
+                if isinstance(obj, dict):
+                    for key, value in obj.items():
+                        if isinstance(value, dict):
+                            if isinstance(value.get("path"), str) and "reader" in key.lower():
+                                _add_ref(value, "path")
+                            _walk(value, key)
+                        elif isinstance(value, list):
+                            _walk(value, key)
+                        elif isinstance(value, str):
+                            if key in {"resource", "protobuf_data_path", "lut_path", "image"}:
+                                _add_ref(obj, key)
+                            elif key == "path" and "reader" in parent_key.lower():
+                                _add_ref(obj, key)
+                elif isinstance(obj, list):
+                    for item in obj:
+                        _walk(item, parent_key)
+
+            _walk(effect)
+            return refs
+
+        def _first_missing_effect_path(effect):
+            for _, _, path in _collect_effect_path_refs(effect):
+                if _path_is_missing(path):
+                    return path
+            return ""
+
+        def _repair_effect_paths(effect):
+            """Prompt for missing paths on an effect-like dict."""
+            if not isinstance(effect, dict):
+                return False
+
+            path_refs = _collect_effect_path_refs(effect)
+            missing_paths = []
+            for _, _, path in path_refs:
+                if _path_is_missing(path) and path not in missing_paths:
+                    missing_paths.append(path)
+
+            for missing_path in missing_paths:
+                resolved_path, should_remove = _resolve_missing_path(missing_path)
+                if should_remove:
+                    log.warning(
+                        "Removing effect with unresolved path. effect_id=%s missing_path=%s",
+                        effect.get("id", ""),
+                        missing_path,
+                    )
+                    return False
+                for container, key, current_path in path_refs:
+                    if current_path == missing_path:
+                        container[key] = resolved_path
+
+            return True
 
         # Loop through each files in natural-sorted filename order
         files_sorted = sorted(
@@ -1104,23 +1241,15 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
 
             log.info("checking file %s", path)
             if not os.path.exists(path) and "%" not in path:
-                # File is missing
-                if prompt_state.get("cancelled"):
-                    # User already cancelled prompts, just remove missing file
+                # File is missing - prompt/resolve using the shared path-decision cache.
+                resolved_path, should_remove = _resolve_missing_path(path)
+                if should_remove:
                     log.info('Removed missing file: %s', file_name_with_ext)
                     self._data["files"].remove(file)
-                    continue
-
-                path, is_modified, is_skipped = find_missing_file(path, prompt_state)
-                if path and is_modified and not is_skipped:
-                    # Found file, update path
-                    file["path"] = path
-                    settings.setDefaultPath(settings.actionType.IMPORT, path)
-                    log.info("Auto-updated missing file: %s", path)
-                elif is_skipped:
-                    # Remove missing file
-                    log.info('Removed missing file: %s', file_name_with_ext)
-                    self._data["files"].remove(file)
+                elif resolved_path and resolved_path != path:
+                    file["path"] = resolved_path
+                    settings.setDefaultPath(settings.actionType.IMPORT, resolved_path)
+                    log.info("Auto-updated missing file: %s", resolved_path)
 
         # Build a lookup of valid file IDs after any removals/updates
         file_paths_by_id = {file.get("id"): file.get("path") for file in self._data["files"]}
@@ -1150,6 +1279,26 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
                 file_name_with_ext = os.path.basename(path)
                 log.info('Removed missing clip: %s', file_name_with_ext)
                 self._data["clips"].remove(clip)
+
+        # Loop through top-level effects/transitions and prompt for missing reader/resource paths.
+        for effect in reversed(self._data["effects"]):
+            if not _repair_effect_paths(effect):
+                missing_path = _first_missing_effect_path(effect)
+                effect_name = os.path.basename(missing_path) if missing_path else effect.get("id", "")
+                log.info("Removed missing effect: %s", effect_name)
+                self._data["effects"].remove(effect)
+
+        # Some clip effects can also carry reader/resource paths (e.g. mask/image-driven effects).
+        for clip in self._data["clips"]:
+            effects = clip.get("effects")
+            if not isinstance(effects, list):
+                continue
+            for effect in reversed(effects):
+                if not _repair_effect_paths(effect):
+                    missing_path = _first_missing_effect_path(effect)
+                    effect_name = os.path.basename(missing_path) if missing_path else effect.get("id", "")
+                    log.info("Removed missing clip effect on %s: %s", clip.get("id", ""), effect_name)
+                    effects.remove(effect)
 
     def changed(self, action):
         """ This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface) """

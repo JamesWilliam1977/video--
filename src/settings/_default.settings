@@ -19,6 +19,15 @@
     "restart": false
   },
   {
+    "value": "HD 720p 30 fps",
+    "title": "Default Profile",
+    "category": "General",
+    "setting": "default-profile",
+    "type": "dropdown",
+    "values": [],
+    "restart": true
+  },
+  {
     "value": "",
     "title": "",
     "type": "hidden",
@@ -51,9 +60,37 @@
     "restart": true
   },
   {
+    "value": "entire",
+    "title": "Thumbnail Style",
+    "type": "dropdown",
+    "restart": false,
+    "category": "Timeline",
+    "dependency": "!legacy-based-timeline",
+    "setting": "timeline-thumbnail-style",
+    "translate_values": true,
+    "values": [
+      {
+        "value": "none",
+        "name": "None"
+      },
+      {
+        "value": "start",
+        "name": "Only Start"
+      },
+      {
+        "value": "start-end",
+        "name": "Start and End"
+      },
+      {
+        "value": "entire",
+        "name": "Entire Clip"
+      }
+    ]
+  },
+  {
     "max": 10000,
     "title": "Image Length (seconds)",
-    "category": "General",
+    "category": "Timeline",
     "min": 0,
     "setting": "default-image-length",
     "value": 10.0,
@@ -62,19 +99,10 @@
   {
     "max": 10000,
     "title": "Transition Length (seconds)",
-    "category": "General",
+    "category": "Timeline",
     "min": 0,
     "setting": "default-transition-length",
     "value": 10.0,
-    "type": "spinner"
-  },
-  {
-    "max": 100,
-    "title": "Volume",
-    "category": "General",
-    "min": 0,
-    "setting": "volume",
-    "value": 75,
     "type": "spinner"
   },
   {
@@ -146,25 +174,6 @@
     "type": "hidden",
     "category": "UI",
     "setting": "recent_projects"
-  },
-  {
-    "value": "HD 720p 30 fps",
-    "title": "Default Profile",
-    "category": "Preview",
-    "setting": "default-profile",
-    "type": "dropdown",
-    "values": [],
-    "restart": true
-  },
-  {
-    "min": 128,
-    "max": 4096,
-    "value": 512,
-    "title": "Playback Audio Buffer Size",
-    "category": "Preview",
-    "setting": "playback-buffer-size",
-    "type": "spinner-int",
-    "restart": true
   },
   {
     "value": "",
@@ -239,6 +248,25 @@
       }
     ],
     "restart": true
+  },
+  {
+    "min": 128,
+    "max": 4096,
+    "value": 512,
+    "title": "Playback Audio Buffer Size",
+    "category": "Preview",
+    "setting": "playback-buffer-size",
+    "type": "spinner-int",
+    "restart": true
+  },
+  {
+    "max": 100,
+    "title": "Volume",
+    "category": "Preview",
+    "min": 0,
+    "setting": "volume",
+    "value": 75,
+    "type": "spinner"
   },
   {
     "value": true,
@@ -390,20 +418,12 @@
     "setting": "cache-quality"
   },
   {
-    "value": false,
-    "title": "Debug Mode (Verbose)",
-    "type": "bool",
-    "category": "Debug",
-    "setting": "debug-mode",
-    "restart": false
-  },
-  {
-    "value": false,
-    "title": "Show Playback Performance (FPS)",
-    "type": "bool",
-    "category": "Debug",
-    "setting": "preview-fps",
-    "restart": false
+    "value": "http://127.0.0.1:8188",
+    "title": "ComfyUI URL",
+    "type": "text",
+    "restart": false,
+    "category": "Advanced",
+    "setting": "comfy-ui-url"
   },
   {
     "min": 0,
@@ -411,23 +431,39 @@
     "value": 5556,
     "title": "Debug Mode (Port)",
     "type": "spinner-int",
-    "category": "Debug",
+    "category": "Advanced",
     "setting": "debug-port",
     "restart": true
+  },
+  {
+    "value": false,
+    "title": "Debug Mode (Verbose)",
+    "type": "bool",
+    "category": "Advanced",
+    "setting": "debug-mode",
+    "restart": false
   },
   {
     "value": true,
     "title": "Send Anonymous Metrics and Errors",
     "type": "bool",
-    "category": "Debug",
+    "category": "Advanced",
     "setting": "send_metrics"
+  },
+  {
+    "value": false,
+    "title": "Show Playback Performance (FPS)",
+    "type": "bool",
+    "category": "Advanced",
+    "setting": "preview-fps",
+    "restart": false
   },
   {
     "value": true,
     "title": "Show Export Dialog when Finished",
     "type": "bool",
     "restart": false,
-    "category": "General",
+    "category": "Advanced",
     "setting": "show_finished_window"
   },
   {
@@ -435,44 +471,16 @@
     "title": "Auto-Transition (overlap clips)",
     "type": "bool",
     "restart": false,
-    "category": "General",
+    "category": "Timeline",
     "setting": "automatic_transitions"
   },
   {
     "value": false,
-    "title": "Enable Experimental Timeline",
+    "title": "Enable Legacy Timeline (web-based)",
     "type": "bool",
     "restart": true,
-    "category": "Experimental",
-    "setting": "qwidget-based-timeline"
-  },
-  {
-    "value": "start",
-    "title": "Thumbnail Style",
-    "type": "dropdown",
-    "restart": false,
-    "category": "Experimental",
-    "dependency": "qwidget-based-timeline",
-    "setting": "timeline-thumbnail-style",
-    "translate_values": true,
-    "values": [
-      {
-        "value": "none",
-        "name": "None"
-      },
-      {
-        "value": "start",
-        "name": "Only Start"
-      },
-      {
-        "value": "start-end",
-        "name": "Start and End"
-      },
-      {
-        "value": "entire",
-        "name": "Entire Clip"
-      }
-    ]
+    "category": "Timeline",
+    "setting": "legacy-based-timeline"
   },
   {
     "max": 4,
@@ -584,7 +592,7 @@
   },
   {
     "value": true,
-    "title": "Use Blender GPU rendering for Animated Titles (Experimental)",
+    "title": "Use Blender GPU rendering for Animated Titles",
     "type": "bool",
     "restart": false,
     "category": "Performance",
@@ -604,15 +612,6 @@
     "category": "Tutorial",
     "setting": "tutorial_ids"
   },
-  {
-    "value": true,
-    "title": "Auto-Transform Selection",
-    "type": "bool",
-    "category": "General",
-    "setting": "auto-transform"
-  },
-
-
   {
     "category": "Keyboard",
     "title": "Preferences",
@@ -1068,14 +1067,6 @@
     "restart": false,
     "setting": "actionProperties",
     "value": "U",
-    "type": "text"
-  },
-  {
-    "category": "Keyboard",
-    "title": "Transform",
-    "restart": false,
-    "setting": "actionTransform",
-    "value": "Ctrl+Alt+T",
     "type": "text"
   },
   {

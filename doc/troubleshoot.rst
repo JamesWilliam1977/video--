@@ -112,3 +112,50 @@ More commands are listed below.
     (gdb) bt             (Print stack trace for the current thread #)
     (gdb) info threads   (to view all threads, and what they are doing. Look for `__lll_lock_wait` for Mutex/deadlocks)
     (gdb) thread 35      (Switch to thread number, for example thread 35)
+
+High DPI / 4K Monitors
+----------------------
+
+OpenShot Video Editor provides robust support for High DPI (Dots Per Inch)
+monitors, ensuring that the interface looks sharp and is easily readable on
+displays with various DPI settings. This support is particularly helpful on 4K
+monitors and other high-resolution displays.
+
+Per Monitor DPI Awareness
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its scaling
+dynamically depending on the DPI settings of each connected monitor. This helps
+provide a consistent experience across different displays.
+
+DPI Scaling on Windows
+^^^^^^^^^^^^^^^^^^^^^^
+
+On Windows, OpenShot rounds the scaling factor to the nearest whole value to
+maintain visual integrity. This helps avoid visual artifacts in the UI and
+keeps interface elements crisp and well-aligned. Due to this rounding, some
+scaling options can lead to larger fonts and UI elements than expected.
+
+- **125% scaling** rounds to **100%**
+- **150% scaling** rounds to **200%**
+
+Workarounds for Fine-Grained Adjustment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+While rounding helps maintain a clean interface, there are workarounds for
+users who require more precise control over scaling. These methods are **not
+recommended** due to potential visual artifacts:
+
+- **QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**
+
+  - Setting this environment variable can disable rounding and allow more precise scaling.
+  - **Note:** This may cause visual artifacts, particularly in the timeline, and is not recommended.
+
+- **QT_SCALE_FACTOR=1.25** (or similar value)
+
+  - Manually setting the scale factor can provide finer adjustments to the font and UI scaling.
+  - This can also be set via Preferences (User Interface Scale), but expect border/line issues on Windows with fractional scales.
+  - **Note:** This method can also lead to visual artifacts and make OpenShot harder to use.
+
+For more info on adjusting these environment variables, please visit
+https://github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large.

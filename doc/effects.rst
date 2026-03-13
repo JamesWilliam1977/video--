@@ -37,6 +37,38 @@ with filter options available at the top. Hold :kbd:`Ctrl` and click multiple
 effect icons to select them all, the Properties dock will show an entry such as
 ``3 Selections`` so you can adjust their common settings in one step. See :ref:`clip_properties_ref`.
 
+Masks and Effects
+-----------------
+
+All effects can now use a **static or animated mask** to limit where the effect
+is applied. This makes effects much more precise, because you can target only
+the subject or region you care about and blend the result smoothly into the
+original image.
+
+Why this matters:
+
+- Keep edits focused on one area (for example, blur only a face).
+- Stack multiple effects on the same subject without affecting the full frame.
+- Animate how strongly or where an effect is applied over time.
+
+How to use effect masks:
+
+1. Add an effect to a clip.
+2. Open the effect :guilabel:`Properties`.
+3. Choose a mask source (static image or animated mask video).
+4. Adjust :guilabel:`Mask Mode` (for example, *Limit to Mask* or *Vary Strength*).
+
+High-quality animated masks can also be generated with Advanced AI workflows.
+In many cases, you can click one or more subjects and let tracking build a mask
+automatically. See :ref:`ai_ref`.
+
+Mask controls to know:
+
+- Any effect mask can be inverted to flip between foreground and background.
+- Animated mask videos can be looped.
+- When looping, set start/end mask trim carefully. If not adjusted, OpenShot
+  loops the entire mask source, not just the segment you intended to repeat.
+
 To adjust a property:
 
 - Drag the slider for coarse changes.

@@ -49,7 +49,15 @@ Features
 - **Emojis** (open-source stickers & artwork)
 - **Frame accuracy** (per-frame navigation)
 - **Time re-mapping & speed changes** (slow/fast, forward/backward)
-- **Advanced AI** (motion tracking, object detection, stabilization)
+- **Built-in AI** (motion tracking, object detection, stabilization)
+- **Advanced AI** (see :ref:`ai_ref`)
+
+  - **Tracking & masks** (object tracking, animated mask generation, auto-blur, auto-highlight)
+  - **Image & video generation** (text-to-image, image style transfer, text/image-to-video)
+  - **Quality enhancement** (upscaling, frame interpolation/increase frame rate)
+  - **Analysis & automation** (auto scene splitting, speech transcription/captions)
+  - **Audio generation** (sound and music generation)
+  - *Additional workflows can be added with custom ComfyUI templates*
 - **Credits & captions** (scrolling, animated)
 - **Hardware acceleration** (NVIDIA, AMD, Intel, etc.)
 - **Import & export** (EDL, Final Cut Pro)

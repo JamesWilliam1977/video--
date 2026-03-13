@@ -38,23 +38,30 @@ App.directive("tlPlayhead", function () {
       // get the default top position so we can lock it in place vertically
       playhead_y_max = element.position().top;
       var isDragging = false;
+      var didMove = false;
+      var cacheSuppressed = false;
 
       element.on("mousedown", function (e) {
+        // Prevent playhead drags/clicks from also triggering ruler scrub handlers.
+        e.stopPropagation();
+
         // Set bounding box for the playhead
         setBoundingBox(scope, $("#playhead"), "playhead");
 
         // Start dragging
         isDragging = true;
-
-        if (scope.Qt) {
-          // Disable caching thread during scrubbing
-          timeline.DisableCacheThread();
-        }
+        didMove = false;
+        cacheSuppressed = false;
       });
 
       // Global mousemove listener
       $(document).on("mousemove", function (e) {
         if (isDragging && e.which === 1 && !scope.playhead_animating && !scope.getDragging()) { // left button is held
+          if (scope.Qt && !cacheSuppressed) {
+            timeline.DisableCacheThread();
+            cacheSuppressed = true;
+          }
+
           // Calculate the playhead bounding box movement and apply snapping rules
           let cursor_position = e.pageX - $("#ruler").offset().left;
           let results = moveBoundingBox(scope, bounding_box.left, bounding_box.top,
@@ -71,7 +78,8 @@ App.directive("tlPlayhead", function () {
           let playhead_seconds = snapToFPSGridTime(scope, pixelToTime(scope, new_position));
           playhead_seconds = Math.min(Math.max(0.0, playhead_seconds), scope.project.duration);
           scope.movePlayhead(playhead_seconds);
-          scope.previewFrame(playhead_seconds);
+          scope.previewFrame(playhead_seconds, false);
+          didMove = true;
         }
       });
 
@@ -81,9 +89,16 @@ App.directive("tlPlayhead", function () {
           isDragging = false;
 
           if (scope.Qt) {
-            // Enable caching thread after scrubbing
-            timeline.EnableCacheThread();
+            // Commit seek (with preroll) only after an actual drag move.
+            if (didMove) {
+              scope.previewFrame(scope.project.playhead_position, true);
+            }
+            // Re-enable caching only if this interaction actually suppressed it.
+            if (cacheSuppressed) {
+              timeline.EnableCacheThreadNoRefresh();
+            }
           }
+          cacheSuppressed = false;
         }
       });
     }

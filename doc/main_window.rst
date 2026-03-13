@@ -44,6 +44,7 @@ Overview
    8   Timeline            The timeline visualizes your video project, and each clip and transition in your project. You can drag the mouse to select, move, or delete multiple items.
    9   Filter              Filter the list of items shown (project files, transitions, effects, and emojis) by using these buttons and filter textbox. Enter a few letters of what you are looking for, and the results will be shown.
    10  Playback            Left to Right: Jump to Start, Rewind, Play/Pause, Fast Forward, and Jump to End
+   11  Track               Track area containing the track name, track menu, and per-track controls such as lock and keyframe panel icons.
    ==  ==================  ============
 
 For step-by-step instructions on the basic usage of OpenShot, be sure to read the
@@ -90,22 +91,37 @@ Timeline Toolbar
 
 .. image:: images/timeline.jpg
 
-.. table::
-   :widths: 20 73
+For a beginner-friendly overview of timeline editing (selection, tracks,
+keyframes, and common workflows), see :ref:`timeline_ref`.
 
-   ===========================  ============
-   Name                         Description
-   ===========================  ============
-   Add Track                    Add a new track to the timeline. New projects start with 5 tracks by default.
-   Snapping                     Toggle between snapping and non-snapping modes. Snapping makes it easier to place clips next to other clips.
-   Timing Tool                  Toggle retiming mode. Drag clip edges to slow down or speed up playback without trimming; all keyframes are scaled to fit the new length.
-   Razor Tool                   Toggle the razor tool on and off. This tool will cut a clip exactly where you click on it, splitting a clip into 2 clips.
-   Add Marker                   Add a marker to the timeline at the current playhead position. This can be useful for returning to a specific position on the timeline.
-   Previous Marker              Jump to the previous marker. This moves the playhead to the left, seeking to the next marker or important position (i.e. start / end positions of clips).
-   Next Marker                  Jump to the next marker. This moves the playhead to the right, seeking to the next marker or important position (i.e. start / end positions of clips).
-   Center Timeline on Playhead  This centers the timeline on the playhead position. This can be useful if the playhead is not visible and you want to quickly scroll the timeline to that position.
-   Zoom Slider                  This controls the visible portion of the timeline. Adjusting the left/right handles will zoom in/out of your timeline, keeping a specific section of your project in view. Double click to zoom to your entire timeline.
-   ===========================  ============
+.. list-table::
+   :widths: 5 28 67
+   :header-rows: 1
+
+   * - #
+     - Control Group
+     - Description
+   * - 1
+     - Add Track
+     - Add a new track to the timeline. New projects start with 5 tracks by default.
+   * - 2
+     - Undo / Redo
+     - Undo or redo your latest timeline edits.
+   * - 3
+     - Snap, Retime, Razor
+     - Snapping toggles magnetic alignment. Timing Tool enables retiming by dragging clip edges. Razor Tool cuts clips at the clicked position.
+   * - 4
+     - Add Marker, Next/Prev Marker
+     - Add a marker at the playhead and jump to previous or next marker/clip boundaries.
+   * - 5
+     - Center on Playhead
+     - Center the visible timeline area around the current playhead position.
+   * - 6
+     - Zoom Slider
+     - Control the visible timeline range. Drag handles to zoom in/out, drag center to pan, and double-click to fit timeline.
+   * - 7
+     - Track toggles (Lock, Keyframe Panel)
+     - Per-track controls such as lock and keyframe panel visibility.
 
 .. _keyboard_shortcut_ref:
 
@@ -198,7 +214,6 @@ Learning a few of these shortcuts can save you a bunch of time!
    Thumbnail View                        :kbd:`Ctrl+Page Down`
    Timing Toggle                         :kbd:`T`
    Title                                 :kbd:`Ctrl+T`
-   Transform                             :kbd:`Ctrl+Alt+T`
    Translate this Application...         :kbd:`F6`
    Un-Freeze View                        :kbd:`Ctrl+Shift+F`
    Undo                                  :kbd:`Ctrl+Z`
@@ -309,47 +324,3 @@ exit the program. Re-launching OpenShot will restore your custom dock layout aut
 If you have accidentally closed or moved a dock and can no longer find it, there are a couple easy solutions.
 First, you can use the :guilabel:`View->Views->Simple View` menu option at the top of the screen, to restore the view back to its
 default. Or you can use the :guilabel:`View->Views->Docks->...` menu to show or hide specific dock widgets on the main window.
-
-High DPI / 4K Monitors
-----------------------
-
-OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) monitors, ensuring that the interface looks
-sharp and is easily readable on displays with various DPI settings. This support is particularly beneficial for users
-with 4K monitors or other high-resolution displays.
-
-Per Monitor DPI Awareness
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its scaling dynamically depending on the DPI
-settings of each connected monitor. This ensures a consistent and high-quality user experience across different displays.
-
-DPI Scaling on Windows
-^^^^^^^^^^^^^^^^^^^^^^
-
-On Windows, OpenShot rounds the scaling factor to the nearest whole value to maintain visual integrity. This rounding
-helps avoid visual artifacts in the UI rendering and ensures that the interface elements remain crisp and well-aligned.
-Due to this rounding, scaling options can sometimes lead to increased font-sizes and a feeling that the UI elements
-are a bit too large.
-
-- **125% scaling** rounds to **100%**
-- **150% scaling** rounds to **200%**
-
-Workarounds for Fine-Grained Adjustment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-While rounding helps maintain a clean interface, there are workarounds for users who require more precise control
-over the scaling. However, these methods are **not recommended** due to potential visual artifacts:
-
-- **QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**
-
-   - Setting this environment variable can disable rounding and allow more precise scaling.
-   - **Note:** This may cause visual artifacts, particularly in the timeline, and is not recommended.
-
-- **QT_SCALE_FACTOR=1.25** (or similar value)
-
-   - Manually setting the scale factor can provide finer adjustments to the font and UI scaling.
-   - This can also be set via Preferences (User Interface Scale) - but expect border/line issues on Windows with fractional scales.
-   - **Note:** This method can also lead to visual artifacts and make OpenShot harder to use.
-
-For more info on adjusting these environment variables, please visit
-https://github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large.

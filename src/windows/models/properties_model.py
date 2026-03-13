@@ -38,8 +38,8 @@ from qt_api import (
 from classes.waveform import get_audio_data
 from classes import info, updates
 from classes import openshot_rc  # noqa
-from classes.clip_utils import clamp_timing_to_media, clip_time_bounds
-from classes.query import Clip, Transition, Effect
+from classes.clip_utils import clamp_timing_to_media, clip_time_bounds, is_single_image_media
+from classes.query import Clip, Transition, Effect, File
 from classes.logger import log
 from classes.app import get_app
 import openshot
@@ -67,12 +67,145 @@ class ClipStandardItemModel(QStandardItemModel):
 
 
 class PropertiesModel(updates.UpdateInterface):
+    def _resolve_reader_source_path(self, value):
+        """Resolve a reader property value to a filesystem path when possible."""
+        if value in (None, ""):
+            return ""
+
+        if isinstance(value, dict):
+            value = value.get("path", "")
+
+        source_value = str(value).strip()
+        if not source_value:
+            return ""
+
+        if os.path.exists(source_value):
+            return source_value
+
+        file_obj = File.get(path=source_value)
+        if file_obj:
+            return file_obj.absolute_path()
+
+        return source_value
+
+    def _reader_display_name(self, selected_item, reader_memo):
+        """Resolve a human-friendly reader display name from File.name when available."""
+        reader_json = json.loads(reader_memo or "{}")
+        reader_path = reader_json.get("path", "")
+        file_id = reader_json.get("id")
+
+        if getattr(selected_item, "data", None):
+            file_id = selected_item.data.get("file_id") or file_id
+
+        if file_id:
+            file_obj = File.get(id=file_id)
+            if file_obj:
+                file_name = str(file_obj.data.get("name", "")).strip()
+                if file_name:
+                    return file_name
+
+        return os.path.basename(reader_path)
+
+    def _mask_reader_data(self, data):
+        reader = {}
+        if isinstance(data, dict):
+            for key in ("mask_reader", "reader"):
+                candidate = data.get(key)
+                if isinstance(candidate, dict):
+                    reader = candidate
+                    break
+        return reader
+
+    def _transition_uses_static_mask(self, transition_data):
+        reader = self._mask_reader_data(transition_data)
+        if not reader:
+            return True
+        if not reader.get("path") and not reader.get("id") and not reader.get("has_single_image"):
+            return True
+        if isinstance(reader, dict) and "has_single_image" in reader:
+            return bool(reader.get("has_single_image"))
+        return bool(is_single_image_media(reader))
+
+    def _mask_source_is_animated(self, data):
+        reader = self._mask_reader_data(data)
+        return bool(isinstance(reader, dict) and reader.get("has_single_image") is False)
+
+    def _transition_default_keyframes(self, duration, start_value, end_value, contrast_value):
+        fps = get_app().project.get("fps")
+        fps_float = float(fps["num"]) / float(fps["den"])
+        duration = max(0.0, float(duration or 0.0))
+
+        brightness = openshot.Keyframe()
+        brightness.AddPoint(1, float(start_value), openshot.BEZIER)
+        if float(start_value) != float(end_value):
+            brightness.AddPoint(round(duration * fps_float) + 1, float(end_value), openshot.BEZIER)
+        contrast = openshot.Keyframe(float(contrast_value))
+        return json.loads(brightness.Json()), json.loads(contrast.Json())
+
+    def _effect_filter_base_properties(self, effect_data):
+        """Return effect base properties that should remain hidden."""
+        hidden = ["position", "layer", "start", "end", "duration"]
+        if not isinstance(effect_data, dict):
+            return hidden
+
+        is_mask = (
+            effect_data.get("type") == "Mask"
+            or effect_data.get("class_name") == "Mask"
+            or "mask_reader" in effect_data
+        )
+        if is_mask and self._mask_source_is_animated(effect_data):
+            return ["position", "layer", "duration"]
+        return hidden
+
+    def _refresh_selected_effect_filters(self):
+        if not self.selected:
+            return
+        item, item_type = self.selected[0]
+        if item_type != "effect":
+            return
+
+        effect_id = None
+        try:
+            effect_id = item.Id()
+        except Exception:
+            effect_id = None
+        effect_obj = Effect.get(id=effect_id) if effect_id else None
+        next_filter_base_properties = self._effect_filter_base_properties(
+            getattr(effect_obj, "data", None)
+        )
+        if next_filter_base_properties != self.filter_base_properties:
+            self.filter_base_properties = next_filter_base_properties
+            self.new_item = True
+        else:
+            self.filter_base_properties = next_filter_base_properties
+
+    def _resolve_tracked_object_id(self, raw_properties, tracked_objects_raw_properties):
+        """Resolve selected tracked object ID from properties payload."""
+        if not tracked_objects_raw_properties:
+            return None
+
+        selected_idx = raw_properties.get("selected_object_index", {}).get("value")
+        if selected_idx not in (None, "", "None"):
+            selected_idx = str(selected_idx)
+            if selected_idx in tracked_objects_raw_properties:
+                return selected_idx
+
+            # Newer tracked-object IDs are "<effect-uuid>-<index>".
+            suffix = f"-{selected_idx}"
+            for object_id in tracked_objects_raw_properties.keys():
+                if object_id.endswith(suffix):
+                    return object_id
+
+        # Fallback to first tracked object
+        return next(iter(tracked_objects_raw_properties.keys()))
+
     # This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface)
     def changed(self, action):
 
         # Handle change
         if action and len(action.key) >= 1 and action.key[0] in ["clips", "effects"] and action.type in ["update", "insert"]:
             log.debug(action.values)
+            self._refresh_selected_effect_filters()
             # Update the model data
             self.update_model(get_app().window.txtPropertyFilter.text())
 
@@ -111,9 +244,9 @@ class PropertiesModel(updates.UpdateInterface):
                 elif item_type == "effect":
                     e = timeline.GetClipEffect(item_id)
                     if e:
-                        self.filter_base_properties = ["position", "layer", "start", "end", "duration"]
                         self.selected.append((e, item_type))
                         self.selected_parent = e.ParentClip()
+                        self._refresh_selected_effect_filters()
 
             # Update frame # from timeline
             self.update_frame(get_app().window.preview_thread.player.Position(), reload_model=False)
@@ -280,8 +413,13 @@ class PropertiesModel(updates.UpdateInterface):
                         waveform_file_id = c.data.get("file_id")
                         has_waveform = True
 
+                use_transition_update = item_type == "transition" and not object_id and property_key == "mask_reader"
+                full_transition_data = clip_data if use_transition_update else None
+
                 # Reduce # of clip properties we are saving (performance boost)
-                if not object_id:
+                if use_transition_update:
+                    pass
+                elif not object_id:
                     if property_key == "time":
                         clip_data = {k: clip_data.get(k) for k in ("time", "end", "duration", "start")}
                     else:
@@ -293,9 +431,22 @@ class PropertiesModel(updates.UpdateInterface):
 
                 # Save changes
                 if clip_updated:
-                    # Save
-                    c.data = clip_data
-                    c.save()
+                    if use_transition_update:
+                        timeline = getattr(get_app().window, "timeline", None)
+                        if timeline:
+                            timeline.update_transition_data(full_transition_data, only_basic_props=False)
+                            c = Transition.get(id=item_id) or c
+                        else:
+                            log.warning(
+                                "Timeline unavailable for transition mask_reader update; saving transition %s directly",
+                                item_id,
+                            )
+                            c.data = full_transition_data
+                            c.save()
+                    else:
+                        # Save
+                        c.data = clip_data
+                        c.save()
 
                     # Update waveforms (if needed)
                     if has_waveform:
@@ -516,6 +667,10 @@ class PropertiesModel(updates.UpdateInterface):
                 c = Effect.get(id=item_id)
 
             if c and c.data:
+                is_mask_reader_update = (
+                    not object_id
+                    and property_key == "mask_reader"
+                )
 
                 # Create reference
                 clip_data = c.data
@@ -664,19 +819,55 @@ class PropertiesModel(updates.UpdateInterface):
                             log.warn('Invalid Font/Caption value passed to property', exc_info=1)
 
                     elif property_type == "reader":
-                        # Transition
+                        # Reader / mask source
                         clip_updated = True
                         try:
+                            selection_data = value if isinstance(value, dict) else {}
+                            selected_start = selection_data.get("start")
+                            selected_end = selection_data.get("end")
+                            reader_value = {"type": ""}
                             if value:
                                 # Set a new source
-                                clip_object = openshot.Clip(value)
+                                resolved_value = self._resolve_reader_source_path(value)
+                                clip_object = openshot.Clip(resolved_value)
                                 clip_object.Open()
-                                clip_data[property_key] = json.loads(clip_object.Reader().Json())
+                                reader_value = json.loads(clip_object.Reader().Json())
                                 clip_object.Close()
                                 clip_object = None
-                            else:
-                                # Clear the source (set to a dict with a type field)
-                                clip_data[property_key] = {"type": ""}
+                            # Clear the source (set to a dict with a type field)
+                            clip_data[property_key] = reader_value
+                            if is_mask_reader_update:
+                                clip_data["mask_reader"] = reader_value
+                                clip_data["reader"] = reader_value
+
+                            if is_mask_reader_update:
+                                start_source = selected_start if selected_start is not None else clip_data.get("start", 0.0)
+                                end_source = selected_end if selected_end is not None else clip_data.get("end", start_source)
+                                start = float(start_source or 0.0)
+                                end = float(end_source or start)
+                                if end < start:
+                                    end = start
+                                duration = max(0.0, end - start)
+
+                                if self._transition_uses_static_mask(clip_data):
+                                    clip_data["start"] = 0.0
+                                    clip_data["end"] = duration
+                                    brightness, contrast = self._transition_default_keyframes(
+                                        duration, 1.0, -1.0, 3.0
+                                    )
+                                else:
+                                    clip_data["start"] = start
+                                    clip_data["end"] = end
+                                    brightness, contrast = self._transition_default_keyframes(
+                                        duration, 0.0, 0.0, 0.0
+                                    )
+
+                                clip_data["duration"] = max(
+                                    0.0,
+                                    float(clip_data.get("end", 0.0) or 0.0) - float(clip_data.get("start", 0.0) or 0.0),
+                                )
+                                clip_data["brightness"] = brightness
+                                clip_data["contrast"] = contrast
                         except Exception:
                             log.warn('Invalid Reader value passed to property: %s', value, exc_info=1)
 
@@ -693,7 +884,9 @@ class PropertiesModel(updates.UpdateInterface):
                         has_waveform = True
 
                 # Reduce # of clip properties we are saving (performance boost)
-                if not object_id:
+                if is_mask_reader_update:
+                    pass
+                elif not object_id:
                     if property_key == "time":
                         clip_data = {k: clip_data.get(k) for k in ("time", "end", "duration", "start")}
                     else:
@@ -808,10 +1001,7 @@ class PropertiesModel(updates.UpdateInterface):
                 # Don't output a value for colors
                 col.setText("")
             elif type == "reader":
-                reader_json = json.loads(memo or "{}")
-                reader_path = reader_json.get("path", "/")
-                fileName = os.path.basename(reader_path)
-                col.setText(fileName)
+                col.setText(self._reader_display_name(c, memo))
             elif type == "int" and label == "Track":
                 # Find track display name
                 all_tracks = get_app().project.get("layers")
@@ -929,10 +1119,7 @@ class PropertiesModel(updates.UpdateInterface):
             elif type == "int":
                 col.setText("%d" % value)
             elif type == "reader":
-                reader_json = json.loads(property[1].get("memo") or "{}")
-                reader_path = reader_json.get("path", "/")
-                fileName = os.path.basename(reader_path)
-                col.setText("%s" % fileName)
+                col.setText(self._reader_display_name(c, property[1].get("memo")))
             else:
                 # Use numeric value
                 if value == "" or value is None:
@@ -1009,7 +1196,8 @@ class PropertiesModel(updates.UpdateInterface):
                 if len(all_raw_properties) == 1:
                     tracked_objects_raw_properties = raw_properties.pop('objects', None)
                     if tracked_objects_raw_properties:
-                        tracked_object_id = list(tracked_objects_raw_properties.keys())[0]
+                        tracked_object_id = self._resolve_tracked_object_id(
+                            raw_properties, tracked_objects_raw_properties)
                         tracked_object_properties = tracked_objects_raw_properties[tracked_object_id]
                         raw_properties.update(tracked_object_properties)
                 else:

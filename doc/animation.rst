@@ -69,7 +69,7 @@ To adjust the **interpolation mode**, right click on the small graph icon next t
    Constant                  Interpolated values stay the same until the next key frame, and jump to the new value. Icon: :guilabel:`Square`.
    ========================  ============
 
-| For more info on creating key frames for location, rotation, scale, shear, and location, see :ref:`clip_transform_ref`.
+| For more info on creating key frames for location, rotation, scale, shear, and origin, see :ref:`clip_transform_ref`.
 | For more info on preset animations, see :ref:`clip_presets_ref`.
 | For a full list of key frames, see :ref:`clip_properties_ref`.
 

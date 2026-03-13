@@ -77,20 +77,47 @@ file menu.
 
 .. image:: images/file-menu.jpg
 
-====================  ============
-File Context Option   Description
-====================  ============
-Import Files...       Import files into your project
-Thumbnail/Detail      Toggle the view between details and thumbnails
-Preview File          Preview a media file
-Split File            Split a file into many smaller files. The new trimmed files appear in the Project Files list.
-Edit Title            Edit an existing title SVG file
-Duplicate Title       Make a copy, and then edit the copied title SVG file
-Add to Timeline       Add many files to the timeline in one step, including transitions or alternating tracks.
-Choose Profile        Change the current project profile to match the selected file. If the file's profile does not match a known profile, it will give you the option to create a custom profile.
-File Properties       View the properties of a file, such as frame rate, size, etc...
-Remove from Project   Remove a file from the project
-====================  ============
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - File Context Option
+     - Description
+   * - Import Files...
+     - Import files into your project
+   * - Create with AI / Enhance with AI (Optional)
+     - AI menu actions for generating or enhancing media files. These options are shown only when AI is enabled and the selected file type supports the workflow. See :ref:`ai_ref`.
+   * - Details View
+     - Switch the Project Files panel to details view
+   * - Preview File
+     - Preview a media file
+   * - Split File
+     - Split a file into many smaller files. The new trimmed files appear in the Project Files list.
+   * - Export Files
+     - Export selected files (and split segments) to a destination folder
+   * - Add to Timeline
+     - Add many files to the timeline in one step, including transitions or alternating tracks.
+   * - Choose Profile
+     - Change the current project profile to match the selected file. If the file's profile does not match a known profile, it will give you the option to create a custom profile.
+   * - File Properties
+     - View the properties of a file, such as frame rate, size, etc...
+   * - Remove from Project
+     - Remove a file from the project
+   * - Edit Title
+     - Edit an existing title SVG file (shown when an SVG title is selected)
+   * - Duplicate Title
+     - Make a copy, and then edit the copied title SVG file (shown when an SVG title is selected)
+
+Preview File
+------------
+The :guilabel:`Preview File` action opens the Preview dialog for the
+selected file from :guilabel:`Project Files`. Simply double check a file to open this dialog.
+
+- Playback starts automatically.
+- Loop is enabled by default.
+- Press :kbd:`Space` to toggle play/pause.
+- Use the mouse scroll wheel to zoom in/out.
+- A :guilabel:`Reset Zoom` button appears when zoom is not 100%, and resets to 100%.
 
 .. _split_clip_ref:
 
@@ -128,8 +155,6 @@ NOTE: This will export each file or file segment using its **original video prof
 also supports any :ref:`split_clip_ref` (described above). For example, if you have split a long video file into
 many different segments (and named them), you can now export all the segments as separate video files (using the original
 file's video profile).
-
-.. image:: images/export-clips-dialog.jpg
 
 Add to Timeline
 ---------------
@@ -198,13 +223,6 @@ When you choose **File→Save As**, OpenShot copies these folders into your proj
 ``PROJECTNAME_Assets``. For example: ``MyProject_Assets/clipboard`` will contain any media you pasted from the clipboard.
 
 As part of this process, all paths inside your ``*.osp`` project file are updated to be **relative** to your project folder.
-This keeps everything self-contained and easy to move or back up as one folder.
-
-Cleanup behavior
-""""""""""""""""
-Starting a **new project** or opening an **existing project** clears the temporary ``.openshot_qt`` working folders so you begin
-with a clean slate. Your saved projects are not affected, and any assets previously copied into a ``PROJECTNAME_Assets`` folder
-remain in that project's directory.
 
 Missing Files
 -------------

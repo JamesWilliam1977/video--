@@ -26,18 +26,20 @@
 """
 
 import json
+import os
+import uuid
 from functools import partial
+from types import SimpleNamespace
 
 import openshot
-from qt_api import Qt, QRectF, QSize, QTimer, QPointF, QByteArray, pyqtSignal, QObject, QMetaMethod
-from qt_api import QT_API
+from qt_api import Qt, QRectF, QSize, QTimer, QPointF, QByteArray, pyqtSignal, pyqtSlot, QObject, QMetaMethod
 from qt_api import QtCore
-from qt_api import QtCore, QSignalTransition, pyqtSlot, QObject, QMetaMethod
 from qt_api import (
     QPainter,
     QCursor,
     QIcon,
     QColor,
+    QToolTip,
 )
 from qt_api import QSizePolicy, QWidget
 
@@ -63,6 +65,7 @@ from windows.views.menu import StyledContextMenu
 from classes.app import get_app
 from classes.query import Clip, Transition, File
 from classes.logger import log
+from classes.clip_utils import is_single_image_media
 from .thumbnails import TimelineThumbnailManager
 
 
@@ -211,6 +214,7 @@ class TimelineWidgetBase(QWidget):
 
         # Guard against re-entrant paintEvent calls
         self._in_paint_event = False
+        self._repaint_after_paint = False
 
         # Strong references to dynamically created state transitions
         self._transitions = []
@@ -241,6 +245,11 @@ class TimelineWidgetBase(QWidget):
         self._drag_moved = False
         self._drag_press_pos = None
         self._drag_threshold_met = False
+        self._last_click_pos = None          # (position, layer) stored for SHIFT+Click range selection
+        self._ctrl_just_selected_id = None   # ID of clip just CTRL-added; guards against double-click toggle
+        self._ctrl_just_selected_time = 0.0
+        self._ctrl_just_deselected_id = None # ID of clip just CTRL-removed; guards against double-click re-add
+        self._ctrl_just_deselected_time = 0.0
 
         # Resize / timing helpers
         self.enable_timing = False
@@ -272,6 +281,8 @@ class TimelineWidgetBase(QWidget):
         self.thumbnail_style = self._load_thumbnail_style()
         self.thumbnail_generation = 0
         self._suspend_thumbnail_requests = False
+        self._drag_preview_thumbnail_suspended = False
+        self._drag_preview_prev_thumb_suspend = False
         self.thumbnail_manager = TimelineThumbnailManager(self)
         self._viewport_thumbnail_reset_timer = QTimer(self)
         self._viewport_thumbnail_reset_timer.setSingleShot(True)
@@ -312,7 +323,6 @@ class TimelineWidgetBase(QWidget):
         self._preserve_overrides_once = False
         self._drag_payload = None
         self._drag_preview_items = []
-        self._drag_preview_type = None
         self._snap_ignore_ids = set()
         self._snap_keyframe_seconds = []
         self._snap_active_targets = {}
@@ -379,6 +389,8 @@ class TimelineWidgetBase(QWidget):
 
         # Effect icon hit targets (populated by the clip painter)
         self._effect_icon_rects = []
+        self._clip_text_rects = []
+        self._hover_tooltip_text = ""
 
         # Middle-mouse panning helpers
         self._middle_panning = False
@@ -415,6 +427,25 @@ class TimelineWidgetBase(QWidget):
             self.thumbnail_manager.clear_pending()
         if hasattr(self, "clip_painter"):
             self.clip_painter.expire_thumbnail_requests(self.thumbnail_generation)
+
+    def _set_drag_preview_thumbnail_suspension(self, enabled):
+        """Suspend thumbnail requests while preview items are being dragged."""
+        enabled = bool(enabled)
+        if enabled:
+            if self._drag_preview_thumbnail_suspended:
+                return
+            self._drag_preview_prev_thumb_suspend = bool(self._suspend_thumbnail_requests)
+            self._drag_preview_thumbnail_suspended = True
+            self._suspend_thumbnail_requests = True
+            if self.thumbnail_manager:
+                self.thumbnail_manager.clear_pending()
+            return
+
+        if not self._drag_preview_thumbnail_suspended:
+            return
+        self._drag_preview_thumbnail_suspended = False
+        self._suspend_thumbnail_requests = bool(self._drag_preview_prev_thumb_suspend)
+        self._drag_preview_prev_thumb_suspend = False
 
     @pyqtSlot(str, int, str, int)
     def _handle_thumbnail_ready(self, clip_id, frame, thumb_path, generation):
@@ -778,7 +809,7 @@ class TimelineWidgetBase(QWidget):
         if self._in_paint_event:
             log.warning("TimelineWidgetBase paintEvent skipped due to re-entrancy")
             event.accept()
-            self.update()
+            self._repaint_after_paint = True
             return
 
         self._in_paint_event = True
@@ -815,6 +846,7 @@ class TimelineWidgetBase(QWidget):
             self.keyframe_panel_painter.paint(painter, mode="underlay")
             self.clip_painter.paint(painter)
             self.transition_painter.paint(painter)
+            self._paint_drag_preview(painter)
             self.playback_cache_painter.paint(painter)
             self.keyframe_painter.paint(painter)
             self.track_painter.paint_names(painter)
@@ -829,6 +861,110 @@ class TimelineWidgetBase(QWidget):
             if painter.isActive():
                 painter.end()
             self._in_paint_event = False
+            if self._repaint_after_paint:
+                self._repaint_after_paint = False
+                QTimer.singleShot(0, self.update)
+
+    def _paint_drag_preview(self, painter):
+        """Paint transient drag previews without inserting real timeline items."""
+        if not self._drag_preview_items:
+            return
+        area = QRectF(
+            self.track_name_width,
+            self.ruler_height,
+            self.width() - self.track_name_width - self.scroll_bar_thickness,
+            self.height() - self.ruler_height - self.scroll_bar_thickness,
+        )
+        if area.width() <= 0.0 or area.height() <= 0.0:
+            return
+
+        painter.save()
+        painter.setClipRect(area)
+        for entry in self._drag_preview_items:
+            rect = self._preview_item_rect(entry)
+            if rect.isNull() or rect.width() <= 0.0 or rect.height() <= 0.0:
+                continue
+            model = self._preview_entry_model(entry)
+            if not model:
+                continue
+            if entry.get("type") == "transition":
+                result = self.transition_painter._transition_pixmap(rect, rect)
+                if not result:
+                    continue
+                pix, includes_start, includes_end = result
+                if pix:
+                    painter.drawPixmap(rect.topLeft(), pix)
+                self.transition_painter._stroke_visible_border(
+                    painter,
+                    rect,
+                    self.transition_painter.pen,
+                    includes_start=includes_start,
+                    includes_end=includes_end,
+                )
+            else:
+                self.clip_painter._draw_clip(
+                    painter,
+                    rect,
+                    rect,
+                    model,
+                    self.clip_painter.clip_pen,
+                    False,
+                )
+        painter.restore()
+
+    def _preview_entry_model(self, entry):
+        """Build and cache an in-memory preview model used by painters."""
+        if not isinstance(entry, dict):
+            return None
+        position = max(0.0, float(entry.get("position", 0.0) or 0.0))
+        duration = max(0.0, float(entry.get("duration", 0.0) or 0.0))
+        layer = entry.get("layer")
+        cached = entry.get("model")
+        if cached and hasattr(cached, "data") and isinstance(cached.data, dict):
+            cached.data["position"] = position
+            cached.data["layer"] = layer
+            cached.data["end"] = duration
+            cached.data["duration"] = duration
+            return cached
+
+        item_type = entry.get("type")
+        source_id = entry.get("source_id")
+
+        if item_type == "transition":
+            data = {
+                "id": f"preview-transition-{source_id}",
+                "layer": layer,
+                "position": position,
+                "start": 0.0,
+                "end": duration,
+            }
+            model = SimpleNamespace(id=data["id"], data=data)
+            entry["model"] = model
+            return model
+
+        file_obj = File.get(id=source_id)
+        file_data = file_obj.data if file_obj and isinstance(file_obj.data, dict) else {}
+        title = file_data.get("name") if isinstance(file_data, dict) else None
+        if not title and isinstance(file_data, dict):
+            path = file_data.get("path")
+            if isinstance(path, str):
+                title = path.rsplit("/", 1)[-1].rsplit("\\", 1)[-1]
+        data = {
+            "id": f"preview-clip-{source_id}",
+            "file_id": source_id,
+            "title": title or "Clip",
+            "layer": layer,
+            "position": position,
+            "start": 0.0,
+            "end": duration,
+            "duration": duration,
+            "effects": [],
+        }
+        if isinstance(file_data, dict):
+            data["reader"] = file_data
+        model = SimpleNamespace(id=data["id"], data=data)
+        entry["model"] = model
+        return model
 
     def closeEvent(self, event):
         """Ensure background threads stop when the widget closes."""
@@ -922,6 +1058,21 @@ class TimelineWidgetBase(QWidget):
     def dragEnterEvent(self, event):
         self._drag_payload = None
         mime = event.mimeData()
+
+        if mime.hasUrls():
+            urls = mime.urls()
+            payload = self._preimport_os_drop_urls(urls)
+            if payload:
+                self._drag_payload = payload
+                self.item_type = payload.get("type")
+                self.new_item = True
+                event.accept()
+                return
+            event.accept()
+            self.new_item = True
+            self.item_type = "os_drop"
+            self._drag_payload = {"type": "os_drop", "urls": urls}
+            return
         mime_html = mime.html()
 
         if mime_html:
@@ -958,7 +1109,7 @@ class TimelineWidgetBase(QWidget):
         if payload and payload.get("type") in {"clip", "transition"}:
             coords = self._event_seconds_track(event)
             if coords is None:
-                self._reset_drag_preview(delete_items=True)
+                self._reset_drag_preview()
                 return
             pos_seconds, track_num, _ = coords
             if not self._ensure_drag_preview(pos_seconds, track_num):
@@ -969,7 +1120,7 @@ class TimelineWidgetBase(QWidget):
                 return
             if payload and payload.get("type") == "os_drop":
                 return
-            self._reset_drag_preview(delete_items=True)
+            self._reset_drag_preview()
 
     def dropEvent(self, event):
         event.accept()
@@ -980,9 +1131,33 @@ class TimelineWidgetBase(QWidget):
 
         file_ids = []
         effect_names = []
+        os_drop_tid = None
         mime = event.mimeData()
         mime_html = mime.html()
-        if mime_html == "clip":
+        if mime.hasUrls():
+            payload = self._drag_payload or {}
+            if (
+                payload.get("type") == "clip"
+                and payload.get("source") == "os_drop"
+                and payload.get("ids")
+            ):
+                file_ids.extend(payload.get("ids") or [])
+                os_drop_tid = payload.get("transaction_id")
+                mime_html = "clip"
+            else:
+                urls = mime.urls()
+                # Wrap file import + clip creation + auto-transitions in a single
+                # transaction so a single Undo reverts everything.
+                os_drop_tid = str(uuid.uuid4())
+                self.win.files_model.process_urls(
+                    urls, import_quietly=True, prevent_image_seq=True,
+                    transaction_id=os_drop_tid,
+                )
+                # process_urls preserves our transaction when given a transaction_id
+                for uri in urls:
+                    for f in File.filter(path=uri.toLocalFile()):
+                        file_ids.append(f.id)
+        elif mime_html == "clip":
             try:
                 ids = json.loads(mime.text())
             except Exception:
@@ -1014,6 +1189,8 @@ class TimelineWidgetBase(QWidget):
                     file_ids.append(f.id)
 
         if not file_ids and not effect_names:
+            if os_drop_tid:
+                get_app().updates.transaction_id = None
             self._reset_drag_preview()
             return
 
@@ -1023,12 +1200,19 @@ class TimelineWidgetBase(QWidget):
         pos_seconds, track_num, _ = coords
         track_num = self._nearest_unlocked_track_number(track_num)
         if track_num is None:
+            if os_drop_tid:
+                get_app().updates.transaction_id = None
             self._reset_drag_preview()
             return
         pos = QPointF(pos_seconds, 0)
 
         if effect_names:
-            self._apply_effect_drop(effect_names, pos_seconds, track_num)
+            self._apply_effect_drop(
+                effect_names,
+                pos_seconds,
+                track_num,
+                drop_pos=event.pos(),
+            )
             self._reset_drag_preview()
             return
 
@@ -1045,25 +1229,45 @@ class TimelineWidgetBase(QWidget):
                 if item:
                     pos.setX(pos.x() + (item.get("end", 0.0) - item.get("start", 0.0)))
             else:
+                auto_transition = len(file_ids) == 1
                 clip = self.addClip(
                     fid,
                     pos,
                     track_num,
                     ignore_refresh=ignore_refresh,
                     call_manual_move=False,
+                    auto_transition=auto_transition,
                 )
                 if clip:
                     pos.setX(pos.x() + (clip.get("end", 0.0) - clip.get("start", 0.0)))
+
+        # Close the OS-drop transaction (file import + clip + auto-transition)
+        if os_drop_tid:
+            get_app().updates.transaction_id = None
+
+        # Auto-select newly added clips/transitions
+        self._select_added_items("transition" if mime_html == "transition" else "clip")
+
         self._reset_drag_preview()
 
     def dragLeaveEvent(self, event):
         event.accept()
-        self._reset_drag_preview(delete_items=True)
+        self._reset_drag_preview()
 
     def _ensure_drag_payload_from_event(self, event):
         if self._drag_payload:
             return self._drag_payload
         mime = event.mimeData()
+        if mime.hasUrls():
+            urls = mime.urls()
+            payload = self._preimport_os_drop_urls(urls)
+            if payload:
+                self._drag_payload = payload
+                self.item_type = payload.get("type")
+                self.new_item = True
+                return self._drag_payload
+            self._drag_payload = {"type": "os_drop", "urls": urls}
+            return self._drag_payload
         mime_html = mime.html()
         if mime_html in {"clip", "transition"}:
             try:
@@ -1111,21 +1315,52 @@ class TimelineWidgetBase(QWidget):
         pixels_per_second = float(self.pixels_per_second or 0.0)
         if pixels_per_second <= 0.0:
             return None
-        vertical_factor = float(self.vertical_factor or 0.0)
-        if vertical_factor <= 0.0:
-            return None
-        h_offset, v_offset = self._viewport_offsets()
-        x_pos = max(0.0, min(float(pos.x()), float(self.width())))
-        pos_seconds = (x_pos - self.track_name_width + h_offset) / pixels_per_second
+        h_offset = self._viewport_offsets()[0]
+        pos_seconds = (pos.x() - self.track_name_width + h_offset) / pixels_per_second
         pos_seconds = max(0.0, pos_seconds)
-        track_idx = int((pos.y() - self.ruler_height + v_offset) / vertical_factor)
-        if track_idx < 0 or track_idx >= len(self.track_list):
+        track_idx = self._track_index_at_viewport_y(
+            pos.y(),
+            prefer_clip_lane=True,
+            snap_to_nearest=True,
+        )
+        if track_idx is None:
             return None
         track_idx = self._nearest_unlocked_track_index(track_idx)
         if track_idx is None:
             return None
         track_num = self.track_list[track_idx].data.get("number")
         return pos_seconds, track_num, track_idx
+
+    def _track_index_at_viewport_y(self, y, *, prefer_clip_lane=True, snap_to_nearest=True):
+        """Resolve a viewport Y coordinate to the closest track index."""
+        self.geometry.ensure()
+        if not self.track_list:
+            return None
+
+        lane_height = float(self.vertical_factor or 0.0)
+        closest_idx = None
+        closest_dist = None
+        y_pos = float(y)
+
+        for idx, (track_rect, _track, _name_rect) in enumerate(self.geometry.iter_tracks()):
+            top = float(track_rect.y())
+            height = float(track_rect.height())
+            if prefer_clip_lane and lane_height > 0.0:
+                height = min(height, lane_height)
+            if height <= 0.0:
+                continue
+            bottom = top + height
+            if top <= y_pos <= bottom:
+                return idx
+            center = top + (height / 2.0)
+            dist = abs(y_pos - center)
+            if closest_dist is None or dist < closest_dist:
+                closest_dist = dist
+                closest_idx = idx
+
+        if snap_to_nearest:
+            return closest_idx
+        return None
 
     def _is_track_locked(self, track_num):
         normalized = self.normalize_track_number(track_num)
@@ -1209,18 +1444,13 @@ class TimelineWidgetBase(QWidget):
         left_px = self.track_name_width + seconds * pixels_per_second - h_offset
         width_px = max(0.0, duration) * pixels_per_second
 
-        ignore_ids = {
-            getattr(entry.get("model"), "id", None)
-            for entry in self._drag_preview_items
-        }
-
         original_bbox = getattr(self, "drag_bbox", QRectF())
         original_ignore = getattr(self, "_snap_ignore_ids", set())
         preview_bbox = QRectF(left_px, original_bbox.y(), width_px, original_bbox.height())
         if preview_bbox.height() <= 0.0:
             preview_bbox.setHeight(self.vertical_factor or 1.0)
         try:
-            self._snap_ignore_ids = {obj_id for obj_id in ignore_ids if obj_id is not None}
+            self._snap_ignore_ids = set()
             self.drag_bbox = preview_bbox
             delta = self.snap.snap_dx(0.0)
         finally:
@@ -1230,6 +1460,93 @@ class TimelineWidgetBase(QWidget):
         snapped = seconds + float(delta)
         snapped = max(0.0, snapped)
         return self._snap_time(snapped)
+
+    def _preview_clip_duration(self, file_id):
+        """Return clip duration (seconds) used for drag preview sizing."""
+        fps = float(self.fps_float or 0.0)
+        if fps <= 0.0:
+            fps = 24.0
+        frame_sec = 1.0 / fps
+
+        file_obj = File.get(id=file_id)
+        if not file_obj:
+            return frame_sec
+        data = file_obj.data if isinstance(file_obj.data, dict) else {}
+        reader = data if isinstance(data, dict) else {}
+        start_value = data.get("start", 0.0)
+        try:
+            start_sec = float(start_value)
+        except (TypeError, ValueError):
+            start_sec = 0.0
+        start_sec = self._snap_time(start_sec)
+
+        duration_value = data.get("duration")
+        if duration_value is None:
+            duration_value = reader.get("duration")
+        try:
+            duration_sec = float(duration_value or 0.0)
+        except (TypeError, ValueError):
+            duration_sec = 0.0
+
+        default_img_len = get_app().get_settings().get("default-image-length") or 10.0
+        if is_single_image_media(reader):
+            duration_sec = float(default_img_len)
+
+        end_override = data.get("end")
+        if end_override is not None:
+            try:
+                end_sec = float(end_override)
+            except (TypeError, ValueError):
+                end_sec = start_sec
+            end_sec = self._snap_time(end_sec)
+            duration_sec = max(0.0, end_sec - start_sec)
+        else:
+            if duration_sec <= 0.0:
+                duration_sec = frame_sec
+            duration_sec = max(frame_sec, self._snap_time(duration_sec))
+        return max(frame_sec, duration_sec)
+
+    def _preview_transition_duration(self):
+        fps = float(self.fps_float or 0.0)
+        if fps <= 0.0:
+            fps = 24.0
+        duration = get_app().get_settings().get("default-transition-length")
+        try:
+            duration = float(duration or 0.0)
+        except (TypeError, ValueError):
+            duration = 0.0
+        if duration <= 0.0:
+            duration = 1.0 / fps
+        return max(1.0 / fps, self._snap_time(duration))
+
+    def _preview_item_rect(self, entry):
+        if not isinstance(entry, dict):
+            return QRectF()
+        pps = float(self.pixels_per_second or 0.0)
+        if pps <= 0.0:
+            return QRectF()
+        position = float(entry.get("position", 0.0) or 0.0)
+        duration = max(0.0, float(entry.get("duration", 0.0) or 0.0))
+        layer = entry.get("layer")
+        layer_norm = self.normalize_track_number(layer)
+        track_rect = QRectF()
+        self.geometry.ensure()
+        for rect, track, _name_rect in self.geometry.iter_tracks():
+            track_num = self.normalize_track_number((track.data if isinstance(track.data, dict) else {}).get("number"))
+            if track_num == layer_norm:
+                track_rect = QRectF(rect)
+                break
+        if track_rect.isNull():
+            return QRectF()
+        h_offset = self._viewport_offsets()[0]
+        x = self.track_name_width + (position * pps) - h_offset
+        width = max(1.0, duration * pps)
+        return QRectF(
+            x,
+            track_rect.y(),
+            width,
+            max(1.0, float(self.vertical_factor or 1.0)),
+        )
 
     def _ensure_drag_preview(self, pos_seconds, track_num):
         if self._drag_preview_items:
@@ -1246,51 +1563,35 @@ class TimelineWidgetBase(QWidget):
         track_num = self._nearest_unlocked_track_number(track_num)
         if track_num is None:
             return False
+        self._set_drag_preview_thumbnail_suspension(True)
         preview_items = []
         current_start = pos_seconds
-        for idx, source_id in enumerate(ids):
-            ignore_refresh = idx < len(ids) - 1
-            if payload.get("type") == "transition":
-                item = self.addTransition(
-                    source_id,
-                    QPointF(current_start, 0),
-                    track_num,
-                    ignore_refresh=ignore_refresh,
-                    call_manual_move=False,
-                )
-                if not item:
-                    continue
-                model = Transition.get(id=item.get("id"))
-                duration = max(0.0, float(item.get("end", 0.0)) - float(item.get("start", 0.0)))
+        preview_type = payload.get("type")
+        if preview_type not in {"clip", "transition"}:
+            self._set_drag_preview_thumbnail_suspension(False)
+            return False
+        for source_id in ids:
+            if preview_type == "transition":
+                duration = self._preview_transition_duration()
             else:
-                item = self.addClip(
-                    source_id,
-                    QPointF(current_start, 0),
-                    track_num,
-                    ignore_refresh=ignore_refresh,
-                    call_manual_move=False,
-                )
-                if not item:
-                    continue
-                model = Clip.get(id=item.get("id"))
-                duration = max(0.0, float(item.get("end", 0.0)) - float(item.get("start", 0.0)))
-            if not model:
-                continue
+                duration = self._preview_clip_duration(source_id)
             offset = current_start - pos_seconds
             preview_items.append({
-                "model": model,
+                "type": preview_type,
+                "source_id": source_id,
                 "offset": offset,
                 "duration": duration,
+                "position": current_start,
+                "layer": track_num,
             })
-            self.item_ids.append(model.id)
             current_start += duration
 
         if not preview_items:
+            self._set_drag_preview_thumbnail_suspension(False)
             return False
 
         self._drag_preview_items = preview_items
-        self._drag_preview_type = payload.get("type")
-        self.geometry.mark_dirty()
+        self.drag_bbox = self._compute_preview_bbox()
         self.update()
         return True
 
@@ -1307,16 +1608,10 @@ class TimelineWidgetBase(QWidget):
         )
         group_duration = max(0.0, max_end - min_offset)
         snapped_start = self._snap_new_item_start(pos_seconds, group_duration)
-        total = len(self._drag_preview_items)
-        for idx, entry in enumerate(self._drag_preview_items):
-            model = entry.get("model")
-            if not model:
-                continue
+        for entry in self._drag_preview_items:
             new_pos = max(0.0, snapped_start + entry.get("offset", 0.0))
-            model.data["position"] = new_pos
-            model.data["layer"] = track_num
-            rect = self.geometry.calc_item_rect(model)
-            self.geometry.update_item_rect(model, rect)
+            entry["position"] = new_pos
+            entry["layer"] = track_num
         self.drag_bbox = self._compute_preview_bbox()
         self._keyframes_dirty = True
         self.update()
@@ -1326,12 +1621,9 @@ class TimelineWidgetBase(QWidget):
             return QRectF()
         rects = []
         for entry in self._drag_preview_items:
-            model = entry.get("model")
-            if not model:
-                continue
-            rect = self.geometry.calc_item_rect(model, viewport=True)
-            if rect:
-                rects.append(QRectF(rect))
+            rect = self._preview_item_rect(entry)
+            if not rect.isNull():
+                rects.append(rect)
         if not rects:
             return QRectF()
         bbox = QRectF(rects[0])
@@ -1339,28 +1631,32 @@ class TimelineWidgetBase(QWidget):
             bbox = bbox.united(rect)
         return bbox
 
-    def _reset_drag_preview(self, delete_items=False):
-        deleted_any = False
-        if delete_items and self._drag_preview_items:
-            for entry in self._drag_preview_items:
-                model = entry.get("model")
-                if isinstance(model, Clip) or isinstance(model, Transition):
-                    try:
-                        model.delete()
-                        deleted_any = True
-                    except Exception:
-                        pass
+    def _select_added_items(self, item_type):
+        """Auto-select items just added via drag-and-drop."""
+        if not getattr(self, "item_ids", None):
+            return
+        for idx, item_id in enumerate(self.item_ids):
+            self.win.addSelection(str(item_id), item_type, clear_existing=(idx == 0))
+        # A timeline drop should leave timeline items as the sole active selection,
+        # so Delete removes the new clip/transition and not project files.
+        files_model = getattr(self.win, "files_model", None)
+        if files_model:
+            files_model.selection_model.clearSelection()
+            files_model.list_selection_model.clearSelection()
+        self.setFocus(Qt.OtherFocusReason)
+        # Geometry was already rebuilt by changed() before the selection was
+        # set, so mark it dirty so the next repaint reflects the new state.
+        self.geometry.mark_dirty()
+
+    def _reset_drag_preview(self):
+        self._set_drag_preview_thumbnail_suspension(False)
         self._drag_preview_items = []
-        self._drag_preview_type = None
         self._drag_payload = None
         if hasattr(self, "item_ids"):
             self.item_ids = []
         self.new_item = False
         self.item_type = None
         self.drag_bbox = QRectF()
-        if deleted_any:
-            self._update_project_duration()
-        self.geometry.mark_dirty()
         self.update()
 
     def _finalize_drag_preview(self):
@@ -1368,39 +1664,105 @@ class TimelineWidgetBase(QWidget):
         if not total:
             self._reset_drag_preview()
             return
-        for idx, entry in enumerate(self._drag_preview_items):
-            model = entry.get("model")
-            if not model:
-                continue
-            ignore_refresh = idx < total - 1
-            if isinstance(model, Transition):
-                data = dict(model.data) if isinstance(model.data, dict) else {}
-                data["_auto_direction"] = True
-                self.update_transition_data(
-                    data,
-                    only_basic_props=False,
-                    ignore_refresh=ignore_refresh,
-                )
-            else:
-                data = dict(model.data) if isinstance(model.data, dict) else {}
-                if total == 1:
-                    data["_auto_transition"] = True
-                self.update_clip_data(
-                    data,
-                    only_basic_props=False,
-                    ignore_reader=True,
-                    ignore_refresh=ignore_refresh,
-                )
+        payload = self._drag_payload or {}
+        drag_transaction_id = payload.get("transaction_id")
+        if drag_transaction_id:
+            get_app().updates.transaction_id = drag_transaction_id
+        committed_any = False
+        try:
+            for idx, entry in enumerate(self._drag_preview_items):
+                source_id = entry.get("source_id")
+                if source_id is None:
+                    continue
+                track_num = self.normalize_track_number(entry.get("layer"))
+                if track_num is None:
+                    continue
+                position = max(0.0, float(entry.get("position", 0.0) or 0.0))
+                ignore_refresh = idx < total - 1
+                if entry.get("type") == "transition":
+                    transition = self.addTransition(
+                        source_id,
+                        QPointF(position, 0),
+                        track_num,
+                        ignore_refresh=ignore_refresh,
+                        call_manual_move=False,
+                    )
+                    if transition is None:
+                        log.warning("Deferred transition drop failed for path: %s", source_id)
+                        continue
+                    committed_any = True
+                else:
+                    auto_transition = total == 1
+                    clip = self.addClip(
+                        source_id,
+                        QPointF(position, 0),
+                        track_num,
+                        ignore_refresh=ignore_refresh,
+                        call_manual_move=False,
+                        auto_transition=auto_transition,
+                    )
+                    if clip is not None:
+                        committed_any = True
+        finally:
+            if drag_transaction_id:
+                get_app().updates.transaction_id = None
+
+        # Auto-select newly added clips/transitions
+        preview_type = "clip"
+        if self._drag_preview_items and self._drag_preview_items[0].get("type") == "transition":
+            preview_type = "transition"
+        self._select_added_items(preview_type)
+
         self._update_project_duration()
         self._drag_preview_items = []
-        self._drag_preview_type = None
         self._drag_payload = None
+        self._set_drag_preview_thumbnail_suspension(False)
         if hasattr(self, "item_ids"):
             self.item_ids = []
         self.new_item = False
         self.item_type = None
-        self.changed(None)
+        if committed_any:
+            self.changed(None)
         self.update()
+
+    def _preimport_os_drop_urls(self, urls):
+        """Pre-import OS-dropped files so timeline drag preview can render clip shapes."""
+        local_file_urls = []
+        for uri in urls or []:
+            if not uri.isLocalFile():
+                return None
+            local_path = uri.toLocalFile()
+            if not local_path or not os.path.isfile(local_path):
+                return None
+            local_file_urls.append(uri)
+        if not local_file_urls:
+            return None
+
+        os_drop_tid = str(uuid.uuid4())
+        self.win.files_model.process_urls(
+            local_file_urls,
+            import_quietly=True,
+            prevent_image_seq=True,
+            transaction_id=os_drop_tid,
+        )
+        # The caller-provided transaction remains active; close it now and
+        # reopen only when committing clip creation on drop.
+        get_app().updates.transaction_id = None
+
+        file_ids = []
+        for uri in local_file_urls:
+            for f in File.filter(path=uri.toLocalFile()):
+                file_ids.append(f.id)
+        if not file_ids:
+            return None
+
+        return {
+            "type": "clip",
+            "ids": file_ids,
+            "source": "os_drop",
+            "urls": local_file_urls,
+            "transaction_id": os_drop_tid,
+        }
 
 
 
@@ -1853,6 +2215,19 @@ class TimelineWidgetBase(QWidget):
         self._keyframes_dirty = True
         self.update()
 
+    def _deselect_timeline_item(self, item_id, item_type):
+        """Remove a single item from the selection."""
+        if item_id is None or not item_type:
+            return
+        item_id_str = str(item_id)
+        if not item_id_str:
+            return
+        self.win.removeSelection(item_id_str, item_type)
+        self.clip_painter.clear_cache()
+        self.geometry.mark_dirty()
+        self._keyframes_dirty = True
+        self.update()
+
     def select_all_items(self):
         """Select all clips and transitions currently laid out on the timeline."""
         self.geometry.ensure()
@@ -1931,6 +2306,106 @@ class TimelineWidgetBase(QWidget):
             width,
             height,
         )
+
+    def _set_hover_tooltip(self, text):
+        text = str(text or "")
+        if text == self._hover_tooltip_text:
+            return
+        self._hover_tooltip_text = text
+        self.setToolTip(text)
+        if not text:
+            QToolTip.hideText()
+
+    def _clip_text_at(self, pos):
+        for entry in reversed(self._clip_text_rects):
+            rect = entry.get("rect") if isinstance(entry, dict) else None
+            if isinstance(rect, QRectF) and rect.contains(pos):
+                return entry
+        return None
+
+    def _transition_at(self, pos):
+        for rect, tran, _selected in self.geometry.iter_transitions(reverse=True):
+            if rect.contains(pos):
+                return tran
+        return None
+
+    def _transition_label(self, tran):
+        data = tran.data if isinstance(getattr(tran, "data", None), dict) else {}
+        title = str(data.get("title", "") or "").strip()
+        if title and title.lower() != "transition":
+            return title
+        reader = data.get("reader") if isinstance(data.get("reader"), dict) else {}
+        path = str(reader.get("path", "") or "").strip()
+        if path:
+            base = os.path.basename(path)
+            stem, ext = os.path.splitext(base)
+            image_exts = {".svg", ".png", ".jpg", ".jpeg", ".bmp", ".webp"}
+            if ext.lower() in image_exts and stem:
+                return stem.replace("_", " ")
+            return base
+        tran_type = str(data.get("type", "") or "").strip()
+        if tran_type:
+            return tran_type
+        return title
+
+    def _effect_label(self, effect):
+        if not isinstance(effect, dict):
+            return ""
+        for key in ("name", "type", "effect", "class_name"):
+            value = str(effect.get(key, "") or "").strip()
+            if value:
+                return value
+        return ""
+
+    def _track_button_tooltip(self, button):
+        if not isinstance(button, dict):
+            return ""
+        key = str(button.get("key", "") or "")
+        track = button.get("track")
+        _ = get_app()._tr
+        if key == "lock-toggle":
+            locked = bool(getattr(track, "data", {}).get("lock")) if track else False
+            return _("Unlock track") if locked else _("Lock track")
+        if key == "keyframe-panel":
+            track_num = button.get("track_num")
+            enabled = bool(self._track_panel_enabled.get(track_num, False))
+            return _("Hide keyframes") if enabled else _("Show keyframes")
+        return ""
+
+    def _hover_tooltip_for_pos(self, pos):
+        _ = get_app()._tr
+        button = self._track_toolbar_button_at(pos)
+        if button:
+            return self._track_button_tooltip(button)
+
+        icon_entry = self._effect_icon_at(pos)
+        if isinstance(icon_entry, dict):
+            effect_label = self._effect_label(icon_entry.get("effect"))
+            if effect_label:
+                return _("Effect: %s") % effect_label
+            return _("Effect")
+
+        tran = self._transition_at(pos)
+        if tran is not None:
+            label = self._transition_label(tran)
+            if label:
+                return _("Transition: %s") % label
+            return _("Transition")
+
+        entry = self._clip_text_at(pos)
+        if not isinstance(entry, dict):
+            return ""
+        title = str(entry.get("title", "") or "").strip()
+        if not title:
+            clip_obj = entry.get("clip")
+            if clip_obj and isinstance(getattr(clip_obj, "data", None), dict):
+                title = str(clip_obj.data.get("title", "") or "").strip()
+        if not title:
+            title = _("Clip")
+        return _("Clip: %s") % title
+
+    def _update_hover_tooltip(self, pos):
+        self._set_hover_tooltip(self._hover_tooltip_for_pos(pos))
 
     def _marker_identifier(self, entry):
         if not isinstance(entry, dict):
@@ -2151,6 +2626,17 @@ class TimelineWidgetBase(QWidget):
 
         self.unsetCursor()
 
+    def mouseDoubleClickEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.geometry.ensure()
+            pos = event.pos()
+            for rect, item, _selected, _type in self.geometry.iter_items(reverse=True):
+                if rect.contains(pos):
+                    self.win.actionProperties.trigger()
+                    event.accept()
+                    return
+        super().mouseDoubleClickEvent(event)
+
     def mousePressEvent(self, event):
         self._press_marker = None
         posf = _event_posf(event)
@@ -2215,6 +2701,7 @@ class TimelineWidgetBase(QWidget):
         self.events.pressed.emit(event)
 
     def leaveEvent(self, event):
+        self._set_hover_tooltip("")
         if self._toolbar_hover_key is not None or self._toolbar_pressed_inside:
             self._toolbar_hover_key = None
             if self._toolbar_pressed_key:
@@ -2306,6 +2793,8 @@ class TimelineWidgetBase(QWidget):
         add_button = self._panel_add_button_at(pos)
         if add_button:
             self._press_hit = "panel-add"
+            add_button = dict(add_button)
+            add_button["modifiers"] = modifiers
             self._panel_press_info = add_button
             return
         panel_marker = self._panel_marker_at(pos)
@@ -2380,6 +2869,7 @@ class TimelineWidgetBase(QWidget):
         posf = _event_posf(event)
 
         if self.scroll_bar_dragging:
+            self._set_hover_tooltip("")
             view_w = self.scrollbar_position[3] or 1.0
             width_norm = self.scrollbar_position_previous[1] - self.scrollbar_position_previous[0]
             handle_w = width_norm * view_w
@@ -2400,6 +2890,7 @@ class TimelineWidgetBase(QWidget):
             return
 
         if self.v_scroll_bar_dragging:
+            self._set_hover_tooltip("")
             view_h = self.v_scrollbar_position[3] or 1.0
             height_norm = self.v_scrollbar_position_previous[1] - self.v_scrollbar_position_previous[0]
             handle_h = height_norm * view_h
@@ -2420,9 +2911,15 @@ class TimelineWidgetBase(QWidget):
             self._updateMiddlePan(posf)
             return
 
+        if self.dragging_playhead:
+            self._set_hover_tooltip("")
+            self.events.moved.emit(event)
+            return
+
         if self._toolbar_pressed_key:
             self._update_toolbar_pressed_state(posf)
         self._update_toolbar_hover(posf)
+        self._update_hover_tooltip(posf)
 
         self._updateCursor(posf)
         self.events.moved.emit(event)
@@ -2553,9 +3050,8 @@ class TimelineWidgetBase(QWidget):
     def _panel_show_property_menu_at(self, pos):
         lane = self._panel_lane_at(pos)
         if not lane:
-            return False
-        label_rect = lane.get("label_rect")
-        if not isinstance(label_rect, QRectF) or not label_rect.contains(pos):
+            lane = self._panel_lane_for_label_gap(pos)
+        if not lane:
             return False
         track_num = lane.get("track")
         key = self.normalize_track_number(track_num) if track_num is not None else None
@@ -2563,29 +3059,26 @@ class TimelineWidgetBase(QWidget):
             return False
         info = self._panel_properties.get(key)
         if not isinstance(info, dict):
-            return False
-        if info.get("item_type") == "multi":
-            return False
-        available = info.get("available_properties") or []
-        if not available:
-            return False
-
-        item_id = info.get("item_id", "")
+            info = {}
         item_type = info.get("item_type")
-        manual_entry = self._panel_manual_properties.get(key)
-        if (
-            not manual_entry
-            or manual_entry.get("item_id") != item_id
-            or manual_entry.get("item_type") != item_type
-        ):
-            manual_entry = {"item_id": item_id, "item_type": item_type, "properties": set()}
-        else:
-            manual_entry = {
-                "item_id": manual_entry.get("item_id", ""),
-                "item_type": manual_entry.get("item_type"),
-                "properties": set(manual_entry.get("properties") or []),
-            }
-        self._panel_manual_properties[key] = manual_entry
+        available = info.get("available_properties") or []
+        item_id = info.get("item_id", "")
+
+        if item_id or item_type:
+            manual_entry = self._panel_manual_properties.get(key)
+            if (
+                not manual_entry
+                or manual_entry.get("item_id") != item_id
+                or manual_entry.get("item_type") != item_type
+            ):
+                manual_entry = {"item_id": item_id, "item_type": item_type, "properties": set()}
+            else:
+                manual_entry = {
+                    "item_id": manual_entry.get("item_id", ""),
+                    "item_type": manual_entry.get("item_type"),
+                    "properties": set(manual_entry.get("properties") or []),
+                }
+            self._panel_manual_properties[key] = manual_entry
 
         available_sorted = sorted(
             (entry for entry in available if isinstance(entry, dict)),
@@ -2598,29 +3091,89 @@ class TimelineWidgetBase(QWidget):
         }
         title = get_app()._tr("Keyframe Properties")
         menu = StyledContextMenu(title=title, parent=self)
-        handled = False
-        for entry in available_sorted:
-            key_name = entry.get("key")
-            if key_name is None:
-                continue
-            key_str = str(key_name)
-            label = entry.get("display_name") or key_str
-            action = menu.addAction(label)
-            if key_str in visible_keys:
-                action.setEnabled(False)
-                action.setCheckable(True)
-                action.setChecked(True)
-                continue
-            action.triggered.connect(partial(self._panel_add_visible_property, key, key_str))
-            handled = True
+        if item_type == "multi":
+            visible_multi_keys = {
+                str(prop.get("key"))
+                for prop in (info.get("properties") or [])
+                if isinstance(prop, dict) and prop.get("key") is not None and not prop.get("placeholder")
+            }
+            for entry in available_sorted:
+                key_name = entry.get("key")
+                if key_name is None:
+                    continue
+                key_str = str(key_name)
+                label = entry.get("display_name") or key_str
+                if not label:
+                    continue
+                action = menu.addAction(label)
+                if key_str in visible_multi_keys:
+                    action.setEnabled(False)
+                    action.setCheckable(True)
+                    action.setChecked(True)
+                else:
+                    action.triggered.connect(partial(self._panel_add_visible_property, key, key_str))
+        else:
+            for entry in available_sorted:
+                key_name = entry.get("key")
+                if key_name is None:
+                    continue
+                key_str = str(key_name)
+                label = entry.get("display_name") or key_str
+                action = menu.addAction(label)
+                if key_str in visible_keys:
+                    action.setEnabled(False)
+                    action.setCheckable(True)
+                    action.setChecked(True)
+                    continue
+                action.triggered.connect(partial(self._panel_add_visible_property, key, key_str))
 
         if not menu.actions():
-            placeholder = menu.addAction(get_app()._tr("No keyframe properties available"))
+            message = get_app()._tr("No keyframes are avaialble")
+            placeholder = menu.addAction(message)
             placeholder.setEnabled(False)
 
         global_pos = self.mapToGlobal(pos)
         menu.exec_(global_pos)
-        return handled or bool(menu.actions())
+        return bool(menu.actions())
+
+    def _panel_lane_for_label_gap(self, pos):
+        """
+        Resolve clicks in tiny vertical gaps between panel rows to the nearest
+        row on the same track within the full keyframe panel band.
+        """
+        self.geometry.ensure()
+        for _track_rect, track, name_rect in self.geometry.iter_tracks():
+            track_num = self.normalize_track_number(track.data.get("number"))
+            panel_rect = self.geometry.panel_rect(track_num)
+            if not panel_rect or panel_rect.height() <= 0.0:
+                continue
+            full_panel_band = QRectF(
+                name_rect.x(),
+                panel_rect.y(),
+                name_rect.width() + panel_rect.width(),
+                panel_rect.height(),
+            )
+            if not full_panel_band.contains(pos):
+                continue
+
+            nearest_lane = None
+            nearest_dist = None
+            y_pos = float(pos.y())
+            for lane in (self._iter_panel_lanes() or []):
+                if self.normalize_track_number(lane.get("track")) != track_num:
+                    continue
+                label_rect = lane.get("label_rect")
+                if not isinstance(label_rect, QRectF):
+                    continue
+                center_y = float(label_rect.center().y())
+                dist = abs(y_pos - center_y)
+                if nearest_dist is None or dist < nearest_dist:
+                    nearest_dist = dist
+                    nearest_lane = lane
+            if nearest_lane:
+                return nearest_lane
+            return None
+        return None
 
     def _panel_add_visible_property(self, track_num, prop_key):
         key = self.normalize_track_number(track_num) if track_num is not None else None
@@ -2628,8 +3181,6 @@ class TimelineWidgetBase(QWidget):
             return False
         info = self._panel_properties.get(key)
         if not isinstance(info, dict):
-            return False
-        if info.get("item_type") == "multi":
             return False
         available = info.get("available_properties") or []
         available_map = {
@@ -2756,14 +3307,18 @@ class TimelineWidgetBase(QWidget):
         # Transition context menu (prioritized over clips)
         for rect, tran, _selected in self.geometry.iter_transitions(reverse=True):
             if rect.contains(pos) and hasattr(self.win, "timeline"):
-                self._select_timeline_item(tran.id, "transition", True)
+                # Preserve multi-selection on right-click when target is already selected.
+                if not _selected:
+                    self._select_timeline_item(tran.id, "transition", True)
                 self.win.timeline.ShowTransitionMenu(tran.id)
                 return True
 
         # Clip context menu
         for rect, clip, _selected in self.geometry.iter_clips(reverse=True):
             if rect.contains(pos) and hasattr(self.win, "timeline"):
-                self._select_timeline_item(clip.id, "clip", True)
+                # Preserve multi-selection on right-click when target is already selected.
+                if not _selected:
+                    self._select_timeline_item(clip.id, "clip", True)
                 self.win.timeline.ShowClipMenu(clip.id)
                 return True
 
