@@ -30,7 +30,13 @@ import sys
 import functools
 import math
 
-from qt_api import *
+from qt_api import Qt, QRectF, QPointF, QSize, QTimer, pyqtSignal
+from qt_api import QIcon, QPainter, QColor, QPen, QBrush, QKeySequence
+from qt_api import (
+    QDialog, QSlider, QStyleOptionSlider, QStyle, QShortcut, QSizePolicy,
+    QPushButton, QHBoxLayout, QLabel, QMessageBox, QDialogButtonBox,
+    QButtonGroup, QToolButton,
+)
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes import info, ui_util, time_parts, qt_types, updates
