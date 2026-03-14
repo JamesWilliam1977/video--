@@ -622,6 +622,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             "start": transition_details["start"],
             "end": transition_details["end"],
             "reader": reader_data,
+            "fade_audio_hint": True,
             "replace_image": False
         }
         self._set_transition_mask_defaults(transitions_data)
@@ -846,8 +847,13 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         tran_left = position
         tran_right = position + duration
         tran_mid = (tran_left + tran_right) / 2.0
+        fps = get_app().project.get("fps")
+        fps_float = float(fps["num"]) / float(fps["den"])
+        edge_tolerance = (0.5 / fps_float) if fps_float > 0 else 0.01
 
-        best_match = None
+        edge_matches = set()
+        overlap_candidates = []
+
         for clip in Clip.filter(layer=layer):
             clip_data = clip.data if isinstance(clip.data, dict) else {}
             try:
@@ -866,14 +872,39 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             if overlap <= 0.0:
                 continue
 
+            if abs(tran_left - clip_left) <= edge_tolerance:
+                edge_matches.add("left")
+            if abs(tran_right - clip_right) <= edge_tolerance:
+                edge_matches.add("right")
+
             clip_mid = (clip_left + clip_right) / 2.0
             side = "left" if tran_mid <= clip_mid else "right"
             edge_dist = abs(tran_mid - (clip_left if side == "left" else clip_right))
-            score = (-overlap, edge_dist)
-            if best_match is None or score < best_match[0]:
-                best_match = (score, side)
+            overlap_candidates.append(((-overlap, edge_dist), side))
 
-        return best_match[1] if best_match else None
+        if len(edge_matches) == 1:
+            return edge_matches.pop()
+        if len(edge_matches) > 1:
+            # In a standard overlap, the transition touches the end of the
+            # outgoing clip and the start of the incoming clip. This overlap
+            # should fade in the second clip, which maps to the left-side
+            # orientation in the current brightness-curve logic.
+            return "left"
+        if not overlap_candidates:
+            return None
+
+        overlap_candidates.sort(key=lambda candidate: candidate[0])
+        best_score, best_side = overlap_candidates[0]
+
+        # Equal left/right scores happen on exact overlaps between two adjacent
+        # clips. Preserve the "fade in the second clip" behavior.
+        if len(overlap_candidates) > 1 and overlap_candidates[1][0] == best_score:
+            tied_sides = {best_side, overlap_candidates[1][1]}
+            if "left" in tied_sides:
+                return "left"
+            return best_side
+
+        return best_side
 
     def _auto_orient_transition_keyframes(self, transition_data):
         """Apply fade-in orientation on left-edge drops (right edge keeps default orientation)."""
