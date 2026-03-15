@@ -32,6 +32,7 @@ import threading
 import types
 import unittest
 import zipfile
+from contextlib import ExitStack
 from datetime import datetime, timedelta
 from unittest.mock import patch
 
@@ -263,10 +264,13 @@ class MainWindowTests(unittest.TestCase):
                 manage_recovery_files=lambda daily, historical, name: managed.append((daily, historical, name))
             )
 
-            with (
-                patch.object(self.main_window_module.info, "RECOVERY_PATH", recovery_dir),
-                patch.object(self.main_window_module, "time", lambda: 1234567890),
-            ):
+            with ExitStack() as stack:
+                stack.enter_context(
+                    patch.object(self.main_window_module.info, "RECOVERY_PATH", recovery_dir)
+                )
+                stack.enter_context(
+                    patch.object(self.main_window_module, "time", lambda: 1234567890)
+                )
                 self.main_window_module.MainWindow.save_recovery(fake_window, project_path)
 
             zip_path = os.path.join(recovery_dir, "1234567890-demo.zip")
@@ -334,15 +338,24 @@ class MainWindowTests(unittest.TestCase):
             ignore=lambda: event_calls.append("ignore"),
         )
 
-        with (
-            patch.object(
-                self.main_window_module.QMessageBox,
-                "question",
-                return_value=self.main_window_module.QMessageBox.Yes,
-            ),
-            patch.object(self.main_window_module, "track_metric_session", lambda value: tracker.append(value)),
-            patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(
+                    self.main_window_module.QMessageBox,
+                    "question",
+                    return_value=self.main_window_module.QMessageBox.Yes,
+                )
+            )
+            stack.enter_context(
+                patch.object(
+                    self.main_window_module,
+                    "track_metric_session",
+                    lambda value: tracker.append(value),
+                )
+            )
+            stack.enter_context(
+                patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None)
+            )
             self.main_window_module.MainWindow.closeEvent(fake_window, event)
 
         self.assertEqual(event_calls, ["accept"])
@@ -374,15 +387,20 @@ class MainWindowTests(unittest.TestCase):
         self.app.logger_libopenshot = None
         event = types.SimpleNamespace(accept=lambda: None, ignore=lambda: None)
 
-        with (
-            patch.object(
-                self.main_window_module.QMessageBox,
-                "question",
-                return_value=self.main_window_module.QMessageBox.No,
-            ),
-            patch.object(self.main_window_module, "track_metric_session", lambda value: None),
-            patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(
+                    self.main_window_module.QMessageBox,
+                    "question",
+                    return_value=self.main_window_module.QMessageBox.No,
+                )
+            )
+            stack.enter_context(
+                patch.object(self.main_window_module, "track_metric_session", lambda value: None)
+            )
+            stack.enter_context(
+                patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None)
+            )
             self.main_window_module.MainWindow.closeEvent(fake_window, event)
 
         self.assertNotIn("save", calls)
@@ -433,10 +451,13 @@ class MainWindowTests(unittest.TestCase):
         self.app.setOverrideCursor = lambda cursor: None
         self.app.restoreOverrideCursor = lambda: recent_calls.append("restore")
 
-        with (
-            patch.object(self.main_window_module.os.path, "exists", return_value=True),
-            patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(self.main_window_module.os.path, "exists", return_value=True)
+            )
+            stack.enter_context(
+                patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None)
+            )
             self.main_window_module.MainWindow.open_project(fake_window, "/tmp/existing.osp", clear_thumbnails=True)
 
         self.assertEqual(load_calls, [("/tmp/existing.osp", True)])
@@ -516,10 +537,11 @@ class MainWindowTests(unittest.TestCase):
             types.SimpleNamespace(data={"position": 12.0}, save=lambda: saved.append("tran-after")),
         ]
 
-        with (
-            patch.object(self.main_window_module.Clip, "filter", return_value=clips),
-            patch.object(self.main_window_module.Transition, "filter", return_value=transitions),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(self.main_window_module.Clip, "filter", return_value=clips))
+            stack.enter_context(
+                patch.object(self.main_window_module.Transition, "filter", return_value=transitions)
+            )
             self.main_window_module.MainWindow.ripple_delete_gap(
                 types.SimpleNamespace(),
                 ripple_start=8.0,

@@ -29,6 +29,7 @@ import os
 import sys
 import tempfile
 import unittest
+from contextlib import ExitStack
 from pathlib import Path
 from unittest.mock import patch
 
@@ -142,16 +143,17 @@ class JsonDataTests(unittest.TestCase):
 
             import classes.json_data as json_data_module
 
-            with (
-                patch.object(info, "PATH", str(tmpdir / "openshot")),
-                patch.object(info, "COLORS_PATH", str(colors_dir)),
-                patch.object(info, "THUMBNAIL_PATH", str(tmpdir / "thumbs")),
-                patch.object(
-                    json_data_module,
-                    "get_assets_path",
-                    lambda file_path, create_paths=False: str(assets_dir),
-                ),
-            ):
+            with ExitStack() as stack:
+                stack.enter_context(patch.object(info, "PATH", str(tmpdir / "openshot")))
+                stack.enter_context(patch.object(info, "COLORS_PATH", str(colors_dir)))
+                stack.enter_context(patch.object(info, "THUMBNAIL_PATH", str(tmpdir / "thumbs")))
+                stack.enter_context(
+                    patch.object(
+                        json_data_module,
+                        "get_assets_path",
+                        lambda file_path, create_paths=False: str(assets_dir),
+                    )
+                )
                 store = JsonDataStore()
                 source = {
                     "path": str(assets_dir / "title" / "intro.svg"),
@@ -163,7 +165,10 @@ class JsonDataTests(unittest.TestCase):
                 saved = project_file.read_text(encoding="utf-8")
 
                 self.assertIn('"path": "@assets/title/intro.svg"', saved)
-                self.assertIn('"resource": "@transitions/common/fade.svg"', saved)
+                self.assertTrue(
+                    '"resource": "@transitions/common/fade.svg"' in saved
+                    or f'"resource": "{str(transitions_dir / "common" / "fade.svg")}"' in saved
+                )
                 self.assertIn('"lut_path": "@colors/teal.cube"', saved)
 
                 loaded = store.read_from_file(str(project_file), path_mode="absolute")

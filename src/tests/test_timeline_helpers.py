@@ -30,6 +30,7 @@ import os
 import sys
 import types
 import unittest
+from contextlib import ExitStack
 from unittest.mock import patch
 
 
@@ -133,10 +134,13 @@ class TimelineHelperTests(unittest.TestCase):
         clip_data = {"id": "B", "layer": 1, "position": 4.0, "start": 0.0, "end": 6.0}
         existing_clip = types.SimpleNamespace(data={"id": "A", "position": 0.0, "start": 0.0, "end": 5.0})
 
-        with (
-            patch.object(self.timeline_module.Clip, "filter", return_value=[existing_clip]),
-            patch.object(self.timeline_module.Transition, "filter", return_value=[]),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(self.timeline_module.Clip, "filter", return_value=[existing_clip])
+            )
+            stack.enter_context(
+                patch.object(self.timeline_module.Transition, "filter", return_value=[])
+            )
             details = self.timeline_module.TimelineView._find_missing_transition_details(
                 types.SimpleNamespace(),
                 clip_data,
@@ -152,10 +156,17 @@ class TimelineHelperTests(unittest.TestCase):
         existing_clip = types.SimpleNamespace(data={"id": "A", "position": 0.0, "start": 0.0, "end": 5.0})
         existing_transition = types.SimpleNamespace(data={"position": 4.0, "start": 0.0, "end": 1.0})
 
-        with (
-            patch.object(self.timeline_module.Clip, "filter", return_value=[existing_clip]),
-            patch.object(self.timeline_module.Transition, "filter", return_value=[existing_transition]),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(self.timeline_module.Clip, "filter", return_value=[existing_clip])
+            )
+            stack.enter_context(
+                patch.object(
+                    self.timeline_module.Transition,
+                    "filter",
+                    return_value=[existing_transition],
+                )
+            )
             details = self.timeline_module.TimelineView._find_missing_transition_details(
                 types.SimpleNamespace(),
                 clip_data,
@@ -211,10 +222,13 @@ class TimelineHelperTests(unittest.TestCase):
         clip_data = {"id": "B", "layer": 1, "position": 4.7, "start": 0.0, "end": 6.0}
         existing_clip = types.SimpleNamespace(data={"id": "A", "position": 0.0, "start": 0.0, "end": 5.0})
 
-        with (
-            patch.object(self.timeline_module.Clip, "filter", return_value=[existing_clip]),
-            patch.object(self.timeline_module.Transition, "filter", return_value=[]),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(self.timeline_module.Clip, "filter", return_value=[existing_clip])
+            )
+            stack.enter_context(
+                patch.object(self.timeline_module.Transition, "filter", return_value=[])
+            )
             details = self.timeline_module.TimelineView._find_missing_transition_details(
                 types.SimpleNamespace(),
                 clip_data,

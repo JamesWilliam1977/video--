@@ -29,6 +29,7 @@ import os
 import sys
 import types
 import unittest
+from contextlib import ExitStack
 from unittest.mock import patch
 
 
@@ -163,15 +164,18 @@ class ProjectDataTests(unittest.TestCase):
         self.app.window = types.SimpleNamespace(actionClearWaveformData=clear_waveform_action)
         self.app.updates = types.SimpleNamespace(load=lambda payload: loaded_payloads.append(payload))
 
-        with (
-            patch.object(store, "new", lambda: setattr(store, "_data", default_project.copy())),
-            patch.object(store, "read_from_file", lambda file_path, path_mode="ignore": loaded_project.copy()),
-            patch.object(store, "check_if_paths_are_valid", lambda: None),
-            patch.object(store, "add_to_recent_files", lambda file_path: None),
-            patch.object(store, "upgrade_project_data_structures", lambda: None),
-            patch.object(store, "get_profile", lambda **kwargs: object()),
-            patch.object(store, "apply_default_audio_settings", lambda: None),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(store, "new", lambda: setattr(store, "_data", default_project.copy()))
+            )
+            stack.enter_context(
+                patch.object(store, "read_from_file", lambda file_path, path_mode="ignore": loaded_project.copy())
+            )
+            stack.enter_context(patch.object(store, "check_if_paths_are_valid", lambda: None))
+            stack.enter_context(patch.object(store, "add_to_recent_files", lambda file_path: None))
+            stack.enter_context(patch.object(store, "upgrade_project_data_structures", lambda: None))
+            stack.enter_context(patch.object(store, "get_profile", lambda **kwargs: object()))
+            stack.enter_context(patch.object(store, "apply_default_audio_settings", lambda: None))
             ProjectDataStore.load(store, "/tmp/example.osp", clear_thumbnails=False)
 
         self.assertEqual(store.current_filepath, "/tmp/example.osp")
@@ -270,10 +274,13 @@ class ProjectDataTests(unittest.TestCase):
 
         self.app.window = types.SimpleNamespace()
 
-        with (
-            patch("classes.project_data.os.path.exists", side_effect=lambda p: p == new_path),
-            patch("classes.project_data.find_missing_file", return_value=(new_path, True, False)),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch("classes.project_data.os.path.exists", side_effect=lambda p: p == new_path)
+            )
+            stack.enter_context(
+                patch("classes.project_data.find_missing_file", return_value=(new_path, True, False))
+            )
             ProjectDataStore.check_if_paths_are_valid(store)
 
         self.assertEqual(store._data["files"][0]["path"], new_path)
@@ -300,10 +307,13 @@ class ProjectDataTests(unittest.TestCase):
             calls.append(path)
             return new_path, True, False
 
-        with (
-            patch("classes.project_data.os.path.exists", side_effect=lambda p: p == new_path),
-            patch("classes.project_data.find_missing_file", side_effect=fake_find_missing_file),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch("classes.project_data.os.path.exists", side_effect=lambda p: p == new_path)
+            )
+            stack.enter_context(
+                patch("classes.project_data.find_missing_file", side_effect=fake_find_missing_file)
+            )
             ProjectDataStore.check_if_paths_are_valid(store)
 
         self.assertEqual(calls, [missing_path])
@@ -321,10 +331,11 @@ class ProjectDataTests(unittest.TestCase):
 
         self.app.window = types.SimpleNamespace()
 
-        with (
-            patch("classes.project_data.os.path.exists", return_value=False),
-            patch("classes.project_data.find_missing_file", return_value=("", False, True)),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(patch("classes.project_data.os.path.exists", return_value=False))
+            stack.enter_context(
+                patch("classes.project_data.find_missing_file", return_value=("", False, True))
+            )
             ProjectDataStore.check_if_paths_are_valid(store)
 
         self.assertEqual(store._data["effects"], [])
@@ -349,10 +360,11 @@ class ProjectDataTests(unittest.TestCase):
             prompt_state["last_skip"] = "all"
             return "", False, True
 
-        with (
-            patch("classes.project_data.os.path.exists", return_value=False),
-            patch("classes.project_data.find_missing_file", side_effect=fake_find_missing_file),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(patch("classes.project_data.os.path.exists", return_value=False))
+            stack.enter_context(
+                patch("classes.project_data.find_missing_file", side_effect=fake_find_missing_file)
+            )
             ProjectDataStore.check_if_paths_are_valid(store)
 
         self.assertEqual(calls, [missing_path])
@@ -376,10 +388,13 @@ class ProjectDataTests(unittest.TestCase):
 
         self.app.window = types.SimpleNamespace()
 
-        with (
-            patch("classes.project_data.os.path.exists", side_effect=lambda p: p == found_path),
-            patch("classes.project_data.find_missing_file", return_value=(found_path, True, False)),
-        ):
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch("classes.project_data.os.path.exists", side_effect=lambda p: p == found_path)
+            )
+            stack.enter_context(
+                patch("classes.project_data.find_missing_file", return_value=(found_path, True, False))
+            )
             ProjectDataStore.check_if_paths_are_valid(store)
 
         self.assertEqual(
@@ -417,15 +432,22 @@ class ProjectDataTests(unittest.TestCase):
             target_assets = os.path.join(tmpdir, "project_assets")
             project_file = os.path.join(tmpdir, "project.osp")
 
-            with (
-                patch("classes.project_data.get_assets_path", return_value=target_assets),
-                patch("classes.project_data.info.THUMBNAIL_PATH", old_thumb_dir),
-                patch("classes.project_data.info.TITLE_PATH", old_title_dir),
-                patch("classes.project_data.info.BLENDER_PATH", old_blender_dir),
-                patch("classes.project_data.info.PROTOBUF_DATA_PATH", old_proto_dir),
-                patch("classes.project_data.info.CLIPBOARD_PATH", old_clipboard_dir),
-                patch("classes.project_data.info.COMFYUI_OUTPUT_PATH", old_comfy_dir),
-            ):
+            with ExitStack() as stack:
+                stack.enter_context(
+                    patch("classes.project_data.get_assets_path", return_value=target_assets)
+                )
+                stack.enter_context(patch("classes.project_data.info.THUMBNAIL_PATH", old_thumb_dir))
+                stack.enter_context(patch("classes.project_data.info.TITLE_PATH", old_title_dir))
+                stack.enter_context(patch("classes.project_data.info.BLENDER_PATH", old_blender_dir))
+                stack.enter_context(
+                    patch("classes.project_data.info.PROTOBUF_DATA_PATH", old_proto_dir)
+                )
+                stack.enter_context(
+                    patch("classes.project_data.info.CLIPBOARD_PATH", old_clipboard_dir)
+                )
+                stack.enter_context(
+                    patch("classes.project_data.info.COMFYUI_OUTPUT_PATH", old_comfy_dir)
+                )
                 ProjectDataStore.move_temp_paths_to_project_folder(store, project_file)
 
             expected_title = os.path.join(target_assets, "title", "title.svg")
