@@ -4308,7 +4308,6 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             "position": snap_to_grid(position.x()),
             "start": 0,
             "end": duration,
-            "resource": file_path,
             "reader": deepcopy(reader_json),
             "replace_image": False
         }

@@ -70,6 +70,25 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
         """Returns if project data has unsaved changes"""
         return self.has_unsaved_changes
 
+    def _effect_has_reader_source(self, effect):
+        """Return True when an effect already has a modern reader payload."""
+        if not isinstance(effect, dict):
+            return False
+        for key in ("mask_reader", "reader"):
+            reader = effect.get(key)
+            if not isinstance(reader, dict):
+                continue
+            if reader.get("path") or reader.get("id") or reader.get("has_single_image"):
+                return True
+        return False
+
+    def _drop_obsolete_effect_resource(self, effect):
+        """Remove legacy resource paths once a reader payload is available."""
+        if not isinstance(effect, dict):
+            return
+        if "resource" in effect and self._effect_has_reader_source(effect):
+            effect.pop("resource", None)
+
     def get(self, key):
         """Get copied value of a given key in data store"""
 
@@ -1165,6 +1184,8 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
             refs = []
             seen = set()
 
+            self._drop_obsolete_effect_resource(effect)
+
             def _add_ref(container, key):
                 if not isinstance(container, dict):
                     return
@@ -1282,6 +1303,7 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
 
         # Loop through top-level effects/transitions and prompt for missing reader/resource paths.
         for effect in reversed(self._data["effects"]):
+            self._drop_obsolete_effect_resource(effect)
             if not _repair_effect_paths(effect):
                 missing_path = _first_missing_effect_path(effect)
                 effect_name = os.path.basename(missing_path) if missing_path else effect.get("id", "")
@@ -1294,6 +1316,7 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
             if not isinstance(effects, list):
                 continue
             for effect in reversed(effects):
+                self._drop_obsolete_effect_resource(effect)
                 if not _repair_effect_paths(effect):
                     missing_path = _first_missing_effect_path(effect)
                     effect_name = os.path.basename(missing_path) if missing_path else effect.get("id", "")
