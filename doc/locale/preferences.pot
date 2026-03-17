@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenShot Video Editor 3.4\n"
+"Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,454 +37,635 @@ msgid "The General tab of the Preferences window allows you to modify the settin
 msgstr ""
 
 #: ../preferences.rst:46
-#: ../preferences.rst:101
-#: ../preferences.rst:123
-#: ../preferences.rst:170
-#: ../preferences.rst:246
+#: ../preferences.rst:107
+#: ../preferences.rst:130
+#: ../preferences.rst:152
+#: ../preferences.rst:199
+#: ../preferences.rst:229
+#: ../preferences.rst:285
+#: ../preferences.rst:315
 msgid "Setting"
 msgstr ""
 
-#: ../preferences.rst:46
-#: ../preferences.rst:48
-#: ../preferences.rst:101
-#: ../preferences.rst:105
-#: ../preferences.rst:123
+#: ../preferences.rst:47
+#: ../preferences.rst:50
+#: ../preferences.rst:107
+#: ../preferences.rst:130
+#: ../preferences.rst:132
+#: ../preferences.rst:152
+#: ../preferences.rst:316
 msgid "Default"
 msgstr ""
 
-#: ../preferences.rst:46
-#: ../preferences.rst:101
-#: ../preferences.rst:170
-#: ../preferences.rst:246
-#: ../preferences.rst:257
+#: ../preferences.rst:48
+#: ../preferences.rst:107
+#: ../preferences.rst:130
+#: ../preferences.rst:199
+#: ../preferences.rst:230
+#: ../preferences.rst:285
+#: ../preferences.rst:296
+#: ../preferences.rst:317
 msgid "Description"
 msgstr ""
 
-#: ../preferences.rst:48
+#: ../preferences.rst:49
 msgid "Language"
 msgstr ""
 
-#: ../preferences.rst:48
+#: ../preferences.rst:51
 msgid "Choose your preferred language for OpenShot menus and windows"
 msgstr ""
 
-#: ../preferences.rst:49
+#: ../preferences.rst:52
 msgid "Default Theme"
 msgstr ""
 
-#: ../preferences.rst:49
-msgid "Humanity:Dark"
-msgstr ""
-
-#: ../preferences.rst:49
-msgid "Choose your theme for OpenShot, either Light, Dark or None"
-msgstr ""
-
-#: ../preferences.rst:50
-msgid "User Interface Scale"
-msgstr ""
-
-#: ../preferences.rst:50
-msgid "1.0"
-msgstr ""
-
-#: ../preferences.rst:50
-msgid "Adjust the size of OpenShot's interface (restart required; range 1–3; known issues on Windows)"
-msgstr ""
-
-#: ../preferences.rst:51
-msgid "Image Length (seconds)"
-msgstr ""
-
-#: ../preferences.rst:51
-msgid "10.00"
-msgstr ""
-
-#: ../preferences.rst:51
-msgid "How long the image displays on the screen when added to the timeline"
-msgstr ""
-
-#: ../preferences.rst:52
-msgid "Volume"
-msgstr ""
-
-#: ../preferences.rst:52
-msgid "75.00"
-msgstr ""
-
-#: ../preferences.rst:52
-msgid "The percentage of the volume of the clip when added to the timeline"
-msgstr ""
-
 #: ../preferences.rst:53
+msgid "Cosmic Dusk"
+msgstr ""
+
+#: ../preferences.rst:54
+msgid "Choose your theme for OpenShot"
+msgstr ""
+
+#: ../preferences.rst:55
+msgid "Default Profile"
+msgstr ""
+
+#: ../preferences.rst:56
+msgid "HD 720p 30 fps"
+msgstr ""
+
+#: ../preferences.rst:57
+msgid "Select the default profile for new projects and exports"
+msgstr ""
+
+#: ../preferences.rst:58
 msgid "Blender Command (path)"
 msgstr ""
 
-#: ../preferences.rst:53
-#: ../preferences.rst:54
-msgid "*<blank>*"
-msgstr ""
-
-#: ../preferences.rst:53
-msgid "The path to the binary for Blender (version 5.0+)"
-msgstr ""
-
-#: ../preferences.rst:54
-msgid "Advanced Title Editor (path)"
-msgstr ""
-
-#: ../preferences.rst:54
-msgid "The path to the binary for Inkscape"
-msgstr ""
-
-#: ../preferences.rst:55
-msgid "Show Export Dialog when Finished"
-msgstr ""
-
-#: ../preferences.rst:55
-msgid "*<checked>*"
-msgstr ""
-
-#: ../preferences.rst:55
-msgid "Displays the Export Video windows after the export is finished"
-msgstr ""
-
 #: ../preferences.rst:59
-msgid "Themes"
+msgid "blender"
 msgstr ""
 
 #: ../preferences.rst:60
-msgid "OpenShot comes with 3 standard themes, which change the look and feel of the program."
+msgid "The path to the binary for Blender (version 5.0+)"
+msgstr ""
+
+#: ../preferences.rst:61
+msgid "Advanced Title Editor (path)"
 msgstr ""
 
 #: ../preferences.rst:62
-msgid "**Retro:** A light theme that offers a classic and clean appearance. This theme uses light gray and white tones, making it ideal for users who prefer a bright and high-contrast interface. It provides a traditional look that is easy on the eyes, especially in well-lit environments."
+msgid "inkscape"
 msgstr ""
 
 #: ../preferences.rst:63
-msgid "**Humanity Dark:** [Default Theme] A dark theme with dark gray tones, providing a modern and sleek look. This theme is designed for users who prefer working in low-light conditions or who enjoy a more subdued and professional appearance. The dark gray background reduces glare and eye strain, making it suitable for extended editing sessions."
+msgid "The path to the binary for Inkscape"
 msgstr ""
 
-#: ../preferences.rst:64
-msgid "**Cosmic Dusk:** A bluish theme with a more modern UI design, enhancing the visual aesthetics of the editor. This theme features shades of blue and purple, giving the interface a contemporary and dynamic feel. It combines modern aesthetics with functionality, offering a fresh and visually appealing workspace for video editing."
+#: ../preferences.rst:66
+msgid "Themes"
+msgstr ""
+
+#: ../preferences.rst:67
+msgid "OpenShot comes with 3 standard themes, which change the look and feel of the program."
 msgstr ""
 
 #: ../preferences.rst:69
-msgid "Restoring Defaults"
+msgid "**Cosmic Dusk:** [Default Theme] A bluish theme with a more modern UI design, enhancing the visual aesthetics of the editor. This theme features shades of blue and purple, giving the interface a contemporary and dynamic feel. It combines modern aesthetics with functionality, offering a fresh and visually appealing workspace for video editing."
 msgstr ""
 
 #: ../preferences.rst:70
+msgid "**Humanity Dark:** A dark theme with dark gray tones, providing a modern and sleek look. This theme is designed for users who prefer working in low-light conditions or who enjoy a more subdued and professional appearance. The dark gray background reduces glare and eye strain, making it suitable for extended editing sessions."
+msgstr ""
+
+#: ../preferences.rst:71
+msgid "**Retro:** A light theme that offers a classic and clean appearance. This theme uses light gray and white tones, making it ideal for users who prefer a bright and high-contrast interface. It provides a traditional look that is easy on the eyes, especially in well-lit environments."
+msgstr ""
+
+#: ../preferences.rst:76
+msgid "Restoring Defaults"
+msgstr ""
+
+#: ../preferences.rst:77
 msgid "In OpenShot, each preferences category (or tab) in the Preferences window has a **Restore Defaults** button that allows you to easily reset the values for that specific category. This feature is particularly useful if you want to reset only certain parts of your preferences, like keyboard shortcuts, without affecting the rest of your custom settings."
 msgstr ""
 
-#: ../preferences.rst:74
+#: ../preferences.rst:81
 msgid "**Where to Find the Restore Defaults Button:** Each category or tab in the Preferences window has a **Restore Defaults** button located in the bottom left corner of the screen. The name of the button updates based on the category you’re viewing. For example, if you're in the \"Keyboard\" tab, the button will say **Restore Defaults: Keyboard**."
 msgstr ""
 
-#: ../preferences.rst:79
+#: ../preferences.rst:86
 msgid "**How It Works:** Only the settings in the currently selected category will be restored to their default values. This selective restoration makes it easy to reset certain preferences without affecting others."
 msgstr ""
 
-#: ../preferences.rst:83
+#: ../preferences.rst:90
 msgid "**Tip for Beginners:** - If you're not sure about a change you've made in a particular category, don’t hesitate to use the **Restore Defaults** button. It’s a simple way to undo changes and get back to the default settings for that specific category without affecting your overall setup."
 msgstr ""
 
-#: ../preferences.rst:89
-msgid "Preview"
+#: ../preferences.rst:96
+msgid "Timeline"
 msgstr ""
 
-#: ../preferences.rst:93
-msgid "The Preview tab of the Preferences window allows you to set a **Default Video Profile** for your project, if you have a preference for a specific editing profile. More about :ref:`profiles_ref`. Also, you can adjust the real-time preview audio settings, for example, which audio device and sample rate to use."
+#: ../preferences.rst:100
+msgid "The Timeline tab controls default timeline behavior, clip/transition insertion defaults, and whether to use the new timeline backend or the legacy web-based timeline."
 msgstr ""
 
-#: ../preferences.rst:103
-msgid "Default Video Profile"
+#: ../preferences.rst:109
+msgid "Thumbnail Style"
 msgstr ""
 
-#: ../preferences.rst:103
-msgid "HD 720P 30 fps"
+#: ../preferences.rst:109
+msgid "Entire Clip"
 msgstr ""
 
-#: ../preferences.rst:103
-msgid "Select the profile for Preview and Export defaults"
+#: ../preferences.rst:109
+msgid "Thumbnail density for the new timeline backend"
 msgstr ""
 
-#: ../preferences.rst:104
-msgid "Playback Audio Buffer Size"
+#: ../preferences.rst:110
+msgid "Image Length (seconds)"
 msgstr ""
 
-#: ../preferences.rst:104
-msgid "512"
+#: ../preferences.rst:110
+#: ../preferences.rst:111
+msgid "10.00"
 msgstr ""
 
-#: ../preferences.rst:104
-msgid "Adjust how many audio samples must be buffered before audio playback begins. Allowed range of values is 128 to 4096. NOTE: If you are experiencing a large drift or delay in audio playback, try setting this value lower."
-msgstr ""
-
-#: ../preferences.rst:105
-msgid "Playback Audio Device"
-msgstr ""
-
-#: ../preferences.rst:106
-msgid "Default Audio Sample Rate"
-msgstr ""
-
-#: ../preferences.rst:106
-msgid "44100"
-msgstr ""
-
-#: ../preferences.rst:107
-msgid "Default Audio Channels"
-msgstr ""
-
-#: ../preferences.rst:107
-msgid "Stereo (2 Channel)"
+#: ../preferences.rst:110
+msgid "Default duration for still images added to the timeline"
 msgstr ""
 
 #: ../preferences.rst:111
-msgid "Autosave"
+msgid "Transition Length (seconds)"
 msgstr ""
 
-#: ../preferences.rst:115
-msgid "Autosave is a feature in OpenShot which automatically saves the current changes to your project after a specific number of minutes, helping to reduce the risk or impact of data loss in case of a crash, freeze or user error."
+#: ../preferences.rst:111
+msgid "Default duration for newly added transitions"
 msgstr ""
 
-#: ../preferences.rst:125
-msgid "Enable Autosave"
+#: ../preferences.rst:112
+msgid "Auto-Transition (overlap clips)"
 msgstr ""
 
-#: ../preferences.rst:125
+#: ../preferences.rst:112
+#: ../preferences.rst:154
+#: ../preferences.rst:328
+#: ../preferences.rst:334
 msgid "Enabled"
 msgstr ""
 
-#: ../preferences.rst:126
-msgid "Autosave Interval (minutes)"
+#: ../preferences.rst:112
+msgid "Automatically create transitions when clips overlap"
 msgstr ""
 
-#: ../preferences.rst:126
-msgid "3"
+#: ../preferences.rst:113
+msgid "Enable Legacy Timeline (web-based)"
 msgstr ""
 
-#: ../preferences.rst:127
-msgid "History Limit (# of undo/redo)"
+#: ../preferences.rst:113
+#: ../preferences.rst:325
+#: ../preferences.rst:331
+msgid "Disabled"
 msgstr ""
 
-#: ../preferences.rst:127
-msgid "15"
+#: ../preferences.rst:113
+msgid "Use the legacy web timeline (WebEngine/WebKit auto-select)"
 msgstr ""
 
-#: ../preferences.rst:128
-msgid "Recovery Limit (# of project copies)"
+#: ../preferences.rst:119
+msgid "Preview"
 msgstr ""
 
-#: ../preferences.rst:128
-msgid "30"
+#: ../preferences.rst:123
+msgid "The Preview tab of the Preferences window controls real-time preview audio behavior, including device selection, sample rate, channels, buffering, and playback volume."
 msgstr ""
 
 #: ../preferences.rst:132
-msgid "Recovery"
+msgid "Playback Audio Device"
+msgstr ""
+
+#: ../preferences.rst:132
+msgid "Audio output device used during preview playback"
+msgstr ""
+
+#: ../preferences.rst:133
+msgid "Default Audio Sample Rate"
+msgstr ""
+
+#: ../preferences.rst:133
+msgid "48000"
+msgstr ""
+
+#: ../preferences.rst:133
+msgid "Default preview sample rate"
 msgstr ""
 
 #: ../preferences.rst:134
-msgid "**Before each save**, a compressed ``*.zip`` copy of the current project is saved in the recovery folder, to further reduce the risk of data loss. The recovery folder is located at ``~/.openshot_qt/recovery/`` or ``C:\\Users\\USERNAME\\.openshot_qt\\recovery``."
+msgid "Default Audio Channels"
 msgstr ""
 
-#: ../preferences.rst:138
-msgid "To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:`File->Recovery` menu on the main window after opening your project. If available, a list of matching project versions from the recovery folder are listed in chronological order (most recent one at the top). This will automatically rename your current project file to ``{project-name}-{time}-backup.osp``, and replace it with the recovery project file. You can repeat this process until you find the correct recovery project. NOTE: If for some unexpected reason the recovery process fails, you can always rename the \"-backup.osp\" file to the original project file name to restore it."
+#: ../preferences.rst:134
+msgid "Stereo (2 Channel)"
 msgstr ""
 
-#: ../preferences.rst:146
-msgid "To **manually** recover a corrupt or broken ``*.osp`` project file, please find the most recent copy in the recovery folder, and copy/paste the file into your original project folder location (i.e. the folder that contains your broken project). If the recovery file has been zipped (``*.zip``), you must first extract the ``*.osp``, and then copy it into your project folder. Recovery files are named ``{time}-{project-name}``. You can also use the **Date Modified** on the file to select the version you are interested in recovering."
+#: ../preferences.rst:134
+msgid "Default preview channel layout"
+msgstr ""
+
+#: ../preferences.rst:135
+msgid "Playback Audio Buffer Size"
+msgstr ""
+
+#: ../preferences.rst:135
+msgid "512"
+msgstr ""
+
+#: ../preferences.rst:135
+msgid "Audio samples buffered before playback begins (128 to 4096)"
+msgstr ""
+
+#: ../preferences.rst:136
+msgid "Volume"
+msgstr ""
+
+#: ../preferences.rst:136
+msgid "75"
+msgstr ""
+
+#: ../preferences.rst:136
+msgid "Preview playback volume percentage"
+msgstr ""
+
+#: ../preferences.rst:140
+msgid "Autosave"
+msgstr ""
+
+#: ../preferences.rst:144
+msgid "Autosave is a feature in OpenShot which automatically saves the current changes to your project after a specific number of minutes, helping to reduce the risk or impact of data loss in case of a crash, freeze or user error."
+msgstr ""
+
+#: ../preferences.rst:154
+msgid "Enable Autosave"
+msgstr ""
+
+#: ../preferences.rst:155
+msgid "Autosave Interval (minutes)"
+msgstr ""
+
+#: ../preferences.rst:155
+msgid "3"
 msgstr ""
 
 #: ../preferences.rst:156
+msgid "History Limit (# of undo/redo)"
+msgstr ""
+
+#: ../preferences.rst:156
+msgid "15"
+msgstr ""
+
+#: ../preferences.rst:157
+msgid "Recovery Limit (# of project copies)"
+msgstr ""
+
+#: ../preferences.rst:157
+msgid "30"
+msgstr ""
+
+#: ../preferences.rst:161
+msgid "Recovery"
+msgstr ""
+
+#: ../preferences.rst:163
+msgid "**Before each save**, a compressed ``*.zip`` copy of the current project is saved in the recovery folder, to further reduce the risk of data loss. The recovery folder is located at ``~/.openshot_qt/recovery/`` or ``C:\\Users\\USERNAME\\.openshot_qt\\recovery``."
+msgstr ""
+
+#: ../preferences.rst:167
+msgid "To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:`File->Recovery` menu on the main window after opening your project. If available, a list of matching project versions from the recovery folder are listed in chronological order (most recent one at the top). This will automatically rename your current project file to ``{project-name}-{time}-backup.osp``, and replace it with the recovery project file. You can repeat this process until you find the correct recovery project. NOTE: If for some unexpected reason the recovery process fails, you can always rename the \"-backup.osp\" file to the original project file name to restore it."
+msgstr ""
+
+#: ../preferences.rst:175
+msgid "To **manually** recover a corrupt or broken ``*.osp`` project file, please find the most recent copy in the recovery folder, and copy/paste the file into your original project folder location (i.e. the folder that contains your broken project). If the recovery file has been zipped (``*.zip``), you must first extract the ``*.osp``, and then copy it into your project folder. Recovery files are named ``{time}-{project-name}``. You can also use the **Date Modified** on the file to select the version you are interested in recovering."
+msgstr ""
+
+#: ../preferences.rst:185
 msgid "Cache"
 msgstr ""
 
-#: ../preferences.rst:160
+#: ../preferences.rst:189
 msgid "Cache settings can be adjusted to make real-time playback faster or less CPU intensive. The cache is used to store image and audio data for each frame of video requested. The more frames that are cached, the smoother the real-time playback will be. However, the more that needs to be cached requires more CPU to generate the cache. There is a balance, and the default settings provide a generally sane set of cache values, which should allow most computers to playback video and audio smoothly. See :ref:`playback_ref`."
 msgstr ""
 
-#: ../preferences.rst:172
+#: ../preferences.rst:201
 msgid "Cache Mode"
 msgstr ""
 
-#: ../preferences.rst:172
+#: ../preferences.rst:201
 msgid "Choose between Memory or Disk caching (memory caching is preferred). Disk caching writes image data to the hard disk for later retrieving, and works best with an SSD."
 msgstr ""
 
-#: ../preferences.rst:173
+#: ../preferences.rst:202
 msgid "Cache Limit (MB)"
 msgstr ""
 
-#: ../preferences.rst:173
+#: ../preferences.rst:202
 msgid "How many MB are set aside for cache related data. Larger numbers are not always better, since it takes more CPU to generate more frames to fill the cache."
 msgstr ""
 
-#: ../preferences.rst:174
+#: ../preferences.rst:203
 msgid "Image Format (Disk Only)"
 msgstr ""
 
-#: ../preferences.rst:174
+#: ../preferences.rst:203
 msgid "Image format to store disk cache image data"
 msgstr ""
 
-#: ../preferences.rst:175
+#: ../preferences.rst:204
 msgid "Scale Factor (Disk Only)"
 msgstr ""
 
-#: ../preferences.rst:175
+#: ../preferences.rst:204
 msgid "Percentage (0.1 to 1.0) to reduce the size of disk based image files stored in the disk cache. Smaller numbers make writing and reading cached image files faster."
 msgstr ""
 
-#: ../preferences.rst:176
+#: ../preferences.rst:205
 msgid "Image Quality (Disk Only)"
 msgstr ""
 
-#: ../preferences.rst:176
+#: ../preferences.rst:205
 msgid "Quality of the image files used in disk cache. The higher compression can cause more slowness, but results in smaller file sizes."
 msgstr ""
 
-#: ../preferences.rst:177
+#: ../preferences.rst:206
 msgid "Cache Pre-roll: Min Frames:"
 msgstr ""
 
-#: ../preferences.rst:177
+#: ../preferences.rst:206
 msgid "Minimum # of frames that must be cached before playback begins. The larger the #, the larger the wait before playback begins."
 msgstr ""
 
-#: ../preferences.rst:178
+#: ../preferences.rst:207
 msgid "Cache Pre-roll: Max Frames:"
 msgstr ""
 
-#: ../preferences.rst:178
+#: ../preferences.rst:207
 msgid "Maximum # of frames that can be cached during playback (in front of the playhead). The larger the #, the more CPU is required to cache ahead - vs display the already cached frames."
 msgstr ""
 
-#: ../preferences.rst:179
+#: ../preferences.rst:208
 msgid "Cache Ahead (Percent):"
 msgstr ""
 
-#: ../preferences.rst:179
+#: ../preferences.rst:208
 msgid "Between 0.0 and 1.0. This represents how much % we cache ahead of the playhead. For example, 0.5 would cache 50% behind and 50% ahead of the playhead. 0.8 would cache 20% behind and 80% ahead of the playhead."
 msgstr ""
 
-#: ../preferences.rst:180
+#: ../preferences.rst:209
 msgid "Cache Max Frames:"
 msgstr ""
 
-#: ../preferences.rst:180
-msgid "This is an override on the total allowed frames that can be cached by our caching thread. It is defaulted to 600 frames, but even if you give a huge amount of RAM to OpenShot's cache size, this will override the max # of frames cached. The reason is... sometimes when the preview window is very small, and the cache size is set very high, OpenShot might calculate that we can cache 30,000 frames, or something silly which will take a huge amount of CPU, lagging the system. This setting is designed to clamp the upper limit of the cache to something reasonable... even on systems that give OpenShot huge amounts of RAM to work with."
-msgstr ""
-
-#: ../preferences.rst:184
-msgid "Debug"
-msgstr ""
-
-#: ../preferences.rst:188
-msgid "Here you can modify how much data should be logged. Normally, *Debug Mode (verbose)* is off. The default port is 5556. If you want to help improve OpenShot you can enable **Send Anonymous Metrics and Errors**."
-msgstr ""
-
-#: ../preferences.rst:192
-msgid "Performance"
-msgstr ""
-
-#: ../preferences.rst:195
-msgid "Please keep in mind that GPU hardware acceleration is experimental at the moment. OpenShot supports both decoding and encoding acceleration. For more information take a look at our `Github HW-ACCEL Doc <https://github.com/OpenShot/libopenshot/blob/develop/doc/HW-ACCEL.md>`_. NOTE: On systems with older graphics cards, hardware acceleration may not always be faster than CPU encoding."
+#: ../preferences.rst:209
+msgid "This is an override on the total allowed frames that can be cached by our caching thread. It defaults to 900 frames, but even if you give a huge amount of RAM to OpenShot's cache size, this will override the max # of frames cached. The reason is... sometimes when the preview window is very small, and the cache size is set very high, OpenShot might calculate that we can cache 30,000 frames, or something silly which will take a huge amount of CPU, lagging the system. This setting is designed to clamp the upper limit of the cache to something reasonable... even on systems that give OpenShot huge amounts of RAM to work with."
 msgstr ""
 
 #: ../preferences.rst:212
-msgid "Keyboard"
-msgstr ""
-
-#: ../preferences.rst:215
-msgid "This section allows you to view and customize hotkeys for various actions in the application. Here, you can assign and manage multiple shortcuts for the same action and restore default shortcuts if needed."
+msgid "OpenShot's default cache settings now target a balanced preview experience: roughly **50% behind / 50% ahead** of the playhead, **768 MB** cache memory, and **900** max frames. In practice, this improves scrubbing and seek behavior while reducing stale preview frames on slower systems."
 msgstr ""
 
 #: ../preferences.rst:218
-msgid "**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to the same action by separating them with a pipe (``|``) delimiter. This flexibility allows you to configure as many shortcuts as you need for each action."
+msgid "Performance"
 msgstr ""
 
 #: ../preferences.rst:221
-msgid "**Immediate Application**: No restart is required after adjusting keyboard shortcuts. Changes are applied immediately, so you can start using your updated shortcuts right away."
-msgstr ""
-
-#: ../preferences.rst:224
-msgid "**Restore Default Shortcuts**: If needed, you can reset all keyboard shortcuts to their default settings by clicking on the :guilabel:`Restore Defaults: Keyboard` button located in the bottom-left corner of the Preferences screen."
-msgstr ""
-
-#: ../preferences.rst:227
-msgid "**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are any duplicate shortcuts, they will be highlighted in **red** and will not function until the conflict is resolved."
+msgid "Please keep in mind that GPU hardware acceleration is experimental at the moment. OpenShot supports both decoding and encoding acceleration. For more information take a look at our `Github HW-ACCEL Doc <https://github.com/OpenShot/libopenshot/blob/develop/doc/HW-ACCEL.md>`_. NOTE: On systems with older graphics cards, hardware acceleration may not always be faster than CPU encoding."
 msgstr ""
 
 #: ../preferences.rst:231
-msgid "For more detailed information on how to use and customize keyboard shortcuts, see :ref:`keyboard_shortcut_ref`."
+msgid "Hardware Decoder Mode"
+msgstr ""
+
+#: ../preferences.rst:232
+msgid "Select the hardware decoding backend to use. Use :guilabel:`Test` to verify the selected decoder mode."
+msgstr ""
+
+#: ../preferences.rst:233
+msgid "Hardware Decoder Graphics Card"
 msgstr ""
 
 #: ../preferences.rst:234
-msgid "Location"
+msgid "Choose which GPU device is used for hardware decoding."
+msgstr ""
+
+#: ../preferences.rst:235
+msgid "Hardware Encoder Graphics Card"
+msgstr ""
+
+#: ../preferences.rst:236
+msgid "Choose which GPU device is used for hardware encoding."
+msgstr ""
+
+#: ../preferences.rst:237
+msgid "OMP Threads (0 = Default)"
 msgstr ""
 
 #: ../preferences.rst:238
-msgid "Default file path locations for saving/opening projects, importing files, and exporting videos can be configured here. This can save you time by defaulting the open/save file dialogs to the most appropriate starting folder (options described below)."
+msgid "Number of OpenMP worker threads used by performance-sensitive processing. Use ``0`` to let OpenShot choose automatically."
 msgstr ""
 
-#: ../preferences.rst:248
-msgid "File Import"
+#: ../preferences.rst:239
+msgid "FFmpeg Threads (0 = Default)"
 msgstr ""
 
-#: ../preferences.rst:248
-msgid "Default folder to choose when importing a file"
+#: ../preferences.rst:240
+msgid "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for automatic thread selection."
 msgstr ""
 
-#: ../preferences.rst:249
-msgid "Save or Open Project"
+#: ../preferences.rst:241
+msgid "Hardware Decoder Max Width (0 = Default)"
 msgstr ""
 
-#: ../preferences.rst:249
-msgid "Default folder to choose when saving or opening a project file"
+#: ../preferences.rst:242
+msgid "Optional maximum width for hardware decoding. Use ``0`` for no explicit limit."
 msgstr ""
 
-#: ../preferences.rst:250
-msgid "Video Export"
+#: ../preferences.rst:243
+msgid "Hardware Decoder Max Height (0 = Default)"
 msgstr ""
 
-#: ../preferences.rst:250
-msgid "Default folder to choose when exporting a video"
+#: ../preferences.rst:244
+msgid "Optional maximum height for hardware decoding. Use ``0`` for no explicit limit."
+msgstr ""
+
+#: ../preferences.rst:245
+msgid "Use Blender GPU rendering for Animated Titles"
+msgstr ""
+
+#: ../preferences.rst:246
+msgid "Enable GPU rendering for Blender-based animated titles."
+msgstr ""
+
+#: ../preferences.rst:251
+msgid "Keyboard"
+msgstr ""
+
+#: ../preferences.rst:254
+msgid "This section allows you to view and customize hotkeys for various actions in the application. Here, you can assign and manage multiple shortcuts for the same action and restore default shortcuts if needed."
 msgstr ""
 
 #: ../preferences.rst:257
-msgid "Values"
-msgstr ""
-
-#: ../preferences.rst:259
-msgid "**Recent Folder**"
-msgstr ""
-
-#: ../preferences.rst:259
-msgid "The last folder used for this same operation. Project folders, Import folders, and Export folders are tracked separately."
+msgid "**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to the same action by separating them with a pipe (``|``) delimiter. This flexibility allows you to configure as many shortcuts as you need for each action."
 msgstr ""
 
 #: ../preferences.rst:260
-msgid "**Project Folder**"
+msgid "**Immediate Application**: No restart is required after adjusting keyboard shortcuts. Changes are applied immediately, so you can start using your updated shortcuts right away."
 msgstr ""
 
-#: ../preferences.rst:260
-msgid "The current project folder (or the user's home folder, if the project is not yet saved)"
+#: ../preferences.rst:263
+msgid "**Restore Default Shortcuts**: If needed, you can reset all keyboard shortcuts to their default settings by clicking on the :guilabel:`Restore Defaults: Keyboard` button located in the bottom-left corner of the Preferences screen."
 msgstr ""
 
 #: ../preferences.rst:266
-msgid "Reset (Default Values)"
+msgid "**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are any duplicate shortcuts, they will be highlighted in **red** and will not function until the conflict is resolved."
 msgstr ""
 
-#: ../preferences.rst:268
-msgid "To reset **all** preferences to their default values, please delete the ``openshot.settings`` file and re-launch OpenShot. The settings file can be located at this path: ``~/.openshot_qt/openshot.settings`` or ``C:\\Users\\USERNAME\\.openshot_qt\\openshot.settings``. When OpenShot is re-launched, it will create the missing ``openshot.settings`` file with default values."
+#: ../preferences.rst:270
+msgid "For more detailed information on how to use and customize keyboard shortcuts, see :ref:`keyboard_shortcut_ref`."
 msgstr ""
 
 #: ../preferences.rst:273
+msgid "Location"
+msgstr ""
+
+#: ../preferences.rst:277
+msgid "Default file path locations for saving/opening projects, importing files, and exporting videos can be configured here. This can save you time by defaulting the open/save file dialogs to the most appropriate starting folder (options described below)."
+msgstr ""
+
+#: ../preferences.rst:287
+msgid "File Import"
+msgstr ""
+
+#: ../preferences.rst:287
+msgid "Default folder to choose when importing a file"
+msgstr ""
+
+#: ../preferences.rst:288
+msgid "Save or Open Project"
+msgstr ""
+
+#: ../preferences.rst:288
+msgid "Default folder to choose when saving or opening a project file"
+msgstr ""
+
+#: ../preferences.rst:289
+msgid "Video Export"
+msgstr ""
+
+#: ../preferences.rst:289
+msgid "Default folder to choose when exporting a video"
+msgstr ""
+
+#: ../preferences.rst:296
+msgid "Values"
+msgstr ""
+
+#: ../preferences.rst:298
+msgid "**Recent Folder**"
+msgstr ""
+
+#: ../preferences.rst:298
+msgid "The last folder used for this same operation. Project folders, Import folders, and Export folders are tracked separately."
+msgstr ""
+
+#: ../preferences.rst:299
+msgid "**Project Folder**"
+msgstr ""
+
+#: ../preferences.rst:299
+msgid "The current project folder (or the user's home folder, if the project is not yet saved)"
+msgstr ""
+
+#: ../preferences.rst:305
+msgid "Advanced"
+msgstr ""
+
+#: ../preferences.rst:309
+msgid "The Advanced tab includes ComfyUI integration and debugging options."
+msgstr ""
+
+#: ../preferences.rst:318
+msgid "Comfy UI URL"
+msgstr ""
+
+#: ../preferences.rst:319
+msgid "``http://127.0.0.1:8188``"
+msgstr ""
+
+#: ../preferences.rst:320
+msgid "URL of your local or remote ComfyUI server"
+msgstr ""
+
+#: ../preferences.rst:321
+msgid "Debug Mode (Port)"
+msgstr ""
+
+#: ../preferences.rst:322
+msgid "5556"
+msgstr ""
+
+#: ../preferences.rst:323
+msgid "Port used by debug logging features"
+msgstr ""
+
+#: ../preferences.rst:324
+msgid "Debug Mode (Verbose)"
+msgstr ""
+
+#: ../preferences.rst:326
+msgid "Enable verbose debugging output"
+msgstr ""
+
+#: ../preferences.rst:327
+msgid "Send Anonymous Metrics and Errors"
+msgstr ""
+
+#: ../preferences.rst:329
+msgid "Send anonymous telemetry and error reports"
+msgstr ""
+
+#: ../preferences.rst:330
+msgid "Show Playback Performance (FPS)"
+msgstr ""
+
+#: ../preferences.rst:332
+msgid "Display live FPS in preview playback"
+msgstr ""
+
+#: ../preferences.rst:333
+msgid "Show Export Dialog when Finished"
+msgstr ""
+
+#: ../preferences.rst:335
+msgid "Display the Export Video window when export completes"
+msgstr ""
+
+#: ../preferences.rst:337
+msgid "The ComfyUI **Check** button updates an inline status icon: green checkmark for success, red icon for failure. If OpenShot cannot reach this server, AI context menu options are hidden. See :ref:`ai_ref` for setup details, requirements, and workflow options."
+msgstr ""
+
+#: ../preferences.rst:344
+msgid "Reset (Default Values)"
+msgstr ""
+
+#: ../preferences.rst:346
+msgid "To reset **all** preferences to their default values, please delete the ``openshot.settings`` file and re-launch OpenShot. The settings file can be located at this path: ``~/.openshot_qt/openshot.settings`` or ``C:\\Users\\USERNAME\\.openshot_qt\\openshot.settings``. When OpenShot is re-launched, it will create the missing ``openshot.settings`` file with default values."
+msgstr ""
+
+#: ../preferences.rst:351
 msgid "Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch OpenShot. However, please make a **backup** of any customized folders: **emojis, presets, profiles, recovery, title_templates, transitions, or yolo**. For example, your ``/recovery/`` sub-folder contains backup copies of all your existing projects (``*.osp`` files)."
 msgstr ""
 
-#: ../preferences.rst:278
+#: ../preferences.rst:356
 msgid "Deleting the ``.openshot_qt/`` folder is the quickest method to restore OpenShot preferences and settings to their Default values (i.e. also called a `clean install`). When OpenShot is re-launched, it will create any missing folders (i.e. ``.openshot_qt/``) and settings files. See our `step-by-step guide <https://github.com/OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ for more information about **clean installs** of OpenShot."
 msgstr ""

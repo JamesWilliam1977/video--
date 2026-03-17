@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
@@ -194,3 +196,147 @@ msgstr ""
 "MinGW64 gluggann og keyra eina af eftirfarandi skipunum (sláðu inn og ýttu á "
 "ENTER). Venjulega er fyrsta skipunin ``bt``, sem stendur fyrir "
 "``backtrace``. Fleiri skipanir eru taldar upp hér að neðan."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:117
+msgid "High DPI / 4K Monitors"
+msgstr "Háupxásar þéttleiki punkta / 4K skjáir"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:119
+msgid ""
+"OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) "
+"monitors, ensuring that the interface looks sharp and is easily readable on "
+"displays with various DPI settings. This support is particularly helpful on "
+"4K monitors and other high-resolution displays."
+msgstr ""
+"OpenShot Video Editor býður upp á traustan stuðning fyrir háupplausnar (DPI) "
+"skjái, sem tryggir að viðmótið sé skýrt og auðvelt að lesa á skjám með "
+"mismunandi DPI-stillingum. Þessi stuðningur er sérstaklega gagnlegur á 4K "
+"skjám og öðrum skjám með háa upplausn."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:125
+msgid "Per Monitor DPI Awareness"
+msgstr "DPI meðvitund fyrir hvern skjá"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:127
+msgid ""
+"OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its "
+"scaling dynamically depending on the DPI settings of each connected monitor. "
+"This helps provide a consistent experience across different displays."
+msgstr ""
+"OpenShot er meðvitaður um DPI fyrir hvern skjá fyrir sig, sem þýðir að hann "
+"getur stillt stærðarmælikvarða sína sjálfkrafa eftir DPI-stillingum hvers "
+"tengds skjás. Þetta hjálpar til við að veita samræmda upplifun á mismunandi "
+"skjám."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:132
+msgid "DPI Scaling on Windows"
+msgstr "DPI-stærðarmælikvarði á Windows"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:134
+msgid ""
+"On Windows, OpenShot rounds the scaling factor to the nearest whole value to "
+"maintain visual integrity. This helps avoid visual artifacts in the UI and "
+"keeps interface elements crisp and well-aligned. Due to this rounding, some "
+"scaling options can lead to larger fonts and UI elements than expected."
+msgstr ""
+"Á Windows styttir OpenShot stærðarmælikvarðann í næsta heiltölu til að "
+"viðhalda sjónrænu heilindum. Þetta hjálpar til við að forðast sjónræna galla "
+"í viðmótinu og heldur viðmótsþáttum skörpum og vel raðað. Vegna þessarar "
+"styttingar geta sumar stærðarmælikvarða valdið stærri leturgerðum og "
+"viðmótsþáttum en búist var við."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:139
+msgid "**125% scaling** rounds to **100%**"
+msgstr "**125% stærðarmælikvarði** styttist í **100%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:140
+msgid "**150% scaling** rounds to **200%**"
+msgstr "**150% stærðarmælikvarði** styttist í **200%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:143
+msgid "Workarounds for Fine-Grained Adjustment"
+msgstr "Leiðir til að fínstilla nákvæmni"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:145
+msgid ""
+"While rounding helps maintain a clean interface, there are workarounds for "
+"users who require more precise control over scaling. These methods are **not "
+"recommended** due to potential visual artifacts:"
+msgstr ""
+"Þó að stytting hjálpi til við að viðhalda hreinu viðmóti, eru til leiðir "
+"fyrir notendur sem þurfa nákvæmari stjórn á stærðarmælikvarða. Þessar "
+"aðferðir eru **ekki mælt með** vegna mögulegra sjónrænna galla:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:149
+msgid "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+msgstr "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:151
+msgid ""
+"Setting this environment variable can disable rounding and allow more "
+"precise scaling."
+msgstr ""
+"Að stilla þetta umhverfisbreytu getur slökkt á styttingu og leyft nákvæmari "
+"stærðarmælikvarða."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:152
+msgid ""
+"**Note:** This may cause visual artifacts, particularly in the timeline, and "
+"is not recommended."
+msgstr ""
+"**Athugið:** Þetta getur valdið sjónrænum göllum, sérstaklega í tímalínunni, "
+"og er ekki mælt með."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:154
+msgid "**QT_SCALE_FACTOR=1.25** (or similar value)"
+msgstr "**QT_SCALE_FACTOR=1.25** (eða svipað gildi)"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:156
+msgid ""
+"Manually setting the scale factor can provide finer adjustments to the font "
+"and UI scaling."
+msgstr ""
+"Handvirk stilling á stærðarmælikvarða getur veitt fínni stillingar á "
+"leturgerð og viðmótsstærð."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:157
+msgid ""
+"This can also be set via Preferences (User Interface Scale), but expect "
+"border/line issues on Windows with fractional scales."
+msgstr ""
+"Þetta má einnig stilla í Stillingum (Stærð notendaviðmóts), en búist er við "
+"vandamálum með ramma/línur á Windows við brotakennda stærðarmælikvarða."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:158
+msgid ""
+"**Note:** This method can also lead to visual artifacts and make OpenShot "
+"harder to use."
+msgstr ""
+"**Athugið:** Þessi aðferð getur einnig valdið sjónrænum göllum og gert "
+"OpenShot erfiðara í notkun."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:160
+msgid ""
+"For more info on adjusting these environment variables, please visit https://"
+"github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."
+msgstr ""
+"Fyrir frekari upplýsingar um að stilla þessar umhverfisbreytur, vinsamlegast "
+"heimsækið https://github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."

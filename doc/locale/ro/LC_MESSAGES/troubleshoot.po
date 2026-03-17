@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
@@ -197,3 +199,150 @@ msgstr ""
 "următoarele comenzi (tastați comanda și apăsați ENTER). De obicei, prima "
 "comandă introdusă este ``bt``, care înseamnă ``backtrace``. Mai multe "
 "comenzi sunt listate mai jos."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:117
+msgid "High DPI / 4K Monitors"
+msgstr "Monitoare High DPI / 4K"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:119
+msgid ""
+"OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) "
+"monitors, ensuring that the interface looks sharp and is easily readable on "
+"displays with various DPI settings. This support is particularly helpful on "
+"4K monitors and other high-resolution displays."
+msgstr ""
+"OpenShot Video Editor oferă suport robust pentru monitoarele High DPI "
+"(puncte pe inch), asigurând că interfața arată clar și este ușor de citit pe "
+"ecrane cu diverse setări DPI. Acest suport este deosebit de util pe "
+"monitoarele 4K și alte ecrane cu rezoluție înaltă."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:125
+msgid "Per Monitor DPI Awareness"
+msgstr "Conștientizarea DPI pe monitor"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:127
+msgid ""
+"OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its "
+"scaling dynamically depending on the DPI settings of each connected monitor. "
+"This helps provide a consistent experience across different displays."
+msgstr ""
+"OpenShot este conștient de DPI pe fiecare monitor în parte, ceea ce înseamnă "
+"că poate ajusta scalarea dinamic în funcție de setările DPI ale fiecărui "
+"monitor conectat. Acest lucru ajută la oferirea unei experiențe consistente "
+"pe diferite ecrane."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:132
+msgid "DPI Scaling on Windows"
+msgstr "Scalarea DPI pe Windows"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:134
+msgid ""
+"On Windows, OpenShot rounds the scaling factor to the nearest whole value to "
+"maintain visual integrity. This helps avoid visual artifacts in the UI and "
+"keeps interface elements crisp and well-aligned. Due to this rounding, some "
+"scaling options can lead to larger fonts and UI elements than expected."
+msgstr ""
+"Pe Windows, OpenShot rotunjește factorul de scalare la cea mai apropiată "
+"valoare întreagă pentru a menține integritatea vizuală. Acest lucru ajută la "
+"evitarea artefactelor vizuale în interfață și păstrează elementele UI clare "
+"și bine aliniate. Din cauza acestei rotunjiri, unele opțiuni de scalare pot "
+"duce la fonturi și elemente UI mai mari decât se așteaptă."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:139
+msgid "**125% scaling** rounds to **100%**"
+msgstr "**Scalarea de 125%** se rotunjește la **100%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:140
+msgid "**150% scaling** rounds to **200%**"
+msgstr "**Scalarea de 150%** se rotunjește la **200%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:143
+msgid "Workarounds for Fine-Grained Adjustment"
+msgstr "Soluții alternative pentru ajustări fine"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:145
+msgid ""
+"While rounding helps maintain a clean interface, there are workarounds for "
+"users who require more precise control over scaling. These methods are **not "
+"recommended** due to potential visual artifacts:"
+msgstr ""
+"Deși rotunjirea ajută la menținerea unei interfețe curate, există soluții "
+"alternative pentru utilizatorii care necesită un control mai precis asupra "
+"scalării. Aceste metode **nu sunt recomandate** din cauza posibilelor "
+"artefacte vizuale:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:149
+msgid "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+msgstr "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:151
+msgid ""
+"Setting this environment variable can disable rounding and allow more "
+"precise scaling."
+msgstr ""
+"Setarea acestei variabile de mediu poate dezactiva rotunjirea și permite o "
+"scalare mai precisă."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:152
+msgid ""
+"**Note:** This may cause visual artifacts, particularly in the timeline, and "
+"is not recommended."
+msgstr ""
+"**Notă:** Acest lucru poate cauza artefacte vizuale, în special în "
+"cronologie, și nu este recomandat."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:154
+msgid "**QT_SCALE_FACTOR=1.25** (or similar value)"
+msgstr "**QT_SCALE_FACTOR=1.25** (sau o valoare similară)"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:156
+msgid ""
+"Manually setting the scale factor can provide finer adjustments to the font "
+"and UI scaling."
+msgstr ""
+"Setarea manuală a factorului de scalare poate oferi ajustări mai fine ale "
+"fontului și scalării interfeței."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:157
+msgid ""
+"This can also be set via Preferences (User Interface Scale), but expect "
+"border/line issues on Windows with fractional scales."
+msgstr ""
+"Aceasta poate fi setată și prin Preferințe (Scalarea interfeței utilizator), "
+"dar se pot aștepta probleme cu marginile/liniile pe Windows la scalări "
+"fracționare."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:158
+msgid ""
+"**Note:** This method can also lead to visual artifacts and make OpenShot "
+"harder to use."
+msgstr ""
+"**Notă:** Această metodă poate duce, de asemenea, la artefacte vizuale și "
+"poate face OpenShot mai dificil de utilizat."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:160
+msgid ""
+"For more info on adjusting these environment variables, please visit https://"
+"github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."
+msgstr ""
+"Pentru mai multe informații despre ajustarea acestor variabile de mediu, vă "
+"rugăm să vizitați https://github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-"
+"too-large."

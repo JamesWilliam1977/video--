@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:23
@@ -110,7 +112,7 @@ msgstr "Имя"
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:51 ../clips.rst:76 ../clips.rst:107 ../clips.rst:146
-#: ../clips.rst:446
+#: ../clips.rst:443
 msgid "Description"
 msgstr "Описание"
 
@@ -545,7 +547,7 @@ msgid "Preset Name"
 msgstr "Название предустановки"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:148 ../clips.rst:164
+#: ../clips.rst:148 ../clips.rst:163
 msgid "Fade"
 msgstr "Затухание"
 
@@ -557,7 +559,7 @@ msgstr ""
 "использовать переход)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:149 ../clips.rst:173
+#: ../clips.rst:149 ../clips.rst:172
 msgid "Animate"
 msgstr "Анимация"
 
@@ -567,7 +569,7 @@ msgid "Zoom and slide a clip"
 msgstr "Масштабировать и сдвигать клип"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:150 ../clips.rst:183
+#: ../clips.rst:150 ../clips.rst:182
 msgid "Rotate"
 msgstr "Поворот"
 
@@ -577,7 +579,7 @@ msgid "Rotate or flip a clip"
 msgstr "Повернуть или отразить клип"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:151 ../clips.rst:192
+#: ../clips.rst:151 ../clips.rst:191
 msgid "Layout"
 msgstr "Разметка"
 
@@ -587,7 +589,7 @@ msgid "Make a video smaller or larger, and snap to any corner"
 msgstr "Изменить размер видео и закрепить в любом углу"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:152 ../clips.rst:201 ../clips.rst:474 ../clips.rst:741
+#: ../clips.rst:152 ../clips.rst:200 ../clips.rst:471 ../clips.rst:739
 msgid "Time"
 msgstr "Время"
 
@@ -597,7 +599,7 @@ msgid "Reverse, repeat, and speed up or slow down video"
 msgstr "Обратить, повторить, ускорить или замедлить видео"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:153 ../clips.rst:261 ../clips.rst:475 ../clips.rst:767
+#: ../clips.rst:153 ../clips.rst:260 ../clips.rst:472 ../clips.rst:765
 msgid "Volume"
 msgstr "Громкость"
 
@@ -610,7 +612,7 @@ msgstr ""
 "или отключить звук"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:154 ../clips.rst:270
+#: ../clips.rst:154 ../clips.rst:269
 msgid "Separate Audio"
 msgstr "Отделить аудио"
 
@@ -628,7 +630,7 @@ msgstr ""
 "нескольких слоях ниже оригинального клипа)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:155 ../clips.rst:280
+#: ../clips.rst:155 ../clips.rst:279
 msgid "Slice"
 msgstr "Разрезать"
 
@@ -638,42 +640,32 @@ msgid "Cut the clip at the play-head position"
 msgstr "Разрезать клип в позиции курсора воспроизведения"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:156 ../clips.rst:305
-msgid "Transform"
-msgstr "Трансформация"
-
-# Translated with gpt-4.1-mini
-#: ../clips.rst:156
-msgid "Enable transform mode"
-msgstr "Включить режим трансформации"
-
-# Translated with gpt-4.1-mini
-#: ../clips.rst:157 ../clips.rst:347
+#: ../clips.rst:156 ../clips.rst:344
 msgid "Display"
 msgstr "Отображение"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:157
+#: ../clips.rst:156
 msgid "Show waveform or thumbnail for a clip"
 msgstr "Показать форму волны или миниатюру клипа"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:158 ../clips.rst:355
+#: ../clips.rst:157 ../clips.rst:352
 msgid "Properties"
 msgstr "Свойства"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:158
+#: ../clips.rst:157
 msgid "Show the properties panel for a clip"
 msgstr "Показать панель свойств клипа"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:159
+#: ../clips.rst:158
 msgid "Copy / Paste"
 msgstr "Копировать / Вставить"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:159
+#: ../clips.rst:158
 msgid ""
 "Copy and paste key frames or duplicate an entire clip (with all key frames)"
 msgstr ""
@@ -681,17 +673,17 @@ msgstr ""
 "ключевыми кадрами)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:160 ../clips.rst:387
+#: ../clips.rst:159 ../clips.rst:384
 msgid "Remove Clip"
 msgstr "Удалить клип"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:160
+#: ../clips.rst:159
 msgid "Remove a clip from the timeline"
 msgstr "Удалить клип с таймлайна"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:165
+#: ../clips.rst:164
 msgid ""
 "The :guilabel:`Fade` preset enables smooth transitions by gradually "
 "increasing or decreasing the clip's opacity. It creates a fade-in or fade-"
@@ -704,7 +696,7 @@ msgstr ""
 "для начала или окончания клипов. См. ключевой кадр :ref:`clip_alpha_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:169
+#: ../clips.rst:168
 msgid ""
 "**Usage Example:** Applying a fade-out to a video clip to gently conclude a "
 "scene."
@@ -713,7 +705,7 @@ msgstr ""
 "завершения сцены."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:170
+#: ../clips.rst:169
 msgid ""
 "**Tip:** Adjust the duration of the fade effect (slow or fast) to control "
 "its timing and intensity."
@@ -722,7 +714,7 @@ msgstr ""
 "быстрое), чтобы контролировать его время и интенсивность."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:174
+#: ../clips.rst:173
 msgid ""
 "The :guilabel:`Animate` preset adds dynamic motion to clips, combining "
 "zooming and sliding animations. It animates a clip by zooming in or out "
@@ -737,7 +729,7 @@ msgstr ""
 "ключевые кадры :ref:`clip_location_x_ref` и :ref:`clip_scale_x_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:179
+#: ../clips.rst:178
 msgid ""
 "**Usage Example:** Using the animate preset to simulate a camera movement "
 "across a landscape shot."
@@ -746,7 +738,7 @@ msgstr ""
 "движения камеры по пейзажу."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:180
+#: ../clips.rst:179
 msgid ""
 "**Tip:** Experiment with different animation speeds and directions for "
 "diverse visual effects."
@@ -755,7 +747,7 @@ msgstr ""
 "разнообразных визуальных эффектов."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:184
+#: ../clips.rst:183
 msgid ""
 "The :guilabel:`Rotate` preset introduces easy rotation and flipping of "
 "clips, enhancing their visual appeal. It enables orientation adjustment, by "
@@ -768,7 +760,7 @@ msgstr ""
 "преобразований. См. ключевой кадр :ref:`clip_rotation_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:187
+#: ../clips.rst:186
 msgid ""
 "**Usage Example:** Rotating a photo or video by 90 degree (a portrait video "
 "to a landscape)"
@@ -777,7 +769,7 @@ msgstr ""
 "видео в ландшафтное)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:188
+#: ../clips.rst:187
 msgid ""
 "**Usage Example:** If your video is oriented sideways (90 degrees), you can "
 "rotate it clockwise or counterclockwise by 90 degrees to bring it to the "
@@ -790,7 +782,7 @@ msgstr ""
 "случайно записали видео в портретном режиме, а хотели ландшафтное."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:189
+#: ../clips.rst:188
 msgid ""
 "**Usage Example:** If your video is upside down, you can rotate it by 180 "
 "degrees to flip it to the correct orientation. This can happen if you "
@@ -801,7 +793,7 @@ msgstr ""
 "случиться, если вы случайно держали камеру неправильно во время записи."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:193
+#: ../clips.rst:192
 msgid ""
 "The :guilabel:`Layout` preset adjusts the size of a clip and snaps it to a "
 "chosen corner of the screen. It resizes a clip and anchors it to a corner or "
@@ -814,7 +806,7 @@ msgstr ""
 "ключевые кадры :ref:`clip_location_x_ref` и :ref:`clip_scale_x_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:197
+#: ../clips.rst:196
 msgid ""
 "**Usage Example:** Placing a logo in the corner of a video using the layout "
 "preset."
@@ -823,7 +815,7 @@ msgstr ""
 "Layout."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:198
+#: ../clips.rst:197
 msgid ""
 "**Tip:** Combine with animation presets for dynamic transitions involving "
 "resizing and repositioning."
@@ -832,7 +824,7 @@ msgstr ""
 "изменением размера и положения."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:202
+#: ../clips.rst:201
 msgid ""
 "The :guilabel:`Time` preset manipulates clip playback speed, allowing for "
 "reverse playback or time-lapse effects. It alters the speed and direction of "
@@ -845,7 +837,7 @@ msgstr ""
 "визуальное повествование. См. ключевой кадр :ref:`clip_time_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:206
+#: ../clips.rst:205
 msgid ""
 "**Usage Example:** Creating a slow-motion effect to emphasize a specific "
 "action."
@@ -854,7 +846,7 @@ msgstr ""
 "выделения конкретного действия."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:207
+#: ../clips.rst:206
 msgid ""
 "**Tip:** Use time presets to creatively manipulate the pacing of your video."
 msgstr ""
@@ -862,12 +854,12 @@ msgstr ""
 "вашего видео."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:212
+#: ../clips.rst:211
 msgid "Repeat"
 msgstr "Повтор"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:213
+#: ../clips.rst:212
 msgid ""
 "Use :guilabel:`Time → Repeat` to play a clip multiple times, without "
 "building the time curve by hand. OpenShot writes the needed :guilabel:`Time` "
@@ -879,12 +871,12 @@ msgstr ""
 "позже)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:216
+#: ../clips.rst:215
 msgid "**Menu path**"
 msgstr "**Путь в меню**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:218
+#: ../clips.rst:217
 msgid ""
 ":guilabel:`Time → Repeat → Loop → Forward` – plays left to right, then "
 "starts again from the beginning"
@@ -893,7 +885,7 @@ msgstr ""
 "затем начинается заново с начала"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:219
+#: ../clips.rst:218
 msgid ""
 ":guilabel:`Time → Repeat → Loop → Reverse` – plays right to left, then "
 "starts again from the end"
@@ -902,7 +894,7 @@ msgstr ""
 "затем начинается заново с конца"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:220
+#: ../clips.rst:219
 msgid ""
 ":guilabel:`Time → Repeat → Ping-Pong → Forward` – forward, then backward, "
 "then forward…"
@@ -911,7 +903,7 @@ msgstr ""
 "вперед…"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:221
+#: ../clips.rst:220
 msgid ""
 ":guilabel:`Time → Repeat → Ping-Pong → Reverse` – backward, then forward, "
 "then backward…"
@@ -920,13 +912,13 @@ msgstr ""
 "назад…"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:222
+#: ../clips.rst:221
 msgid ":guilabel:`Custom…` – opens a dialog for extra options (see below)"
 msgstr ""
 ":guilabel:`Custom…` – открывает диалог с дополнительными опциями (см. ниже)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:224
+#: ../clips.rst:223
 msgid ""
 "Counts are **finite** (2x, 3x, 4x, 5x, 8x, 10x, or a custom number). "
 "Example: “Forward then Back and stop” = :guilabel:`Ping-Pong → Forward → 2x`."
@@ -936,18 +928,18 @@ msgstr ""
 "guilabel:`Ping-Pong → Forward → 2x`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:227
+#: ../clips.rst:226
 msgid "**What gets repeated**"
 msgstr "**Что повторяется**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:229
+#: ../clips.rst:228
 msgid "Repeat always acts on the **currently trimmed** in/out of the clip."
 msgstr ""
 "Повтор всегда применяется к **текущим обрезанным** точкам входа/выхода клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:230
+#: ../clips.rst:229
 msgid ""
 "The :guilabel:`Time` curve is stamped as a simple shape: - Loop Forward = "
 "rising saw - Loop Reverse = falling saw - Ping-Pong = triangle (direction "
@@ -958,7 +950,7 @@ msgstr ""
 "(направление меняется при каждом проходе)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:234
+#: ../clips.rst:233
 msgid ""
 "To avoid a double frame at the seam, the last frame of each pass is not "
 "duplicated."
@@ -967,12 +959,12 @@ msgstr ""
 "не дублируется."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:236
+#: ../clips.rst:235
 msgid "**Keyframes during Repeat**"
 msgstr "**Ключевые кадры при повторе**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:238
+#: ../clips.rst:237
 msgid ""
 "When you use Repeat, OpenShot will also **repeat other keyframes** found "
 "inside the trimmed section (location, scale, effects, etc.) into each pass "
@@ -983,29 +975,29 @@ msgstr ""
 "т.д.) в каждом проходе, чтобы анимации оставались синхронизированными."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:239
+#: ../clips.rst:238
 msgid "Repeated keyframes keep their relative timing inside each pass."
 msgstr ""
 "Повторяющиеся ключевые кадры сохраняют относительное время внутри каждого "
 "прохода."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:241
+#: ../clips.rst:240
 msgid "**Custom Repeat** (dialog options)"
 msgstr "**Пользовательский повтор** (опции диалога)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:243
+#: ../clips.rst:242
 msgid ":guilabel:`Pattern:` Loop | Ping-Pong"
 msgstr ":guilabel:`Pattern:` Цикл | Пинг-понг"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:244
+#: ../clips.rst:243
 msgid ":guilabel:`Direction:` Forward | Reverse"
 msgstr ":guilabel:`Direction:` Вперед | Назад"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:245
+#: ../clips.rst:244
 msgid ""
 ":guilabel:`Passes:` integer (2 or more). This is the number of times it will "
 "play."
@@ -1013,7 +1005,7 @@ msgstr ""
 ":guilabel:`Passes:` целое число (2 или больше). Количество воспроизведений."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:246
+#: ../clips.rst:245
 msgid ""
 ":guilabel:`Delay:` number + units [frames | ms | sec]. This is an optional "
 "delay between each repeated pass."
@@ -1022,7 +1014,7 @@ msgstr ""
 "между повторениями."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:247
+#: ../clips.rst:246
 msgid ""
 ":guilabel:`Speed Ramp (%):` % speed change per pass (optional). Positive "
 "speeds up each pass; negative slows down each pass."
@@ -1031,12 +1023,12 @@ msgstr ""
 "Положительное ускоряет каждый проход; отрицательное замедляет."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:249
+#: ../clips.rst:248
 msgid "**Reset**"
 msgstr "**Сброс**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:251
+#: ../clips.rst:250
 msgid ""
 ":guilabel:`Time → Reset Time` completely removes any Time curve (including "
 "Repeat) and restores the clip to its original playback, **without deleting "
@@ -1047,12 +1039,12 @@ msgstr ""
 "удаляя ваши оригинальные ключевые кадры без времени**."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:255
+#: ../clips.rst:254
 msgid "Timing Tool"
 msgstr "Инструмент времени"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:256
+#: ../clips.rst:255
 msgid ""
 "Another way to change a clip's speed is with the :guilabel:`Timing` tool on "
 "the timeline toolbar. Enable the clock icon and drag a clip's edges. "
@@ -1067,7 +1059,7 @@ msgstr ""
 "масштабируются, сохраняя относительные позиции."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:262
+#: ../clips.rst:261
 msgid ""
 "The :guilabel:`Volume` preset controls audio properties, facilitating smooth "
 "volume adjustments. It manages audio volume, including fading in/out, "
@@ -1079,7 +1071,7 @@ msgstr ""
 "См. :ref:`clip_volume_ref` для ключевых кадров."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:266
+#: ../clips.rst:265
 msgid ""
 "**Usage Example:** Applying a gradual volume fade-out to transition between "
 "scenes."
@@ -1088,7 +1080,7 @@ msgstr ""
 "перехода между сценами."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:267
+#: ../clips.rst:266
 msgid ""
 "**Tip:** Utilize volume presets for quickly lowering or raising volume "
 "levels."
@@ -1097,7 +1089,7 @@ msgstr ""
 "повышения уровня звука."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:271
+#: ../clips.rst:270
 msgid ""
 "The :guilabel:`Separate Audio` preset splits the audio from a clip, creating "
 "detached audio clips positioned below the original clip on the timeline. "
@@ -1112,7 +1104,7 @@ msgstr ""
 "каждый аудиотрек, расположенные на нескольких слоях ниже исходного клипа)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:276
+#: ../clips.rst:275
 msgid ""
 "**Usage Example:** Extracting background music from a video clip for "
 "independent control."
@@ -1121,7 +1113,7 @@ msgstr ""
 "независимого управления."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:277
+#: ../clips.rst:276
 msgid ""
 "**Tip:** Use this preset to fine-tune audio elements separately from the "
 "visual content."
@@ -1130,7 +1122,7 @@ msgstr ""
 "отдельно от визуального контента."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:281
+#: ../clips.rst:280
 msgid ""
 "The :guilabel:`Slice` tool lets you cut a clip at the position of the play-"
 "head (*the vertical line that shows your current position in the timeline*). "
@@ -1143,7 +1135,7 @@ msgstr ""
 "проигрывателя."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:284
+#: ../clips.rst:283
 msgid ""
 "Slicing is a key feature for making precise edits and rearranging sections "
 "of your video. You can slice a clip and choose to keep one side or both, and "
@@ -1156,12 +1148,12 @@ msgstr ""
 "чтобы заполнить пробелы после разреза."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:288
+#: ../clips.rst:287
 msgid "**Slicing Options:**"
 msgstr "**Параметры разрезания:**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:290
+#: ../clips.rst:289
 msgid ""
 "**Keep Both Sides**: This option splits the clip into two parts, keeping "
 "everything on both sides of the play-head. It’s useful when you want to "
@@ -1172,7 +1164,7 @@ msgstr ""
 "на части, не удаляя ничего."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:291
+#: ../clips.rst:290
 msgid ""
 "**Keep Left Side**: This option cuts the clip and removes the part to the "
 "right of the play-head, keeping only the part before the play-head. Use this "
@@ -1183,7 +1175,7 @@ msgstr ""
 "убрать часть клипа после текущей позиции."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:292
+#: ../clips.rst:291
 msgid ""
 "**Keep Right Side**: This option cuts the clip and removes the part to the "
 "left of the play-head, keeping only the part after the play-head. It’s handy "
@@ -1194,7 +1186,7 @@ msgstr ""
 "начала клипа с сохранением остального."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:293
+#: ../clips.rst:292
 msgid ""
 "**Ripple Slicing**: Ripple slicing not only cuts the clip but also moves any "
 "clips and transitions that follow to close the gap. This way, your timeline "
@@ -1207,12 +1199,12 @@ msgstr ""
 "время на ручную корректировку."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:295 ../clips.rst:405
+#: ../clips.rst:294 ../clips.rst:402
 msgid "**Tips for Beginners:**"
 msgstr "**Советы для начинающих:**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:297
+#: ../clips.rst:296
 msgid ""
 "**Example**: If there’s a part of a clip you don’t want (like the end of a "
 "scene), use **Keep Left Side** or **Keep Right Side** to remove it. If you "
@@ -1225,7 +1217,7 @@ msgstr ""
 "перестановки, используйте **Сохранить обе стороны**."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:298
+#: ../clips.rst:297
 msgid ""
 "**Quick Tip**: Slicing can also be used to break a long clip into smaller "
 "parts, making it easier to manage and edit each section separately."
@@ -1235,7 +1227,7 @@ msgstr ""
 "каждой части отдельно."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:300
+#: ../clips.rst:299
 msgid ""
 "For a complete guide to slicing and all available keyboard shortcuts, see "
 "the :ref:`clips_cutting_slicing_ref` section."
@@ -1244,50 +1236,45 @@ msgstr ""
 "разделе :ref:`clips_cutting_slicing_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:306
-msgid ""
-"The :guilabel:`Transform` preset activates the **transform tool** for a "
-"clip, allowing for quick adjustments to location, scale, rotation, shear, "
-"and rotation origin point."
-msgstr ""
-"Пресет :guilabel:`Transform` активирует **инструмент трансформации** для "
-"клипа, позволяя быстро изменять положение, масштаб, вращение, сдвиг и точку "
-"вращения."
+#: ../clips.rst:304
+msgid "Transform"
+msgstr "Трансформация"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:309
+#: ../clips.rst:305
 msgid ""
-"To quickly adjust the location, scale, rotation, and shear of a clip, select "
-"a clip on the timeline to activate the transform tool. By default, the "
-"selected clip appears in the preview window with transform controls (blue "
-"lines and squares). You can select multiple clips at once with :kbd:`Ctrl` "
-"or :kbd:`Shift`. The preview shows a single set of handles surrounding all "
-"selected clips, and any move, scale or rotation affects them together. Or if "
-"the transform tool is disabled, right click on a clip and choose "
-"**Transform**."
+"The **Transform Tool** lets you quickly adjust a clip directly in the "
+"preview window, instead of changing location, scale, rotation, shear, and "
+"rotation origin values one property at a time. OpenShot shows the Transform "
+"Tool automatically whenever you select a clip on the timeline, with blue "
+"lines and handles drawn around the selected clip. You can also select "
+"multiple clips at once with :kbd:`Ctrl` or :kbd:`Shift`; in that case, the "
+"preview shows one set of handles around the full selection, and any move, "
+"scale, or rotation is applied to all selected clips together."
 msgstr ""
-"Чтобы быстро изменить положение, масштаб, вращение и сдвиг клипа, выберите "
-"клип на таймлайне для активации инструмента трансформации. По умолчанию "
-"выбранный клип отображается в окне предпросмотра с элементами управления "
-"трансформацией (синие линии и квадраты). Можно выбрать несколько клипов "
-"одновременно с помощью :kbd:`Ctrl` или :kbd:`Shift`. В предпросмотре "
-"отображается один набор маркеров вокруг всех выбранных клипов, и любые "
-"перемещения, масштабирование или вращение применяются ко всем вместе. Если "
-"инструмент трансформации отключён, щёлкните правой кнопкой мыши по клипу и "
-"выберите **Transform**."
+"**Инструмент трансформации** позволяет быстро настроить клип прямо в окне "
+"предварительного просмотра, вместо того чтобы изменять значения положения, "
+"масштаба, поворота, сдвига и точки вращения по одному параметру за раз. "
+"OpenShot автоматически показывает инструмент трансформации при выборе клипа "
+"на временной шкале, отображая синие линии и маркеры вокруг выбранного клипа. "
+"Вы также можете выбрать несколько клипов одновременно с помощью :kbd:`Ctrl` "
+"или :kbd:`Shift`; в этом случае в предварительном просмотре отображается "
+"один набор маркеров вокруг всего выделения, и любые перемещения, "
+"масштабирование или повороты применяются ко всем выбранным клипам "
+"одновременно."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:318
+#: ../clips.rst:314
 msgid "Dragging the blue squares will adjust the **scale** of the image."
 msgstr "Перетаскивание синих квадратов изменяет **масштаб** изображения."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:319
+#: ../clips.rst:315
 msgid "Dragging the center will move the **location** of the image."
 msgstr "Перетаскивание центра перемещает **положение** изображения."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:320
+#: ../clips.rst:316
 msgid ""
 "Dragging the mouse on the outside of the blue lines will **rotate** the "
 "image."
@@ -1295,7 +1282,16 @@ msgstr ""
 "Перетаскивание мыши за пределами синих линий будет **вращать** изображение."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:321
+#: ../clips.rst:317
+msgid ""
+"Hold :kbd:`Ctrl` or :kbd:`Shift` while rotating to snap to 15-degree "
+"increments."
+msgstr ""
+"Удерживайте :kbd:`Ctrl` или :kbd:`Shift` при повороте, чтобы зафиксировать "
+"угол с шагом 15 градусов."
+
+# Translated with gpt-4.1-mini
+#: ../clips.rst:318
 msgid ""
 "Dragging along the blue lines will **shear** the image in that direction."
 msgstr ""
@@ -1303,7 +1299,7 @@ msgstr ""
 "направлении."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:322
+#: ../clips.rst:319
 msgid ""
 "Dragging the circle in the middle will move the **origin point** that "
 "controls the center of **rotation**."
@@ -1312,7 +1308,7 @@ msgstr ""
 "контролирует центр **вращения**."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:324
+#: ../clips.rst:321
 msgid ""
 "Note: Pay close attention to the play-head position (red playback line). Key "
 "frames are automatically created at the current playback position, to help "
@@ -1329,28 +1325,30 @@ msgstr ""
 "редакторе свойств, см. :ref:`clip_properties_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:331
+#: ../clips.rst:328
+#, fuzzy
 msgid ""
-"**Usage Example:** Using transform mode to resize and reposition a clip for "
-"a picture-in-picture effect."
+"**Usage Example:** Use the transform handles to resize and reposition a clip "
+"for a picture-in-picture effect."
 msgstr ""
 "**Пример использования:** Использование режима трансформации для изменения "
 "размера и перемещения клипа для эффекта «картинка в картинке»."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:332
-msgid "**Tip:** Utilize this preset to precisely control a clip's appearance."
+#: ../clips.rst:329
+#, fuzzy
+msgid "**Tip:** Use these handles to precisely control a clip's appearance."
 msgstr ""
 "**Совет:** Используйте этот пресет для точного управления внешним видом "
 "клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:335
+#: ../clips.rst:332
 msgid "Crop"
 msgstr "Обрезка"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:336
+#: ../clips.rst:333
 msgid ""
 "The :guilabel:`Crop` preset adds a crop effect to the selected clip and "
 "displays interactive crop handles in the video preview. The submenu offers:"
@@ -1360,12 +1358,12 @@ msgstr ""
 "Подменю предлагает:"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:339
+#: ../clips.rst:336
 msgid ":guilabel:`No Crop` – remove any existing crop effect."
 msgstr ":guilabel:`Без обрезки` – удалить любой существующий эффект обрезки."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:340
+#: ../clips.rst:337
 msgid ""
 ":guilabel:`Crop (No Resize)` – trim the clip without scaling the remaining "
 "area."
@@ -1374,7 +1372,7 @@ msgstr ""
 "масштабирования оставшейся области."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:341
+#: ../clips.rst:338
 msgid ""
 ":guilabel:`Crop (Resize)` – trim the clip and scale the cropped region to "
 "fill the frame."
@@ -1383,7 +1381,7 @@ msgstr ""
 "обрезанную область, чтобы заполнить кадр."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:343
+#: ../clips.rst:340
 msgid ""
 "Drag the blue handles to adjust the crop boundaries, move the cropped area "
 "around, or move the center handle to reposition the image inside the cropped "
@@ -1394,7 +1392,7 @@ msgstr ""
 "положения изображения внутри обрезанной области."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:348
+#: ../clips.rst:345
 msgid ""
 "The :guilabel:`Display` preset toggles the display mode of a clip on the "
 "timeline, showing either its waveform or thumbnail."
@@ -1403,7 +1401,7 @@ msgstr ""
 "таймлайне, показывая либо его звуковую волну, либо миниатюру."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:351
+#: ../clips.rst:348
 msgid ""
 "**Usage Example:** Displaying the audio waveform for precise audio editing."
 msgstr ""
@@ -1411,7 +1409,7 @@ msgstr ""
 "редактирования аудио."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:352
+#: ../clips.rst:349
 msgid ""
 "**Tip:** Use this preset to focus on specific aspects of a clip's audio "
 "during editing."
@@ -1420,7 +1418,7 @@ msgstr ""
 "аспектах аудио клипа во время редактирования."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:356
+#: ../clips.rst:353
 msgid ""
 "The :guilabel:`Properties` preset opens the properties panel for a clip, "
 "allowing quick access for adjustments to clip properties, such as location, "
@@ -1431,7 +1429,7 @@ msgstr ""
 "вращение и др. См. :ref:`clip_properties_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:359
+#: ../clips.rst:356
 msgid ""
 "**Usage Example:** Adjusting clip properties like opacity, volume, or "
 "position."
@@ -1440,7 +1438,7 @@ msgstr ""
 "громкость или положение."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:360
+#: ../clips.rst:357
 msgid ""
 "**Tip:** Apply this preset to streamline adjustments to all clip properties "
 "in a single dock."
@@ -1449,12 +1447,12 @@ msgstr ""
 "в одном окне."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:363
+#: ../clips.rst:360
 msgid "Copy / Cut / Paste"
 msgstr "Копировать / Вырезать / Вставить"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:364
+#: ../clips.rst:361
 msgid ""
 "The :guilabel:`Copy / Paste` preset allows copying and pasting keyframes, "
 "effects, or duplicating an entire clip along with its keyframes. Paste will "
@@ -1469,7 +1467,7 @@ msgstr ""
 "«поверх» выбранных."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:368
+#: ../clips.rst:365
 msgid ""
 "**Usage Example:** Duplicating a clip with intricate animations for reuse in "
 "different parts of the project."
@@ -1478,7 +1476,7 @@ msgstr ""
 "повторного использования в разных частях проекта."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:369
+#: ../clips.rst:366
 msgid ""
 "**Tip:** Use this preset to replicate animations or effects across multiple "
 "clips."
@@ -1487,7 +1485,7 @@ msgstr ""
 "несколько клипов."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:370
+#: ../clips.rst:367
 msgid ""
 "**Tip:** Selecting multiple clips before pasting, sets keyframes and/or "
 "effects for all clips."
@@ -1496,7 +1494,7 @@ msgstr ""
 "ключевые кадры и/или эффекты для всех выбранных клипов."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:371
+#: ../clips.rst:368
 msgid ""
 "**Tip:** You can copy a single effect, and paste it to multiple selected "
 "clips."
@@ -1505,12 +1503,12 @@ msgstr ""
 "выбранных клипов."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:374
+#: ../clips.rst:371
 msgid "Remove Gaps"
 msgstr "Удалить промежутки"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:375
+#: ../clips.rst:372
 msgid ""
 "The :guilabel:`Remove Gap` and :guilabel:`Remove All Gaps` options help you "
 "quickly eliminate gaps between clips on the timeline by rippling (i.e., "
@@ -1523,7 +1521,7 @@ msgstr ""
 "контекстное меню и активны только при обнаружении промежутков."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:378
+#: ../clips.rst:375
 msgid ""
 "**Remove Gap:** - This option deletes a specific gap between two clips on "
 "the timeline. Right-click on the gap between clips to access the :guilabel:"
@@ -1537,7 +1535,7 @@ msgstr ""
 "возникшего после обрезки или использования инструмента лезвия."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:382
+#: ../clips.rst:379
 msgid ""
 "**Remove All Gaps:** - This option removes all gaps between clips on the "
 "timeline for the entire track. Right-click on the track name to access the :"
@@ -1551,7 +1549,7 @@ msgstr ""
 "из фотографий, где промежутки нежелательны."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:388
+#: ../clips.rst:385
 msgid ""
 "The :guilabel:`Remove Clip` option lets you delete a clip from the timeline. "
 "Removing clips is an essential part of organizing your project and getting "
@@ -1566,7 +1564,7 @@ msgstr ""
 "вариантов автоматической настройки таймлайна."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:392
+#: ../clips.rst:389
 msgid ""
 "**How to Remove a Clip:** To delete a clip, simply select it and press :kbd:"
 "`Delete` on your keyboard, or right-click the clip and choose :guilabel:"
@@ -1581,7 +1579,7 @@ msgstr ""
 "затем удалить их все одновременно."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:396
+#: ../clips.rst:393
 msgid ""
 "**Ripple Delete:** If you want to delete a clip and automatically remove the "
 "empty space (gap) it leaves behind, use the **Ripple Delete** feature by "
@@ -1596,7 +1594,7 @@ msgstr ""
 "непрерывность таймлайна."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:401
+#: ../clips.rst:398
 msgid ""
 "**Remove Gap:** After deleting a clip, if you have gaps left in your "
 "timeline that you want to remove, simply right-click in the empty space and "
@@ -1610,7 +1608,7 @@ msgstr ""
 "клипы и переходы влево, закрывая промежуток и сохраняя плавность видео."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:407
+#: ../clips.rst:404
 msgid ""
 "**Example**: If you have a clip that’s no longer needed, such as an intro "
 "you’ve decided not to use, you can quickly select it and either delete it or "
@@ -1623,7 +1621,7 @@ msgstr ""
 "сдвинуть всё влево для закрытия промежутка."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:409
+#: ../clips.rst:406
 msgid ""
 "For more advanced editing options and shortcuts, refer to the :ref:"
 "`clips_cutting_slicing_ref` section."
@@ -1632,12 +1630,12 @@ msgstr ""
 "разделу :ref:`clips_cutting_slicing_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:412
+#: ../clips.rst:409
 msgid "Effects"
 msgstr "Эффекты"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:413
+#: ../clips.rst:410
 msgid ""
 "In addition to the many clip properties which can be animated and adjusted, "
 "you can also drop an effect directly onto a clip from the effects dock. Each "
@@ -1652,12 +1650,12 @@ msgstr ""
 "анимировать). Полный список эффектов смотрите в :ref:`effects_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:423
+#: ../clips.rst:420
 msgid "Clip Properties"
 msgstr "Свойства клипа"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:424
+#: ../clips.rst:421
 msgid ""
 "Below is a list of clip properties which can be edited, and in most cases, "
 "animated over time. To view a clip's properties, right click and choose :"
@@ -1681,7 +1679,7 @@ msgstr ""
 "изменить его или вставить ключевой кадр для всех."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:432
+#: ../clips.rst:429
 msgid ""
 "Note: Pay close attention to where the play-head (i.e. red playback line) "
 "is. Key frames are automatically created at the current playback position, "
@@ -1692,7 +1690,7 @@ msgstr ""
 "текущей позиции воспроизведения, чтобы быстро создавать анимации."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:435
+#: ../clips.rst:432
 msgid ""
 "When animating clip properties, you can fade a clip from opaque to "
 "transparent with ``alpha``, slide a clip around the screen with "
@@ -1711,35 +1709,35 @@ msgstr ""
 "изменении значения свойства."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:440
+#: ../clips.rst:437
 msgid "See the table below for a full list of clip properties."
 msgstr "Смотрите таблицу ниже для полного списка свойств клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:446
+#: ../clips.rst:443
 msgid "Clip Property Name"
 msgstr "Название свойства клипа"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:446
+#: ../clips.rst:443
 msgid "Type"
 msgstr "Тип"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:448 ../clips.rst:526
+#: ../clips.rst:445 ../clips.rst:523
 msgid "Alpha"
 msgstr "Альфа"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:448 ../clips.rst:449 ../clips.rst:450 ../clips.rst:460
-#: ../clips.rst:461 ../clips.rst:463 ../clips.rst:464 ../clips.rst:467
-#: ../clips.rst:469 ../clips.rst:470 ../clips.rst:471 ../clips.rst:472
-#: ../clips.rst:474 ../clips.rst:475 ../clips.rst:476
+#: ../clips.rst:445 ../clips.rst:446 ../clips.rst:447 ../clips.rst:457
+#: ../clips.rst:458 ../clips.rst:460 ../clips.rst:461 ../clips.rst:464
+#: ../clips.rst:466 ../clips.rst:467 ../clips.rst:468 ../clips.rst:469
+#: ../clips.rst:471 ../clips.rst:472 ../clips.rst:473
 msgid "Key-Frame"
 msgstr "Ключевой кадр"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:448
+#: ../clips.rst:445
 msgid ""
 "Curve representing the alpha for fading the image and adding transparency (1 "
 "to 0)"
@@ -1748,51 +1746,51 @@ msgstr ""
 "прозрачности (от 1 до 0)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:449 ../clips.rst:534
+#: ../clips.rst:446 ../clips.rst:531
 msgid "Channel Filter"
 msgstr "Фильтр канала"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:449
+#: ../clips.rst:446
 msgid ""
 "A number representing an audio channel to filter (clears all other channels)"
 msgstr "Номер аудиоканала для фильтрации (очищает все остальные каналы)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:450 ../clips.rst:542
+#: ../clips.rst:447 ../clips.rst:539
 msgid "Channel Mapping"
 msgstr "Отображение канала"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:450
+#: ../clips.rst:447
 msgid ""
 "A number representing an audio channel to output (only works when filtering "
 "a channel)"
 msgstr "Номер аудиоканала для вывода (работает только при фильтрации канала)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:451 ../clips.rst:550
+#: ../clips.rst:448 ../clips.rst:547
 msgid "Frame Number"
 msgstr "Номер кадра"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:451 ../clips.rst:452 ../clips.rst:455 ../clips.rst:456
-#: ../clips.rst:457 ../clips.rst:462 ../clips.rst:468
+#: ../clips.rst:448 ../clips.rst:449 ../clips.rst:452 ../clips.rst:453
+#: ../clips.rst:454 ../clips.rst:459 ../clips.rst:465
 msgid "Enum"
 msgstr "Перечисление"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:451
+#: ../clips.rst:448
 msgid "The format to display the frame number (if any)"
 msgstr "Формат отображения номера кадра (если есть)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:452 ../clips.rst:483
+#: ../clips.rst:449 ../clips.rst:480
 msgid "Composite (Blend Mode)"
 msgstr "Композит (режим наложения)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:452
+#: ../clips.rst:449
 msgid ""
 "The blend mode used to composite this clip into lower layers. Default is "
 "**Normal**. See :ref:`clip_composite_ref`."
@@ -1801,17 +1799,17 @@ msgstr ""
 "слоями. По умолчанию — **Normal**. Смотрите :ref:`clip_composite_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:453 ../clips.rst:557
+#: ../clips.rst:450 ../clips.rst:554
 msgid "Duration"
 msgstr "Длительность"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:453 ../clips.rst:454 ../clips.rst:466 ../clips.rst:473
+#: ../clips.rst:450 ../clips.rst:451 ../clips.rst:463 ../clips.rst:470
 msgid "Float"
 msgstr "Вещественное число"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:453
+#: ../clips.rst:450
 msgid ""
 "The length of the clip (in seconds). Read-only property. This is calculated "
 "by: End - Start."
@@ -1819,22 +1817,22 @@ msgstr ""
 "Длина клипа (в секундах). Только для чтения. Вычисляется как: Конец - Начало."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:454 ../clips.rst:565
+#: ../clips.rst:451 ../clips.rst:562
 msgid "End"
 msgstr "Конец"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:454
+#: ../clips.rst:451
 msgid "The end trimming position of the clip (in seconds)"
 msgstr "Позиция обрезки клипа с конца (в секундах)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:455 ../clips.rst:573
+#: ../clips.rst:452 ../clips.rst:570
 msgid "Gravity"
 msgstr "Гравитация"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:455
+#: ../clips.rst:452
 msgid ""
 "The gravity of a clip determines where it snaps to its parent (details below)"
 msgstr ""
@@ -1842,12 +1840,12 @@ msgstr ""
 "(подробности ниже)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:456 ../clips.rst:590
+#: ../clips.rst:453 ../clips.rst:587
 msgid "Enable Audio"
 msgstr "Включить аудио"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:456
+#: ../clips.rst:453
 msgid ""
 "An optional override to determine if this clip has audio (-1=undefined, "
 "0=no, 1=yes)"
@@ -1856,12 +1854,12 @@ msgstr ""
 "(-1=неопределено, 0=нет, 1=да)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:457 ../clips.rst:598
+#: ../clips.rst:454 ../clips.rst:595
 msgid "Enable Video"
 msgstr "Включить видео"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:457
+#: ../clips.rst:454
 msgid ""
 "An optional override to determine if this clip has video (-1=undefined, "
 "0=no, 1=yes)"
@@ -1870,17 +1868,17 @@ msgstr ""
 "(-1=неопределено, 0=нет, 1=да)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:458 ../clips.rst:606
+#: ../clips.rst:455 ../clips.rst:603
 msgid "ID"
 msgstr "ID"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:458 ../clips.rst:465
+#: ../clips.rst:455 ../clips.rst:462
 msgid "String"
 msgstr "Строка"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:458
+#: ../clips.rst:455
 msgid ""
 "A randomly generated GUID (globally unique identifier) assigned to each "
 "clip. Read-only property."
@@ -1889,17 +1887,17 @@ msgstr ""
 "присвоенный каждому клипу. Только для чтения."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:459 ../clips.rst:614
+#: ../clips.rst:456 ../clips.rst:611
 msgid "Track"
 msgstr "Дорожка"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:459
+#: ../clips.rst:456
 msgid "Int"
 msgstr "Целое число"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:459
+#: ../clips.rst:456
 msgid ""
 "The layer which holds the clip (higher tracks are rendered on top of lower "
 "tracks)"
@@ -1908,12 +1906,12 @@ msgstr ""
 "поверх нижних)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:460
+#: ../clips.rst:457
 msgid "Location X"
 msgstr "Положение X"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:460
+#: ../clips.rst:457
 msgid ""
 "Curve representing the relative X position in percent based on the gravity "
 "(-1 to 1)"
@@ -1922,12 +1920,12 @@ msgstr ""
 "основанное на гравитации (от -1 до 1)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:461
+#: ../clips.rst:458
 msgid "Location Y"
 msgstr "Положение Y"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:461
+#: ../clips.rst:458
 msgid ""
 "Curve representing the relative Y position in percent based on the gravity "
 "(-1 to 1)"
@@ -1936,12 +1934,12 @@ msgstr ""
 "основанное на гравитации (от -1 до 1)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:462 ../clips.rst:634
+#: ../clips.rst:459 ../clips.rst:631
 msgid "Volume Mixing"
 msgstr "Смешивание громкости"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:462
+#: ../clips.rst:459
 msgid ""
 "The volume mixing choices control how volume is adjusted before mixing "
 "(None=don't adjust volume of this clip, Reduce=lower the volume to 80%, "
@@ -1953,12 +1951,12 @@ msgstr ""
 "одновременных клипов, подробности ниже)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:463
+#: ../clips.rst:460
 msgid "Origin X"
 msgstr "Точка вращения X"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:463
+#: ../clips.rst:460
 msgid ""
 "Curve representing the rotation origin point, X position in percent (-1 to 1)"
 msgstr ""
@@ -1966,12 +1964,12 @@ msgstr ""
 "до 1)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:464
+#: ../clips.rst:461
 msgid "Origin Y"
 msgstr "Точка вращения Y"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:464
+#: ../clips.rst:461
 msgid ""
 "Curve representing the rotation origin point, Y position in percent (-1 to 1)"
 msgstr ""
@@ -1979,12 +1977,12 @@ msgstr ""
 "1)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:465
+#: ../clips.rst:462
 msgid "Parent"
 msgstr "Родитель"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:465
+#: ../clips.rst:462
 msgid ""
 "The parent object to this clip, which makes many of these keyframe values "
 "initialize to the parent value"
@@ -1993,12 +1991,12 @@ msgstr ""
 "кадров инициализируются значениями родителя"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:466 ../clips.rst:673
+#: ../clips.rst:463 ../clips.rst:670
 msgid "Position"
 msgstr "Позиция"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:466
+#: ../clips.rst:463
 msgid ""
 "The position of the clip on the timeline (in seconds, 0.0 is the beginning "
 "of the timeline)"
@@ -2006,22 +2004,22 @@ msgstr ""
 "Позиция клипа на временной шкале (в секундах, 0.0 — начало временной шкалы)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:467 ../clips.rst:682
+#: ../clips.rst:464 ../clips.rst:679
 msgid "Rotation"
 msgstr "Вращение"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:467
+#: ../clips.rst:464
 msgid "Curve representing the rotation (0 to 360)"
 msgstr "Кривая, представляющая вращение (от 0 до 360)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:468 ../clips.rst:697
+#: ../clips.rst:465 ../clips.rst:695
 msgid "Scale"
 msgstr "Масштаб"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:468
+#: ../clips.rst:465
 msgid ""
 "The scale determines how a clip should be resized to fit its parent (details "
 "below)"
@@ -2030,61 +2028,61 @@ msgstr ""
 "соответствовать родителю (подробности ниже)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:469
+#: ../clips.rst:466
 msgid "Scale X"
 msgstr "Масштаб X"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:469
+#: ../clips.rst:466
 msgid "Curve representing the horizontal scaling in percent (0 to 1)"
 msgstr ""
 "Кривая, представляющая горизонтальное масштабирование в процентах (от 0 до 1)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:470
+#: ../clips.rst:467
 msgid "Scale Y"
 msgstr "Масштаб Y"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:470
+#: ../clips.rst:467
 msgid "Curve representing the vertical scaling in percent (0 to 1)"
 msgstr ""
 "Кривая, представляющая вертикальное масштабирование в процентах (от 0 до 1)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:471
+#: ../clips.rst:468
 msgid "Shear X"
 msgstr "Сдвиг X"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:471
+#: ../clips.rst:468
 msgid "Curve representing X shear angle in degrees (-45.0=left, 45.0=right)"
 msgstr ""
 "Кривая, представляющая угол сдвига по X в градусах (-45.0=влево, 45.0=вправо)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:472
+#: ../clips.rst:469
 msgid "Shear Y"
 msgstr "Сдвиг Y"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:472
+#: ../clips.rst:469
 msgid "Curve representing Y shear angle in degrees (-45.0=down, 45.0=up)"
 msgstr ""
 "Кривая, представляющая угол сдвига по Y в градусах (-45.0=вниз, 45.0=вверх)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:473 ../clips.rst:731
+#: ../clips.rst:470 ../clips.rst:729
 msgid "Start"
 msgstr "Начало"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:473
+#: ../clips.rst:470
 msgid "The start trimming position of the clip (in seconds)"
 msgstr "Позиция начала обрезки клипа (в секундах)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:474
+#: ../clips.rst:471
 msgid ""
 "Curve representing the frames over time to play (used for speed and "
 "direction of video)"
@@ -2093,7 +2091,7 @@ msgstr ""
 "для скорости и направления видео)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:475
+#: ../clips.rst:472
 msgid ""
 "Curve representing the volume for fading audio quieter/louder, mute, or "
 "adjusting levels (0 to 1)"
@@ -2102,32 +2100,32 @@ msgstr ""
 "отключения или регулировки уровней (от 0 до 1)"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:476 ../clips.rst:776
+#: ../clips.rst:473 ../clips.rst:774
 msgid "Wave Color"
 msgstr "Цвет волны"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:476
+#: ../clips.rst:473
 msgid "Curve representing the color of the audio waveform"
 msgstr "Кривая, представляющая цвет аудиоволны"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:477 ../clips.rst:783
+#: ../clips.rst:474 ../clips.rst:781
 msgid "Waveform"
 msgstr "Волновая форма"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:477
+#: ../clips.rst:474
 msgid "Bool"
 msgstr "Булево"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:477
+#: ../clips.rst:474
 msgid "Should a waveform be used instead of the clip's image"
 msgstr "Использовать ли волновую форму вместо изображения клипа"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:484
+#: ../clips.rst:481
 msgid ""
 "The :guilabel:`Composite (Blend Mode)` property controls **how the pixels of "
 "this clip mix with the clips on lower tracks**. If you are new to this, "
@@ -2140,12 +2138,12 @@ msgstr ""
 "добавления эффекта."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:487
+#: ../clips.rst:484
 msgid "**Beginner tips**"
 msgstr "**Советы для начинающих**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:489
+#: ../clips.rst:486
 msgid ""
 "Want to **brighten** light effects, flares, or smoke over a dark scene? Try "
 "**Screen** or **Add**."
@@ -2154,7 +2152,7 @@ msgstr ""
 "Попробуйте **Screen** или **Add**."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:490
+#: ../clips.rst:487
 msgid ""
 "Want to **darken** or place a texture over footage (paper grain, grids, "
 "shadows)? Try **Multiply** or **Color Burn**."
@@ -2163,7 +2161,7 @@ msgstr ""
 "сетки, тени)? Попробуйте **Multiply** или **Color Burn**."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:491
+#: ../clips.rst:488
 msgid ""
 "Want **more contrast** without crushing blacks and whites too much? Try "
 "**Overlay** or **Soft Light**."
@@ -2172,7 +2170,7 @@ msgstr ""
 "Попробуйте **Overlay** или **Soft Light**."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:492
+#: ../clips.rst:489
 msgid ""
 "Want a **creative/inverted look** or to line things up? Try **Difference** "
 "or **Exclusion**."
@@ -2181,99 +2179,99 @@ msgstr ""
 "**Difference** или **Exclusion**."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:494
+#: ../clips.rst:491
 msgid "**Common modes (recommended)**"
 msgstr "**Распространённые режимы (рекомендуется)**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:500
+#: ../clips.rst:497
 msgid "Mode"
 msgstr "Режим"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:500
+#: ../clips.rst:497
 msgid "What it does"
 msgstr "Описание"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:502
+#: ../clips.rst:499
 msgid "Normal"
 msgstr "Нормальный"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:502
+#: ../clips.rst:499
 msgid "Standard alpha compositing. Respects transparency from the clip."
 msgstr "Стандартное альфа-смешивание. Учитывает прозрачность клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:503
+#: ../clips.rst:500
 msgid "Darken"
 msgstr "Затемнение"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:503
+#: ../clips.rst:500
 msgid "Chooses the darker pixel from the two layers, per channel."
 msgstr "Выбирает более тёмный пиксель из двух слоёв по каждому каналу."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:504
+#: ../clips.rst:501
 msgid "Multiply"
 msgstr "Умножение"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:504
+#: ../clips.rst:501
 msgid "Multiplies colors. Darkens and helps textures sit on top of footage."
 msgstr "Умножает цвета. Затемняет и помогает текстурам накладываться на видео."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:505
+#: ../clips.rst:502
 msgid "Color Burn"
 msgstr "Цветовой выжиг"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:505
+#: ../clips.rst:502
 msgid "Pushes shadows darker and boosts contrast; can clip to black."
 msgstr "Усиливает тени и контраст; может привести к обрезке до чёрного."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:506
+#: ../clips.rst:503
 msgid "Lighten"
 msgstr "Осветление"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:506
+#: ../clips.rst:503
 msgid "Chooses the lighter pixel from the two layers, per channel."
 msgstr "Выбирает более светлый пиксель из двух слоёв по каждому каналу."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:507
+#: ../clips.rst:504
 msgid "Screen"
 msgstr "Экран"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:507
+#: ../clips.rst:504
 msgid "The opposite of Multiply. Brightens; great for light, glow, fire, fog."
 msgstr ""
 "Противоположность умножению. Осветляет; отлично подходит для света, "
 "свечения, огня, тумана."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:508
+#: ../clips.rst:505
 msgid "Color Dodge"
 msgstr "Цветовой выгорание"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:508
+#: ../clips.rst:505
 msgid "Brightens highlights strongly; can blow out to white."
 msgstr "Сильно осветляет блики; может привести к выгоранию до белого."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:509
+#: ../clips.rst:506
 msgid "Add"
 msgstr "Сложение"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:509
+#: ../clips.rst:506
 msgid ""
 "Adds pixel values. Strong brightening; clips at white. Also called *Linear "
 "Dodge (Add)*."
@@ -2282,12 +2280,12 @@ msgstr ""
 "Также называется *Linear Dodge (Add)*."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:510
+#: ../clips.rst:507
 msgid "Overlay"
 msgstr "Наложение"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:510
+#: ../clips.rst:507
 msgid ""
 "Mix of Multiply and Screen using the lower layer to decide. Adds punchy "
 "contrast."
@@ -2296,34 +2294,34 @@ msgstr ""
 "Добавляет выразительный контраст."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:511
+#: ../clips.rst:508
 msgid "Soft Light"
 msgstr "Мягкий свет"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:511
+#: ../clips.rst:508
 msgid "Gentle contrast curve; softer than Overlay."
 msgstr "Мягкая кривая контраста; мягче, чем Наложение."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:512
+#: ../clips.rst:509
 msgid "Hard Light"
 msgstr "Жёсткий свет"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:512
+#: ../clips.rst:509
 msgid "Stronger, edgy contrast using the upper layer to drive the change."
 msgstr ""
 "Более сильный, резкий контраст с использованием верхнего слоя для управления "
 "изменением."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:513
+#: ../clips.rst:510
 msgid "Difference"
 msgstr "Разница"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:513
+#: ../clips.rst:510
 msgid ""
 "Absolute difference between layers. Creates inverted/psychedelic colors; "
 "useful for alignment."
@@ -2332,22 +2330,22 @@ msgstr ""
 "цвета; полезно для выравнивания."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:514
+#: ../clips.rst:511
 msgid "Exclusion"
 msgstr "Исключение"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:514
+#: ../clips.rst:511
 msgid "Softer version of Difference with less contrast."
 msgstr "Более мягкая версия Разницы с меньшим контрастом."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:517
+#: ../clips.rst:514
 msgid "**Notes**"
 msgstr "**Примечания**"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:519
+#: ../clips.rst:516
 msgid ""
 "Blend modes affect **color**, while alpha (the :guilabel:`Alpha` property) "
 "affects **transparency**. You can use both."
@@ -2356,7 +2354,7 @@ msgstr ""
 "влияет на **прозрачность**. Можно использовать оба."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:520
+#: ../clips.rst:517
 msgid ""
 "Some modes can create very bright or very dark results. If needed, lower "
 "the :guilabel:`Alpha` property to soften."
@@ -2365,7 +2363,7 @@ msgstr ""
 "При необходимости уменьшите свойство :guilabel:`Alpha` для смягчения."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:521
+#: ../clips.rst:518
 msgid ""
 "The exact look of Multiply/Screen/Overlay family is best when project colors "
 "are in a linear color space."
@@ -2374,7 +2372,7 @@ msgstr ""
 "использовании линейного цветового пространства проекта."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:527
+#: ../clips.rst:524
 msgid ""
 "The :guilabel:`Alpha` property is a key-frame curve that represents the "
 "alpha value, determining fading and transparency of the image in the clip. "
@@ -2386,7 +2384,7 @@ msgstr ""
 "(полностью прозрачный)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:530
+#: ../clips.rst:527
 msgid ""
 "**Usage Example:** Applying a gradual fade-in or fade-out effect to smoothly "
 "transition clips."
@@ -2395,7 +2393,7 @@ msgstr ""
 "исчезновения для плавного перехода между клипами."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:531
+#: ../clips.rst:528
 msgid ""
 "**Tip:** Use keyframes to create complex fading patterns, such as fading in "
 "and then fading out for a ghostly effect."
@@ -2405,7 +2403,7 @@ msgstr ""
 "эффекта."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:535
+#: ../clips.rst:532
 msgid ""
 "The :guilabel:`Channel Filter` property is a key-frame curve used for audio "
 "manipulation. It specifies a single audio channel to be filtered while "
@@ -2416,7 +2414,7 @@ msgstr ""
 "при этом все остальные каналы отключаются."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:538
+#: ../clips.rst:535
 msgid ""
 "**Usage Example:** Isolating and enhancing specific audio elements, like "
 "isolating vocals from a song."
@@ -2425,7 +2423,7 @@ msgstr ""
 "например, выделение вокала из песни."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:539
+#: ../clips.rst:536
 msgid ""
 "**Tip:** Combine with the \"Channel Mapping\" property to route the filtered "
 "channel to a specific audio output."
@@ -2434,7 +2432,7 @@ msgstr ""
 "отфильтрованного канала на конкретный аудиовыход."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:543
+#: ../clips.rst:540
 msgid ""
 "The :guilabel:`Channel Mapping` property is a key-frame curve that defines "
 "the output audio channel for the clip. This property works in conjunction "
@@ -2447,7 +2445,7 @@ msgstr ""
 "выходном сигнале."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:546
+#: ../clips.rst:543
 msgid ""
 "**Usage Example:** Keeping the filtered channel's audio while discarding "
 "others for an unconventional audio mix."
@@ -2456,7 +2454,7 @@ msgstr ""
 "удалении остальных для создания необычного аудиомикса."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:547
+#: ../clips.rst:544
 msgid ""
 "**Tip:** Experiment with mapping different channels to create unique audio "
 "effects, like panning sounds between speakers."
@@ -2465,7 +2463,7 @@ msgstr ""
 "уникальных аудиоэффектов, например, панорамирования звука между колонками."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:551
+#: ../clips.rst:548
 msgid ""
 "The :guilabel:`Frame Number` property specifies the format in which the "
 "frame numbers are displayed within the clip, if applicable."
@@ -2474,7 +2472,7 @@ msgstr ""
 "внутри клипа, если применимо."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:553
+#: ../clips.rst:550
 msgid ""
 "**Usage Example:** Displaying frame numbers in the top left corner of the "
 "clip, as either absolute frame number or relative to the start of the clip."
@@ -2483,7 +2481,7 @@ msgstr ""
 "клипа, как абсолютных, так и относительно начала клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:554
+#: ../clips.rst:551
 msgid ""
 "**Tip:** This can help with identifying precise frame numbers or "
 "troubleshooting a problem."
@@ -2492,7 +2490,7 @@ msgstr ""
 "проблем."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:558
+#: ../clips.rst:555
 msgid ""
 "The :guilabel:`Duration` property is a float value indicating the length of "
 "the clip in seconds. This is a Read-only property. This is calculated by: "
@@ -2505,7 +2503,7 @@ msgstr ""
 "клипа :guilabel:`Start` и/или :guilabel:`End`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:561
+#: ../clips.rst:558
 msgid ""
 "**Usage Example:** Inspect the duration of a clip to ensure it fits a "
 "specific time slot in the project."
@@ -2514,7 +2512,7 @@ msgstr ""
 "он подходит под определённый временной интервал в проекте."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:562
+#: ../clips.rst:559
 msgid ""
 "**Tip:** Consider using the \"Duration\" property for clips that need to "
 "match specific time intervals, such as dialogue or scenes."
@@ -2524,7 +2522,7 @@ msgstr ""
 "сценам."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:566
+#: ../clips.rst:563
 msgid ""
 "The :guilabel:`End` property defines the trimming point at the end of the "
 "clip in seconds, allowing you to control how much of the clip is visible in "
@@ -2536,7 +2534,7 @@ msgstr ""
 "этого свойства повлияет на свойство :guilabel:`Duration` клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:569
+#: ../clips.rst:566
 msgid ""
 "**Usage Example:** Trimming the end of a clip to align with another clip or "
 "trimming off unwanted sections of the clip."
@@ -2545,7 +2543,7 @@ msgstr ""
 "клипом или удаления нежелательных частей клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:570
+#: ../clips.rst:567
 msgid ""
 "**Tip:** Combine the \"Start\" and \"End\" properties to precisely control "
 "the visible portion of the clip."
@@ -2554,7 +2552,7 @@ msgstr ""
 "видимой части клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:574
+#: ../clips.rst:571
 msgid ""
 "The :guilabel:`Gravity` clip property sets the initial display position "
 "coordinate (X,Y) for the clip, after it has been scaled (see :ref:"
@@ -2571,7 +2569,7 @@ msgstr ""
 "Варианты гравитации:"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:579
+#: ../clips.rst:576
 msgid ""
 "**Top Left** – The top and left edges of the clip align with the top and "
 "left edges of the screen"
@@ -2580,7 +2578,7 @@ msgstr ""
 "левым краями экрана"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:580
+#: ../clips.rst:577
 msgid ""
 "**Top Center** – The top edge of the clip aligns with the top edge of the "
 "screen; the clip is horizontally centered on the screen."
@@ -2589,7 +2587,7 @@ msgstr ""
 "клип горизонтально центрирован на экране."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:581
+#: ../clips.rst:578
 msgid ""
 "**Top Right** – The top and right edges of the clip align with the top and "
 "right edges of the screen"
@@ -2598,7 +2596,7 @@ msgstr ""
 "правым краями экрана"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:582
+#: ../clips.rst:579
 msgid ""
 "**Left** – The left edge of the clip aligns with the left edge of the "
 "screen; the clip is vertically centered on the screen."
@@ -2607,7 +2605,7 @@ msgstr ""
 "вертикально центрирован на экране."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:583
+#: ../clips.rst:580
 msgid ""
 "**Center** (default) – The clip is centered horizontally and vertically on "
 "the screen."
@@ -2616,7 +2614,7 @@ msgstr ""
 "экране."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:584
+#: ../clips.rst:581
 msgid ""
 "**Right** – The right edge of the clip aligns with the right edge of the "
 "screen; the clip is vertically centered on the screen."
@@ -2625,7 +2623,7 @@ msgstr ""
 "вертикально центрирован на экране."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:585
+#: ../clips.rst:582
 msgid ""
 "**Bottom Left** – The bottom and left edges of the clip align with the "
 "bottom and left edges of the screen"
@@ -2634,7 +2632,7 @@ msgstr ""
 "краями экрана"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:586
+#: ../clips.rst:583
 msgid ""
 "**Bottom Center** – The bottom edge of the clip aligns with the bottom edge "
 "of the screen; the clip is horizontally centered on the screen."
@@ -2643,7 +2641,7 @@ msgstr ""
 "клип горизонтально центрирован на экране."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:587
+#: ../clips.rst:584
 msgid ""
 "**Bottom Right** – The bottom and right edges of the clip align with the "
 "bottom and right edges of the screen"
@@ -2652,7 +2650,7 @@ msgstr ""
 "правым краями экрана"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:591
+#: ../clips.rst:588
 msgid ""
 "The :guilabel:`Enable Audio` property is an enumeration that overrides the "
 "default audio setting for the clip. Possible values: -1 (undefined), 0 (no "
@@ -2663,7 +2661,7 @@ msgstr ""
 "(неопределено), 0 (без звука), 1 (звук включён)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:594
+#: ../clips.rst:591
 msgid ""
 "**Usage Example:** Turning off unwanted audio for a clip, like ambient noise."
 msgstr ""
@@ -2671,7 +2669,7 @@ msgstr ""
 "фонового шума."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:595
+#: ../clips.rst:592
 msgid ""
 "**Tip:** Use this property to control audio playback for specific clips, "
 "especially clips which have no useful audio track."
@@ -2680,7 +2678,7 @@ msgstr ""
 "отдельных клипах, особенно если в них нет полезной аудиодорожки."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:599
+#: ../clips.rst:596
 msgid ""
 "The :guilabel:`Enable Video` property is an enumeration that overrides the "
 "default video setting for the clip. Possible values: -1 (undefined), 0 (no "
@@ -2691,7 +2689,7 @@ msgstr ""
 "(неопределено), 0 (без видео), 1 (видео включено)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:602
+#: ../clips.rst:599
 msgid ""
 "**Usage Example:** Disabling the video of a clip while retaining its audio "
 "for creating audio-only sequences."
@@ -2700,7 +2698,7 @@ msgstr ""
 "создания аудиодорожек."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:603
+#: ../clips.rst:600
 msgid ""
 "**Tip:** This property can be helpful when creating scenes with audio "
 "commentary or voiceovers."
@@ -2709,7 +2707,7 @@ msgstr ""
 "озвучкой."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:607
+#: ../clips.rst:604
 msgid ""
 "The :guilabel:`ID` property holds a randomly generated GUID (Globally Unique "
 "Identifier) assigned to each clip, ensuring its uniqueness. This is a Read-"
@@ -2721,7 +2719,7 @@ msgstr ""
 "создании клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:610
+#: ../clips.rst:607
 msgid ""
 "**Usage Example:** Referencing specific clips within custom scripts or "
 "automation tasks."
@@ -2730,7 +2728,7 @@ msgstr ""
 "скриптах или автоматизации."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:611
+#: ../clips.rst:608
 msgid ""
 "**Tip:** While typically managed behind the scenes, understanding clip IDs "
 "can aid in advanced project customization."
@@ -2739,7 +2737,7 @@ msgstr ""
 "клипов помогает в продвинутой настройке проекта."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:615
+#: ../clips.rst:612
 msgid ""
 "The :guilabel:`Track` property is an integer indicating the layer on which "
 "the clip is placed. Clips on higher tracks are rendered above those on lower "
@@ -2750,7 +2748,7 @@ msgstr ""
 "нижних."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:618
+#: ../clips.rst:615
 msgid ""
 "**Usage Example:** Arranging clips in different layers for creating visual "
 "depth and complexity."
@@ -2759,7 +2757,7 @@ msgstr ""
 "визуальной глубины и сложности."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:619
+#: ../clips.rst:616
 msgid ""
 "**Tip:** Use higher tracks for elements that need to appear above others, "
 "like text overlays or graphics."
@@ -2768,12 +2766,12 @@ msgstr ""
 "отображаться поверх других, например, текстовых наложений или графики."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:624
+#: ../clips.rst:621
 msgid "Location X and Location Y"
 msgstr "Положение X и Положение Y"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:625
+#: ../clips.rst:622
 msgid ""
 "The :guilabel:`Location X` and :guilabel:`Location Y` properties are key-"
 "frame curves that determine the relative position of the clip, expressed in "
@@ -2786,7 +2784,7 @@ msgstr ""
 "до 1. См. :ref:`clip_transform_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:628
+#: ../clips.rst:625
 msgid ""
 "**Usage Example:** Animating a clip's movement across the screen using key-"
 "frame curves for both X and Y locations."
@@ -2795,7 +2793,7 @@ msgstr ""
 "кривых ключевых кадров для координат X и Y."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:629
+#: ../clips.rst:626
 msgid ""
 "**Tip:** Combine with gravity settings to create dynamic animations that "
 "adhere to consistent alignment rules."
@@ -2804,7 +2802,7 @@ msgstr ""
 "динамичных анимаций с соблюдением правил выравнивания."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:635
+#: ../clips.rst:632
 msgid ""
 "The :guilabel:`Volume Mixing` property is an enumeration that controls how "
 "volume adjustments are applied before mixing audio. Options: None (no "
@@ -2817,7 +2815,7 @@ msgstr ""
 "зависимости от количества одновременно воспроизводимых клипов)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:638
+#: ../clips.rst:635
 msgid ""
 "**Usage Example:** Automatically lowering the volume of a clip to allow "
 "background music to stand out more prominently."
@@ -2826,7 +2824,7 @@ msgstr ""
 "фоновая музыка звучала более выразительно."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:639
+#: ../clips.rst:636
 msgid ""
 "**Tip:** Experiment with volume mixing options to achieve balanced audio "
 "levels across different clips."
@@ -2835,7 +2833,7 @@ msgstr ""
 "достижения сбалансированного звука между клипами."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:641
+#: ../clips.rst:638
 msgid ""
 "Mixing audio involves adjusting volume levels so that **overlapping clips** "
 "do not become too loud (creating audio distortion and loss of audio "
@@ -2852,7 +2850,7 @@ msgstr ""
 "перекрывающихся клипов. Доступны следующие методы смешивания аудио:"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:645
+#: ../clips.rst:642
 msgid ""
 "**None** - Make no adjustments to volume data before mixing audio. "
 "Overlapping clips will combine audio at full volume, with no reduction."
@@ -2862,7 +2860,7 @@ msgstr ""
 "снижения."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:646
+#: ../clips.rst:643
 msgid ""
 "**Average** - Automatically divide the volume of each clip based on the # of "
 "overlapping clips. For example, 2 overlapping clips would each have 50% "
@@ -2873,7 +2871,7 @@ msgstr ""
 "громкость каждого будет 50%, при 3 — по 33% и так далее..."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:647
+#: ../clips.rst:644
 msgid ""
 "**Reduce** - Automatically reduce overlapping clips volume by 20%, which "
 "reduces the likelihood of becoming too loud, but does not always prevent "
@@ -2888,7 +2886,7 @@ msgstr ""
 "допустимый максимум и вызвать искажения."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:649
+#: ../clips.rst:646
 msgid ""
 "For quickly adjusting the volume of a clip, you can use the simple :guilabel:"
 "`Volume Preset` menu. See :ref:`clip_presets_ref`. For precise control over "
@@ -2901,12 +2899,12 @@ msgstr ""
 "frame`. См. :ref:`clip_volume_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:653
+#: ../clips.rst:650
 msgid "Origin X and Origin Y"
 msgstr "Точка вращения X и Точка вращения Y"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:654
+#: ../clips.rst:651
 msgid ""
 "The :guilabel:`Origin X` and :guilabel:`Origin Y` properties are key-frame "
 "curves that define the rotation origin point's position in percentages. The "
@@ -2917,7 +2915,7 @@ msgstr ""
 "от -1 до 1. См. :ref:`clip_transform_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:657
+#: ../clips.rst:654
 msgid ""
 "**Usage Example:** Rotating a clip around a specific point, such as a "
 "character's pivot joint."
@@ -2926,7 +2924,7 @@ msgstr ""
 "например, сустава персонажа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:658
+#: ../clips.rst:655
 msgid ""
 "**Tip:** Set the origin point to achieve controlled and natural-looking "
 "rotations during animations."
@@ -2935,12 +2933,12 @@ msgstr ""
 "вращений в анимациях."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:663
+#: ../clips.rst:660
 msgid "Clip Parent"
 msgstr "Родитель клипа"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:664
+#: ../clips.rst:661
 msgid ""
 "The :guilabel:`Parent` property of a clip sets the initial keyframe values "
 "to the parent object. For example, if many clips all point to the same "
@@ -2957,7 +2955,7 @@ msgstr ""
 "вместе."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:668
+#: ../clips.rst:665
 msgid ""
 "**Usage Example:** Creating complex animations by establishing a parent-"
 "child relationship between clips."
@@ -2966,7 +2964,7 @@ msgstr ""
 "отношений родитель-потомок между клипами."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:669
+#: ../clips.rst:666
 msgid ""
 "**Tip:** Utilize this property to propagate changes from the parent clip to "
 "child clips for consistent animations."
@@ -2975,7 +2973,7 @@ msgstr ""
 "родительского клипа к дочерним для согласованных анимаций."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:670
+#: ../clips.rst:667
 msgid ""
 "**Tip:** You can also set the ``parent`` attribute to a ``Tracker`` or "
 "``Object Detector`` tracked object, so the clip follows the location and "
@@ -2986,7 +2984,7 @@ msgstr ""
 "масштабом отслеживаемого объекта. См. также :ref:`effect_parent_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:674
+#: ../clips.rst:671
 msgid ""
 "The :guilabel:`Position` property determines the clip's position on the "
 "timeline in seconds, with 0.0 indicating the beginning."
@@ -2995,7 +2993,7 @@ msgstr ""
 "секундах, где 0.0 — начало."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:676
+#: ../clips.rst:673
 msgid ""
 "**Usage Example:** Timing a clip's appearance to coincide with specific "
 "events in the project."
@@ -3004,7 +3002,7 @@ msgstr ""
 "событиями в проекте."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:677
+#: ../clips.rst:674
 msgid ""
 "**Tip:** Adjust the position to synchronize clips with audio cues or visual "
 "elements."
@@ -3013,7 +3011,7 @@ msgstr ""
 "аудиосигналами или визуальными элементами."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:683
+#: ../clips.rst:680
 msgid ""
 "The :guilabel:`Rotation` property is a key-frame curve that controls the "
 "rotation angle of the clip, ranging from -360 to 360 degrees. You can rotate "
@@ -3028,7 +3026,7 @@ msgstr ""
 "анимируйте вращение. См. :ref:`clip_transform_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:687
+#: ../clips.rst:684
 msgid ""
 "**Usage Example:** Simulating a spinning effect by animating the rotation "
 "curve."
@@ -3037,7 +3035,7 @@ msgstr ""
 "поворота."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:688
+#: ../clips.rst:685
 msgid ""
 "**Tip:** Use this property creatively for effects like rotating text or "
 "emulating camera movement."
@@ -3046,7 +3044,17 @@ msgstr ""
 "вращение текста или имитация движения камеры."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:689
+#: ../clips.rst:686
+msgid ""
+"**Tip:** In the preview transform tool, hold :kbd:`Ctrl` or :kbd:`Shift` "
+"while rotating to snap to 15-degree increments."
+msgstr ""
+"**Совет:** В инструменте трансформации предварительного просмотра "
+"удерживайте :kbd:`Ctrl` или :kbd:`Shift` при повороте, чтобы зафиксировать "
+"угол с шагом 15 градусов."
+
+# Translated with gpt-4.1-mini
+#: ../clips.rst:687
 msgid ""
 "**Tip:** Experiment with rotating your video at different angles, not just "
 "90 or 180 degrees. Sometimes a slight tilt or a specific angle can add "
@@ -3059,7 +3067,7 @@ msgstr ""
 "или повествовательных целей."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:690
+#: ../clips.rst:688
 msgid ""
 "**Tip:** After rotating your video, you might end up with black bars around "
 "the edges. Consider cropping and resizing the video to eliminate these bars "
@@ -3070,7 +3078,7 @@ msgstr ""
 "полосы и сохранить аккуратный, профессиональный вид."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:691
+#: ../clips.rst:689
 msgid ""
 "**Tip:** If you're dealing with vertical videos that are meant to be watched "
 "on horizontal screens, rotate them by 90 degrees and then scale them up to "
@@ -3083,7 +3091,7 @@ msgstr ""
 "места на экране."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:692
+#: ../clips.rst:690
 msgid ""
 "**Tip:** If the horizon in your video appears slanted due to camera tilt, "
 "use rotation to level it. This is particularly important for landscape shots "
@@ -3094,7 +3102,7 @@ msgstr ""
 "кадров, чтобы сохранить профессиональный и эстетичный вид."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:698
+#: ../clips.rst:696
 msgid ""
 "The :guilabel:`Scale` property is the initial resizing or scaling method "
 "used to display the picture of a clip, which may be further adjusted by the :"
@@ -3113,7 +3121,7 @@ msgstr ""
 "чёрных полос по краям. Методы масштабирования:"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:703
+#: ../clips.rst:701
 msgid ""
 "**Best Fit** (default) – The clip is as large as possible without changing "
 "the aspect ratio. This might result in black bars on certain sides of the "
@@ -3124,7 +3132,7 @@ msgstr ""
 "сторон изображения, если соотношение сторон не совпадает с размером проекта."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:704
+#: ../clips.rst:702
 msgid ""
 "**Crop** – The aspect ratio of the clip is maintained while the clip is "
 "enlarged to fill the entire screen, even if that means some of it will be "
@@ -3139,7 +3147,7 @@ msgstr ""
 "изображения будет обрезана."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:705
+#: ../clips.rst:703
 msgid ""
 "**None** – The clip is displayed in its original size. This is not "
 "recommended, since the picture will not scale correctly if you change the "
@@ -3150,7 +3158,7 @@ msgstr ""
 "профиля проекта (или размера проекта)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:706
+#: ../clips.rst:704
 msgid ""
 "**Stretch** – The clip is stretched to fill the entire screen, changing the "
 "aspect ratio if necessary."
@@ -3159,12 +3167,12 @@ msgstr ""
 "необходимости изменяя соотношение сторон."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:711
+#: ../clips.rst:709
 msgid "Scale X and Scale Y"
 msgstr "Scale X и Scale Y"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:712
+#: ../clips.rst:710
 msgid ""
 "The :guilabel:`Scale X` and :guilabel:`Scale Y` properties are key-frame "
 "curves that represent horizontal and vertical scaling in percentages, "
@@ -3180,7 +3188,7 @@ msgstr ""
 "проблемы с производительностью."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:716
+#: ../clips.rst:714
 msgid ""
 "**Usage Example:** Creating a zoom-in effect by animating the Scale X and "
 "Scale Y curves simultaneously."
@@ -3189,7 +3197,7 @@ msgstr ""
 "анимации кривых Scale X и Scale Y."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:717
+#: ../clips.rst:715
 msgid ""
 "**Tip:** Scale the image larger than the screen, only revealing a portion of "
 "the video. This is a simple way to crop a portion of the video."
@@ -3198,7 +3206,7 @@ msgstr ""
 "видео. Это простой способ обрезать часть видео."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:718
+#: ../clips.rst:716
 msgid ""
 "**Tip:** Scale the horizontal and vertical elements separately, to squash "
 "and stretch the image in fun ways."
@@ -3207,7 +3215,7 @@ msgstr ""
 "чтобы сжимать и растягивать изображение интересными способами."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:719
+#: ../clips.rst:717
 msgid ""
 "**Tip:** Combine scaling with rotation and location properties for dynamic "
 "transformations."
@@ -3216,12 +3224,12 @@ msgstr ""
 "для динамических трансформаций."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:722
+#: ../clips.rst:720
 msgid "Shear X and Shear Y"
 msgstr "Shear X и Shear Y"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:723
+#: ../clips.rst:721
 msgid ""
 "The :guilabel:`Shear X` and :guilabel:`Shear Y` properties are key-frame "
 "curves that represent X and Y shear angles in degrees, respectively. See :"
@@ -3235,7 +3243,7 @@ msgstr ""
 "сбои и проблемы с производительностью."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:727
+#: ../clips.rst:725
 msgid ""
 "**Usage Example:** Adding a dynamic tilt effect to a clip by animating the "
 "shear angles."
@@ -3244,7 +3252,7 @@ msgstr ""
 "путем анимации углов сдвига."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:728
+#: ../clips.rst:726
 msgid ""
 "**Tip:** Use shear properties for creating slanted or skewed animations."
 msgstr ""
@@ -3252,7 +3260,7 @@ msgstr ""
 "анимаций."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:732
+#: ../clips.rst:730
 msgid ""
 "The :guilabel:`Start` property defines the trimming point at the beginning "
 "of the clip in seconds. Changing this property will impact the :guilabel:"
@@ -3263,7 +3271,7 @@ msgstr ""
 "клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:735
+#: ../clips.rst:733
 msgid ""
 "**Usage Example:** Removing the initial portion of a clip to focus on a "
 "specific scene or moment."
@@ -3272,7 +3280,7 @@ msgstr ""
 "на конкретной сцене или моменте."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:736
+#: ../clips.rst:734
 msgid ""
 "**Tip:** Utilize the \"Start\" property in combination with the \"End\" "
 "property for precise clip trimming."
@@ -3281,7 +3289,7 @@ msgstr ""
 "обрезки клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:742
+#: ../clips.rst:740
 msgid ""
 "The :guilabel:`Time` property is a key-frame curve that represents frames "
 "played over time, affecting the speed and direction of the video. You can "
@@ -3305,7 +3313,7 @@ msgstr ""
 "все остальные ключевые кадры."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:749
+#: ../clips.rst:747
 msgid ""
 "Optionally, you can manually set key-frame values for the :guilabel:`Time` "
 "property. The value represents the `frame number` at the position of the key-"
@@ -3332,7 +3340,7 @@ msgstr ""
 "сек длительность клипа X 24.0 FPS проекта = 1128 всего кадров``)."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:757
+#: ../clips.rst:755
 msgid ""
 "This allows for some very complex scenarios, such as jump cutting inside a "
 "clip, reversing a portion of a clip, slowing down a portion of a clip, "
@@ -3345,7 +3353,7 @@ msgstr ""
 "`animation_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:761
+#: ../clips.rst:759
 msgid ""
 "**Usage Example:** Creating a slow-motion or time-lapse effect by modifying "
 "the time curve."
@@ -3354,7 +3362,7 @@ msgstr ""
 "путём изменения кривой времени."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:762
+#: ../clips.rst:760
 msgid ""
 "**Tip:** Adjust the \"Time\" property to control video playback speed for "
 "dramatic visual impact."
@@ -3363,7 +3371,7 @@ msgstr ""
 "воспроизведения видео и создания драматического визуального эффекта."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:768
+#: ../clips.rst:766
 msgid ""
 "The :guilabel:`Volume` property is a key-frame curve that controls audio "
 "volume or level, ranging from 0 (mute) to 1 (full volume). For automatic "
@@ -3375,7 +3383,7 @@ msgstr ""
 "`clip_volume_mixing_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:771
+#: ../clips.rst:769
 msgid ""
 "**Usage Example:** Gradually fading out background music as dialogue becomes "
 "more prominent, or increasing or lowering the volume of a clip."
@@ -3384,7 +3392,7 @@ msgstr ""
 "усиления диалогов или увеличение/уменьшение громкости клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:772
+#: ../clips.rst:770
 msgid ""
 "**Tip:** Combine multiple volume key-frames for nuanced audio adjustments, "
 "such as ducking the level of the music when dialog is spoken."
@@ -3393,7 +3401,7 @@ msgstr ""
 "настройки звука, например, понижение уровня музыки во время речи."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:773
+#: ../clips.rst:771
 msgid ""
 "**Tip:** For **quickly** adjusting the volume of a clip you can use the "
 "simple :guilabel:`Volume Preset` menu. See :ref:`clip_presets_ref`."
@@ -3402,7 +3410,7 @@ msgstr ""
 "простое меню :guilabel:`Volume Preset`. См. :ref:`clip_presets_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:777
+#: ../clips.rst:775
 msgid ""
 "The :guilabel:`Wave Color` property is a key-frame curve that represents the "
 "color of the audio waveform visualization."
@@ -3411,7 +3419,7 @@ msgstr ""
 "цвет визуализации аудиоволны."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:779
+#: ../clips.rst:777
 msgid ""
 "**Usage Example:** Matching the waveform color to the project's overall "
 "visual theme."
@@ -3420,7 +3428,7 @@ msgstr ""
 "визуальной темой проекта."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:780
+#: ../clips.rst:778
 msgid ""
 "**Tip:** Experiment with different colors to enhance the visual appeal of "
 "the waveform or animate the color over time."
@@ -3429,7 +3437,7 @@ msgstr ""
 "привлекательность волны или анимировать цвет со временем."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:784
+#: ../clips.rst:782
 msgid ""
 "The :guilabel:`Waveform` property is a boolean that determines whether a "
 "waveform visualization is used instead of the clip's image."
@@ -3438,7 +3446,7 @@ msgstr ""
 "ли визуализация волны вместо изображения клипа."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:786
+#: ../clips.rst:784
 msgid ""
 "**Usage Example:** Displaying an audio waveform in place of the video for "
 "visually highlighting audio patterns."
@@ -3447,7 +3455,7 @@ msgstr ""
 "визуального выделения аудиопаттернов."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:787
+#: ../clips.rst:785
 msgid ""
 "**Tip:** Use waveform visualization for emphasizing music beats or voice "
 "modulations."
@@ -3456,12 +3464,12 @@ msgstr ""
 "или модуляций голоса."
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:790
+#: ../clips.rst:788
 msgid "More Information"
 msgstr "Дополнительная информация"
 
 # Translated with gpt-4.1-mini
-#: ../clips.rst:791
+#: ../clips.rst:789
 msgid "For more info on key frames and animation, see :ref:`animation_ref`."
 msgstr ""
 "Для получения дополнительной информации о ключевых кадрах и анимации см. :"

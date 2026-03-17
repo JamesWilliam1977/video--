@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
@@ -189,3 +191,144 @@ msgstr ""
 "ফ্রিজ ঘটাতে হবে। ক্র্যাশ ঘটলে, MSYS2 MinGW64 টার্মিনালে ফিরে যান এবং নিম্নলিখিত "
 "কমান্ডগুলোর একটি চালান (টাইপ করে ENTER চাপুন)। সাধারণত প্রথম কমান্ড হলো ``bt``, "
 "যা ``backtrace`` নির্দেশ করে। আরও কমান্ড নিচে তালিকাভুক্ত আছে।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:117
+msgid "High DPI / 4K Monitors"
+msgstr "উচ্চ DPI / 4K মনিটর"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:119
+msgid ""
+"OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) "
+"monitors, ensuring that the interface looks sharp and is easily readable on "
+"displays with various DPI settings. This support is particularly helpful on "
+"4K monitors and other high-resolution displays."
+msgstr ""
+"OpenShot Video Editor উচ্চ DPI (ডটস পার ইঞ্চি) মনিটরগুলির জন্য শক্তিশালী সমর্থন "
+"প্রদান করে, যা নিশ্চিত করে যে ইন্টারফেসটি তীক্ষ্ণ দেখায় এবং বিভিন্ন DPI সেটিংস সহ "
+"ডিসপ্লেগুলিতে সহজে পড়া যায়। এই সমর্থনটি বিশেষত 4K মনিটর এবং অন্যান্য উচ্চ-"
+"রেজোলিউশনের ডিসপ্লেগুলিতে সহায়ক।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:125
+msgid "Per Monitor DPI Awareness"
+msgstr "প্রতি মনিটর DPI সচেতনতা"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:127
+msgid ""
+"OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its "
+"scaling dynamically depending on the DPI settings of each connected monitor. "
+"This helps provide a consistent experience across different displays."
+msgstr ""
+"OpenShot প্রতি মনিটর ভিত্তিতে DPI সচেতন, অর্থাৎ এটি প্রতিটি সংযুক্ত মনিটরের DPI "
+"সেটিংস অনুযায়ী তার স্কেলিং গতিশীলভাবে সামঞ্জস্য করতে পারে। এটি বিভিন্ন ডিসপ্লের "
+"মধ্যে একটি সঙ্গতিপূর্ণ অভিজ্ঞতা প্রদান করতে সাহায্য করে।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:132
+msgid "DPI Scaling on Windows"
+msgstr "Windows-এ DPI স্কেলিং"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:134
+msgid ""
+"On Windows, OpenShot rounds the scaling factor to the nearest whole value to "
+"maintain visual integrity. This helps avoid visual artifacts in the UI and "
+"keeps interface elements crisp and well-aligned. Due to this rounding, some "
+"scaling options can lead to larger fonts and UI elements than expected."
+msgstr ""
+"Windows-এ, OpenShot ভিজ্যুয়াল অখণ্ডতা বজায় রাখতে স্কেলিং ফ্যাক্টরকে নিকটতম পূর্ণ "
+"সংখ্যায় রাউন্ড করে। এটি UI-তে ভিজ্যুয়াল ত্রুটি এড়াতে সাহায্য করে এবং ইন্টারফেস "
+"উপাদানগুলোকে স্পষ্ট ও সঠিকভাবে সজ্জিত রাখে। এই রাউন্ডিংয়ের কারণে, কিছু স্কেলিং "
+"বিকল্প প্রত্যাশার চেয়ে বড় ফন্ট এবং UI উপাদান তৈরি করতে পারে।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:139
+msgid "**125% scaling** rounds to **100%**"
+msgstr "**১২৫% স্কেলিং** রাউন্ড হয়ে হয় **১০০%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:140
+msgid "**150% scaling** rounds to **200%**"
+msgstr "**১৫০% স্কেলিং** রাউন্ড হয়ে হয় **২০০%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:143
+msgid "Workarounds for Fine-Grained Adjustment"
+msgstr "সূক্ষ্ম সামঞ্জস্যের জন্য বিকল্প পদ্ধতি"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:145
+msgid ""
+"While rounding helps maintain a clean interface, there are workarounds for "
+"users who require more precise control over scaling. These methods are **not "
+"recommended** due to potential visual artifacts:"
+msgstr ""
+"যদিও রাউন্ডিং পরিষ্কার ইন্টারফেস বজায় রাখতে সাহায্য করে, স্কেলিংয়ের উপর আরও "
+"সুনির্দিষ্ট নিয়ন্ত্রণ প্রয়োজন এমন ব্যবহারকারীদের জন্য বিকল্প পদ্ধতি রয়েছে। সম্ভাব্য "
+"ভিজ্যুয়াল ত্রুটির কারণে এই পদ্ধতিগুলো **প্রস্তাবিত নয়**:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:149
+msgid "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+msgstr "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:151
+msgid ""
+"Setting this environment variable can disable rounding and allow more "
+"precise scaling."
+msgstr ""
+"এই পরিবেশ ভেরিয়েবল সেট করলে রাউন্ডিং নিষ্ক্রিয় করা যায় এবং আরও সুনির্দিষ্ট স্কেলিং "
+"সম্ভব হয়।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:152
+msgid ""
+"**Note:** This may cause visual artifacts, particularly in the timeline, and "
+"is not recommended."
+msgstr ""
+"**দ্রষ্টব্য:** এটি বিশেষ করে টাইমলাইনে ভিজ্যুয়াল ত্রুটি সৃষ্টি করতে পারে এবং এটি "
+"প্রস্তাবিত নয়।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:154
+msgid "**QT_SCALE_FACTOR=1.25** (or similar value)"
+msgstr "**QT_SCALE_FACTOR=1.25** (অথবা অনুরূপ মান)"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:156
+msgid ""
+"Manually setting the scale factor can provide finer adjustments to the font "
+"and UI scaling."
+msgstr ""
+"স্কেল ফ্যাক্টর ম্যানুয়ালি সেট করলে ফন্ট এবং UI স্কেলিংয়ে সূক্ষ্ম সামঞ্জস্য প্রদান করা যায়।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:157
+msgid ""
+"This can also be set via Preferences (User Interface Scale), but expect "
+"border/line issues on Windows with fractional scales."
+msgstr ""
+"এটি পছন্দসমূহ (User Interface Scale) এর মাধ্যমে ও সেট করা যেতে পারে, তবে "
+"Windows-এ ভগ্নাংশ স্কেলে বর্ডার/লাইন সমস্যা আশা করুন।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:158
+msgid ""
+"**Note:** This method can also lead to visual artifacts and make OpenShot "
+"harder to use."
+msgstr ""
+"**দ্রষ্টব্য:** এই পদ্ধতিও ভিজ্যুয়াল ত্রুটি সৃষ্টি করতে পারে এবং OpenShot ব্যবহারে "
+"অসুবিধা সৃষ্টি করতে পারে।"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:160
+msgid ""
+"For more info on adjusting these environment variables, please visit https://"
+"github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."
+msgstr ""
+"এই পরিবেশ ভেরিয়েবলগুলি সামঞ্জস্য করার বিষয়ে আরও তথ্যের জন্য, অনুগ্রহ করে https://"
+"github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large এ যান।"

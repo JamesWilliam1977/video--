@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:23
@@ -61,151 +63,144 @@ msgstr ""
 "को संशोधित करने की अनुमति देता है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:123
-#: ../preferences.rst:170 ../preferences.rst:246
+#: ../preferences.rst:46 ../preferences.rst:107 ../preferences.rst:130
+#: ../preferences.rst:152 ../preferences.rst:199 ../preferences.rst:229
+#: ../preferences.rst:285 ../preferences.rst:315
 msgid "Setting"
 msgstr "सेटिंग"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:48 ../preferences.rst:101
-#: ../preferences.rst:105 ../preferences.rst:123
+#: ../preferences.rst:47 ../preferences.rst:50 ../preferences.rst:107
+#: ../preferences.rst:130 ../preferences.rst:132 ../preferences.rst:152
+#: ../preferences.rst:316
 msgid "Default"
 msgstr "डिफ़ॉल्ट"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:170
-#: ../preferences.rst:246 ../preferences.rst:257
+#: ../preferences.rst:48 ../preferences.rst:107 ../preferences.rst:130
+#: ../preferences.rst:199 ../preferences.rst:230 ../preferences.rst:285
+#: ../preferences.rst:296 ../preferences.rst:317
 msgid "Description"
 msgstr "विवरण"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:48
+#: ../preferences.rst:49
 msgid "Language"
 msgstr "भाषा"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:48
+#: ../preferences.rst:51
 msgid "Choose your preferred language for OpenShot menus and windows"
 msgstr "OpenShot मेनू और विंडो के लिए अपनी पसंदीदा भाषा चुनें"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
+#: ../preferences.rst:52
 msgid "Default Theme"
 msgstr "डिफ़ॉल्ट थीम"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
-msgid "Humanity:Dark"
-msgstr "Humanity:Dark"
+#: ../preferences.rst:53
+msgid "Cosmic Dusk"
+msgstr "कॉस्मिक डस्क"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
-msgid "Choose your theme for OpenShot, either Light, Dark or None"
+#: ../preferences.rst:54
+#, fuzzy
+msgid "Choose your theme for OpenShot"
 msgstr "OpenShot के लिए अपनी थीम चुनें, जो Light, Dark या None हो सकती है"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
-msgid "User Interface Scale"
-msgstr "यूजर इंटरफ़ेस स्केल"
+#: ../preferences.rst:55
+#, fuzzy
+msgid "Default Profile"
+msgstr "डिफ़ॉल्ट वीडियो प्रोफ़ाइल"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
-msgid "1.0"
-msgstr "1.0"
+#: ../preferences.rst:56
+#, fuzzy
+msgid "HD 720p 30 fps"
+msgstr "HD 720P 30 fps"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
-msgid ""
-"Adjust the size of OpenShot's interface (restart required; range 1–3; known "
-"issues on Windows)"
-msgstr ""
-"OpenShot के इंटरफ़ेस का आकार समायोजित करें (पुनः आरंभ आवश्यक; सीमा 1–3; Windows पर "
-"ज्ञात समस्याएँ)"
+#: ../preferences.rst:57
+#, fuzzy
+msgid "Select the default profile for new projects and exports"
+msgstr "प्रीव्यू और एक्सपोर्ट डिफ़ॉल्ट के लिए प्रोफ़ाइल चुनें"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "Image Length (seconds)"
-msgstr "छवि की लंबाई (सेकंड में)"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "10.00"
-msgstr "10.00"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "How long the image displays on the screen when added to the timeline"
-msgstr "टाइमलाइन में जोड़ने पर छवि स्क्रीन पर कितनी देर दिखाई देती है"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "Volume"
-msgstr "वॉल्यूम"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "75.00"
-msgstr "75.00"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "The percentage of the volume of the clip when added to the timeline"
-msgstr "टाइमलाइन में क्लिप जोड़ने पर वॉल्यूम का प्रतिशत"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:53
+#: ../preferences.rst:58
 msgid "Blender Command (path)"
 msgstr "Blender कमांड (पथ)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:53 ../preferences.rst:54
-msgid "*<blank>*"
-msgstr "*<blank>*"
+#: ../preferences.rst:59
+msgid "blender"
+msgstr "ब्लेंडर"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:53
+#: ../preferences.rst:60
 msgid "The path to the binary for Blender (version 5.0+)"
 msgstr "Blender (संस्करण 5.0+) के बाइनरी का पथ"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:54
+#: ../preferences.rst:61
 msgid "Advanced Title Editor (path)"
 msgstr "उन्नत शीर्षक संपादक (पथ)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:54
+#: ../preferences.rst:62
+msgid "inkscape"
+msgstr "इंक्सकेप"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:63
 msgid "The path to the binary for Inkscape"
 msgstr "Inkscape के बाइनरी का पथ"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "Show Export Dialog when Finished"
-msgstr "समाप्त होने पर निर्यात संवाद दिखाएँ"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "*<checked>*"
-msgstr "*<checked>*"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "Displays the Export Video windows after the export is finished"
-msgstr "निर्यात पूरा होने के बाद Export Video विंडो दिखाता है"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:59
+#: ../preferences.rst:66
 msgid "Themes"
 msgstr "थीम"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:60
+#: ../preferences.rst:67
 msgid ""
 "OpenShot comes with 3 standard themes, which change the look and feel of the "
 "program."
 msgstr "OpenShot के साथ 3 मानक थीम आती हैं, जो प्रोग्राम के रूप और अनुभव को बदलती हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:62
+#: ../preferences.rst:69
+#, fuzzy
+msgid ""
+"**Cosmic Dusk:** [Default Theme] A bluish theme with a more modern UI "
+"design, enhancing the visual aesthetics of the editor. This theme features "
+"shades of blue and purple, giving the interface a contemporary and dynamic "
+"feel. It combines modern aesthetics with functionality, offering a fresh and "
+"visually appealing workspace for video editing."
+msgstr ""
+"**Cosmic Dusk:** एक नीला-सा थीम जिसमें अधिक आधुनिक UI डिज़ाइन है, जो संपादक की दृश्य "
+"सौंदर्यशास्त्र को बढ़ाता है। इस थीम में नीले और बैंगनी रंग के शेड्स होते हैं, जो इंटरफ़ेस को "
+"समकालीन और गतिशील अनुभव देते हैं। यह आधुनिक सौंदर्यशास्त्र को कार्यक्षमता के साथ जोड़ती है, "
+"वीडियो संपादन के लिए एक ताजा और दृश्य रूप से आकर्षक कार्यक्षेत्र प्रदान करती है।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:70
+msgid ""
+"**Humanity Dark:** A dark theme with dark gray tones, providing a modern and "
+"sleek look. This theme is designed for users who prefer working in low-light "
+"conditions or who enjoy a more subdued and professional appearance. The dark "
+"gray background reduces glare and eye strain, making it suitable for "
+"extended editing sessions."
+msgstr ""
+"**Humanity Dark:** एक डार्क थीम जिसमें डार्क ग्रे टोन होते हैं, जो एक आधुनिक और चिकना "
+"लुक प्रदान करता है। यह थीम उन उपयोगकर्ताओं के लिए डिज़ाइन की गई है जो कम रोशनी की "
+"स्थितियों में काम करना पसंद करते हैं या जो अधिक संयमित और पेशेवर दिखावट पसंद करते हैं। डार्क "
+"ग्रे पृष्ठभूमि चमक और आंखों पर तनाव को कम करती है, जिससे यह लंबे संपादन सत्रों के लिए उपयुक्त "
+"है।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:71
 msgid ""
 "**Retro:** A light theme that offers a classic and clean appearance. This "
 "theme uses light gray and white tones, making it ideal for users who prefer "
@@ -218,41 +213,12 @@ msgstr ""
 "रोशनी वाले वातावरण में आंखों के लिए आसान है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:63
-msgid ""
-"**Humanity Dark:** [Default Theme] A dark theme with dark gray tones, "
-"providing a modern and sleek look. This theme is designed for users who "
-"prefer working in low-light conditions or who enjoy a more subdued and "
-"professional appearance. The dark gray background reduces glare and eye "
-"strain, making it suitable for extended editing sessions."
-msgstr ""
-"**Humanity Dark:** [डिफ़ॉल्ट थीम] एक डार्क थीम जिसमें गहरे ग्रे रंग होते हैं, जो एक "
-"आधुनिक और चिकना रूप प्रदान करती है। यह थीम उन उपयोगकर्ताओं के लिए डिज़ाइन की गई है जो "
-"कम रोशनी की स्थिति में काम करना पसंद करते हैं या जो अधिक संयमित और पेशेवर दिखावट पसंद "
-"करते हैं। गहरा ग्रे पृष्ठभूमि चमक और आंखों की थकान को कम करता है, जिससे यह लंबी संपादन "
-"सत्रों के लिए उपयुक्त है।"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:64
-msgid ""
-"**Cosmic Dusk:** A bluish theme with a more modern UI design, enhancing the "
-"visual aesthetics of the editor. This theme features shades of blue and "
-"purple, giving the interface a contemporary and dynamic feel. It combines "
-"modern aesthetics with functionality, offering a fresh and visually "
-"appealing workspace for video editing."
-msgstr ""
-"**Cosmic Dusk:** एक नीला-सा थीम जिसमें अधिक आधुनिक UI डिज़ाइन है, जो संपादक की दृश्य "
-"सौंदर्यशास्त्र को बढ़ाता है। इस थीम में नीले और बैंगनी रंग के शेड्स होते हैं, जो इंटरफ़ेस को "
-"समकालीन और गतिशील अनुभव देते हैं। यह आधुनिक सौंदर्यशास्त्र को कार्यक्षमता के साथ जोड़ती है, "
-"वीडियो संपादन के लिए एक ताजा और दृश्य रूप से आकर्षक कार्यक्षेत्र प्रदान करती है।"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:69
+#: ../preferences.rst:76
 msgid "Restoring Defaults"
 msgstr "डिफ़ॉल्ट सेटिंग्स पुनर्स्थापित करना"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:70
+#: ../preferences.rst:77
 msgid ""
 "In OpenShot, each preferences category (or tab) in the Preferences window "
 "has a **Restore Defaults** button that allows you to easily reset the values "
@@ -266,7 +232,7 @@ msgstr ""
 "कीबोर्ड शॉर्टकट्स, को रीसेट करना चाहते हैं बिना अपनी अन्य कस्टम सेटिंग्स को प्रभावित किए।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:74
+#: ../preferences.rst:81
 msgid ""
 "**Where to Find the Restore Defaults Button:** Each category or tab in the "
 "Preferences window has a **Restore Defaults** button located in the bottom "
@@ -280,7 +246,7 @@ msgstr ""
 "हैं, तो बटन पर लिखा होगा **Restore Defaults: Keyboard**।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:79
+#: ../preferences.rst:86
 msgid ""
 "**How It Works:** Only the settings in the currently selected category will "
 "be restored to their default values. This selective restoration makes it "
@@ -291,7 +257,7 @@ msgstr ""
 "बनाता है बिना अन्य को प्रभावित किए।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:83
+#: ../preferences.rst:90
 msgid ""
 "**Tip for Beginners:** - If you're not sure about a change you've made in a "
 "particular category, don’t hesitate to use the **Restore Defaults** button. "
@@ -304,92 +270,188 @@ msgstr ""
 "सरल तरीका है बिना आपकी समग्र सेटअप को प्रभावित किए।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:89
+#: ../preferences.rst:96
+msgid "Timeline"
+msgstr "टाइमलाइन"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:100
+msgid ""
+"The Timeline tab controls default timeline behavior, clip/transition "
+"insertion defaults, and whether to use the new timeline backend or the "
+"legacy web-based timeline."
+msgstr ""
+"टाइमलाइन टैब डिफ़ॉल्ट टाइमलाइन व्यवहार, क्लिप/ट्रांज़िशन सम्मिलन डिफ़ॉल्ट और यह कि नया "
+"टाइमलाइन बैकएंड या पुराना वेब-आधारित टाइमलाइन उपयोग करना है या नहीं, को नियंत्रित "
+"करता है।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:109
+msgid "Thumbnail Style"
+msgstr "थंबनेल शैली"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:109
+msgid "Entire Clip"
+msgstr "पूरा क्लिप"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:109
+msgid "Thumbnail density for the new timeline backend"
+msgstr "नए टाइमलाइन बैकएंड के लिए थंबनेल घनत्व"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:110
+msgid "Image Length (seconds)"
+msgstr "छवि की लंबाई (सेकंड में)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:110 ../preferences.rst:111
+msgid "10.00"
+msgstr "10.00"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:110
+msgid "Default duration for still images added to the timeline"
+msgstr "टाइमलाइन में जोड़ी गई स्थिर छवियों की डिफ़ॉल्ट अवधि"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:111
+#, fuzzy
+msgid "Transition Length (seconds)"
+msgstr "छवि की लंबाई (सेकंड में)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:111
+msgid "Default duration for newly added transitions"
+msgstr "नए जोड़े गए ट्रांज़िशन की डिफ़ॉल्ट अवधि"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112
+msgid "Auto-Transition (overlap clips)"
+msgstr "स्वचालित ट्रांज़िशन (क्लिप ओवरलैप)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112 ../preferences.rst:154 ../preferences.rst:328
+#: ../preferences.rst:334
+msgid "Enabled"
+msgstr "सक्षम"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112
+msgid "Automatically create transitions when clips overlap"
+msgstr "जब क्लिप ओवरलैप करें तो स्वचालित रूप से ट्रांज़िशन बनाएं"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113
+msgid "Enable Legacy Timeline (web-based)"
+msgstr "लीगेसी टाइमलाइन (वेब-आधारित) सक्षम करें"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113 ../preferences.rst:325 ../preferences.rst:331
+#, fuzzy
+msgid "Disabled"
+msgstr "सक्षम"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113
+msgid "Use the legacy web timeline (WebEngine/WebKit auto-select)"
+msgstr "लीगेसी वेब टाइमलाइन का उपयोग करें (WebEngine/WebKit स्वचालित चयन)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:119
 msgid "Preview"
 msgstr "पूर्वावलोकन"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:93
+#: ../preferences.rst:123
 msgid ""
-"The Preview tab of the Preferences window allows you to set a **Default "
-"Video Profile** for your project, if you have a preference for a specific "
-"editing profile. More about :ref:`profiles_ref`. Also, you can adjust the "
-"real-time preview audio settings, for example, which audio device and sample "
-"rate to use."
+"The Preview tab of the Preferences window controls real-time preview audio "
+"behavior, including device selection, sample rate, channels, buffering, and "
+"playback volume."
 msgstr ""
-"प्रेफरेंस विंडो के प्रीव्यू टैब में आप अपने प्रोजेक्ट के लिए एक **डिफ़ॉल्ट वीडियो प्रोफ़ाइल** सेट "
-"कर सकते हैं, यदि आपके पास किसी विशिष्ट संपादन प्रोफ़ाइल के लिए प्राथमिकता है। अधिक "
-"जानकारी के लिए :ref:`profiles_ref` देखें। साथ ही, आप रियल-टाइम प्रीव्यू ऑडियो सेटिंग्स "
-"को समायोजित कर सकते हैं, जैसे कि कौन सा ऑडियो डिवाइस और सैंपल रेट उपयोग करना है।"
+"प्रेफरेंस विंडो का प्रीव्यू टैब रियल-टाइम प्रीव्यू ऑडियो व्यवहार को नियंत्रित करता है, जिसमें "
+"डिवाइस चयन, सैंपल रेट, चैनल, बफ़रिंग, और प्लेबैक वॉल्यूम शामिल हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "Default Video Profile"
-msgstr "डिफ़ॉल्ट वीडियो प्रोफ़ाइल"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "HD 720P 30 fps"
-msgstr "HD 720P 30 fps"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "Select the profile for Preview and Export defaults"
-msgstr "प्रीव्यू और एक्सपोर्ट डिफ़ॉल्ट के लिए प्रोफ़ाइल चुनें"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid "Playback Audio Buffer Size"
-msgstr "प्लेबैक ऑडियो बफ़र आकार"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid "512"
-msgstr "512"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid ""
-"Adjust how many audio samples must be buffered before audio playback begins. "
-"Allowed range of values is 128 to 4096. NOTE: If you are experiencing a "
-"large drift or delay in audio playback, try setting this value lower."
-msgstr ""
-"समायोजित करें कि ऑडियो प्लेबैक शुरू होने से पहले कितने ऑडियो सैंपल बफ़र किए जाने चाहिए। "
-"मान्य सीमा 128 से 4096 है। नोट: यदि आप ऑडियो प्लेबैक में बड़ी डिफ्ट या देरी का अनुभव कर "
-"रहे हैं, तो इस मान को कम करने का प्रयास करें।"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:105
+#: ../preferences.rst:132
 msgid "Playback Audio Device"
 msgstr "प्लेबैक ऑडियो डिवाइस"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:106
+#: ../preferences.rst:132
+msgid "Audio output device used during preview playback"
+msgstr "प्रीव्यू प्लेबैक के दौरान उपयोग किया गया ऑडियो आउटपुट डिवाइस"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:133
 msgid "Default Audio Sample Rate"
 msgstr "डिफ़ॉल्ट ऑडियो सैंपल रेट"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:106
-msgid "44100"
+#: ../preferences.rst:133
+#, fuzzy
+msgid "48000"
 msgstr "44100"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:107
+#: ../preferences.rst:133
+#, fuzzy
+msgid "Default preview sample rate"
+msgstr "डिफ़ॉल्ट ऑडियो सैंपल रेट"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:134
 msgid "Default Audio Channels"
 msgstr "डिफ़ॉल्ट ऑडियो चैनल"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:107
+#: ../preferences.rst:134
 msgid "Stereo (2 Channel)"
 msgstr "स्टीरियो (2 चैनल)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:111
+#: ../preferences.rst:134
+msgid "Default preview channel layout"
+msgstr "डिफ़ॉल्ट प्रीव्यू चैनल लेआउट"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:135
+msgid "Playback Audio Buffer Size"
+msgstr "प्लेबैक ऑडियो बफ़र आकार"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:135
+msgid "512"
+msgstr "512"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:135
+msgid "Audio samples buffered before playback begins (128 to 4096)"
+msgstr "प्लेबैक शुरू होने से पहले बफ़र किए गए ऑडियो सैंपल (128 से 4096)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:136
+msgid "Volume"
+msgstr "वॉल्यूम"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:136
+msgid "75"
+msgstr "75"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:136
+msgid "Preview playback volume percentage"
+msgstr "प्रीव्यू प्लेबैक वॉल्यूम प्रतिशत"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
 msgid "Autosave"
 msgstr "ऑटोसेव"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:115
+#: ../preferences.rst:144
 msgid ""
 "Autosave is a feature in OpenShot which automatically saves the current "
 "changes to your project after a specific number of minutes, helping to "
@@ -401,52 +463,47 @@ msgstr ""
 "डेटा हानि के जोखिम या प्रभाव को कम करने में मदद मिलती है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:125
+#: ../preferences.rst:154
 msgid "Enable Autosave"
 msgstr "ऑटोसेव सक्षम करें"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:125
-msgid "Enabled"
-msgstr "सक्षम"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:126
+#: ../preferences.rst:155
 msgid "Autosave Interval (minutes)"
 msgstr "ऑटोसेव अंतराल (मिनट)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:126
+#: ../preferences.rst:155
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:127
+#: ../preferences.rst:156
 msgid "History Limit (# of undo/redo)"
 msgstr "इतिहास सीमा (पूर्ववत/पुनः करें की संख्या)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:127
+#: ../preferences.rst:156
 msgid "15"
 msgstr "15"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:128
+#: ../preferences.rst:157
 msgid "Recovery Limit (# of project copies)"
 msgstr "रिकवरी सीमा (प्रोजेक्ट की प्रतियों की संख्या)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:128
+#: ../preferences.rst:157
 msgid "30"
 msgstr "30"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:132
+#: ../preferences.rst:161
 msgid "Recovery"
 msgstr "रिकवरी"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:134
+#: ../preferences.rst:163
 msgid ""
 "**Before each save**, a compressed ``*.zip`` copy of the current project is "
 "saved in the recovery folder, to further reduce the risk of data loss. The "
@@ -459,7 +516,7 @@ msgstr ""
 "पर स्थित होता है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:138
+#: ../preferences.rst:167
 msgid ""
 "To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:"
 "`File->Recovery` menu on the main window after opening your project. If "
@@ -482,7 +539,7 @@ msgstr ""
 "सकते हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:146
+#: ../preferences.rst:175
 msgid ""
 "To **manually** recover a corrupt or broken ``*.osp`` project file, please "
 "find the most recent copy in the recovery folder, and copy/paste the file "
@@ -502,12 +559,12 @@ msgstr ""
 "जिसे आप पुनर्प्राप्त करना चाहते हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:156
+#: ../preferences.rst:185
 msgid "Cache"
 msgstr "कैश"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:160
+#: ../preferences.rst:189
 msgid ""
 "Cache settings can be adjusted to make real-time playback faster or less CPU "
 "intensive. The cache is used to store image and audio data for each frame of "
@@ -525,12 +582,12 @@ msgstr ""
 "ऑडियो स्मूथली प्लेबैक करने की अनुमति देती हैं। देखें :ref:`playback_ref`।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:172
+#: ../preferences.rst:201
 msgid "Cache Mode"
 msgstr "कैश मोड"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:172
+#: ../preferences.rst:201
 msgid ""
 "Choose between Memory or Disk caching (memory caching is preferred). Disk "
 "caching writes image data to the hard disk for later retrieving, and works "
@@ -541,12 +598,12 @@ msgstr ""
 "करती है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:173
+#: ../preferences.rst:202
 msgid "Cache Limit (MB)"
 msgstr "कैश सीमा (MB)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:173
+#: ../preferences.rst:202
 msgid ""
 "How many MB are set aside for cache related data. Larger numbers are not "
 "always better, since it takes more CPU to generate more frames to fill the "
@@ -556,22 +613,22 @@ msgstr ""
 "कैश भरने के लिए अधिक फ्रेम उत्पन्न करने में अधिक CPU लगता है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:174
+#: ../preferences.rst:203
 msgid "Image Format (Disk Only)"
 msgstr "छवि प्रारूप (केवल डिस्क)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:174
+#: ../preferences.rst:203
 msgid "Image format to store disk cache image data"
 msgstr "डिस्क कैश छवि डेटा संग्रहीत करने के लिए छवि प्रारूप"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:175
+#: ../preferences.rst:204
 msgid "Scale Factor (Disk Only)"
 msgstr "स्केल फैक्टर (केवल डिस्क)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:175
+#: ../preferences.rst:204
 msgid ""
 "Percentage (0.1 to 1.0) to reduce the size of disk based image files stored "
 "in the disk cache. Smaller numbers make writing and reading cached image "
@@ -581,12 +638,12 @@ msgstr ""
 "करता है। छोटे नंबर कैश की गई छवि फ़ाइलों को लिखने और पढ़ने को तेज़ बनाते हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:176
+#: ../preferences.rst:205
 msgid "Image Quality (Disk Only)"
 msgstr "छवि गुणवत्ता (केवल डिस्क)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:176
+#: ../preferences.rst:205
 msgid ""
 "Quality of the image files used in disk cache. The higher compression can "
 "cause more slowness, but results in smaller file sizes."
@@ -595,12 +652,12 @@ msgstr ""
 "है, लेकिन फ़ाइल आकार छोटे होते हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:177
+#: ../preferences.rst:206
 msgid "Cache Pre-roll: Min Frames:"
 msgstr "कैश प्री-रोल: न्यूनतम फ्रेम:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:177
+#: ../preferences.rst:206
 msgid ""
 "Minimum # of frames that must be cached before playback begins. The larger "
 "the #, the larger the wait before playback begins."
@@ -609,12 +666,12 @@ msgstr ""
 "प्लेबैक शुरू होने में उतना ही अधिक इंतजार होगा।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:178
+#: ../preferences.rst:207
 msgid "Cache Pre-roll: Max Frames:"
 msgstr "कैश प्री-रोल: अधिकतम फ्रेम:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:178
+#: ../preferences.rst:207
 msgid ""
 "Maximum # of frames that can be cached during playback (in front of the "
 "playhead). The larger the #, the more CPU is required to cache ahead - vs "
@@ -625,12 +682,12 @@ msgstr ""
 "गई फ्रेम दिखाने के।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:179
+#: ../preferences.rst:208
 msgid "Cache Ahead (Percent):"
 msgstr "कैश आगे (प्रतिशत):"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:179
+#: ../preferences.rst:208
 msgid ""
 "Between 0.0 and 1.0. This represents how much % we cache ahead of the "
 "playhead. For example, 0.5 would cache 50% behind and 50% ahead of the "
@@ -641,15 +698,16 @@ msgstr ""
 "और आगे 80% कैश।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:180
+#: ../preferences.rst:209
 msgid "Cache Max Frames:"
 msgstr "कैश अधिकतम फ्रेम:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:180
+#: ../preferences.rst:209
+#, fuzzy
 msgid ""
 "This is an override on the total allowed frames that can be cached by our "
-"caching thread. It is defaulted to 600 frames, but even if you give a huge "
+"caching thread. It defaults to 900 frames, but even if you give a huge "
 "amount of RAM to OpenShot's cache size, this will override the max # of "
 "frames cached. The reason is... sometimes when the preview window is very "
 "small, and the cache size is set very high, OpenShot might calculate that we "
@@ -667,28 +725,25 @@ msgstr ""
 "भले ही सिस्टम OpenShot को बहुत अधिक RAM प्रदान करे।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:184
-msgid "Debug"
-msgstr "डिबग"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:188
+#: ../preferences.rst:212
 msgid ""
-"Here you can modify how much data should be logged. Normally, *Debug Mode "
-"(verbose)* is off. The default port is 5556. If you want to help improve "
-"OpenShot you can enable **Send Anonymous Metrics and Errors**."
+"OpenShot's default cache settings now target a balanced preview experience: "
+"roughly **50% behind / 50% ahead** of the playhead, **768 MB** cache memory, "
+"and **900** max frames. In practice, this improves scrubbing and seek "
+"behavior while reducing stale preview frames on slower systems."
 msgstr ""
-"यहाँ आप यह संशोधित कर सकते हैं कि कितना डेटा लॉग किया जाना चाहिए। सामान्यतः, *डिबग "
-"मोड (विस्तृत)* बंद रहता है। डिफ़ॉल्ट पोर्ट 5556 है। यदि आप OpenShot को बेहतर बनाने में "
-"मदद करना चाहते हैं, तो आप **गुमनाम मेट्रिक्स और त्रुटियाँ भेजें** सक्षम कर सकते हैं।"
+"OpenShot की डिफ़ॉल्ट कैश सेटिंग्स अब संतुलित प्रीव्यू अनुभव को लक्षित करती हैं: लगभग **50% "
+"पीछे / 50% आगे** प्लेहेड के, **768 MB** कैश मेमोरी, और **900** अधिकतम फ्रेम। व्यवहार में, "
+"यह धीमे सिस्टम पर स्क्रबिंग और सर्च व्यवहार में सुधार करता है और पुराने प्रीव्यू फ्रेम को कम "
+"करता है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:192
+#: ../preferences.rst:218
 msgid "Performance"
 msgstr "प्रदर्शन"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:195
+#: ../preferences.rst:221
 msgid ""
 "Please keep in mind that GPU hardware acceleration is experimental at the "
 "moment. OpenShot supports both decoding and encoding acceleration. For more "
@@ -704,12 +759,114 @@ msgstr ""
 "एन्कोडिंग से तेज नहीं हो सकता।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:212
+#: ../preferences.rst:231
+msgid "Hardware Decoder Mode"
+msgstr "हार्डवेयर डिकोडर मोड"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:232
+msgid ""
+"Select the hardware decoding backend to use. Use :guilabel:`Test` to verify "
+"the selected decoder mode."
+msgstr ""
+"उपयोग करने के लिए हार्डवेयर डिकोडिंग बैकएंड चुनें। चयनित डिकोडर मोड को सत्यापित करने के "
+"लिए :guilabel:`Test` का उपयोग करें।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:233
+msgid "Hardware Decoder Graphics Card"
+msgstr "हार्डवेयर डिकोडर ग्राफिक्स कार्ड"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:234
+msgid "Choose which GPU device is used for hardware decoding."
+msgstr ""
+"निर्धारित करें कि हार्डवेयर डिकोडिंग के लिए कौन सा GPU डिवाइस उपयोग किया जाता है।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:235
+msgid "Hardware Encoder Graphics Card"
+msgstr "हार्डवेयर एन्कोडर ग्राफिक्स कार्ड"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:236
+msgid "Choose which GPU device is used for hardware encoding."
+msgstr ""
+"निर्धारित करें कि हार्डवेयर एन्कोडिंग के लिए कौन सा GPU डिवाइस उपयोग किया जाता है।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:237
+msgid "OMP Threads (0 = Default)"
+msgstr "OMP थ्रेड्स (0 = डिफ़ॉल्ट)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:238
+msgid ""
+"Number of OpenMP worker threads used by performance-sensitive processing. "
+"Use ``0`` to let OpenShot choose automatically."
+msgstr ""
+"परफॉर्मेंस-संवेदनशील प्रोसेसिंग के लिए उपयोग किए गए OpenMP वर्कर थ्रेड्स की संख्या। "
+"OpenShot को स्वचालित रूप से चुनने के लिए ``0`` का उपयोग करें।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:239
+msgid "FFmpeg Threads (0 = Default)"
+msgstr "FFmpeg थ्रेड्स (0 = डिफ़ॉल्ट)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:240
+msgid ""
+"Number of FFmpeg threads used for decoding/encoding. Use ``0`` for automatic "
+"thread selection."
+msgstr ""
+"डिकोडिंग/एन्कोडिंग के लिए उपयोग किए गए FFmpeg थ्रेड्स की संख्या। स्वचालित थ्रेड चयन के "
+"लिए ``0`` का उपयोग करें।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:241
+msgid "Hardware Decoder Max Width (0 = Default)"
+msgstr "हार्डवेयर डिकोडर अधिकतम चौड़ाई (0 = डिफ़ॉल्ट)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:242
+msgid ""
+"Optional maximum width for hardware decoding. Use ``0`` for no explicit "
+"limit."
+msgstr ""
+"हार्डवेयर डिकोडिंग के लिए वैकल्पिक अधिकतम चौड़ाई। कोई स्पष्ट सीमा न रखने के लिए ``0`` "
+"का उपयोग करें।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:243
+msgid "Hardware Decoder Max Height (0 = Default)"
+msgstr "हार्डवेयर डिकोडर अधिकतम ऊंचाई (0 = डिफ़ॉल्ट)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:244
+msgid ""
+"Optional maximum height for hardware decoding. Use ``0`` for no explicit "
+"limit."
+msgstr ""
+"हार्डवेयर डिकोडिंग के लिए वैकल्पिक अधिकतम ऊंचाई। कोई स्पष्ट सीमा न रखने के लिए ``0`` का "
+"उपयोग करें।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:245
+msgid "Use Blender GPU rendering for Animated Titles"
+msgstr "एनिमेटेड टाइटल के लिए Blender GPU रेंडरिंग का उपयोग करें"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:246
+msgid "Enable GPU rendering for Blender-based animated titles."
+msgstr "Blender-आधारित एनिमेटेड टाइटल के लिए GPU रेंडरिंग सक्षम करें।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:251
 msgid "Keyboard"
 msgstr "कीबोर्ड"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:215
+#: ../preferences.rst:254
 msgid ""
 "This section allows you to view and customize hotkeys for various actions in "
 "the application. Here, you can assign and manage multiple shortcuts for the "
@@ -720,7 +877,7 @@ msgstr ""
 "आवश्यकता होने पर डिफ़ॉल्ट शॉर्टकट पुनर्स्थापित कर सकते हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:218
+#: ../preferences.rst:257
 msgid ""
 "**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to "
 "the same action by separating them with a pipe (``|``) delimiter. This "
@@ -732,7 +889,7 @@ msgstr ""
 "जितने चाहें शॉर्टकट कॉन्फ़िगर करने की अनुमति देता है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:221
+#: ../preferences.rst:260
 msgid ""
 "**Immediate Application**: No restart is required after adjusting keyboard "
 "shortcuts. Changes are applied immediately, so you can start using your "
@@ -743,7 +900,7 @@ msgstr ""
 "उपयोग शुरू कर सकते हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:224
+#: ../preferences.rst:263
 msgid ""
 "**Restore Default Shortcuts**: If needed, you can reset all keyboard "
 "shortcuts to their default settings by clicking on the :guilabel:`Restore "
@@ -755,7 +912,7 @@ msgstr ""
 "कीबोर्ड शॉर्टकट को उनकी डिफ़ॉल्ट सेटिंग्स पर रीसेट कर सकते हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:227
+#: ../preferences.rst:266
 msgid ""
 "**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are "
 "any duplicate shortcuts, they will be highlighted in **red** and will not "
@@ -766,7 +923,7 @@ msgstr ""
 "जाता, वे कार्य नहीं करेंगे।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:231
+#: ../preferences.rst:270
 msgid ""
 "For more detailed information on how to use and customize keyboard "
 "shortcuts, see :ref:`keyboard_shortcut_ref`."
@@ -775,12 +932,12 @@ msgstr ""
 "ref:`keyboard_shortcut_ref`।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:234
+#: ../preferences.rst:273
 msgid "Location"
 msgstr "स्थान"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:238
+#: ../preferences.rst:277
 msgid ""
 "Default file path locations for saving/opening projects, importing files, "
 "and exporting videos can be configured here. This can save you time by "
@@ -793,47 +950,47 @@ msgstr ""
 "वर्णित हैं)।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:248
+#: ../preferences.rst:287
 msgid "File Import"
 msgstr "फाइल इम्पोर्ट"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:248
+#: ../preferences.rst:287
 msgid "Default folder to choose when importing a file"
 msgstr "फाइल इम्पोर्ट करते समय चुनने के लिए डिफ़ॉल्ट फ़ोल्डर"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:249
+#: ../preferences.rst:288
 msgid "Save or Open Project"
 msgstr "प्रोजेक्ट सेव या ओपन करें"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:249
+#: ../preferences.rst:288
 msgid "Default folder to choose when saving or opening a project file"
 msgstr "प्रोजेक्ट फाइल सेव या ओपन करते समय चुनने के लिए डिफ़ॉल्ट फ़ोल्डर"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:250
+#: ../preferences.rst:289
 msgid "Video Export"
 msgstr "वीडियो एक्सपोर्ट"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:250
+#: ../preferences.rst:289
 msgid "Default folder to choose when exporting a video"
 msgstr "वीडियो एक्सपोर्ट करते समय चुनने के लिए डिफ़ॉल्ट फ़ोल्डर"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:257
+#: ../preferences.rst:296
 msgid "Values"
 msgstr "मान"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:259
+#: ../preferences.rst:298
 msgid "**Recent Folder**"
 msgstr "**हाल का फ़ोल्डर**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:259
+#: ../preferences.rst:298
 msgid ""
 "The last folder used for this same operation. Project folders, Import "
 "folders, and Export folders are tracked separately."
@@ -842,12 +999,12 @@ msgstr ""
 "और एक्सपोर्ट फ़ोल्डर अलग-अलग ट्रैक किए जाते हैं।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:260
+#: ../preferences.rst:299
 msgid "**Project Folder**"
 msgstr "**प्रोजेक्ट फ़ोल्डर**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:260
+#: ../preferences.rst:299
 msgid ""
 "The current project folder (or the user's home folder, if the project is not "
 "yet saved)"
@@ -856,12 +1013,105 @@ msgstr ""
 "है)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:266
+#: ../preferences.rst:305
+msgid "Advanced"
+msgstr "उन्नत"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:309
+msgid "The Advanced tab includes ComfyUI integration and debugging options."
+msgstr "उन्नत टैब में ComfyUI एकीकरण और डिबगिंग विकल्प शामिल हैं।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:318
+msgid "Comfy UI URL"
+msgstr "Comfy UI URL"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:319
+msgid "``http://127.0.0.1:8188``"
+msgstr "``http://127.0.0.1:8188``"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:320
+msgid "URL of your local or remote ComfyUI server"
+msgstr "आपके स्थानीय या दूरस्थ ComfyUI सर्वर का URL"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:321
+msgid "Debug Mode (Port)"
+msgstr "डिबग मोड (पोर्ट)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:322
+msgid "5556"
+msgstr "5556"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:323
+msgid "Port used by debug logging features"
+msgstr "डिबग लॉगिंग सुविधाओं द्वारा उपयोग किया गया पोर्ट"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:324
+msgid "Debug Mode (Verbose)"
+msgstr "डिबग मोड (विस्तृत)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:326
+msgid "Enable verbose debugging output"
+msgstr "विस्तृत डिबगिंग आउटपुट सक्षम करें"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:327
+msgid "Send Anonymous Metrics and Errors"
+msgstr "गुमनाम मेट्रिक्स और त्रुटियाँ भेजें"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:329
+msgid "Send anonymous telemetry and error reports"
+msgstr "गुमनाम टेलीमेट्री और त्रुटि रिपोर्ट भेजें"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:330
+msgid "Show Playback Performance (FPS)"
+msgstr "प्लेबैक प्रदर्शन दिखाएं (FPS)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:332
+msgid "Display live FPS in preview playback"
+msgstr "प्रीव्यू प्लेबैक में लाइव FPS प्रदर्शित करें"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:333
+msgid "Show Export Dialog when Finished"
+msgstr "समाप्त होने पर निर्यात संवाद दिखाएँ"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:335
+msgid "Display the Export Video window when export completes"
+msgstr "निर्यात पूरा होने पर Export Video विंडो दिखाएं"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:337
+msgid ""
+"The ComfyUI **Check** button updates an inline status icon: green checkmark "
+"for success, red icon for failure. If OpenShot cannot reach this server, AI "
+"context menu options are hidden. See :ref:`ai_ref` for setup details, "
+"requirements, and workflow options."
+msgstr ""
+"ComfyUI का **Check** बटन इनलाइन स्थिति आइकन को अपडेट करता है: सफलता के लिए हरा "
+"चेकमार्क, विफलता के लिए लाल आइकन। यदि OpenShot इस सर्वर तक पहुँच नहीं पाता है, तो AI "
+"संदर्भ मेनू विकल्प छिपाए जाते हैं। सेटअप विवरण, आवश्यकताएँ, और वर्कफ़्लो विकल्पों के लिए :ref:"
+"`ai_ref` देखें।"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:344
 msgid "Reset (Default Values)"
 msgstr "रीसेट करें (डिफ़ॉल्ट मान)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:268
+#: ../preferences.rst:346
 msgid ""
 "To reset **all** preferences to their default values, please delete the "
 "``openshot.settings`` file and re-launch OpenShot. The settings file can be "
@@ -877,7 +1127,7 @@ msgstr ""
 "मानों के साथ गायब ``openshot.settings`` फ़ाइल बनाएगा।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:273
+#: ../preferences.rst:351
 msgid ""
 "Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch "
 "OpenShot. However, please make a **backup** of any customized folders: "
@@ -892,7 +1142,7 @@ msgstr ""
 "की बैकअप प्रतियाँ रखता है।"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:278
+#: ../preferences.rst:356
 msgid ""
 "Deleting the ``.openshot_qt/`` folder is the quickest method to restore "
 "OpenShot preferences and settings to their Default values (i.e. also called "
