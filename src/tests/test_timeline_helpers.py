@@ -1496,7 +1496,7 @@ class TimelineHelperTests(unittest.TestCase):
             },
         )
 
-        def fake_draw_contents(_painter, _clip, _inner, _segment):
+        def fake_draw_contents(_self, _painter, _clip, _inner, _segment):
             return [], True, None
 
         painter._draw_clip_contents = types.MethodType(fake_draw_contents, painter)
