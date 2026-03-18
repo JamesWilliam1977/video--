@@ -41,7 +41,7 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if PATH not in sys.path:
     sys.path.append(PATH)
 
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, QPointF, QRectF, Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QApplication
 from classes.updates import UpdateAction
@@ -84,6 +84,8 @@ class TimelineHelperTests(unittest.TestCase):
         cls.timeline_module = importlib.import_module("windows.views.timeline")
         cls.clip_paint_module = importlib.import_module("windows.views.timeline_backend.paint.clip")
         cls.qwidget_clip_module = importlib.import_module("windows.views.timeline_backend.qwidget.clip")
+        cls.qwidget_keyframe_module = importlib.import_module("windows.views.timeline_backend.qwidget.keyframe")
+        cls.qwidget_keyframe_panel_module = importlib.import_module("windows.views.timeline_backend.qwidget.keyframe_panel")
         cls.thumbnails_module = importlib.import_module("windows.views.timeline_backend.qwidget.thumbnails")
         cls.waveform_module = importlib.import_module("classes.waveform")
 
@@ -186,6 +188,171 @@ class TimelineHelperTests(unittest.TestCase):
 
             def _snap_trim_delta(self, delta_seconds, edge=None):
                 return float(delta_seconds)
+
+        return Helper()
+
+    def make_qwidget_keyframe_drag_helper(self):
+        class Helper:
+            def __init__(self):
+                self._dragging_panel_keyframes = None
+                self.pixels_per_second = 24.0
+                self.fps_float = 24.0
+                self._keyframes_dirty = False
+                self.update_calls = 0
+                self.begin_calls = 0
+                self.apply_calls = []
+                self.seek_calls = []
+                self.panel_preview_calls = []
+                self.release_calls = 0
+                self.click_calls = []
+                self.finalize_calls = []
+                self.show_property_calls = 0
+                self.mouse_dragging = True
+                self._dragging_keyframe = {
+                    "marker": {
+                        "clip_rect": QRectF(0.0, 0.0, 240.0, 12.0),
+                        "clip_start": 0.0,
+                        "clip_end": 10.0,
+                        "object_type": "clip",
+                        "object_id": "C1",
+                    },
+                    "current_frame": 25,
+                    "pending_frame": 25,
+                    "pending_seconds": 1.0,
+                    "clip_start": 0.0,
+                    "clip_end": 10.0,
+                    "transaction_started": False,
+                    "moved": False,
+                    "object_type": "clip",
+                    "object_id": "C1",
+                }
+                self.win = types.SimpleNamespace(
+                    timeline=types.SimpleNamespace(
+                        FinalizeKeyframeDrag=lambda object_type, object_id: self.finalize_calls.append(
+                            (object_type, object_id)
+                        )
+                    ),
+                    show_property_timeout=lambda: setattr(
+                        self,
+                        "show_property_calls",
+                        self.show_property_calls + 1,
+                    ),
+                )
+
+            def _clamp_keyframe_seconds(self, seconds, clip_start, clip_end):
+                return max(float(clip_start), min(float(seconds), float(clip_end)))
+
+            def _apply_keyframe_snapping(self, drag, relative_seconds):
+                return float(relative_seconds)
+
+            def _snap_time(self, seconds):
+                return float(seconds)
+
+            def _keyframe_base_position(self, marker):
+                return 0.0
+
+            def _panel_preview_marker(self, *args, **kwargs):
+                self.panel_preview_calls.append((args, kwargs))
+
+            def _seek_to_marker_frame(self, marker, frame, start_preroll=True):
+                self.seek_calls.append((frame, bool(start_preroll)))
+
+            def _begin_keyframe_transaction(self):
+                self.begin_calls += 1
+                self._dragging_keyframe["transaction_started"] = True
+
+            def _apply_keyframe_delta(self, drag, ignore_refresh=False, force=False):
+                self.apply_calls.append((bool(ignore_refresh), bool(force)))
+
+            def _handle_keyframe_click(self, marker, clear_existing=True):
+                self.click_calls.append((marker, bool(clear_existing)))
+
+            def _release_cursor(self):
+                self.release_calls += 1
+
+            def update(self):
+                self.update_calls += 1
+
+        return Helper()
+
+    def make_qwidget_panel_keyframe_drag_helper(self):
+        class Helper:
+            def __init__(self):
+                entry = {
+                    "original_seconds": 1.0,
+                    "pending_seconds": 1.0,
+                    "original_frame": 25,
+                    "pending_frame": 25,
+                }
+                self._dragging_panel_keyframes = {
+                    "lane_rect": QRectF(0.0, 0.0, 240.0, 20.0),
+                    "entries": [entry],
+                    "anchor": entry,
+                    "fps": 24.0,
+                    "context": {"position": 0.0, "clip_start": 0.0},
+                    "base_position": 0.0,
+                    "moved": False,
+                    "transaction_started": False,
+                    "owner_type": "clip",
+                    "object_id": "C1",
+                }
+                self._panel_press_info = {}
+                self.fps_float = 24.0
+                self._keyframes_dirty = False
+                self.mouse_dragging = True
+                self.update_calls = 0
+                self.update_property_calls = 0
+                self.begin_calls = 0
+                self.apply_calls = []
+                self.seek_calls = []
+                self.finalize_calls = []
+                self.release_calls = 0
+                self.track_panel_refresh_calls = 0
+                self.geometry = types.SimpleNamespace(
+                    mark_dirty=lambda: setattr(
+                        self,
+                        "track_panel_refresh_calls",
+                        self.track_panel_refresh_calls + 1,
+                    )
+                )
+                self.win = types.SimpleNamespace(
+                    timeline=types.SimpleNamespace(
+                        FinalizeKeyframeDrag=lambda object_type, object_id: self.finalize_calls.append(
+                            (object_type, object_id)
+                        )
+                    ),
+                    SeekSignal=types.SimpleNamespace(
+                        emit=lambda frame, preroll=True: self.seek_calls.append(
+                            (int(frame), bool(preroll))
+                        )
+                    ),
+                    show_property_timeout=lambda: None,
+                )
+
+            def _panel_x_to_seconds(self, x_pos):
+                return float(x_pos) / 24.0
+
+            def _panel_snap_seconds(self, drag, seconds):
+                return float(seconds)
+
+            def _panel_update_property_points(self, drag):
+                self.update_property_calls += 1
+
+            def _panel_begin_transaction(self, drag):
+                self.begin_calls += 1
+                drag["transaction_started"] = True
+
+            def _apply_panel_keyframe_delta(self, drag, *, ignore_refresh=False, force=False):
+                self.apply_calls.append((bool(ignore_refresh), bool(force)))
+
+            def _release_cursor(self):
+                self.release_calls += 1
+
+            def _update_track_panel_properties(self):
+                self.track_panel_refresh_calls += 1
+
+            def update(self):
+                self.update_calls += 1
 
         return Helper()
 
@@ -684,6 +851,66 @@ class TimelineHelperTests(unittest.TestCase):
             self.timeline_module.TimelineView.FinalizeKeyframeDrag(helper, "clip", "C1")
 
         self.assertEqual(helper.updated, [])
+
+    def test_qwidget_keyframe_move_keeps_drag_preview_local_until_release(self):
+        helper = self.make_qwidget_keyframe_drag_helper()
+        event = types.SimpleNamespace(pos=lambda: QPointF(120.0, 0.0))
+
+        self.qwidget_keyframe_module.KeyframeMixin._keyframeMove(helper, event)
+
+        self.assertEqual(helper.begin_calls, 0)
+        self.assertEqual(helper.apply_calls, [])
+        self.assertTrue(helper.panel_preview_calls)
+        self.assertEqual(helper.seek_calls, [(121, False)])
+        self.assertTrue(helper._dragging_keyframe["moved"])
+        self.assertTrue(helper._keyframes_dirty)
+        self.assertEqual(helper.update_calls, 1)
+
+    def test_qwidget_keyframe_finish_commits_once_after_preview_drag(self):
+        helper = self.make_qwidget_keyframe_drag_helper()
+        helper._dragging_keyframe["pending_frame"] = 121
+        helper._dragging_keyframe["pending_seconds"] = 5.0
+        helper._dragging_keyframe["moved"] = True
+
+        self.qwidget_keyframe_module.KeyframeMixin._finishKeyframeDrag(helper)
+
+        self.assertEqual(helper.begin_calls, 1)
+        self.assertEqual(helper.apply_calls, [(False, True)])
+        self.assertEqual(helper.finalize_calls, [("clip", "C1")])
+        self.assertEqual(helper.seek_calls, [(121, True)])
+        self.assertIsNone(helper._dragging_keyframe)
+        self.assertFalse(helper.mouse_dragging)
+        self.assertEqual(helper.release_calls, 1)
+
+    def test_qwidget_panel_keyframe_move_keeps_updates_off_timeline(self):
+        helper = self.make_qwidget_panel_keyframe_drag_helper()
+        event = types.SimpleNamespace(pos=lambda: QPointF(120.0, 0.0))
+
+        self.qwidget_keyframe_panel_module.KeyframePanelMixin._panel_keyframe_move(helper, event)
+
+        self.assertEqual(helper.update_property_calls, 1)
+        self.assertEqual(helper.begin_calls, 0)
+        self.assertEqual(helper.apply_calls, [])
+        self.assertEqual(helper.seek_calls, [(121, False)])
+        self.assertTrue(helper._dragging_panel_keyframes["moved"])
+        self.assertTrue(helper._keyframes_dirty)
+        self.assertEqual(helper.update_calls, 1)
+
+    def test_qwidget_panel_keyframe_finish_commits_once_after_preview_drag(self):
+        helper = self.make_qwidget_panel_keyframe_drag_helper()
+        helper._dragging_panel_keyframes["moved"] = True
+        helper._dragging_panel_keyframes["entries"][0]["pending_frame"] = 121
+        helper._dragging_panel_keyframes["entries"][0]["pending_seconds"] = 5.0
+
+        self.qwidget_keyframe_panel_module.KeyframePanelMixin._finish_panel_keyframe_drag(helper)
+
+        self.assertEqual(helper.begin_calls, 1)
+        self.assertEqual(helper.apply_calls, [(False, True)])
+        self.assertEqual(helper.finalize_calls, [("clip", "C1")])
+        self.assertEqual(helper.seek_calls, [(121, True)])
+        self.assertIsNone(helper._dragging_panel_keyframes)
+        self.assertFalse(helper.mouse_dragging)
+        self.assertEqual(helper.release_calls, 1)
 
     def test_frame_rounding_increment_caps_to_nearby_frames(self):
         painter = self.make_clip_painter(project_fps=30.0)
@@ -1250,6 +1477,40 @@ class TimelineHelperTests(unittest.TestCase):
                     None,
                     False,
                 )
+
+    def test_clip_pixmap_preserves_partial_thumbnail_render_for_trim_freeze(self):
+        painter = self.make_clip_painter(
+            thumbnail_style="entire",
+            pixels_per_second=24.0,
+            project_fps=24.0,
+        )
+        clip = types.SimpleNamespace(
+            id="C1",
+            data={
+                "file_id": "F1",
+                "start": 0.0,
+                "end": 3.0,
+                "duration": 3.0,
+                "position": 0.0,
+                "reader": {"fps": {"num": 24, "den": 1}, "duration": 3.0},
+            },
+        )
+
+        def fake_draw_contents(_painter, _clip, _inner, _segment):
+            return [], True, None
+
+        painter._draw_clip_contents = types.MethodType(fake_draw_contents, painter)
+        full_rect = self.clip_paint_module.QRectF(0.0, 0.0, 72.0, 40.0)
+        segment_rect = self.clip_paint_module.QRectF(0.0, 0.0, 72.0, 40.0)
+
+        result = painter._clip_pixmap(full_rect, segment_rect, clip)
+
+        self.assertIsNotNone(result)
+        self.assertTrue(result[3])
+        self.assertIn("C1", painter._retime_preview_cache)
+        cached = painter._retime_preview_cache["C1"]
+        self.assertIsInstance(cached.get("pix"), self.clip_paint_module.QPixmap)
+        self.assertFalse(cached.get("pix").isNull())
 
     def test_invalidate_clip_thumbnails_can_preserve_trim_preview_cache(self):
         painter = self.make_clip_painter()

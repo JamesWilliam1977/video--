@@ -749,7 +749,7 @@ class ClipPainter(BasePainter):
         if ratio != 1.0:
             pix.setDevicePixelRatio(ratio)
         result = (pix, blur, icon_entries, pending_thumbs, text_entry)
-        if not pending_thumbs and getattr(clip, "id", None):
+        if getattr(clip, "id", None):
             self._retime_preview_cache[str(clip.id)] = {
                 "pix": pix,
                 "blur": blur,
