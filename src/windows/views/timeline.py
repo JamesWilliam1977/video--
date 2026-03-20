@@ -2907,7 +2907,9 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
                 if action == MenuSlice.KEEP_LEFT:
                     # Keep the left side of the transition, adjust the "end"
-                    trans.data["end"] = start_of_tran + (playhead_position - original_position)
+                    new_end = start_of_tran + (playhead_position - original_position)
+                    trans.data["end"] = new_end
+                    trans.data["duration"] = max(0.0, new_end - start_of_tran)
 
                     if ripple:
                         removed_duration = original_duration - (trans.data["end"] - start_of_tran)
@@ -2918,6 +2920,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     new_start = start_of_tran + (playhead_position - original_position)
                     trans.data["position"] = playhead_position
                     trans.data["start"] = new_start
+                    trans.data["duration"] = max(0.0, end_of_tran - new_start)
                     if ripple:
                         removed_duration = original_duration - (end_of_tran - new_start)
                         trans.data["position"] = original_position
@@ -2928,20 +2931,32 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
                 elif action == MenuSlice.KEEP_BOTH:
                     # Update data for the left transition
-                    trans.data["end"] = start_of_tran + (playhead_position - original_position)
+                    new_end = start_of_tran + (playhead_position - original_position)
+                    trans.data["end"] = new_end
+                    trans.data["duration"] = max(0.0, new_end - start_of_tran)
 
                     # Split into two transitions (left and right side)
                     right_tran = Transition.get(id=trans_id)
                     if not right_tran:
                         continue
 
-                    # Create right side transition
+                    # Create right side transition from a deep copy so the new
+                    # transition does not retain references to the original.
+                    right_tran_data = deepcopy(right_tran.data)
+                    right_tran_key = list(right_tran.key)
                     right_tran.id = None
                     right_tran.type = 'insert'
-                    right_tran.data.pop('id')
-                    right_tran.key.pop(1)
+                    right_tran.data = right_tran_data
+                    right_tran.data.pop('id', None)
+                    if len(right_tran_key) > 1:
+                        right_tran_key.pop(1)
+                    right_tran.key = right_tran_key
                     right_tran.data["position"] = playhead_position
                     right_tran.data["start"] = trans.data["end"]
+                    right_tran.data["end"] = end_of_tran
+                    right_start = float(right_tran.data["start"])
+                    right_end = float(right_tran.data.get("end", right_start))
+                    right_tran.data["duration"] = max(0.0, right_end - right_start)
                     right_tran.save()
 
                 # Save changes for the left or right slice

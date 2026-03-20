@@ -82,6 +82,7 @@ class TimelineHelperTests(unittest.TestCase):
     def setUpClass(cls):
         cls.app = QApplication.instance() or DummyApp()
         cls.timeline_module = importlib.import_module("windows.views.timeline")
+        cls.qwidget_base_module = importlib.import_module("windows.views.timeline_backend.qwidget.base")
         cls.clip_paint_module = importlib.import_module("windows.views.timeline_backend.paint.clip")
         cls.qwidget_clip_module = importlib.import_module("windows.views.timeline_backend.qwidget.clip")
         cls.qwidget_keyframe_module = importlib.import_module("windows.views.timeline_backend.qwidget.keyframe")
@@ -188,6 +189,104 @@ class TimelineHelperTests(unittest.TestCase):
 
             def _snap_trim_delta(self, delta_seconds, edge=None):
                 return float(delta_seconds)
+
+        return Helper()
+
+    def make_qwidget_cursor_helper(self):
+        class GeometryStub:
+            def __init__(self):
+                self.items = []
+
+            def ensure(self):
+                return None
+
+            def iter_transitions(self, reverse=False):
+                return []
+
+            def iter_clips(self, reverse=False):
+                return []
+
+            def iter_items(self, reverse=False):
+                items = list(self.items)
+                if reverse:
+                    items.reverse()
+                return items
+
+            def iter_tracks(self):
+                return []
+
+            def timeline_handle_rect(self):
+                return QRectF()
+
+        class Helper:
+            def __init__(self):
+                self._fixed_cursor = None
+                self.enable_razor = False
+                self.geometry = GeometryStub()
+                self.playhead_painter = types.SimpleNamespace(icon_pix=None)
+                self.cursors = {
+                    "hand": object(),
+                    "resize_x": object(),
+                    "razor": object(),
+                }
+                self.cursor_value = None
+                self.unset_cursor_called = False
+
+            def setCursor(self, cursor):
+                self.cursor_value = cursor
+                self.unset_cursor_called = False
+
+            def unsetCursor(self):
+                self.cursor_value = None
+                self.unset_cursor_called = True
+
+            def _playhead_handle_rect(self):
+                return QRectF()
+
+            def _effect_icon_at(self, pos):
+                return None
+
+            def _track_toolbar_button_at(self, pos):
+                return None
+
+            def _transition_menu_rect(self, rect):
+                return QRectF()
+
+            def _marker_at(self, pos):
+                return None
+
+            def _get_keyframe_at(self, pos):
+                return None
+
+            def _panel_marker_at(self, pos):
+                return None
+
+            def _clip_menu_rect(self, rect):
+                return QRectF()
+
+            def _track_menu_rect(self, rect):
+                return QRectF()
+
+        return Helper()
+
+    def make_slice_helper(self):
+        class Helper:
+            def __init__(self):
+                self.updated_transitions = []
+                self.ripple_calls = []
+                self.window = types.SimpleNamespace(
+                    SeekSignal=types.SimpleNamespace(emit=lambda *_args, **_kwargs: None)
+                )
+                self.redraw_audio_timer = types.SimpleNamespace(start=lambda: None)
+
+            def get_uuid(self):
+                return "slice-tx-1"
+
+            def update_transition_data(self, transition_json, **_kwargs):
+                self.updated_transitions.append(copy.deepcopy(transition_json))
+
+            def ripple_delete_gap(self, ripple_start, layer, ripple_gap):
+                self.ripple_calls.append((ripple_start, layer, ripple_gap))
 
         return Helper()
 
@@ -881,6 +980,111 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertIsNone(helper._dragging_keyframe)
         self.assertFalse(helper.mouse_dragging)
         self.assertEqual(helper.release_calls, 1)
+
+    def test_qwidget_cursor_uses_razor_cursor_for_items_when_enabled(self):
+        helper = self.make_qwidget_cursor_helper()
+        helper.enable_razor = True
+        helper.geometry.items = [(QRectF(0.0, 0.0, 100.0, 20.0), object(), False, "clip")]
+
+        self.qwidget_base_module.TimelineWidgetBase._updateCursor(helper, QPointF(10.0, 10.0))
+
+        self.assertIs(helper.cursor_value, helper.cursors["razor"])
+        self.assertFalse(helper.unset_cursor_called)
+
+    def test_qwidget_cursor_keeps_hand_cursor_for_items_when_razor_disabled(self):
+        helper = self.make_qwidget_cursor_helper()
+        helper.geometry.items = [(QRectF(0.0, 0.0, 100.0, 20.0), object(), False, "clip")]
+
+        self.qwidget_base_module.TimelineWidgetBase._updateCursor(helper, QPointF(10.0, 10.0))
+
+        self.assertIs(helper.cursor_value, helper.cursors["hand"])
+        self.assertFalse(helper.unset_cursor_called)
+
+    def test_slice_triggered_keep_both_splits_transition_and_updates_duration(self):
+        helper = self.make_slice_helper()
+        left_transition = types.SimpleNamespace(
+            id="T1",
+            type="update",
+            key=["effects", {"id": "T1"}],
+            data={"id": "T1", "position": 10.0, "layer": 2, "start": 0.0, "end": 4.0, "duration": 4.0},
+        )
+        right_transition = types.SimpleNamespace(
+            id="T1",
+            type="update",
+            key=["effects", {"id": "T1"}],
+            data={"id": "T1", "position": 10.0, "layer": 2, "start": 0.0, "end": 4.0, "duration": 4.0},
+        )
+        saved_right = []
+        right_transition.save = lambda: saved_right.append(copy.deepcopy(right_transition.data))
+        left_transition.save = lambda: None
+        app = types.SimpleNamespace(
+            project=types.SimpleNamespace(
+                get=lambda key: {"fps": {"num": 24, "den": 1}, "layers": []}[key]
+            ),
+            updates=types.SimpleNamespace(transaction_id=None),
+            window=types.SimpleNamespace(
+                IgnoreUpdates=types.SimpleNamespace(emit=lambda *_args, **_kwargs: None)
+            ),
+        )
+
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(self.timeline_module, "get_app", return_value=app))
+            stack.enter_context(patch.object(self.timeline_module.Clip, "get", return_value=None))
+            stack.enter_context(
+                patch.object(
+                    self.timeline_module.Transition,
+                    "get",
+                    side_effect=[left_transition, right_transition],
+                )
+            )
+            self.timeline_module.TimelineView.Slice_Triggered(
+                helper,
+                self.timeline_module.MenuSlice.KEEP_BOTH,
+                [],
+                ["T1"],
+                12.0,
+            )
+
+        self.assertEqual(helper.updated_transitions, [{"id": "T1", "position": 10.0, "layer": 2, "start": 0.0, "end": 2.0, "duration": 2.0}])
+        self.assertEqual(saved_right, [{"position": 12.0, "layer": 2, "start": 2.0, "end": 4.0, "duration": 2.0}])
+
+    def test_slice_triggered_keep_right_updates_transition_duration(self):
+        helper = self.make_slice_helper()
+        transition = types.SimpleNamespace(
+            id="T1",
+            type="update",
+            key=["effects", {"id": "T1"}],
+            data={"id": "T1", "position": 10.0, "layer": 2, "start": 0.0, "end": 4.0, "duration": 4.0},
+            save=lambda: None,
+        )
+        app = types.SimpleNamespace(
+            project=types.SimpleNamespace(
+                get=lambda key: {"fps": {"num": 24, "den": 1}, "layers": []}[key]
+            ),
+            updates=types.SimpleNamespace(transaction_id=None),
+            window=types.SimpleNamespace(
+                IgnoreUpdates=types.SimpleNamespace(emit=lambda *_args, **_kwargs: None)
+            ),
+        )
+
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(self.timeline_module, "get_app", return_value=app))
+            stack.enter_context(patch.object(self.timeline_module.Clip, "get", return_value=None))
+            stack.enter_context(
+                patch.object(self.timeline_module.Transition, "get", return_value=transition)
+            )
+            self.timeline_module.TimelineView.Slice_Triggered(
+                helper,
+                self.timeline_module.MenuSlice.KEEP_RIGHT,
+                [],
+                ["T1"],
+                12.0,
+            )
+
+        self.assertEqual(
+            helper.updated_transitions,
+            [{"id": "T1", "position": 12.0, "layer": 2, "start": 2.0, "end": 4.0, "duration": 2.0}],
+        )
 
     def test_qwidget_panel_keyframe_move_keeps_updates_off_timeline(self):
         helper = self.make_qwidget_panel_keyframe_drag_helper()
