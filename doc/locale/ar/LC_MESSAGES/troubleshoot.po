@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
@@ -190,3 +192,142 @@ msgstr ""
 "أحد الأوامر التالية (عن طريق كتابته والضغط على ENTER). عادةً، يكون الأمر "
 "الأول الذي يتم إدخاله هو ``bt``، والذي يعني ``backtrace``. المزيد من الأوامر "
 "مدرجة أدناه."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:117
+msgid "High DPI / 4K Monitors"
+msgstr "شاشات عالية الدقة / 4K"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:119
+msgid ""
+"OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) "
+"monitors, ensuring that the interface looks sharp and is easily readable on "
+"displays with various DPI settings. This support is particularly helpful on "
+"4K monitors and other high-resolution displays."
+msgstr ""
+"يوفر محرر الفيديو OpenShot دعمًا قويًا لشاشات عالية الدقة (نقاط في البوصة)، "
+"مما يضمن أن تبدو الواجهة واضحة وسهلة القراءة على الشاشات ذات إعدادات DPI "
+"المختلفة. هذا الدعم مفيد بشكل خاص على شاشات 4K والشاشات عالية الدقة الأخرى."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:125
+msgid "Per Monitor DPI Awareness"
+msgstr "الوعي بـ DPI لكل شاشة"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:127
+msgid ""
+"OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its "
+"scaling dynamically depending on the DPI settings of each connected monitor. "
+"This helps provide a consistent experience across different displays."
+msgstr ""
+"يكون OpenShot مدركًا لـ DPI لكل شاشة على حدة، مما يعني أنه يمكنه ضبط مقياس "
+"العرض ديناميكيًا بناءً على إعدادات DPI لكل شاشة متصلة. يساعد هذا في توفير "
+"تجربة متسقة عبر الشاشات المختلفة."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:132
+msgid "DPI Scaling on Windows"
+msgstr "تدرج DPI على ويندوز"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:134
+msgid ""
+"On Windows, OpenShot rounds the scaling factor to the nearest whole value to "
+"maintain visual integrity. This helps avoid visual artifacts in the UI and "
+"keeps interface elements crisp and well-aligned. Due to this rounding, some "
+"scaling options can lead to larger fonts and UI elements than expected."
+msgstr ""
+"على ويندوز، يقوم OpenShot بتقريب عامل التدرج إلى أقرب قيمة صحيحة للحفاظ على "
+"سلامة العرض البصري. يساعد هذا في تجنب التشوهات البصرية في واجهة المستخدم "
+"ويحافظ على وضوح ومحاذاة عناصر الواجهة. بسبب هذا التقريب، قد تؤدي بعض خيارات "
+"التدرج إلى ظهور خطوط وعناصر واجهة أكبر من المتوقع."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:139
+msgid "**125% scaling** rounds to **100%**"
+msgstr "**تدرج 125%** يُقرب إلى **100%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:140
+msgid "**150% scaling** rounds to **200%**"
+msgstr "**تدرج 150%** يُقرب إلى **200%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:143
+msgid "Workarounds for Fine-Grained Adjustment"
+msgstr "حلول بديلة للتعديل الدقيق"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:145
+msgid ""
+"While rounding helps maintain a clean interface, there are workarounds for "
+"users who require more precise control over scaling. These methods are **not "
+"recommended** due to potential visual artifacts:"
+msgstr ""
+"بينما يساعد التقريب في الحفاظ على واجهة نظيفة، هناك حلول بديلة للمستخدمين "
+"الذين يحتاجون إلى تحكم أدق في التدرج. هذه الطرق **غير موصى بها** بسبب احتمال "
+"ظهور تشوهات بصرية:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:149
+msgid "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+msgstr "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:151
+msgid ""
+"Setting this environment variable can disable rounding and allow more "
+"precise scaling."
+msgstr ""
+"يمكن أن يؤدي تعيين متغير البيئة هذا إلى تعطيل التقريب والسماح بتدرج أكثر دقة."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:152
+msgid ""
+"**Note:** This may cause visual artifacts, particularly in the timeline, and "
+"is not recommended."
+msgstr ""
+"**ملاحظة:** قد يسبب هذا تشوهات بصرية، خاصة في الجدول الزمني، ولا يُنصح به."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:154
+msgid "**QT_SCALE_FACTOR=1.25** (or similar value)"
+msgstr "**QT_SCALE_FACTOR=1.25** (أو قيمة مماثلة)"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:156
+msgid ""
+"Manually setting the scale factor can provide finer adjustments to the font "
+"and UI scaling."
+msgstr ""
+"يمكن أن يوفر تعيين عامل التدرج يدويًا تعديلات أدق على حجم الخط وتدرج واجهة "
+"المستخدم."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:157
+msgid ""
+"This can also be set via Preferences (User Interface Scale), but expect "
+"border/line issues on Windows with fractional scales."
+msgstr ""
+"يمكن أيضًا تعيين هذا عبر التفضيلات (مقياس واجهة المستخدم)، لكن توقع مشاكل في "
+"الحدود/الخطوط على ويندوز مع التدرجات الكسرية."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:158
+msgid ""
+"**Note:** This method can also lead to visual artifacts and make OpenShot "
+"harder to use."
+msgstr ""
+"**ملاحظة:** قد تؤدي هذه الطريقة أيضًا إلى تشوهات بصرية وتجعل استخدام OpenShot "
+"أكثر صعوبة."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:160
+msgid ""
+"For more info on adjusting these environment variables, please visit https://"
+"github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."
+msgstr ""
+"لمزيد من المعلومات حول تعديل متغيرات البيئة هذه، يرجى زيارة https://github."
+"com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."

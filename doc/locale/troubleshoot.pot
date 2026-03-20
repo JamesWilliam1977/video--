@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenShot Video Editor 3.4\n"
+"Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,4 +99,76 @@ msgstr ""
 
 #: ../troubleshoot.rst:103
 msgid "Once OpenShot has launched successfully with GDB attached, all you need to do is trigger a crash or freeze in OpenShot. When a crash occurs, switch back to the MSYS2 MinGW64 terminal and run one of the following commands (by typing it and pressing ENTER). Usually, the first command to enter is ``bt``, which stands for ``backtrace``. More commands are listed below."
+msgstr ""
+
+#: ../troubleshoot.rst:117
+msgid "High DPI / 4K Monitors"
+msgstr ""
+
+#: ../troubleshoot.rst:119
+msgid "OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) monitors, ensuring that the interface looks sharp and is easily readable on displays with various DPI settings. This support is particularly helpful on 4K monitors and other high-resolution displays."
+msgstr ""
+
+#: ../troubleshoot.rst:125
+msgid "Per Monitor DPI Awareness"
+msgstr ""
+
+#: ../troubleshoot.rst:127
+msgid "OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its scaling dynamically depending on the DPI settings of each connected monitor. This helps provide a consistent experience across different displays."
+msgstr ""
+
+#: ../troubleshoot.rst:132
+msgid "DPI Scaling on Windows"
+msgstr ""
+
+#: ../troubleshoot.rst:134
+msgid "On Windows, OpenShot rounds the scaling factor to the nearest whole value to maintain visual integrity. This helps avoid visual artifacts in the UI and keeps interface elements crisp and well-aligned. Due to this rounding, some scaling options can lead to larger fonts and UI elements than expected."
+msgstr ""
+
+#: ../troubleshoot.rst:139
+msgid "**125% scaling** rounds to **100%**"
+msgstr ""
+
+#: ../troubleshoot.rst:140
+msgid "**150% scaling** rounds to **200%**"
+msgstr ""
+
+#: ../troubleshoot.rst:143
+msgid "Workarounds for Fine-Grained Adjustment"
+msgstr ""
+
+#: ../troubleshoot.rst:145
+msgid "While rounding helps maintain a clean interface, there are workarounds for users who require more precise control over scaling. These methods are **not recommended** due to potential visual artifacts:"
+msgstr ""
+
+#: ../troubleshoot.rst:149
+msgid "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+msgstr ""
+
+#: ../troubleshoot.rst:151
+msgid "Setting this environment variable can disable rounding and allow more precise scaling."
+msgstr ""
+
+#: ../troubleshoot.rst:152
+msgid "**Note:** This may cause visual artifacts, particularly in the timeline, and is not recommended."
+msgstr ""
+
+#: ../troubleshoot.rst:154
+msgid "**QT_SCALE_FACTOR=1.25** (or similar value)"
+msgstr ""
+
+#: ../troubleshoot.rst:156
+msgid "Manually setting the scale factor can provide finer adjustments to the font and UI scaling."
+msgstr ""
+
+#: ../troubleshoot.rst:157
+msgid "This can also be set via Preferences (User Interface Scale), but expect border/line issues on Windows with fractional scales."
+msgstr ""
+
+#: ../troubleshoot.rst:158
+msgid "**Note:** This method can also lead to visual artifacts and make OpenShot harder to use."
+msgstr ""
+
+#: ../troubleshoot.rst:160
+msgid "For more info on adjusting these environment variables, please visit https://github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."
 msgstr ""

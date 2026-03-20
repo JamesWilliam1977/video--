@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:21
@@ -37,23 +39,23 @@ msgid "Overview"
 msgstr "Yfirlit"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:35 ../main_window.rst:79
+#: ../main_window.rst:35 ../main_window.rst:80 ../main_window.rst:101
 msgid "#"
 msgstr "#"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:35 ../main_window.rst:79 ../main_window.rst:97
+#: ../main_window.rst:35 ../main_window.rst:80
 msgid "Name"
 msgstr "Nafn"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:35 ../main_window.rst:79 ../main_window.rst:97
-#: ../main_window.rst:222 ../main_window.rst:293
+#: ../main_window.rst:35 ../main_window.rst:80 ../main_window.rst:103
+#: ../main_window.rst:237 ../main_window.rst:308
 msgid "Description"
 msgstr "Lýsing"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:37 ../main_window.rst:81
+#: ../main_window.rst:37 ../main_window.rst:82 ../main_window.rst:104
 msgid "1"
 msgstr "1"
 
@@ -69,7 +71,7 @@ msgstr ""
 "Inniheldur hnappa til að opna, vista og flytja út myndbandaverkefnið þitt."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:38 ../main_window.rst:82
+#: ../main_window.rst:38 ../main_window.rst:83 ../main_window.rst:107
 msgid "2"
 msgstr "2"
 
@@ -84,12 +86,12 @@ msgid "Switch between Project Files, Transitions, Effects, and Emojis."
 msgstr "Skiptu á milli Verkefnisskráa, Yfirfærslna, Áhrifa og Emojis."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:39 ../main_window.rst:83
+#: ../main_window.rst:39 ../main_window.rst:84 ../main_window.rst:110
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:39 ../main_window.rst:300
+#: ../main_window.rst:39 ../main_window.rst:315
 msgid "Project Files"
 msgstr "Verkefnisskrár"
 
@@ -102,7 +104,7 @@ msgstr ""
 "þitt."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:40
+#: ../main_window.rst:40 ../main_window.rst:113
 msgid "4"
 msgstr "4"
 
@@ -117,12 +119,12 @@ msgid "This is the area that the video will playback on the screen."
 msgstr "Þetta er svæðið þar sem myndbandið spilar á skjánum."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:41
+#: ../main_window.rst:41 ../main_window.rst:116
 msgid "5"
 msgstr "5"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:41 ../main_window.rst:89
+#: ../main_window.rst:41 ../main_window.rst:90
 msgid "Timeline Toolbar"
 msgstr "Tímalínustika"
 
@@ -138,12 +140,12 @@ msgstr ""
 "ref:`timeline_toolbar_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:42
+#: ../main_window.rst:42 ../main_window.rst:119
 msgid "6"
 msgstr "6"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:42 ../main_window.rst:107
+#: ../main_window.rst:42 ../main_window.rst:120
 msgid "Zoom Slider"
 msgstr "Stækkunarrennibraut"
 
@@ -162,7 +164,7 @@ msgstr ""
 "ákveðnum klippum."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:43
+#: ../main_window.rst:43 ../main_window.rst:122
 msgid "7"
 msgstr "7"
 
@@ -243,7 +245,27 @@ msgstr ""
 "og hoppa í enda"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:49
+#: ../main_window.rst:47
+#, fuzzy
+msgid "11"
+msgstr "1"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:47
+msgid "Track"
+msgstr "Rás"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:47
+msgid ""
+"Track area containing the track name, track menu, and per-track controls "
+"such as lock and keyframe panel icons."
+msgstr ""
+"Svæði rásar sem inniheldur nafn rásar, rásavalmynd og stjórntæki fyrir "
+"hverja rás, svo sem læsingar- og lykilrammapalla tákn."
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:50
 msgid ""
 "For step-by-step instructions on the basic usage of OpenShot, be sure to "
 "read the :ref:`quick_tutorial_ref`."
@@ -252,12 +274,12 @@ msgstr ""
 "að lesa :ref:`quick_tutorial_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:53
+#: ../main_window.rst:54
 msgid "Built-in Tutorial"
 msgstr "Innbyggð kennsla"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:54
+#: ../main_window.rst:55
 msgid ""
 "When you first launch OpenShot, you will be presented with a friendly built-"
 "in tutorial. It will demonstrate and explain the basics. Clicking :guilabel:"
@@ -270,12 +292,12 @@ msgstr ""
 "guilabel:`Hjálp→Kennsla` valmyndinni."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:62
+#: ../main_window.rst:63
 msgid "Tracks & Layers"
 msgstr "Rásir og lög"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:64
+#: ../main_window.rst:65
 msgid ""
 "OpenShot uses tracks to layer videos and images. The top most track is the "
 "top layer, and the bottom track is the bottom layer. If you are familiar "
@@ -293,17 +315,17 @@ msgstr ""
 "fleiri en 5 rásir."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:71
+#: ../main_window.rst:72
 msgid "For example, imagine a 3 track video project"
 msgstr "Til dæmis, ímyndaðu þér myndbandsverkefni með 3 rásum"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:81
+#: ../main_window.rst:82
 msgid "Top Track"
 msgstr "Efsta rás"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:81
+#: ../main_window.rst:82
 msgid ""
 "Clips on this track will always be on top and visible. Often watermarks and "
 "titles are placed on higher tracks."
@@ -312,12 +334,12 @@ msgstr ""
 "titlar sett á efri rásir."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:82
+#: ../main_window.rst:83
 msgid "Middle Track"
 msgstr "Miðröð"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:82
+#: ../main_window.rst:83
 msgid ""
 "Clips in the middle (might or might not be visible, depending on what is "
 "above them)"
@@ -326,12 +348,12 @@ msgstr ""
 "ofan þær)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:83
+#: ../main_window.rst:84
 msgid "Bottom Track"
 msgstr "Neðsta rás"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:83
+#: ../main_window.rst:84
 msgid ""
 "Clips on this track will always be on the bottom. Often audio clips are "
 "placed on lower tracks."
@@ -340,136 +362,107 @@ msgstr ""
 "neðri rásir."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:99 ../main_window.rst:128
+#: ../main_window.rst:94
+msgid ""
+"For a beginner-friendly overview of timeline editing (selection, tracks, "
+"keyframes, and common workflows), see :ref:`timeline_ref`."
+msgstr ""
+"Fyrir byrjendavæna yfirsýn yfir tímalínusnið (val, rásir, lykilramma og "
+"algengar vinnuflæði), sjá :ref:`timeline_ref`."
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:102
+msgid "Control Group"
+msgstr "Stjórnunarhópur"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:105 ../main_window.rst:144
 msgid "Add Track"
 msgstr "Bæta við rás"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:99
+#: ../main_window.rst:106
 msgid ""
 "Add a new track to the timeline. New projects start with 5 tracks by default."
 msgstr ""
 "Bættu við nýrri rás á tímalínuna. Ný verkefni byrja með 5 rásir sjálfgefið."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:100
-msgid "Snapping"
-msgstr "Festing"
+#: ../main_window.rst:108
+msgid "Undo / Redo"
+msgstr "Afturkalla / Endurtaka"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:100
+#: ../main_window.rst:109
+msgid "Undo or redo your latest timeline edits."
+msgstr "Afturkalla eða endurtaka nýjustu breytingar á tímalínu."
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:111
+msgid "Snap, Retime, Razor"
+msgstr "Festu, Endurtímasettu, Rakvél"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:112
 msgid ""
-"Toggle between snapping and non-snapping modes. Snapping makes it easier to "
-"place clips next to other clips."
+"Snapping toggles magnetic alignment. Timing Tool enables retiming by "
+"dragging clip edges. Razor Tool cuts clips at the clicked position."
 msgstr ""
-"Skiptu á milli festingar og ófestingar. Festing auðveldar að staðsetja "
-"klippur við hlið annarra klippa."
+"Festing kveikir og slökkvir á segulmagnaðri jöfnun. Tímatól gerir kleift að "
+"endurtímasetta með því að draga brúnir klippa. Rakvélartól klippir klippur á "
+"smelltum stað."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:101
-msgid "Timing Tool"
-msgstr "Tímatól"
+#: ../main_window.rst:114
+msgid "Add Marker, Next/Prev Marker"
+msgstr "Bæta við merkimiða, næsti/fyrri merkimiði"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:101
+#: ../main_window.rst:115
 msgid ""
-"Toggle retiming mode. Drag clip edges to slow down or speed up playback "
-"without trimming; all keyframes are scaled to fit the new length."
+"Add a marker at the playhead and jump to previous or next marker/clip "
+"boundaries."
 msgstr ""
-"Kveikt/slökkva á hraðabreytingarham. Dragðu brúnir klipps til að hægja á eða "
-"flýta spilun án þess að klippa; allar lykilrammur eru skalaðar til að passa "
-"nýja lengd."
+"Bæta við merkimiða við spilunarhaus og hoppa í fyrri eða næstu mörk "
+"merkimiða/klippa."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:102
-msgid "Razor Tool"
-msgstr "Rakvélartól"
+#: ../main_window.rst:117 ../main_window.rst:149
+msgid "Center on Playhead"
+msgstr "Miðja á spilunarhaus"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:102
+#: ../main_window.rst:118
+msgid "Center the visible timeline area around the current playhead position."
+msgstr "Miðja sýnilegt tímalínusvæði um núverandi stöðu spilunarhauss."
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:121
 msgid ""
-"Toggle the razor tool on and off. This tool will cut a clip exactly where "
-"you click on it, splitting a clip into 2 clips."
+"Control the visible timeline range. Drag handles to zoom in/out, drag center "
+"to pan, and double-click to fit timeline."
 msgstr ""
-"Kveiktu eða slökktu á rakvélartólinu. Þetta tól klippir klippu nákvæmlega "
-"þar sem þú smellir á hana og skiptir klippunni í tvær klippur."
+"Stjórna sýnilegu sviði tímalínu. Dragðu handföng til að stækka/minnka, "
+"dragðu miðjuna til að færa og tvísmelltu til að aðlaga tímalínu."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:103 ../main_window.rst:127
-msgid "Add Marker"
-msgstr "Bæta við merkimiða"
+#: ../main_window.rst:123
+msgid "Track toggles (Lock, Keyframe Panel)"
+msgstr "Rásarrofar (Læsa, Lykilrammapallur)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:103
-msgid ""
-"Add a marker to the timeline at the current playhead position. This can be "
-"useful for returning to a specific position on the timeline."
+#: ../main_window.rst:124
+msgid "Per-track controls such as lock and keyframe panel visibility."
 msgstr ""
-"Bættu við merkimiða á tímalínuna á núverandi staðsetningu spilunarhaus. "
-"Þetta getur verið gagnlegt til að snúa aftur að ákveðnum stað á tímalínunni."
+"Stjórntæki fyrir hverja rás, svo sem læsingar og sýnileika lykilrammapalla."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:104 ../main_window.rst:172
-msgid "Previous Marker"
-msgstr "Fyrri merkimiði"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:104
-msgid ""
-"Jump to the previous marker. This moves the playhead to the left, seeking to "
-"the next marker or important position (i.e. start / end positions of clips)."
-msgstr ""
-"Hoppaðu á fyrri merkimiða. Þetta færist spilunarhausinn til vinstri og "
-"leitar að næsta merkimiða eða mikilvægu stað (t.d. byrjun/enda klippa)."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:105 ../main_window.rst:160
-msgid "Next Marker"
-msgstr "Næsti merkimiði"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:105
-msgid ""
-"Jump to the next marker. This moves the playhead to the right, seeking to "
-"the next marker or important position (i.e. start / end positions of clips)."
-msgstr ""
-"Hoppaðu á næsta merkimiða. Þetta færist spilunarhausinn til hægri og leitar "
-"að næsta merkimiða eða mikilvægu stað (t.d. byrjun/enda klippa)."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:106
-msgid "Center Timeline on Playhead"
-msgstr "Miðja tímalínu á spilunarhaus"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:106
-msgid ""
-"This centers the timeline on the playhead position. This can be useful if "
-"the playhead is not visible and you want to quickly scroll the timeline to "
-"that position."
-msgstr ""
-"Þetta miðjar tímalínuna á staðsetningu spilunarhaus. Þetta getur verið "
-"gagnlegt ef spilunarhausinn er ekki sýnilegur og þú vilt fljótt fletta "
-"tímalínunni að þeim stað."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:107
-msgid ""
-"This controls the visible portion of the timeline. Adjusting the left/right "
-"handles will zoom in/out of your timeline, keeping a specific section of "
-"your project in view. Double click to zoom to your entire timeline."
-msgstr ""
-"Þetta stjórnar sýnilega hluta tímalínunnar. Að stilla vinstri/hægri "
-"handföngin stækkar eða minnkar tímalínuna þína, og heldur ákveðnum hluta "
-"verkefnisins í sýn. Tvísmelltu til að stækka tímalínuna að fullu."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:113
+#: ../main_window.rst:129
 msgid "Keyboard Shortcuts"
 msgstr "Flýtilyklaborð"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:114
+#: ../main_window.rst:130
 msgid ""
 "Here is a list of the default keyboard shortcuts supported by OpenShot. You "
 "can configure these shortcuts in the Preferences window, which is opened by "
@@ -484,922 +477,922 @@ msgstr ""
 "getur sparað þér mikinn tíma!"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:124
+#: ../main_window.rst:140
 msgid "Action"
 msgstr "Aðgerð"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:124
+#: ../main_window.rst:140
 msgid "Shortcut 1"
 msgstr "Flýtilykill 1"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:124
+#: ../main_window.rst:140
 msgid "Shortcut 2"
 msgstr "Flýtilykill 2"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:124
+#: ../main_window.rst:140
 msgid "Shortcut 3"
 msgstr "Flýtilykill 3"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:126
+#: ../main_window.rst:142
 msgid "About OpenShot"
 msgstr "Um OpenShot"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:126
+#: ../main_window.rst:142
 msgid ":kbd:`Ctrl+H`"
 msgstr ":kbd:`Ctrl+H`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:127
+#: ../main_window.rst:143
+msgid "Add Marker"
+msgstr "Bæta við merkimiða"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:143
 msgid ":kbd:`M`"
 msgstr ":kbd:`M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:128
+#: ../main_window.rst:144
 msgid ":kbd:`Ctrl+Y`"
 msgstr ":kbd:`Ctrl+Y`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:129
+#: ../main_window.rst:145
 msgid "Add to Timeline"
 msgstr "Bæta við tímalínu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:129
+#: ../main_window.rst:145
 msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:130 ../main_window.rst:277
+#: ../main_window.rst:146 ../main_window.rst:292
 msgid "Advanced View"
 msgstr "Ítarleg sýn"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:130
+#: ../main_window.rst:146
 msgid ":kbd:`Alt+Shift+1`"
 msgstr ":kbd:`Alt+Shift+1`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:131
+#: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Hreyfimyndatitill"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:131
+#: ../main_window.rst:147
 msgid ":kbd:`Ctrl+Shift+T`"
 msgstr ":kbd:`Ctrl+Shift+T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:132
+#: ../main_window.rst:148
 msgid "Ask a Question..."
 msgstr "Spyrja spurningar..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:132
+#: ../main_window.rst:148
 msgid ":kbd:`F4`"
 msgstr ":kbd:`F4`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:133
-msgid "Center on Playhead"
-msgstr "Miðja á spilunarhaus"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:133
+#: ../main_window.rst:149
 msgid ":kbd:`Shift+C`"
 msgstr ":kbd:`Shift+C`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:133
+#: ../main_window.rst:149
 msgid ":kbd:`Alt+Up`"
 msgstr ":kbd:`Alt+Up`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:134
+#: ../main_window.rst:150
 msgid "Choose Profile"
 msgstr "Velja snið"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:134
+#: ../main_window.rst:150
 msgid ":kbd:`Ctrl+Alt+P`"
 msgstr ":kbd:`Ctrl+Alt+P`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:135
+#: ../main_window.rst:151
 msgid "Clear All Cache"
 msgstr "Hreinsa allan skyndiminni"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:135
+#: ../main_window.rst:151
 msgid ":kbd:`Ctrl+Shift+ESC`"
 msgstr ":kbd:`Ctrl+Shift+ESC`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:136
+#: ../main_window.rst:152
 msgid "Clear History"
 msgstr "Hreinsa sögu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:136
+#: ../main_window.rst:152
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:137
+#: ../main_window.rst:153
 msgid "Clear Waveform Display Data"
 msgstr "Hreinsa gögn bylgjulaga sýningar"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:137
+#: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+W`"
 msgstr ":kbd:`Ctrl+Shift+W`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:138
+#: ../main_window.rst:154
 msgid "Copy"
 msgstr "Afrita"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:138
+#: ../main_window.rst:154
 msgid ":kbd:`Ctrl+C`"
 msgstr ":kbd:`Ctrl+C`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:139
+#: ../main_window.rst:155
 msgid "Cut"
 msgstr "Klippa"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:139
+#: ../main_window.rst:155
 msgid ":kbd:`Ctrl+X`"
 msgstr ":kbd:`Ctrl+X`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:140
+#: ../main_window.rst:156
 msgid "Delete Item"
 msgstr "Eyða atriði"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:140
+#: ../main_window.rst:156
 msgid ":kbd:`Delete`"
 msgstr ":kbd:`Delete`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:140
+#: ../main_window.rst:156
 msgid ":kbd:`Backspace`"
 msgstr ":kbd:`Backspace`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:141
+#: ../main_window.rst:157
 msgid "Delete Item (Ripple)"
 msgstr "Eyða atriði (bylgjuhrif)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:141
+#: ../main_window.rst:157
 msgid ":kbd:`Shift+Delete`"
 msgstr ":kbd:`Shift+Delete`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:142
+#: ../main_window.rst:158
 msgid "Details View"
 msgstr "Upplýsingasýn"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:142
+#: ../main_window.rst:158
 msgid ":kbd:`Ctrl+Page Up`"
 msgstr ":kbd:`Ctrl+Page Up`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:143
+#: ../main_window.rst:159
 msgid "Donate"
 msgstr "Gjöf"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:143
+#: ../main_window.rst:159
 msgid ":kbd:`F7`"
 msgstr ":kbd:`F7`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:144
+#: ../main_window.rst:160
 msgid "Duplicate"
 msgstr "Afrita"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:144
+#: ../main_window.rst:160
 msgid ":kbd:`Ctrl+Shift+/`"
 msgstr ":kbd:`Ctrl+Shift+/`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:145
+#: ../main_window.rst:161
 msgid "Edit Title"
 msgstr "Breyta titli"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:145
+#: ../main_window.rst:161
 msgid ":kbd:`Alt+T`"
 msgstr ":kbd:`Alt+T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146
+#: ../main_window.rst:162
 msgid "Export Selected Files"
 msgstr "Flytja út valin skjöl"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146
+#: ../main_window.rst:162
 msgid ":kbd:`Ctrl+Shift+E`"
 msgstr ":kbd:`Ctrl+Shift+E`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:147
+#: ../main_window.rst:163
 msgid "Export Video / Media"
 msgstr "Flytja út myndband / miðil"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:147
+#: ../main_window.rst:163
 msgid ":kbd:`Ctrl+E`"
 msgstr ":kbd:`Ctrl+E`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:147
+#: ../main_window.rst:163
 msgid ":kbd:`Ctrl+M`"
 msgstr ":kbd:`Ctrl+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:148
+#: ../main_window.rst:164
 msgid "Fast Forward"
 msgstr "Flýta áfram"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:148
+#: ../main_window.rst:164
 msgid ":kbd:`L`"
 msgstr ":kbd:`L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:149
+#: ../main_window.rst:165
 msgid "File Properties"
 msgstr "Skráareiginleikar"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:149
+#: ../main_window.rst:165
 msgid ":kbd:`Alt+I`"
 msgstr ":kbd:`Alt+I`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:149
+#: ../main_window.rst:165
 msgid ":kbd:`Ctrl+Double Click`"
 msgstr ":kbd:`Ctrl+Double Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:150
+#: ../main_window.rst:166
 msgid "Freeze View"
 msgstr "Frysta sýn"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:150
+#: ../main_window.rst:166
 msgid ":kbd:`Ctrl+F`"
 msgstr ":kbd:`Ctrl+F`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:151
+#: ../main_window.rst:167
 msgid "Fullscreen"
 msgstr "Allskjár"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:151
+#: ../main_window.rst:167
 msgid ":kbd:`F11`"
 msgstr ":kbd:`F11`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:152
+#: ../main_window.rst:168
 msgid "Import Files..."
 msgstr "Flytja inn skrár..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:152
+#: ../main_window.rst:168
 msgid ":kbd:`Ctrl+I`"
 msgstr ":kbd:`Ctrl+I`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:153
+#: ../main_window.rst:169
 msgid "Insert Keyframe"
 msgstr "Setja inn lykilrammu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:153
+#: ../main_window.rst:169
 msgid ":kbd:`Alt+Shift+K`"
 msgstr ":kbd:`Alt+Shift+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:154
+#: ../main_window.rst:170
 msgid "Join our Community..."
 msgstr "Vertu þátt í samfélagi okkar..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:154
+#: ../main_window.rst:170
 msgid ":kbd:`F5`"
 msgstr ":kbd:`F5`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:155
+#: ../main_window.rst:171
 msgid "Jump To End"
 msgstr "Fara í enda"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:155
+#: ../main_window.rst:171
 msgid ":kbd:`End`"
 msgstr ":kbd:`End`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:156
+#: ../main_window.rst:172
 msgid "Jump To Start"
 msgstr "Fara í byrjun"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:156
+#: ../main_window.rst:172
 msgid ":kbd:`Home`"
 msgstr ":kbd:`Home`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:157
+#: ../main_window.rst:173
 msgid "Launch Tutorial"
 msgstr "Byrja kennslu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:157
+#: ../main_window.rst:173
 msgid ":kbd:`F2`"
 msgstr ":kbd:`F2`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:158
+#: ../main_window.rst:174
 msgid "New Project"
 msgstr "Nýtt verkefni"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:158
+#: ../main_window.rst:174
 msgid ":kbd:`Ctrl+N`"
 msgstr ":kbd:`Ctrl+N`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:159
+#: ../main_window.rst:175
 msgid "Next Frame"
 msgstr "Næsta ramma"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:159
+#: ../main_window.rst:175
 msgid ":kbd:`Right`"
 msgstr ":kbd:`Right`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:159
+#: ../main_window.rst:175
 msgid ":kbd:`.`"
 msgstr ":kbd:`.`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:160
+#: ../main_window.rst:176
+msgid "Next Marker"
+msgstr "Næsti merkimiði"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:176
 msgid ":kbd:`Shift+M`"
 msgstr ":kbd:`Shift+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:160
+#: ../main_window.rst:176
 msgid ":kbd:`Alt+Right`"
 msgstr ":kbd:`Alt+Right`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:161
+#: ../main_window.rst:177
 msgid "Nudge left (1 Frame)"
 msgstr "Ýta til vinstri (1 rammi)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:161
+#: ../main_window.rst:177
 msgid ":kbd:`Ctrl+Left`"
 msgstr ":kbd:`Ctrl+Left`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:162
+#: ../main_window.rst:178
 msgid "Nudge left (5 Frames)"
 msgstr "Ýta til vinstri (5 rammar)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:162
+#: ../main_window.rst:178
 msgid ":kbd:`Shift+Ctrl+Left`"
 msgstr ":kbd:`Shift+Ctrl+Left`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:163
+#: ../main_window.rst:179
 msgid "Nudge right (1 Frame)"
 msgstr "Ýta til hægri (1 rammi)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:163
+#: ../main_window.rst:179
 msgid ":kbd:`Ctrl+Right`"
 msgstr ":kbd:`Ctrl+Right`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:164
+#: ../main_window.rst:180
 msgid "Nudge right (5 Frames)"
 msgstr "Ýta til hægri (5 rammar)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:164
+#: ../main_window.rst:180
 msgid ":kbd:`Shift+Ctrl+Right`"
 msgstr ":kbd:`Shift+Ctrl+Right`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:165
+#: ../main_window.rst:181
 msgid "Open Help Contents"
 msgstr "Opna hjálparinnihald"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:165
+#: ../main_window.rst:181
 msgid ":kbd:`F1`"
 msgstr ":kbd:`F1`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:166
+#: ../main_window.rst:182
 msgid "Open Project..."
 msgstr "Opna verkefni..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:166
+#: ../main_window.rst:182
 msgid ":kbd:`Ctrl+O`"
 msgstr ":kbd:`Ctrl+O`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:167
+#: ../main_window.rst:183
 msgid "Paste"
 msgstr "Líma"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:167
+#: ../main_window.rst:183
 msgid ":kbd:`Ctrl+V`"
 msgstr ":kbd:`Ctrl+V`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:168
+#: ../main_window.rst:184
 msgid "Play/Pause Toggle"
 msgstr "Spila/Pása rofi"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:168
+#: ../main_window.rst:184
 msgid ":kbd:`Space`"
 msgstr ":kbd:`Space`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:168
+#: ../main_window.rst:184
 msgid ":kbd:`Up`"
 msgstr ":kbd:`Up`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:168
+#: ../main_window.rst:184
 msgid ":kbd:`Down`"
 msgstr ":kbd:`Down`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:169
+#: ../main_window.rst:185
 msgid "Preferences"
 msgstr "Stillingar"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:169
+#: ../main_window.rst:185
 msgid ":kbd:`Ctrl+P`"
 msgstr ":kbd:`Ctrl+P`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:170
+#: ../main_window.rst:186
 msgid "Preview File"
 msgstr "Forskoða skrá"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:170
+#: ../main_window.rst:186
 msgid ":kbd:`Alt+P`"
 msgstr ":kbd:`Alt+P`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:170 ../main_window.rst:208
+#: ../main_window.rst:186 ../main_window.rst:223
 msgid ":kbd:`Double Click`"
 msgstr ":kbd:`Double Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:171
+#: ../main_window.rst:187
 msgid "Previous Frame"
 msgstr "Fyrri rammi"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:171
+#: ../main_window.rst:187
 msgid ":kbd:`Left`"
 msgstr ":kbd:`Left`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:171
+#: ../main_window.rst:187
 msgid ":kbd:`,`"
 msgstr ":kbd:`,`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:172
+#: ../main_window.rst:188
+msgid "Previous Marker"
+msgstr "Fyrri merkimiði"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:188
 msgid ":kbd:`Ctrl+Shift+M`"
 msgstr ":kbd:`Ctrl+Shift+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:172
+#: ../main_window.rst:188
 msgid ":kbd:`Alt+Left`"
 msgstr ":kbd:`Alt+Left`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:173 ../main_window.rst:302
+#: ../main_window.rst:189 ../main_window.rst:317
 msgid "Properties"
 msgstr "Eiginleikar"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:173
+#: ../main_window.rst:189
 msgid ":kbd:`U`"
 msgstr ":kbd:`U`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:174
+#: ../main_window.rst:190
 msgid "Quit"
 msgstr "Hætta"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:174
+#: ../main_window.rst:190
 msgid ":kbd:`Ctrl+Q`"
 msgstr ":kbd:`Ctrl+Q`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:191
 msgid "Razor Toggle"
 msgstr "Röndunarrofi"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:191
 msgid ":kbd:`C`"
 msgstr ":kbd:`C`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:191
 msgid ":kbd:`B`"
 msgstr ":kbd:`B`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:191
 msgid ":kbd:`R`"
 msgstr ":kbd:`R`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:176
+#: ../main_window.rst:192
 msgid "Redo"
 msgstr "Endurtaka"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:176
+#: ../main_window.rst:192
 msgid ":kbd:`Ctrl+Shift+Z`"
 msgstr ":kbd:`Ctrl+Shift+Z`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:177
+#: ../main_window.rst:193
 msgid "Report a Bug..."
 msgstr "Tilkynna villu..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:177
+#: ../main_window.rst:193
 msgid ":kbd:`F3`"
 msgstr ":kbd:`F3`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:178
+#: ../main_window.rst:194
 msgid "Rewind"
 msgstr "Spóla aftur"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:178
+#: ../main_window.rst:194
 msgid ":kbd:`J`"
 msgstr ":kbd:`J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:179 ../main_window.rst:180
+#: ../main_window.rst:195 ../main_window.rst:196
 msgid "Save Current Frame"
 msgstr "Vista núverandi ramma"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:179 ../main_window.rst:180
+#: ../main_window.rst:195 ../main_window.rst:196
 msgid ":kbd:`Ctrl+Shift+Y`"
 msgstr ":kbd:`Ctrl+Shift+Y`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:181
+#: ../main_window.rst:197
 msgid "Save Project"
 msgstr "Vista verkefni"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:181
+#: ../main_window.rst:197
 msgid ":kbd:`Ctrl+S`"
 msgstr ":kbd:`Ctrl+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:182
+#: ../main_window.rst:198
 msgid "Save Project As..."
 msgstr "Vista verkefni sem..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:182
+#: ../main_window.rst:198
 msgid ":kbd:`Ctrl+Shift+S`"
 msgstr ":kbd:`Ctrl+Shift+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:183
+#: ../main_window.rst:199
 msgid "Select All"
 msgstr "Velja allt"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:183
+#: ../main_window.rst:199
 msgid ":kbd:`Ctrl+A`"
 msgstr ":kbd:`Ctrl+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:200
 msgid "Select Item (Ripple)"
 msgstr "Velja atriði (bylgja)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:200
 msgid ":kbd:`Alt+A`"
 msgstr ":kbd:`Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:200
 msgid ":kbd:`Alt+Click`"
 msgstr ":kbd:`Alt+Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:185
+#: ../main_window.rst:201
 msgid "Select None"
 msgstr "Velja ekkert"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:185
+#: ../main_window.rst:201
 msgid ":kbd:`Ctrl+Shift+A`"
 msgstr ":kbd:`Ctrl+Shift+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:186
+#: ../main_window.rst:202
 msgid "Show All Docks"
 msgstr "Sýna öll glugga"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:186
+#: ../main_window.rst:202
 msgid ":kbd:`Ctrl+Shift+D`"
 msgstr ":kbd:`Ctrl+Shift+D`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:187 ../main_window.rst:270
+#: ../main_window.rst:203 ../main_window.rst:285
 msgid "Simple View"
 msgstr "Einfalt útlit"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:187
+#: ../main_window.rst:203
 msgid ":kbd:`Alt+Shift+0`"
 msgstr ":kbd:`Alt+Shift+0`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:188
+#: ../main_window.rst:204
 msgid "Slice All: Keep Both Sides"
 msgstr "Sker allt: Halda báðum hliðum"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:188
+#: ../main_window.rst:204
 msgid ":kbd:`Ctrl+Shift+K`"
 msgstr ":kbd:`Ctrl+Shift+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:189
+#: ../main_window.rst:205
 msgid "Slice All: Keep Left Side"
 msgstr "Sker allt: Halda vinstri hlið"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:189
+#: ../main_window.rst:205
 msgid ":kbd:`Ctrl+Shift+J`"
 msgstr ":kbd:`Ctrl+Shift+J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:190
+#: ../main_window.rst:206
 msgid "Slice All: Keep Right Side"
 msgstr "Sker allt: Halda hægri hlið"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:190
+#: ../main_window.rst:206
 msgid ":kbd:`Ctrl+Shift+L`"
 msgstr ":kbd:`Ctrl+Shift+L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:207
 msgid "Slice Selected: Keep Both Sides"
 msgstr "Sker valið: Halda báðum hliðum"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:207
 msgid ":kbd:`Ctrl+K`"
 msgstr ":kbd:`Ctrl+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:192
+#: ../main_window.rst:208
 msgid "Slice Selected: Keep Left Side"
 msgstr "Sker valið: Halda vinstri hlið"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:192
+#: ../main_window.rst:208
 msgid ":kbd:`Ctrl+J`"
 msgstr ":kbd:`Ctrl+J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:193
+#: ../main_window.rst:209
 msgid "Slice Selected: Keep Right Side"
 msgstr "Sker valið: Halda hægri hlið"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:193
+#: ../main_window.rst:209
 msgid ":kbd:`Ctrl+L`"
 msgstr ":kbd:`Ctrl+L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:194
+#: ../main_window.rst:210
 msgid "Slice Selected: Keep Left (Ripple)"
 msgstr "Sker valið: Halda vinstri (bylgja)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:194
+#: ../main_window.rst:210
 msgid ":kbd:`W`"
 msgstr ":kbd:`W`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:195
+#: ../main_window.rst:211
 msgid "Slice Selected: Keep Right (Ripple)"
 msgstr "Sker valið: Halda hægri (bylgja)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:195
+#: ../main_window.rst:211
 msgid ":kbd:`Q`"
 msgstr ":kbd:`Q`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:196
+#: ../main_window.rst:212
 msgid "Snapping Toggle"
 msgstr "Rofinn fyrir festingu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:196
+#: ../main_window.rst:212
 msgid ":kbd:`S`"
 msgstr ":kbd:`S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:197
+#: ../main_window.rst:213
 msgid "Split File"
 msgstr "Skipta skrá"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:197
+#: ../main_window.rst:213
 msgid ":kbd:`Alt+S`"
 msgstr ":kbd:`Alt+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:197
+#: ../main_window.rst:213
 msgid ":kbd:`Shift+Double Click`"
 msgstr ":kbd:`Shift+Double Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:198
+#: ../main_window.rst:214
 msgid "Thumbnail View"
 msgstr "Smámyndaskoðun"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:198
+#: ../main_window.rst:214
 msgid ":kbd:`Ctrl+Page Down`"
 msgstr ":kbd:`Ctrl+Page Down`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:199
+#: ../main_window.rst:215
 msgid "Timing Toggle"
 msgstr "Skipting á tímasetningu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:199
+#: ../main_window.rst:215
 msgid ":kbd:`T`"
 msgstr ":kbd:`T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:200 ../main_window.rst:242
+#: ../main_window.rst:216 ../main_window.rst:257
 msgid "Title"
 msgstr "Titill"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:200
+#: ../main_window.rst:216
 msgid ":kbd:`Ctrl+T`"
 msgstr ":kbd:`Ctrl+T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:201
-msgid "Transform"
-msgstr "Breyta"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:201
-msgid ":kbd:`Ctrl+Alt+T`"
-msgstr ":kbd:`Ctrl+Alt+T`"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:202
+#: ../main_window.rst:217
 msgid "Translate this Application..."
 msgstr "Þýða þetta forrit..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:202
+#: ../main_window.rst:217
 msgid ":kbd:`F6`"
 msgstr ":kbd:`F6`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:203
+#: ../main_window.rst:218
 msgid "Un-Freeze View"
 msgstr "Leysa upp frystu útsýni"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:203
+#: ../main_window.rst:218
 msgid ":kbd:`Ctrl+Shift+F`"
 msgstr ":kbd:`Ctrl+Shift+F`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:204
+#: ../main_window.rst:219
 msgid "Undo"
 msgstr "Afturkalla"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:204
+#: ../main_window.rst:219
 msgid ":kbd:`Ctrl+Z`"
 msgstr ":kbd:`Ctrl+Z`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:205
+#: ../main_window.rst:220
 msgid "View Toolbar"
 msgstr "Sýna verkfærastiku"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:205
+#: ../main_window.rst:220
 msgid ":kbd:`Ctrl+Shift+B`"
 msgstr ":kbd:`Ctrl+Shift+B`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:206
+#: ../main_window.rst:221
 msgid "Zoom In"
 msgstr "Stækka"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:206
+#: ../main_window.rst:221
 msgid ":kbd:`=`"
 msgstr ":kbd:`=`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:206
+#: ../main_window.rst:221
 msgid ":kbd:`Ctrl+=`"
 msgstr ":kbd:`Ctrl+=`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:207
+#: ../main_window.rst:222
 msgid "Zoom Out"
 msgstr "Þjappa"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:207
+#: ../main_window.rst:222
 msgid ":kbd:`-`"
 msgstr ":kbd:`-`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:207
+#: ../main_window.rst:222
 msgid ":kbd:`Ctrl+-`"
 msgstr ":kbd:`Ctrl+-`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:208
+#: ../main_window.rst:223
 msgid "Zoom to Timeline"
 msgstr "Fókusa á tímalínu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:208
+#: ../main_window.rst:223
 msgid ":kbd:`\\\\`"
 msgstr ":kbd:`\\\\`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:208
+#: ../main_window.rst:223
 msgid ":kbd:`Shift+\\\\`"
 msgstr ":kbd:`Shift+\\\\`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:212
+#: ../main_window.rst:227
 msgid "Menu"
 msgstr "Valmynd"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:213
+#: ../main_window.rst:228
 msgid ""
 "The following menu options are available on the main window on OpenShot. "
 "Most of these options can be accessed by the keyboard shortcuts mentioned "
@@ -1412,32 +1405,32 @@ msgstr ""
 "valmöguleika endurnefndir og/eða endurraðað."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:221
+#: ../main_window.rst:236
 msgid "Menu Name"
 msgstr "Nafn valmyndar"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:223
+#: ../main_window.rst:238
 msgid "File"
 msgstr "Skrá"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:225
+#: ../main_window.rst:240
 msgid ":guilabel:`New Project` Create a blank new project."
 msgstr ":guilabel:`Nýtt verkefni` Búa til tómt nýtt verkefni."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:226
+#: ../main_window.rst:241
 msgid ":guilabel:`Open Project` Open an existing project."
 msgstr ":guilabel:`Opna verkefni` Opna núverandi verkefni."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:227
+#: ../main_window.rst:242
 msgid ":guilabel:`Recent Projects` Access recently opened projects."
 msgstr ":guilabel:`Nýleg verkefni` Skoða nýlega opnuð verkefni."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:228
+#: ../main_window.rst:243
 msgid ""
 ":guilabel:`Recovery` Restore a previously saved version of your current "
 "project."
@@ -1445,17 +1438,17 @@ msgstr ""
 ":guilabel:`Endurheimt` Endurheimta áður vistaða útgáfu af núverandi verkefni."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:229
+#: ../main_window.rst:244
 msgid ":guilabel:`Save Project` Save the current project."
 msgstr ":guilabel:`Vista verkefni` Vista núverandi verkefni."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:230
+#: ../main_window.rst:245
 msgid ":guilabel:`Import Files` Import media files into the project."
 msgstr ":guilabel:`Flytja inn skrár` Flytja inn fjölmiðlaskrár í verkefnið."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:231
+#: ../main_window.rst:246
 msgid ""
 ":guilabel:`Choose Profile` Select a project profile (*i.e. 1080p @ 30fps, "
 "720p @ 24fps, ...*)."
@@ -1464,7 +1457,7 @@ msgstr ""
 "24fps, ...*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:232
+#: ../main_window.rst:247
 msgid ""
 ":guilabel:`Save Current Frame` Save the current preview video frame as an "
 "image (sometimes represented with a camera icon)."
@@ -1472,7 +1465,7 @@ msgstr ""
 ":guilabel:`Vista núverandi ramma` Vista núverandi forskoðunar ramma sem mynd."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:233
+#: ../main_window.rst:248
 msgid ""
 ":guilabel:`Import Project` Import another project into the current project "
 "(*Adobe and Final Cut Pro formats partially supported*)."
@@ -1481,7 +1474,7 @@ msgstr ""
 "verkefni (*stuðningur við Adobe og Final Cut Pro snið að hluta til*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:234
+#: ../main_window.rst:249
 msgid ""
 ":guilabel:`Export Project` Export the current project to a specified format "
 "(*EDL, Adobe, and Final Cut Pro formats partially supported*)."
@@ -1490,27 +1483,27 @@ msgstr ""
 "(*stuðningur við EDL, Adobe og Final Cut Pro snið að hluta til*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:235
+#: ../main_window.rst:250
 msgid ":guilabel:`Quit` Exit the application."
 msgstr ":guilabel:`Hætta` Hætta í forritinu."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:236
+#: ../main_window.rst:251
 msgid "Edit"
 msgstr "Breyta"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:238
+#: ../main_window.rst:253
 msgid ":guilabel:`Undo` Undo the last action."
 msgstr ":guilabel:`Afturkalla` Afturkalla síðustu aðgerð."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:239
+#: ../main_window.rst:254
 msgid ":guilabel:`Redo` Redo the last undone action."
 msgstr ":guilabel:`Endurtaka` Endurtaka síðustu afturkölluðu aðgerð."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:240
+#: ../main_window.rst:255
 msgid ""
 ":guilabel:`Clear` Clear the current history or waveform cached data. This "
 "makes the `.osp project` file a much smaller file size."
@@ -1519,13 +1512,13 @@ msgstr ""
 "minnkar stærð `.osp verkefnis` skráarinnar verulega."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:241
+#: ../main_window.rst:256
 msgid ""
 ":guilabel:`Preferences` Open the preferences dialog to customize settings."
 msgstr ":guilabel:`Stillingar` Opna stillingarglugga til að sérsníða valkosti."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:244
+#: ../main_window.rst:259
 msgid ""
 ":guilabel:`Title` Add a SVG vector title to the project. See :ref:"
 "`text_and_titles_ref`."
@@ -1534,7 +1527,7 @@ msgstr ""
 "`text_and_titles_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:245
+#: ../main_window.rst:260
 msgid ""
 ":guilabel:`Animated Title` Add an animated title to the project. See :ref:"
 "`animated_titles_ref`."
@@ -1543,22 +1536,22 @@ msgstr ""
 "`animated_titles_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:246
+#: ../main_window.rst:261
 msgid "View"
 msgstr "Útsýni"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:248
+#: ../main_window.rst:263
 msgid ":guilabel:`Toolbar` Show or hide the main window toolbar."
 msgstr ":guilabel:`Verkfærastika` Sýna eða fela verkfærastiku aðalglugga."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:249
+#: ../main_window.rst:264
 msgid ":guilabel:`Fullscreen` Toggle fullscreen mode."
 msgstr ":guilabel:`Allskjár` Skipta á milli allskjárstillingar."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:250
+#: ../main_window.rst:265
 msgid ""
 ":guilabel:`Views` Switch or reset the main window layout (*Simple, Advanced, "
 "Freeze, Show All*)."
@@ -1567,7 +1560,7 @@ msgstr ""
 "Ítarlegt, Frysta, Sýna allt*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:251
+#: ../main_window.rst:266
 msgid ""
 ":guilabel:`Docks` Show or hide various dockable panels (*Captions, Effects, "
 "Emojis, Project Files, Properties, Transitions, Video Preview*)."
@@ -1576,42 +1569,42 @@ msgstr ""
 "Emojis, Verkefnisskrár, Eiginleikar, Yfirfærslur, Forskoðun myndbands*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:252
+#: ../main_window.rst:267
 msgid "Help"
 msgstr "Hjálp"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:254
+#: ../main_window.rst:269
 msgid ":guilabel:`Contents` Open the user guide online."
 msgstr ":guilabel:`Innihald` Opna notendahandbók á netinu."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:255
+#: ../main_window.rst:270
 msgid ":guilabel:`Tutorial` Access the built-in tutorial for new users."
 msgstr ":guilabel:`Kennsla` Opna innbyggða kennslu fyrir nýja notendur."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:256
+#: ../main_window.rst:271
 msgid ":guilabel:`Report a Bug` Report a bug or issue."
 msgstr ":guilabel:`Tilkynna villu` Tilkynna um villu eða vandamál."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:257
+#: ../main_window.rst:272
 msgid ":guilabel:`Ask a Question` Ask a question about the software."
 msgstr ":guilabel:`Spyrja spurningar` Spyrja spurningu um forritið."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:258
+#: ../main_window.rst:273
 msgid ":guilabel:`Translate` Contribute to translations of the software."
 msgstr ":guilabel:`Þýða` Leggja til þýðingar á forritinu."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:259
+#: ../main_window.rst:274
 msgid ":guilabel:`Donate` Make a donation to support the project."
 msgstr ":guilabel:`Gjöf` Gefa framlag til að styðja verkefnið."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:260
+#: ../main_window.rst:275
 msgid ""
 ":guilabel:`About` View information about the software (version, "
 "contributors, translators, changelog, and supporters)."
@@ -1620,12 +1613,12 @@ msgstr ""
 "þýðendur, breytingaskrá og stuðningsmenn)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:263
+#: ../main_window.rst:278
 msgid "Views"
 msgstr "Útsýni"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:265
+#: ../main_window.rst:280
 msgid ""
 "The OpenShot main window is composed of multiple **docks**. These **docks** "
 "are arranged and snapped together into a grouping that we call a **View**. "
@@ -1637,7 +1630,7 @@ msgstr ""
 "tvö aðalútsýni: :guilabel:`Einfalt útsýni` og :guilabel:`Ítarlegt útsýni`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:271
+#: ../main_window.rst:286
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
 "for first-time users. It contains :guilabel:`Project Files` on the top "
@@ -1654,7 +1647,7 @@ msgstr ""
 "`Skoða->Útsýni->Einfalt útsýni` valmyndina efst á skjánum."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:278
+#: ../main_window.rst:293
 msgid ""
 "This is an advanced view, which adds more docks to the screen at once, "
 "improving access to many features that are not visible in Simple View. Once "
@@ -1669,12 +1662,12 @@ msgstr ""
 "sérsníða útsýnið að þínum þörfum."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:283
+#: ../main_window.rst:298
 msgid "Docks"
 msgstr "Gluggar"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:284
+#: ../main_window.rst:299
 msgid ""
 "Each widget on the OpenShot main window is contained in a **dock**. These "
 "docks can be dragged and snapped around the main window, and even grouped "
@@ -1688,17 +1681,17 @@ msgstr ""
 "OpenShot aftur verður þín sérsniðna uppsetning endurheimt sjálfkrafa."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:292
+#: ../main_window.rst:307
 msgid "Dock Name"
 msgstr "Nafn glugga"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:294
+#: ../main_window.rst:309
 msgid "Captions"
 msgstr "Textar"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:295
+#: ../main_window.rst:310
 msgid ""
 "Manage and add captions or subtitles to your video project. Allows you to "
 "create, edit, and manage caption data. See :ref:`caption_effect_ref` effect."
@@ -1708,12 +1701,12 @@ msgstr ""
 "`caption_effect_ref` áhrif."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:296
+#: ../main_window.rst:311
 msgid "Effects"
 msgstr "Áhrif"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:297
+#: ../main_window.rst:312
 msgid ""
 "Browse and apply video and audio effects to your video clips. Includes "
 "filters, color adjustments, and special effects. See :ref:`effects_ref`."
@@ -1722,12 +1715,12 @@ msgstr ""
 "Inniheldur síur, litabreytingar og séráhrif. Sjá :ref:`effects_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:298
+#: ../main_window.rst:313
 msgid "Emojis"
 msgstr "Tákna"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:299
+#: ../main_window.rst:314
 msgid ""
 "Add emoji graphics to your video project. Choose from a variety of emojis to "
 "enhance your video content."
@@ -1736,7 +1729,7 @@ msgstr ""
 "af táknum til að bæta myndbandsinnihald þitt."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:301
+#: ../main_window.rst:316
 msgid ""
 "View and manage all the media files imported into your project. Organize, "
 "filter, and tag video, audio, and image files. See :ref:`files_ref`."
@@ -1746,7 +1739,7 @@ msgstr ""
 "myndaskrár. Sjá :ref:`files_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:303
+#: ../main_window.rst:318
 msgid ""
 "View and edit the properties of a selected effect, transition, or clip. "
 "Adjust settings such as duration, size, position, etc... See :ref:"
@@ -1757,12 +1750,12 @@ msgstr ""
 "`clip_properties_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:304
+#: ../main_window.rst:319
 msgid "Transitions"
 msgstr "Umbreytingar"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:305
+#: ../main_window.rst:320
 msgid ""
 "Browse and apply transitions between video clips. Choose from a variety of "
 "transition wipes to create smooth changes between scenes. See :ref:"
@@ -1773,12 +1766,12 @@ msgstr ""
 "`transitions_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:306
+#: ../main_window.rst:321
 msgid "Video Preview"
 msgstr "Forskoðun myndbands"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:307
+#: ../main_window.rst:322
 msgid ""
 "Preview the current state of your video project. Allows you to play back and "
 "review your edits in real-time. See :ref:`playback_ref`."
@@ -1787,7 +1780,7 @@ msgstr ""
 "og endurskoða breytingar í rauntíma. Sjá :ref:`playback_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:309
+#: ../main_window.rst:324
 msgid ""
 "If you have accidentally closed or moved a dock and can no longer find it, "
 "there are a couple easy solutions. First, you can use the :guilabel:`View-"
@@ -1800,148 +1793,3 @@ msgstr ""
 "`Skoða->Útsýni->Einfalt útsýni` efst á skjánum til að endurheimta sjálfgefna "
 "útsýnið. Eða þú getur notað valmyndina :guilabel:`Skoða->Útsýni->Gluggar->..."
 "` til að sýna eða fela ákveðna glugga í aðalglugganum."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:314
-msgid "High DPI / 4K Monitors"
-msgstr "Háupplausnar skjáir / 4K skjáir"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:316
-msgid ""
-"OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) "
-"monitors, ensuring that the interface looks sharp and is easily readable on "
-"displays with various DPI settings. This support is particularly beneficial "
-"for users with 4K monitors or other high-resolution displays."
-msgstr ""
-"OpenShot Video Editor styður vel við háupplausnar skjái (Dots Per Inch), sem "
-"tryggir að viðmótið sé skýrt og auðvelt að lesa á skjám með mismunandi DPI-"
-"stillingum. Þessi stuðningur er sérstaklega gagnlegur fyrir notendur með 4K "
-"skjái eða aðra háupplausnar skjái."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:321
-msgid "Per Monitor DPI Awareness"
-msgstr "DPI meðvitað á hverjum skjá"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:323
-msgid ""
-"OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its "
-"scaling dynamically depending on the DPI settings of each connected monitor. "
-"This ensures a consistent and high-quality user experience across different "
-"displays."
-msgstr ""
-"OpenShot er DPI-meðvitað fyrir hvern skjá fyrir sig, sem þýðir að það getur "
-"stillt stærðunarstuðul sinn sjálfkrafa eftir DPI-stillingum hvers tengds "
-"skjás. Þetta tryggir samræmda og hágæða notendaupplifun á mismunandi skjám."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:327
-msgid "DPI Scaling on Windows"
-msgstr "DPI-stærðunarstuðull á Windows"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:329
-msgid ""
-"On Windows, OpenShot rounds the scaling factor to the nearest whole value to "
-"maintain visual integrity. This rounding helps avoid visual artifacts in the "
-"UI rendering and ensures that the interface elements remain crisp and well-"
-"aligned. Due to this rounding, scaling options can sometimes lead to "
-"increased font-sizes and a feeling that the UI elements are a bit too large."
-msgstr ""
-"Á Windows stækkar OpenShot stærðunarstuðulinn í næsta heiltölu til að "
-"viðhalda sjónrænu heilindum. Þessi nálgun hjálpar til við að forðast "
-"sjónræna galla í viðmóti og tryggir að viðmótsþættir haldist skýrir og vel "
-"raðaðir. Vegna þessarar nálgunar geta stærðunarvalkostir stundum leitt til "
-"stærri leturstærða og tilfinningar um að viðmótsþættir séu aðeins of stórir."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:334
-msgid "**125% scaling** rounds to **100%**"
-msgstr "**125% stærðun** nálgast **100%**"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:335
-msgid "**150% scaling** rounds to **200%**"
-msgstr "**150% stærðun** nálgast **200%**"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:338
-msgid "Workarounds for Fine-Grained Adjustment"
-msgstr "Lausnir fyrir nákvæma stillingu"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:340
-msgid ""
-"While rounding helps maintain a clean interface, there are workarounds for "
-"users who require more precise control over the scaling. However, these "
-"methods are **not recommended** due to potential visual artifacts:"
-msgstr ""
-"Þó að nálgun hjálpi til við að viðhalda hreinu viðmóti, eru lausnir fyrir "
-"notendur sem þurfa nákvæmari stjórn á stærðuninni. Þessar aðferðir eru þó "
-"**ekki mælt með** vegna mögulegra sjónrænna galla:"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:343
-msgid "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
-msgstr "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:345
-msgid ""
-"Setting this environment variable can disable rounding and allow more "
-"precise scaling."
-msgstr ""
-"Með því að stilla þetta umhverfisbreytu er hægt að slökkva á nálgun og leyfa "
-"nákvæmari stærðun."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:346
-msgid ""
-"**Note:** This may cause visual artifacts, particularly in the timeline, and "
-"is not recommended."
-msgstr ""
-"**Athugið:** Þetta getur valdið sjónrænum göllum, sérstaklega í tímalínunni, "
-"og er ekki mælt með."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:348
-msgid "**QT_SCALE_FACTOR=1.25** (or similar value)"
-msgstr "**QT_SCALE_FACTOR=1.25** (eða svipað gildi)"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:350
-msgid ""
-"Manually setting the scale factor can provide finer adjustments to the font "
-"and UI scaling."
-msgstr ""
-"Handvirk stilling á stærðunarstuðli getur veitt nákvæmari stillingar á "
-"letur- og viðmótsstærðun."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:351
-msgid ""
-"This can also be set via Preferences (User Interface Scale) - but expect "
-"border/line issues on Windows with fractional scales."
-msgstr ""
-"Þetta má einnig stilla í Stillingum (Stærð viðmóts) - en búast má við "
-"vandamálum með ramma/línur á Windows við brotakennda stærðun."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:352
-msgid ""
-"**Note:** This method can also lead to visual artifacts and make OpenShot "
-"harder to use."
-msgstr ""
-"**Athugið:** Þessi aðferð getur einnig valdið sjónrænum göllum og gert "
-"OpenShot erfiðara í notkun."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:354
-msgid ""
-"For more info on adjusting these environment variables, please visit https://"
-"github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."
-msgstr ""
-"Fyrir frekari upplýsingar um að stilla þessar umhverfisbreytur, vinsamlegast "
-"heimsækið https://github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."

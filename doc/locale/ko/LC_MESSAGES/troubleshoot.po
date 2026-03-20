@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
@@ -105,9 +107,9 @@ msgid ""
 msgstr ""
 "디버거를 연결하기 전에 OpenShot의 ** 최신 버전** 을 다운로드하세요: https://"
 "www.openshot.org/download#daily. 이 버전을 기본 위치인 ``C:\\Program "
-"Files\\OpenShot Video Editor\\`` 에 설치하세요. Windows에서 OpenShot 디버깅에 "
-"대한 자세한 지침은 ` 이 위키 <https://github.com/OpenShot/openshot-qt/wiki/"
-"Windows-Debugging-with-GDB>`_ 를 참조하세요."
+"Files\\OpenShot Video Editor\\`` 에 설치하세요. Windows에서 OpenShot 디버깅"
+"에 대한 자세한 지침은 ` 이 위키 <https://github.com/OpenShot/openshot-qt/"
+"wiki/Windows-Debugging-with-GDB>`_ 를 참조하세요."
 
 # Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:56
@@ -186,5 +188,147 @@ msgid ""
 msgstr ""
 "GDB가 연결된 상태로 OpenShot이 성공적으로 실행되면, OpenShot에서 충돌이나 정"
 "지를 유발하면 됩니다. 충돌이 발생하면 MSYS2 MinGW64 터미널로 돌아가 다음 명령"
-"어 중 하나를 입력하고 ENTER를 누르세요. 보통 처음 입력하는 명령어는 ``bt`` (백"
-"트레이스)입니다. 더 많은 명령어가 아래에 나와 있습니다."
+"어 중 하나를 입력하고 ENTER를 누르세요. 보통 처음 입력하는 명령어는 ``bt`` "
+"(백트레이스)입니다. 더 많은 명령어가 아래에 나와 있습니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:117
+msgid "High DPI / 4K Monitors"
+msgstr "고해상도 DPI / 4K 모니터"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:119
+msgid ""
+"OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) "
+"monitors, ensuring that the interface looks sharp and is easily readable on "
+"displays with various DPI settings. This support is particularly helpful on "
+"4K monitors and other high-resolution displays."
+msgstr ""
+"OpenShot Video Editor는 고해상도 DPI(인치당 도트 수) 모니터를 강력하게 지원하"
+"여, 다양한 DPI 설정을 가진 디스플레이에서도 인터페이스가 선명하고 쉽게 읽히도"
+"록 보장합니다. 이 지원은 특히 4K 모니터 및 기타 고해상도 디스플레이에서 유용"
+"합니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:125
+msgid "Per Monitor DPI Awareness"
+msgstr "모니터별 DPI 인식"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:127
+msgid ""
+"OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its "
+"scaling dynamically depending on the DPI settings of each connected monitor. "
+"This helps provide a consistent experience across different displays."
+msgstr ""
+"OpenShot은 모니터별로 DPI를 인식하여, 연결된 각 모니터의 DPI 설정에 따라 스케"
+"일링을 동적으로 조정할 수 있습니다. 이를 통해 다양한 디스플레이에서 일관된 사"
+"용자 경험을 제공합니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:132
+msgid "DPI Scaling on Windows"
+msgstr "Windows에서의 DPI 스케일링"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:134
+msgid ""
+"On Windows, OpenShot rounds the scaling factor to the nearest whole value to "
+"maintain visual integrity. This helps avoid visual artifacts in the UI and "
+"keeps interface elements crisp and well-aligned. Due to this rounding, some "
+"scaling options can lead to larger fonts and UI elements than expected."
+msgstr ""
+"Windows에서는 OpenShot이 시각적 완성도를 유지하기 위해 스케일링 비율을 가장 "
+"가까운 정수로 반올림합니다. 이는 UI에서 시각적 왜곡을 방지하고 인터페이스 요"
+"소를 선명하고 잘 정렬되게 유지하는 데 도움이 됩니다. 이 반올림 때문에 일부 스"
+"케일링 옵션은 예상보다 더 큰 글꼴과 UI 요소를 초래할 수 있습니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:139
+msgid "**125% scaling** rounds to **100%**"
+msgstr "**125% 스케일링** 은 **100%** 로 반올림됩니다"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:140
+msgid "**150% scaling** rounds to **200%**"
+msgstr "**150% 스케일링** 은 **200%** 로 반올림됩니다"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:143
+msgid "Workarounds for Fine-Grained Adjustment"
+msgstr "세밀한 조정을 위한 우회 방법"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:145
+msgid ""
+"While rounding helps maintain a clean interface, there are workarounds for "
+"users who require more precise control over scaling. These methods are **not "
+"recommended** due to potential visual artifacts:"
+msgstr ""
+"반올림은 깔끔한 인터페이스 유지를 돕지만, 스케일링을 더 정밀하게 제어하려는 "
+"사용자를 위한 우회 방법도 있습니다. 이 방법들은 시각적 왜곡이 발생할 수 있으"
+"므로 **권장되지 않습니다:**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:149
+msgid "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+msgstr "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:151
+msgid ""
+"Setting this environment variable can disable rounding and allow more "
+"precise scaling."
+msgstr ""
+"이 환경 변수를 설정하면 반올림이 비활성화되어 더 정밀한 스케일링이 가능합니"
+"다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:152
+msgid ""
+"**Note:** This may cause visual artifacts, particularly in the timeline, and "
+"is not recommended."
+msgstr ""
+"**참고:** 이로 인해 특히 타임라인에서 시각적 왜곡이 발생할 수 있으므로 권장되"
+"지 않습니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:154
+msgid "**QT_SCALE_FACTOR=1.25** (or similar value)"
+msgstr "**QT_SCALE_FACTOR=1.25** (또는 유사한 값)"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:156
+msgid ""
+"Manually setting the scale factor can provide finer adjustments to the font "
+"and UI scaling."
+msgstr ""
+"스케일 팩터를 수동으로 설정하면 글꼴과 UI 스케일링을 더 세밀하게 조정할 수 있"
+"습니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:157
+msgid ""
+"This can also be set via Preferences (User Interface Scale), but expect "
+"border/line issues on Windows with fractional scales."
+msgstr ""
+"이 설정은 환경 설정(사용자 인터페이스 스케일)에서도 할 수 있지만, Windows에"
+"서 소수점 스케일을 사용할 경우 테두리/선 문제 발생이 예상됩니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:158
+msgid ""
+"**Note:** This method can also lead to visual artifacts and make OpenShot "
+"harder to use."
+msgstr ""
+"**참고:** 이 방법 역시 시각적 왜곡을 유발할 수 있으며 OpenShot 사용을 어렵게 "
+"만들 수 있습니다."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:160
+msgid ""
+"For more info on adjusting these environment variables, please visit https://"
+"github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."
+msgstr ""
+"이 환경 변수 조정에 대한 자세한 정보는 https://github.com/OpenShot/openshot-"
+"qt/wiki/OpenShot-UI-too-large 를 방문해 주세요."

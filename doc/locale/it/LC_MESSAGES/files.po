@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:23
@@ -79,8 +81,8 @@ msgid "Import File Method"
 msgstr "Metodo di importazione file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:48 ../files.rst:81 ../files.rst:110 ../files.rst:146
-#: ../files.rst:170
+#: ../files.rst:48 ../files.rst:85 ../files.rst:137 ../files.rst:171
+#: ../files.rst:195
 msgid "Description"
 msgstr "Descrizione"
 
@@ -201,47 +203,63 @@ msgstr ""
 "file."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:81
+#: ../files.rst:84
 msgid "File Context Option"
 msgstr "Opzione menu contestuale file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:83
+#: ../files.rst:86
 msgid "Import Files..."
 msgstr "Importa file..."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:83
+#: ../files.rst:87
 msgid "Import files into your project"
 msgstr "Importa file nel tuo progetto"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:84
-msgid "Thumbnail/Detail"
-msgstr "Miniatura/Dettaglio"
+#: ../files.rst:88
+msgid "Create with AI / Enhance with AI (Optional)"
+msgstr "Crea con AI / Migliora con AI (Opzionale)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:84
-msgid "Toggle the view between details and thumbnails"
-msgstr "Alterna la visualizzazione tra dettagli e miniature"
+#: ../files.rst:89
+msgid ""
+"AI menu actions for generating or enhancing media files. These options are "
+"shown only when AI is enabled and the selected file type supports the "
+"workflow. See :ref:`ai_ref`."
+msgstr ""
+"Azioni del menu AI per generare o migliorare file multimediali. Queste "
+"opzioni sono mostrate solo quando l'AI è abilitata e il tipo di file "
+"selezionato supporta il flusso di lavoro. Vedi :ref:`ai_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:85
+#: ../files.rst:90
+msgid "Details View"
+msgstr "Vista Dettagli"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:91
+msgid "Switch the Project Files panel to details view"
+msgstr "Passa il pannello File di Progetto alla vista dettagli"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:92 ../files.rst:112
 msgid "Preview File"
 msgstr "Anteprima file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:85
+#: ../files.rst:93
 msgid "Preview a media file"
 msgstr "Visualizza l'anteprima di un file multimediale"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:86 ../files.rst:98
+#: ../files.rst:94 ../files.rst:125
 msgid "Split File"
 msgstr "Dividi file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:86
+#: ../files.rst:95
 msgid ""
 "Split a file into many smaller files. The new trimmed files appear in the "
 "Project Files list."
@@ -250,32 +268,24 @@ msgstr ""
 "nell'elenco File di progetto."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:87
-msgid "Edit Title"
-msgstr "Modifica titolo"
+#: ../files.rst:96 ../files.rst:148
+msgid "Export Files"
+msgstr "Esporta file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:87
-msgid "Edit an existing title SVG file"
-msgstr "Modifica un file titolo SVG esistente"
+#: ../files.rst:97
+msgid "Export selected files (and split segments) to a destination folder"
+msgstr ""
+"Esporta i file selezionati (e i segmenti divisi) in una cartella di "
+"destinazione"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:88
-msgid "Duplicate Title"
-msgstr "Duplica titolo"
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:88
-msgid "Make a copy, and then edit the copied title SVG file"
-msgstr "Crea una copia e poi modifica il file titolo SVG copiato"
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:89 ../files.rst:135
+#: ../files.rst:98 ../files.rst:160
 msgid "Add to Timeline"
 msgstr "Aggiungi alla timeline"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:89
+#: ../files.rst:99
 msgid ""
 "Add many files to the timeline in one step, including transitions or "
 "alternating tracks."
@@ -284,12 +294,12 @@ msgstr ""
 "o tracce alternate."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:90
+#: ../files.rst:100
 msgid "Choose Profile"
 msgstr "Scegli profilo"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:90
+#: ../files.rst:101
 msgid ""
 "Change the current project profile to match the selected file. If the file's "
 "profile does not match a known profile, it will give you the option to "
@@ -300,28 +310,93 @@ msgstr ""
 "verrà data l'opzione di creare un profilo personalizzato."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:91 ../files.rst:172
+#: ../files.rst:102 ../files.rst:197
 msgid "File Properties"
 msgstr "Proprietà file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:91
+#: ../files.rst:103
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr ""
 "Visualizza le proprietà di un file, come frame rate, dimensione, ecc..."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:92 ../files.rst:180
+#: ../files.rst:104 ../files.rst:205
 msgid "Remove from Project"
 msgstr "Rimuovi dal progetto"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:92
+#: ../files.rst:105
 msgid "Remove a file from the project"
 msgstr "Rimuovi un file dal progetto"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:99
+#: ../files.rst:106
+msgid "Edit Title"
+msgstr "Modifica titolo"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:107
+msgid "Edit an existing title SVG file (shown when an SVG title is selected)"
+msgstr ""
+"Modifica un file titolo SVG esistente (mostrato quando un titolo SVG è "
+"selezionato)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:108
+msgid "Duplicate Title"
+msgstr "Duplica titolo"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:109
+#, fuzzy
+msgid ""
+"Make a copy, and then edit the copied title SVG file (shown when an SVG "
+"title is selected)"
+msgstr "Crea una copia e poi modifica il file titolo SVG copiato"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:113
+msgid ""
+"The :guilabel:`Preview File` action opens the Preview dialog for the "
+"selected file from :guilabel:`Project Files`. Simply double check a file to "
+"open this dialog."
+msgstr ""
+"L'azione :guilabel:`Anteprima File` apre la finestra di anteprima per il "
+"file selezionato da :guilabel:`File di Progetto`. Basta fare doppio clic su "
+"un file per aprire questa finestra."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:116
+msgid "Playback starts automatically."
+msgstr "La riproduzione inizia automaticamente."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:117
+msgid "Loop is enabled by default."
+msgstr "Il loop è abilitato di default."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:118
+msgid "Press :kbd:`Space` to toggle play/pause."
+msgstr "Premi :kbd:`Spazio` per attivare/disattivare play/pausa."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:119
+msgid "Use the mouse scroll wheel to zoom in/out."
+msgstr "Usa la rotellina del mouse per ingrandire/ridurre."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:120
+msgid ""
+"A :guilabel:`Reset Zoom` button appears when zoom is not 100%, and resets to "
+"100%."
+msgstr ""
+"Un pulsante :guilabel:`Reimposta Zoom` appare quando lo zoom non è al 100% e "
+"lo riporta al 100%."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:126
 msgid ""
 "If you need to cut a large video file into many smaller files before "
 "editing, the **Split File** dialog is built exactly for this purpose. Right "
@@ -339,72 +414,72 @@ msgstr ""
 "nuovo file nella finestra File di progetto."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:110 ../files.rst:146 ../files.rst:170
+#: ../files.rst:137 ../files.rst:171 ../files.rst:195
 msgid "#"
 msgstr "#"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:110 ../files.rst:146 ../files.rst:170
+#: ../files.rst:137 ../files.rst:171 ../files.rst:195
 msgid "Name"
 msgstr "Nome"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:112 ../files.rst:148 ../files.rst:172
+#: ../files.rst:139 ../files.rst:173 ../files.rst:197
 msgid "1"
 msgstr "1"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:112
+#: ../files.rst:139
 msgid "Start of File"
 msgstr "Inizio del file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:112
+#: ../files.rst:139
 msgid "Choose the starting frame of your file by clicking this button"
 msgstr "Scegli il fotogramma iniziale del tuo file cliccando questo pulsante"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:113 ../files.rst:149 ../files.rst:173
+#: ../files.rst:140 ../files.rst:174 ../files.rst:198
 msgid "2"
 msgstr "2"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:113
+#: ../files.rst:140
 msgid "End of File"
 msgstr "Fine del file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:113
+#: ../files.rst:140
 msgid "Choose the ending frame of your file by clicking this button"
 msgstr "Scegli il fotogramma finale del tuo file cliccando questo pulsante"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:114 ../files.rst:150
+#: ../files.rst:141 ../files.rst:175
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:114
+#: ../files.rst:141
 msgid "Name of File"
 msgstr "Nome del file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:114
+#: ../files.rst:141
 msgid "Enter an optional name"
 msgstr "Inserisci un nome opzionale"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:115 ../files.rst:151
+#: ../files.rst:142 ../files.rst:176
 msgid "4"
 msgstr "4"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:115
+#: ../files.rst:142
 msgid "Create Button"
 msgstr "Pulsante Crea"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:115
+#: ../files.rst:142
 msgid ""
 "Create the file (which resets this dialog, so you can repeat these steps for "
 "each segment)"
@@ -413,7 +488,7 @@ msgstr ""
 "passaggi per ogni segmento)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:118
+#: ../files.rst:145
 msgid ""
 "Please refer to the section :ref:`clips_cutting_slicing_ref` for more ways "
 "to cut and slice clips directly in the timeline."
@@ -422,12 +497,7 @@ msgstr ""
 "tagliare e dividere le clip direttamente nella timeline."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:121
-msgid "Export Files"
-msgstr "Esporta file"
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:122
+#: ../files.rst:149
 msgid ""
 "If you want your split file segments available outside of your OpenShot "
 "project, or want to copy all your video assets to one place, you can do this "
@@ -444,7 +514,7 @@ msgstr ""
 "scegli una cartella di destinazione e clicca :guilabel:`Esporta`."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:127
+#: ../files.rst:154
 msgid ""
 "NOTE: This will export each file or file segment using its **original video "
 "profile** (width, height, framerate, aspect ratio, etc...). It also supports "
@@ -461,7 +531,7 @@ msgstr ""
 "separati (usando il profilo video originale del file)."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:136
+#: ../files.rst:161
 msgid ""
 "In certain cases, you might need to add many files to the timeline at the "
 "same time. For example, a photo slideshow, or a large number of short video "
@@ -476,22 +546,22 @@ msgstr ""
 "timeline."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:148
+#: ../files.rst:173
 msgid "Selected Files"
 msgstr "File selezionati"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:148
+#: ../files.rst:173
 msgid "The list of selected files that need to be added to the timeline"
 msgstr "La lista dei file selezionati che devono essere aggiunti alla timeline"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:149
+#: ../files.rst:174
 msgid "Order of Files"
 msgstr "Ordine dei file"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:149
+#: ../files.rst:174
 msgid ""
 "Use these buttons to reorder the list of files (move up, move down, "
 "randomize, remove)"
@@ -500,12 +570,12 @@ msgstr ""
 "casuale, rimuovi)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:150
+#: ../files.rst:175
 msgid "Timeline Position"
 msgstr "Posizione nella timeline"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:150
+#: ../files.rst:175
 msgid ""
 "Choose the starting position and track where these files need to be inserted "
 "on the timeline"
@@ -514,12 +584,12 @@ msgstr ""
 "inseriti nella timeline"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:151
+#: ../files.rst:176
 msgid "Fade Options"
 msgstr "Opzioni di dissolvenza"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:151
+#: ../files.rst:176
 msgid ""
 "Fade in, fade out, both, or none (only affects the image, and not audio)"
 msgstr ""
@@ -527,32 +597,32 @@ msgstr ""
 "sull'immagine, non sull'audio)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:152
+#: ../files.rst:177
 msgid "5"
 msgstr "5"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:152
+#: ../files.rst:177
 msgid "Zoom Options"
 msgstr "Opzioni di zoom"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:152
+#: ../files.rst:177
 msgid "Zoom in, zoom out, or none"
 msgstr "Zoom avanti, zoom indietro o nessuno"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:153
+#: ../files.rst:178
 msgid "6"
 msgstr "6"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:153
+#: ../files.rst:178
 msgid "Transitions"
 msgstr "Transizioni"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:153
+#: ../files.rst:178
 msgid ""
 "Choose a specific transition to use between files, random, or none (only "
 "affects the image, and not the audio)"
@@ -561,12 +631,12 @@ msgstr ""
 "(influisce solo sull'immagine, non sull'audio)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:159
+#: ../files.rst:184
 msgid "Properties"
 msgstr "Proprietà"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:160
+#: ../files.rst:185
 msgid ""
 "To view the properties of any imported file in your video project, right "
 "click on the file, and choose **File Properties**. This will launch the file "
@@ -581,7 +651,7 @@ msgstr ""
 "puoi anche regolare il frame rate in questa finestra."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:172
+#: ../files.rst:197
 msgid ""
 "Select an image sequence in the **Project Files** panel, right click and "
 "choose **File Properties**"
@@ -590,12 +660,12 @@ msgstr ""
 "con il tasto destro e scegli **Proprietà file**"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:173
+#: ../files.rst:198
 msgid "Frame Rate"
 msgstr "Frame rate"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:173
+#: ../files.rst:198
 msgid ""
 "For image sequences, you can also adjust the frame rate of the animation"
 msgstr ""
@@ -603,7 +673,7 @@ msgstr ""
 "dell'animazione"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:182
+#: ../files.rst:207
 msgid ""
 "This will remove a file from the project. It will not delete the underlying "
 "physical file though, so removing a file from the project merely makes it "
@@ -614,12 +684,12 @@ msgstr ""
 "semplicemente non disponibile per questo progetto video."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:187
+#: ../files.rst:212
 msgid "Project Assets Folder"
 msgstr "Cartella degli asset del progetto"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:188
+#: ../files.rst:213
 msgid ""
 "OpenShot creates and uses a few **temporary working folders** while you "
 "edit. These live under ``.openshot_qt/`` in your user profile and hold "
@@ -630,7 +700,7 @@ msgstr ""
 "e contengono file specifici del progetto che OpenShot genera per te:"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:191
+#: ../files.rst:216
 msgid ""
 "``.openshot_qt/blender/`` - Blender animation renders created by the "
 "Animated Title dialog"
@@ -639,12 +709,12 @@ msgstr ""
 "finestra Titolo Animato"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:192
+#: ../files.rst:217
 msgid "``.openshot_qt/title/`` - SVG title files created by the Title dialog"
 msgstr "``.openshot_qt/title/`` - File titolo SVG creati dalla finestra Titolo"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:193
+#: ../files.rst:218
 msgid ""
 "``.openshot_qt/thumbnail/`` - Thumbnails generated for Project Files and "
 "Timeline"
@@ -653,7 +723,7 @@ msgstr ""
 "la timeline"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:194
+#: ../files.rst:219
 msgid ""
 "``.openshot_qt/clipboard/`` - Media created from clipboard pastes (images, "
 "audio, or video that must be saved to disk first)"
@@ -662,13 +732,13 @@ msgstr ""
 "(immagini, audio o video che devono prima essere salvati su disco)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:195
+#: ../files.rst:220
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr ""
 "``.openshot_qt/protobuf_data`` - Dati di tracciamento e rilevamento oggetti"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:197
+#: ../files.rst:222
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
 "project directory, inside a single folder named ``PROJECTNAME_Assets``. For "
@@ -681,11 +751,11 @@ msgstr ""
 "tutti i media incollati dagli appunti."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:200
+#: ../files.rst:225
+#, fuzzy
 msgid ""
 "As part of this process, all paths inside your ``*.osp`` project file are "
-"updated to be **relative** to your project folder. This keeps everything "
-"self-contained and easy to move or back up as one folder."
+"updated to be **relative** to your project folder."
 msgstr ""
 "Come parte di questo processo, tutti i percorsi all'interno del tuo file di "
 "progetto ``*.osp`` vengono aggiornati per essere **relativi** alla cartella "
@@ -693,31 +763,12 @@ msgstr ""
 "backup come un'unica cartella."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:204
-msgid "Cleanup behavior"
-msgstr "Comportamento di pulizia"
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:205
-msgid ""
-"Starting a **new project** or opening an **existing project** clears the "
-"temporary ``.openshot_qt`` working folders so you begin with a clean slate. "
-"Your saved projects are not affected, and any assets previously copied into "
-"a ``PROJECTNAME_Assets`` folder remain in that project's directory."
-msgstr ""
-"Avviare un **nuovo progetto** o aprire un **progetto esistente** cancella le "
-"cartelle di lavoro temporanee ``.openshot_qt`` così inizi con una situazione "
-"pulita. I tuoi progetti salvati non sono influenzati, e qualsiasi asset "
-"precedentemente copiato in una cartella ``PROJECTNAME_Assets`` rimane nella "
-"directory di quel progetto."
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:210
+#: ../files.rst:228
 msgid "Missing Files"
 msgstr "File mancanti"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:212
+#: ../files.rst:230
 msgid ""
 "When you create and save a project in OpenShot, any files imported into the "
 "software (such as videos, audio, and images) must remain accessible "
@@ -735,7 +786,7 @@ msgstr ""
 "video."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:217
+#: ../files.rst:235
 msgid ""
 "For example, users might move or delete folders, unplug their USB devices, "
 "or move or delete their project files. Any of these examples cause a :"
@@ -751,7 +802,7 @@ msgstr ""
 "volte di trovare i file mancanti."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:221
+#: ../files.rst:239
 msgid ""
 "When OpenShot saves a project, all file paths are converted to **relative** "
 "file paths. As long as you keep all assets organized in the same parent "
@@ -767,7 +818,7 @@ msgstr ""
 "autonoma su un altro computer senza problemi."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:225
+#: ../files.rst:243
 msgid ""
 "Everyone has their unique way of organizing files, and it's crucial to "
 "remember not to make changes to file paths, rename files, or delete files "
