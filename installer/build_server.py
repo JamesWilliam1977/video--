@@ -169,6 +169,29 @@ def upload(file_path, github_release):
     file_name = os.path.basename(file_path)
     file_size = os.path.getsize(file_path)
 
+    def delete_existing_asset(asset):
+        """Delete an existing release asset across github3 API variants."""
+        if hasattr(asset, 'delete'):
+            return asset.delete()
+
+        asset_id = getattr(asset, 'id', None)
+        if asset_id is not None:
+            for method_name in ('delete_asset', 'delete_release_asset'):
+                delete_method = getattr(github_release, method_name, None)
+                if delete_method:
+                    return delete_method(asset_id)
+
+        delete_method = getattr(asset, '_delete', None)
+        delete_url = getattr(asset, '_api', None) or getattr(asset, 'url', None)
+        if delete_method and delete_url:
+            return delete_method(delete_url)
+
+        raise AttributeError(
+            "No supported asset deletion API found for asset %s (type: %s)" % (
+                file_name, type(asset).__name__,
+            )
+        )
+
     def remove_existing_asset():
         """Remove a conflicting asset from the release (if any)"""
         # pick the right asset-list provider
@@ -180,7 +203,7 @@ def upload(file_path, github_release):
             if asset.name == file_name:
                 output(f"GitHub: Removing conflicting installer asset from {github_release.tag_name}: {file_name}")
                 try:
-                    asset.delete()
+                    delete_existing_asset(asset)
                 except Exception as ex:
                     output(f"GitHub: Failed to delete asset: {ex}")
                 break
