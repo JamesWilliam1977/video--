@@ -568,6 +568,17 @@ def setup(app):
         app.add_js_file("lightbox.js")
     else:
         app.add_javascript("lightbox.js")
-    app.connect("config-inited", _configure_latex_fonts)
-    app.connect("config-inited", _configure_html_context)
+
+    def _builder_configure_latex_fonts(app):
+        _configure_latex_fonts(app, app.config)
+
+    def _builder_configure_html_context(app):
+        _configure_html_context(app, app.config)
+
+    try:
+        app.connect("config-inited", _configure_latex_fonts)
+        app.connect("config-inited", _configure_html_context)
+    except Exception:
+        app.connect("builder-inited", _builder_configure_latex_fonts)
+        app.connect("builder-inited", _builder_configure_html_context)
     app.connect("build-finished", _rewrite_shared_assets)
