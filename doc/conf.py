@@ -560,8 +560,14 @@ epub_exclude_files = ['search.html']
 
 def setup(app):
     app.add_config_value("ga4_measurement_id", None, "env")
-    app.add_css_file("lightbox.css")
-    app.add_js_file("lightbox.js")
+    if hasattr(app, "add_css_file"):
+        app.add_css_file("lightbox.css")
+    else:
+        app.add_stylesheet("lightbox.css")
+    if hasattr(app, "add_js_file"):
+        app.add_js_file("lightbox.js")
+    else:
+        app.add_javascript("lightbox.js")
     app.connect("config-inited", _configure_latex_fonts)
     app.connect("config-inited", _configure_html_context)
     app.connect("build-finished", _rewrite_shared_assets)
