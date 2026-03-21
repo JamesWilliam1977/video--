@@ -34,12 +34,6 @@ import unittest
 import openshot
 
 from PyQt5.QtGui import QGuiApplication
-try:
-    # QtWebEngineWidgets must be loaded prior to creating a QApplication
-    # But on systems with only WebKit, this will fail (and we ignore the failure)
-    from PyQt5.QtWebEngineWidgets import QWebEngineView  # noqa
-except ImportError:
-    pass
 
 # Import parent folder (so it can find other imports)
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
