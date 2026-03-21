@@ -68,8 +68,12 @@ class Color:
         return cls._green + str(*args) + cls._reset
 
 
-# Get app instance
-app = QCoreApplication(sys.argv)
+def get_app() -> QCoreApplication:
+    """Create the translation app lazily so test discovery doesn't lock in QCoreApplication."""
+    app = QCoreApplication.instance()
+    if app is not None:
+        return app
+    return QCoreApplication(sys.argv)
 
 
 def build_stringlists() -> Dict[str, List]:
@@ -92,6 +96,7 @@ def build_stringlists() -> Dict[str, List]:
 
 def check_trans(strings: List) -> List[Tuple[str, str]]:
     """Check all strings in a list against a given .qm file"""
+    app = get_app()
     # Test translation of all strings
     translations = {
         source: app.translate("", source)
@@ -139,6 +144,7 @@ def check_trans(strings: List) -> List[Tuple[str, str]]:
 
 def process_qm(file: str, stringlists: Dict[str, List[str]]) -> int:
     """Scan a translation file against all provided strings"""
+    app = get_app()
     # Attempt to load translation file
     basename = os.path.splitext(file)[0]
     translator = QTranslator(app)

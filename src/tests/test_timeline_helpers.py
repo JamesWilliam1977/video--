@@ -45,6 +45,7 @@ from PyQt5.QtCore import QCoreApplication, QPointF, QRectF, Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QApplication
 from classes.updates import UpdateAction
+from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
 
 QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts, True)
 
@@ -77,10 +78,15 @@ class DummyApp(QApplication):
         return text
 
 
+def ensure_app_state(app):
+    return ensure_qt_app_state(app, DummySettings)
+
+
 class TimelineHelperTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.app = QApplication.instance() or DummyApp()
+        app, cls._owns_app = get_or_create_app(DummyApp)
+        cls.app = ensure_app_state(app)
         cls.timeline_module = importlib.import_module("windows.views.timeline")
         cls.clip_paint_module = importlib.import_module("windows.views.timeline_backend.paint.clip")
         cls.qwidget_clip_module = importlib.import_module("windows.views.timeline_backend.qwidget.clip")
@@ -107,6 +113,11 @@ class TimelineHelperTests(unittest.TestCase):
                 return timeline_module.TimelineView._collect_clip_ids_from_value(self, value, clip_ids)
 
         return Helper()
+
+    @classmethod
+    def tearDownClass(cls):
+        if getattr(cls, "_owns_app", False) and cls.app:
+            cls.app.quit()
 
     def make_time_helper(self):
         timeline_module = self.timeline_module

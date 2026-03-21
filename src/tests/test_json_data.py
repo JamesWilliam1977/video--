@@ -42,6 +42,7 @@ from PyQt5.QtWidgets import QApplication
 
 from classes import info
 from classes.json_data import JsonDataStore
+from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
 
 
 class DummySettings:
@@ -83,31 +84,24 @@ def ensure_app_state(app):
     from classes.project_data import ProjectDataStore
     from classes.updates import UpdateManager
 
-    if not hasattr(app, "settings") or app.settings is None:
-        app.settings = DummySettings()
-    if (
-        not hasattr(app, "project")
-        or app.project is None
-        or not hasattr(app.project, "get")
-        or not hasattr(app.project, "generate_id")
-    ):
-        app.project = ProjectDataStore()
-    app.updates = UpdateManager()
-    app.updates.add_listener(app.project)
-    app.updates.reset()
-    if not hasattr(app, "window"):
-        app.window = None
-    return app
+    return ensure_qt_app_state(
+        app,
+        DummySettings,
+        project_factory=ProjectDataStore,
+        updates_factory=UpdateManager,
+        extra_attrs={"window": None},
+    )
 
 
 class JsonDataTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.app = ensure_app_state(QApplication.instance() or DummyApp())
+        app, cls._owns_app = get_or_create_app(DummyApp)
+        cls.app = ensure_app_state(app)
 
     @classmethod
     def tearDownClass(cls):
-        if cls.app:
+        if getattr(cls, "_owns_app", False) and cls.app:
             cls.app.quit()
 
     def test_read_from_file_repairs_windows_drive_corruption(self):
