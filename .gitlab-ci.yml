@@ -18,7 +18,7 @@ init-builders:
 linux:
   stage: build
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build/*.AppImage
     - build/*.torrent
@@ -51,7 +51,7 @@ linux:
 mac:
   stage: build
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build/*.dmg
     - build/*.torrent
@@ -93,7 +93,7 @@ mac:
 win-x64:
   stage: build
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build\*.exe
     - build\*.torrent
@@ -135,7 +135,7 @@ win-x64:
 win-x86:
   stage: build
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build\*.exe
     - build\*.torrent
@@ -178,7 +178,7 @@ win-x86:
 win-sign-x64:
   stage: sign
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build\*-x86_64.exe
     - build\build-server.log
@@ -198,7 +198,7 @@ win-sign-x64:
 win-sign-x86:
   stage: sign
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build\*-x86.exe
     - build\build-server.log
@@ -231,7 +231,7 @@ re-init-builders:
 deployer:
   stage: deploy
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build/*.log
     - build/*.sha256sum
@@ -250,7 +250,7 @@ deployer:
 publisher:
   stage: publish
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build/*.log
   script:
