@@ -4,12 +4,11 @@
 # Editor package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-03-20 19:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,16 +25,17 @@ msgstr "Edistynyt tekoäly: ComfyUI"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:25
 msgid ""
-"OpenShot can connect to a local `ComfyUI <https://github.com/comfyanonymous/"
-"ComfyUI>`_ server and run AI workflows from the Project Files and timeline "
-"context menus. This page explains what these tools are, what hardware they "
-"require, and where the built-in workflow templates live."
+"OpenShot can connect to a local `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ server and run AI workflows "
+"from the Project Files and Timeline context menus. This page explains what "
+"these tools are, what hardware they require, and where the built-in workflow"
+" templates live."
 msgstr ""
-"OpenShot voi yhdistää paikalliseen `ComfyUI <https://github.com/"
-"comfyanonymous/ComfyUI>`_ -palvelimeen ja suorittaa tekoälytyönkulkuja "
-"Projektitiedostot- ja aikajanavalikon kontekstivalikoista. Tämä sivu "
-"selittää, mitä nämä työkalut ovat, mitä laitteistoa ne vaativat ja missä "
-"sisäänrakennetut työnkulkujen mallit sijaitsevat."
+"OpenShot voi muodostaa yhteyden paikalliseen ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ -palvelimeen ja suorittaa "
+"tekoälyn työnkulkuja Project Files- ja Timeline -kontekstivalikoista. Tällä "
+"sivulla kerrotaan, mitä nämä työkalut ovat, mitä laitteistoja ne vaativat ja"
+" missä sisäänrakennetut työnkulkumallit sijaitsevat."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:30
@@ -61,8 +61,8 @@ msgid ""
 "You must run a local `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ "
 "server."
 msgstr ""
-"Sinun on ajettava paikallinen `ComfyUI <https://github.com/comfyanonymous/"
-"ComfyUI>`_ -palvelin."
+"Sinun on ajettava paikallinen `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ -palvelin."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:34
@@ -94,8 +94,8 @@ msgstr "Näytönohjain"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:45
-msgid "Nvidia 5070 12GB or better (16-24GB VRAM strongly preferred)"
-msgstr "Nvidia 5070 12GB tai parempi (16-24GB VRAM erittäin suositeltu)"
+msgid "NVIDIA 5070 12GB or better (16-24GB VRAM strongly preferred)"
+msgstr "NVIDIA 5070 12 Gt tai parempi (16–24 Gt VRAM erittäin suositeltava)"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:46
@@ -159,8 +159,8 @@ msgstr "Asennus ja käyttöönotto"
 #: ../ai.rst:58
 msgid "Use this quick setup path before trying any AI workflow in OpenShot:"
 msgstr ""
-"Käytä tätä nopeaa asennuspolkua ennen kuin kokeilet mitään tekoälytyönkulkua "
-"OpenShotissa:"
+"Käytä tätä nopeaa asennuspolkua ennen kuin kokeilet mitään tekoälytyönkulkua"
+" OpenShotissa:"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:60
@@ -179,14 +179,13 @@ msgid ""
 msgstr ""
 "Lataa vaaditut mallien tiedostot (lueteltu alla) vastaaviin mallikansioihin."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:63
 msgid ""
-"Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
-"URL` in OpenShot."
+"Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set "
+":guilabel:`ComfyUI URL`."
 msgstr ""
-"Käynnistä ComfyUI, aseta sitten OpenShotissa :guilabel:`Asetukset -> "
-"Kokeelliset -> Comfy UI URL`."
+"Käynnistä ComfyUI, avaa sitten :guilabel:`Muokkaa->Asetukset->Lisäasetukset`"
+" ja aseta :guilabel:`ComfyUI URL`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:64
@@ -198,11 +197,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:66
 msgid ""
-"For full ComfyUI installation details, see the official repository: `ComfyUI "
-"on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
+"For full ComfyUI installation details, see the official repository: `ComfyUI"
+" on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
 msgstr ""
-"Täydelliset ComfyUI-asennusohjeet löytyvät virallisesta arkistosta: `ComfyUI "
-"GitHubissa <https://github.com/comfyanonymous/ComfyUI>`_."
+"Täydelliset ComfyUI-asennusohjeet löytyvät virallisesta arkistosta: `ComfyUI"
+" GitHubissa <https://github.com/comfyanonymous/ComfyUI>`_."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:70
@@ -335,14 +334,16 @@ msgstr "``ComfyUI/models/text_encoders/t5-base.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:97
-msgid "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
+msgid ""
+"``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 msgstr ""
 "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:98
 msgid "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
-msgstr "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
+msgstr ""
+"``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:99
@@ -367,11 +368,11 @@ msgstr "``ComfyUI/models/vae/wan2.2_vae.safetensors``"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:103
 msgid ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 msgstr ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:106
@@ -407,8 +408,8 @@ msgid ""
 "and queue badges. Outputs are saved under ``.openshot_qt/comfyui-output/``."
 msgstr ""
 "Luodut tiedostot lisätään :guilabel:`Projektitiedostot`-kohtaan "
-"etenemistekstin ja jonosymbolien kanssa. Tulosteet tallennetaan kansioon ``."
-"openshot_qt/comfyui-output/``."
+"etenemistekstin ja jonosymbolien kanssa. Tulosteet tallennetaan kansioon "
+"``.openshot_qt/comfyui-output/``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:125
@@ -419,8 +420,8 @@ msgid ""
 "copied into a ``PROJECTNAME_Assets`` folder remain in that project's "
 "directory."
 msgstr ""
-"Uuden **projektin** aloittaminen tai **olemassa olevan projektin** avaaminen "
-"tyhjentää väliaikaiset ``.openshot_qt`` AI-työkansiot, jotta aloitat "
+"Uuden **projektin** aloittaminen tai **olemassa olevan projektin** avaaminen"
+" tyhjentää väliaikaiset ``.openshot_qt`` AI-työkansiot, jotta aloitat "
 "puhtaalta pöydältä. Tallennetut projektisi eivät muutu, ja kaikki aiemmin "
 "kopioidut resurssit ``PROJECTNAME_Assets``-kansioon säilyvät kyseisen "
 "projektin hakemistossa."
@@ -428,14 +429,14 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:130
 msgid ""
-"If ComfyUI is unavailable, OpenShot hides the AI menus. Configure the server "
-"URL in :guilabel:`Preferences -> Experimental -> Comfy UI URL`, then use "
-"the :guilabel:`Check` button to test connectivity."
+"If ComfyUI is unavailable, OpenShot disables the AI menus. Configure the "
+"server URL in :guilabel:`Edit->Preferences->Advanced`, then use the "
+":guilabel:`Check` button to test connectivity."
 msgstr ""
-"Jos ComfyUI ei ole käytettävissä, OpenShot piilottaa AI-valikot. Määritä "
-"palvelimen URL-osoite kohdassa :guilabel:`Asetukset -> Kokeelliset -> Comfy "
-"UI URL`, ja käytä sitten :guilabel:`Tarkista`-painiketta yhteyden "
-"testaamiseen."
+"Jos ComfyUI ei ole käytettävissä, OpenShot poistaa AI-valikot käytöstä. "
+"Määritä palvelimen URL-osoite kohdassa "
+":guilabel:`Muokkaa->Asetukset->Lisäasetukset` ja testaa sitten yhteys "
+":guilabel:`Tarkista`-painikkeella."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:135
@@ -445,11 +446,11 @@ msgstr "Työnkulun mallipohjat"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:137
 msgid ""
-"OpenShot reads built-in templates from ``src/comfyui/``. It also loads "
-"custom user templates from ``~/.openshot_qt/comfyui/``."
+"OpenShot reads built-in templates from ``comfyui/``. It also loads custom "
+"user templates from ``~/.openshot_qt/comfyui/``."
 msgstr ""
-"OpenShot lukee sisäänrakennetut mallipohjat kansiosta ``src/comfyui/``. Se "
-"lataa myös käyttäjän omat mallipohjat kansiosta ``~/.openshot_qt/comfyui/``."
+"OpenShot lukee sisäänrakennetut mallit ``comfyui/``-tiedostosta. Se lataa "
+"myös mukautettuja käyttäjämalleja osoitteesta ``~/.openshot_qt/comfyui/``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:140
@@ -466,7 +467,8 @@ msgstr "Avaa ComfyUI:ssa haluamasi työnkulun välilehti."
 msgid ""
 "Choose :guilabel:`Export (API)` to save the workflow as a ``*.json`` file."
 msgstr ""
-"Valitse :guilabel:`Vie (API)` tallentaaksesi työnkulun ``*.json``-tiedostona."
+"Valitse :guilabel:`Vie (API)` tallentaaksesi työnkulun "
+"``*.json``-tiedostona."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:144
@@ -476,20 +478,21 @@ msgstr "Kopioi kyseinen JSON-tiedosto kansioon ``~/.openshot_qt/comfyui/``."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:145
 msgid "Restart OpenShot, or reopen the project if needed."
-msgstr "Käynnistä OpenShot uudelleen tai avaa projekti uudelleen tarvittaessa."
+msgstr ""
+"Käynnistä OpenShot uudelleen tai avaa projekti uudelleen tarvittaessa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:147
 msgid ""
-"OpenShot will automatically load the workflow and show it in the appropriate "
-"AI menu. When you trigger it from OpenShot, the selected source file is "
+"OpenShot will automatically load the workflow and show it in the appropriate"
+" AI menu. When you trigger it from OpenShot, the selected source file is "
 "passed into the workflow, and the output from the workflow's final output "
 "node is imported back into :guilabel:`Project Files`."
 msgstr ""
 "OpenShot lataa työnkulun automaattisesti ja näyttää sen sopivassa AI-"
 "valikossa. Kun käynnistät sen OpenShotista, valittu lähdetiedosto syötetään "
-"työnkulkuun, ja työnkulun lopullisen solmun tuloste tuodaan takaisin :"
-"guilabel:`Projektitiedostot`-kohtaan."
+"työnkulkuun, ja työnkulun lopullisen solmun tuloste tuodaan takaisin "
+":guilabel:`Projektitiedostot`-kohtaan."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:152
@@ -570,8 +573,8 @@ msgstr "Anna seurantapisteet/alueet seurantatyönkuluille."
 msgid ""
 "Start the job with :guilabel:`Generate` or close with :guilabel:`Cancel`."
 msgstr ""
-"Käynnistä työ :guilabel:`Luo`-painikkeella tai sulje :guilabel:`Peruuta`-"
-"painikkeella."
+"Käynnistä työ :guilabel:`Luo`-painikkeella tai sulje "
+":guilabel:`Peruuta`-painikkeella."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:179
@@ -581,13 +584,13 @@ msgstr "Seuranta (Maski, Sumentaminen, Korostus)"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:181
 msgid ""
-"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, :guilabel:"
-"`Mask...`) use a region screen where you mark what to include and what to "
-"ignore."
+"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, "
+":guilabel:`Mask...`) use a region screen where you mark what to include and "
+"what to ignore."
 msgstr ""
-"Seurantatyönkulut (:guilabel:`Sumenna...`, :guilabel:`Korosta...`, :guilabel:"
-"`Maski...`) käyttävät alueen valintaa, jossa merkitset, mitä sisällytetään "
-"ja mitä jätetään pois."
+"Seurantatyönkulut (:guilabel:`Sumenna...`, :guilabel:`Korosta...`, "
+":guilabel:`Maski...`) käyttävät alueen valintaa, jossa merkitset, mitä "
+"sisällytetään ja mitä jätetään pois."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:188
@@ -681,9 +684,10 @@ msgstr "Miten seuranta toimii"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:217
 msgid ""
-"OpenShot sends your positive and negative markers as seed coordinates to the "
-"tracking model, which builds a mask for the subject and then follows it over "
-"time. Better seeds usually produce cleaner masks and less drift. [sam2]_"
+"OpenShot sends your positive and negative markers as seed coordinates to the"
+" tracking model, which builds a mask for the subject and then follows it "
+"over time. Better seeds usually produce cleaner masks and less drift. "
+"[sam2]_"
 msgstr ""
 "OpenShot lähettää positiiviset ja negatiiviset merkintäsi "
 "siemenkoordinaatteina seurantamallille, joka rakentaa maskin kohteelle ja "
@@ -732,7 +736,8 @@ msgstr "Siirrä kehysliukusäädintä eri hetkiin leikkeessä."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:233
-msgid "Add or adjust dots/rectangles on frames where tracking starts to drift."
+msgid ""
+"Add or adjust dots/rectangles on frames where tracking starts to drift."
 msgstr ""
 "Lisää tai säädä pisteitä/suorakulmioita kehyksissä, joissa seuranta alkaa "
 "harhailla."
@@ -740,8 +745,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:234
 msgid ""
-"Use additional seed points only where needed, especially on occlusions, fast "
-"motion, or major shape changes."
+"Use additional seed points only where needed, especially on occlusions, fast"
+" motion, or major shape changes."
 msgstr ""
 "Käytä lisäsiemeniä vain tarvittaessa, erityisesti peittymissä, nopeissa "
 "liikkeissä tai suurissa muodonmuutoksissa."
@@ -774,7 +779,8 @@ msgstr "Lisää pisteitä vain siellä, missä seuranta epäonnistuu."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:246
 msgid ""
-"If needed, add a more nuanced set of positive/negative points and rectangles."
+"If needed, add a more nuanced set of positive/negative points and "
+"rectangles."
 msgstr ""
 "Tarvittaessa lisää tarkempi joukko positiivisia/negatiivisia pisteitä ja "
 "suorakulmioita."
@@ -796,11 +802,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:250
 msgid ""
-"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 msgstr ""
-"*SAM2 (Segment Anything Model 2) -projekti:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) -projekti:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:253
@@ -830,10 +836,14 @@ msgid "Completed outputs are imported back into :guilabel:`Project Files`."
 msgstr ""
 "Valmiit tulosteet tuodaan takaisin :guilabel:`Projektitiedostot`-kohtaan."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:260
-msgid "Active jobs can be canceled from the same AI workflow flow."
-msgstr "Aktiiviset työt voi peruuttaa samasta tekoälytyönkulusta."
+msgid ""
+"Active jobs can be canceled by right-clicking the generated project file "
+"with the progress bar and choosing :guilabel:`Cancel Job`."
+msgstr ""
+"Aktiiviset työt voidaan peruuttaa napsauttamalla luotua projektitiedostoa "
+"hiiren kakkospainikkeella edistymispalkissa ja valitsemalla "
+":guilabel:`Peruuta työ`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:261
@@ -848,13 +858,13 @@ msgstr "Sisäänrakennetut JSON-työnkulut"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:266
 msgid ""
-"The sections below map directly to built-in JSON templates in ``src/comfyui/"
-"``. Each subsection describes why you might use it, how to run it, and key "
+"The sections below map directly to built-in JSON templates in ``comfyui/``. "
+"Each subsection describes why you might use it, how to run it, and key "
 "details."
 msgstr ""
-"Alla olevat osiot vastaavat suoraan sisäänrakennettuja JSON-malleja "
-"kansiossa ``src/comfyui/``. Jokainen alaluku kuvaa, miksi sitä voisi "
-"käyttää, miten se suoritetaan ja keskeiset tiedot."
+"Alla olevat osiot liittyvät suoraan sisäänrakennetuihin JSON-malleihin "
+"kohteessa ``comfyui/``. Jokaisessa alaosiossa kuvataan, miksi saatat käyttää"
+" sitä, kuinka sitä käytetään, ja tärkeimmät tiedot."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:270
@@ -883,10 +893,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:277
 msgid ""
-"Details: Uses ``src/comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/txt2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/txt2img-basic.json`` tiedostoa yhdessä "
+"Tiedot: Käyttää tiedostoa ``comfyui/txt2img-basic.json`` "
 "``sd_xl_base_1.0.safetensors`` kanssa."
 
 # Translated with gpt-4.1-mini
@@ -911,11 +921,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:284
 msgid ""
-"Details: Uses ``src/comfyui/txt2video-svd.json`` with WAN video generation "
+"Details: Uses ``comfyui/txt2video-svd.json`` with WAN video generation "
 "models."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/txt2video-svd.json`` tiedostoa WAN-"
-"videonluontimalleilla."
+"Yksityiskohdat: Käyttää ``comfyui/txt2video-svd.json`` WAN-videon "
+"sukupolvimallien kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:287
@@ -939,11 +949,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:291
 msgid ""
-"Details: Uses ``src/comfyui/txt2audio-stable-open.json`` with Stable Audio "
-"Open models."
+"Details: Uses ``comfyui/txt2audio-stable-open.json`` with Stable Audio Open "
+"models."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/txt2audio-stable-open.json`` tiedostoa "
-"Stable Audio Open -malleilla."
+"Yksityiskohdat: Käyttää tiedostoa ``comfyui/txt2audio-stable-open.json`` "
+"Stable Audio Open -malleissa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:294
@@ -960,8 +970,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:297
 msgid ""
-"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt "
-"text, then generate."
+"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt"
+" text, then generate."
 msgstr ""
 "Miten: Valitse :guilabel:`Luo tekoälyn avulla` -> :guilabel:`Musiikki...`, "
 "kirjoita kehoteteksti ja luo."
@@ -969,11 +979,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:298
 msgid ""
-"Details: Uses ``src/comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
+"Details: Uses ``comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
 "checkpoint."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/txt2music-ace-step.json`` tiedostoa "
-"Ace-Step 1.5 -tarkistuspisteellä."
+"Yksityiskohdat: Käyttää ``comfyui/txt2music-ace-step.json`` Ace-Step 1.5 "
+"-tarkistuspisteen kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:301
@@ -989,7 +999,8 @@ msgstr "Vaihda kuvan tyyliä... (``img2img-basic``)"
 #: ../ai.rst:306
 msgid "Why: Restyle an existing image while keeping the source composition."
 msgstr ""
-"Miksi: Muuta olemassa olevan kuvan tyyliä säilyttäen alkuperäinen sommittelu."
+"Miksi: Muuta olemassa olevan kuvan tyyliä säilyttäen alkuperäinen "
+"sommittelu."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:307
@@ -1003,10 +1014,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:308
 msgid ""
-"Details: Uses ``src/comfyui/img2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/img2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/img2img-basic.json`` tiedostoa yhdessä "
+"Yksityiskohdat: Käyttää tiedostoa ``comfyui/img2img-basic.json`` "
 "``sd_xl_base_1.0.safetensors`` kanssa."
 
 # Translated with gpt-4.1-mini
@@ -1031,11 +1042,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:315
 msgid ""
-"Details: Uses ``src/comfyui/img2video-svd.json`` with WAN image-to-video "
-"models."
+"Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video models."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/img2video-svd.json`` tiedostoa WAN-"
-"kuvasta-videoon -malleilla."
+"Yksityiskohdat: Käyttää tiedostoa ``comfyui/img2video-svd.json`` WAN-kuvasta"
+" videoon -mallien kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:318
@@ -1059,11 +1069,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:322
 msgid ""
-"Details: Uses ``src/comfyui/video2video-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/video2video-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/video2video-basic.json`` tiedostoa "
-"yhdessä ``sd_xl_base_1.0.safetensors`` kanssa."
+"Tiedot: Käyttää tiedostoa ``comfyui/video2video-basic.json`` "
+"``sd_xl_base_1.0.safetensors`` kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:325
@@ -1087,11 +1097,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:329
 msgid ""
-"Details: Uses ``src/comfyui/upscale-realesrgan-x4.json`` with "
+"Details: Uses ``comfyui/upscale-realesrgan-x4.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/upscale-realesrgan-x4.json`` tiedostoa "
-"yhdessä ``RealESRGAN_x4plus.safetensors`` kanssa."
+"Yksityiskohdat: Käyttää ``comfyui/upscale-realesrgan-x4.json`` ja "
+"``RealESRGAN_x4plus.safetensors``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:332
@@ -1117,11 +1127,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:336
 msgid ""
-"Details: Uses ``src/comfyui/video-upscale-gan.json`` with "
+"Details: Uses ``comfyui/video-upscale-gan.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/video-upscale-gan.json`` tiedostoa "
-"yhdessä ``RealESRGAN_x4plus.safetensors`` kanssa."
+"Yksityiskohdat: Käyttää ``comfyui/video-upscale-gan.json`` ja "
+"``RealESRGAN_x4plus.safetensors``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:339
@@ -1145,11 +1155,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:343
 msgid ""
-"Details: Uses ``src/comfyui/video-frame-interpolation-rife2x.json`` with "
+"Details: Uses ``comfyui/video-frame-interpolation-rife2x.json`` with "
 "``rife47.pth``."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/video-frame-interpolation-rife2x."
-"json`` tiedostoa yhdessä ``rife47.pth`` kanssa."
+"Yksityiskohdat: Käyttää ``comfyui/video-frame-interpolation-rife2x.json`` ja"
+" ``rife47.pth``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:346
@@ -1176,11 +1186,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:350
 msgid ""
-"Details: Uses ``src/comfyui/video-segment-scenes-transnet.json`` with "
+"Details: Uses ``comfyui/video-segment-scenes-transnet.json`` with "
 "TransNetV2."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/video-segment-scenes-transnet.json`` "
-"tiedostoa TransNetV2:n kanssa."
+"Yksityiskohdat: käyttää tiedostoa ``comfyui/video-segment-scenes-"
+"transnet.json`` TransNetV2:n kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:353
@@ -1204,10 +1214,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:357
 msgid ""
-"Details: Uses ``src/comfyui/video-whisper-srt.json`` and creates SRT output."
+"Details: Uses ``comfyui/video-whisper-srt.json`` and creates SRT output."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/video-whisper-srt.json`` ja luo SRT-"
-"tulosteen."
+"Yksityiskohdat: Käyttää ``comfyui/video-whisper-srt.json`` ja luo SRT-"
+"ulostulon."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:360
@@ -1241,11 +1251,11 @@ msgstr "Kuinka: Valitse pisteet/suorakulmiot kohteelle, sitten luo."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:370
 msgid ""
-"Details: Uses ``src/comfyui/image-blur-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-blur-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/image-blur-anything-sam2.json`` "
-"tiedostoa SAM2-kuvasegmentoinnilla."
+"Yksityiskohdat: Käyttää ``comfyui/image-blur-anything-sam2.json`` "
+"SAM2-kuvasegmentoinnin kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:373
@@ -1260,11 +1270,11 @@ msgstr "Miksi: Korostaa valitut kohdealueet staattisessa kuvassa."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:377
 msgid ""
-"Details: Uses ``src/comfyui/image-highlight-anything-sam2.json`` with SAM2 "
-"image segmentation."
+"Details: Uses ``comfyui/image-highlight-anything-sam2.json`` with SAM2 image"
+" segmentation."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/image-highlight-anything-sam2.json`` "
-"tiedostoa SAM2-kuvasegmentoinnilla."
+"Yksityiskohdat: Käyttää ``comfyui/image-highlight-anything-sam2.json`` "
+"SAM2-kuvasegmentoinnin kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:380
@@ -1279,11 +1289,11 @@ msgstr "Miksi: Luo kuvamaski valituille kohdealueille."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:384
 msgid ""
-"Details: Uses ``src/comfyui/image-mask-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-mask-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/image-mask-anything-sam2.json`` "
-"tiedostoa SAM2-kuvasegmentoinnilla."
+"Yksityiskohdat: Käyttää ``comfyui/image-mask-anything-sam2.json`` "
+"SAM2-kuvasegmentoinnin kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:387
@@ -1303,11 +1313,11 @@ msgstr "Kuinka: Merkitse kohde/tausta alueen näytöllä, sitten luo."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:391
 msgid ""
-"Details: Uses ``src/comfyui/video-blur-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-blur-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/video-blur-anything-sam2.json`` "
-"tiedostoa SAM2-videoseurannalla."
+"Tiedot: Käyttää ``comfyui/video-blur-anything-sam2.json`` "
+"SAM2-videoseurannan kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:394
@@ -1322,11 +1332,11 @@ msgstr "Miksi: Seuraa ja korosta liikkuvaa kohdetta videossa."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:398
 msgid ""
-"Details: Uses ``src/comfyui/video-highlight-anything-sam2.json`` with SAM2 "
-"video tracking."
+"Details: Uses ``comfyui/video-highlight-anything-sam2.json`` with SAM2 video"
+" tracking."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/video-highlight-anything-sam2.json`` "
-"tiedostoa SAM2-videoseurannalla."
+"Yksityiskohdat: Käyttää ``comfyui/video-highlight-anything-sam2.json`` "
+"SAM2-videoseurannan kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:401
@@ -1341,11 +1351,11 @@ msgstr "Miksi: Luo animoitu maski, joka seuraa liikkuvaa kohdetta."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:405
 msgid ""
-"Details: Uses ``src/comfyui/video-mask-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-mask-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Yksityiskohdat: Käyttää ``src/comfyui/video-mask-anything-sam2.json`` "
-"tiedostoa SAM2-videoseurannalla."
+"Tiedot: Käyttää ``comfyui/video-mask-anything-sam2.json`` "
+"SAM2-videoseurannan kanssa."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:408
@@ -1426,8 +1436,20 @@ msgstr "Testaa uudelleen ensin lyhyellä leikkeellä tai staattisella kuvalla."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:429
 msgid ""
-"For general performance and cache tuning, see :ref:`preferences_ref` and :"
-"ref:`playback_ref`."
+"For general performance and cache tuning, see :ref:`preferences_ref` and "
+":ref:`playback_ref`."
 msgstr ""
-"Yleistä suorituskyvyn ja välimuistin säätöä varten katso :ref:"
-"`preferences_ref` ja :ref:`playback_ref`."
+"Yleistä suorituskyvyn ja välimuistin säätöä varten katso "
+":ref:`preferences_ref` ja :ref:`playback_ref`."
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
+#~ "URL` in OpenShot."
+#~ msgstr ""
+#~ "Käynnistä ComfyUI, aseta sitten OpenShotissa :guilabel:`Asetukset -> "
+#~ "Kokeelliset -> Comfy UI URL`."
+
+# Translated with gpt-4.1-mini
+#~ msgid "Active jobs can be canceled from the same AI workflow flow."
+#~ msgstr "Aktiiviset työt voi peruuttaa samasta tekoälytyönkulusta."

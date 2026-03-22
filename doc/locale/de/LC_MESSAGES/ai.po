@@ -4,12 +4,11 @@
 # Editor package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-03-20 19:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,16 +25,17 @@ msgstr "Fortgeschrittene KI: ComfyUI"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:25
 msgid ""
-"OpenShot can connect to a local `ComfyUI <https://github.com/comfyanonymous/"
-"ComfyUI>`_ server and run AI workflows from the Project Files and timeline "
-"context menus. This page explains what these tools are, what hardware they "
-"require, and where the built-in workflow templates live."
+"OpenShot can connect to a local `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ server and run AI workflows "
+"from the Project Files and Timeline context menus. This page explains what "
+"these tools are, what hardware they require, and where the built-in workflow"
+" templates live."
 msgstr ""
-"OpenShot kann eine Verbindung zu einem lokalen `ComfyUI <https://github.com/"
-"comfyanonymous/ComfyUI>`_ Server herstellen und KI-Workflows über die "
-"Kontextmenüs der Projektdateien und der Zeitleiste ausführen. Diese Seite "
-"erklärt, was diese Werkzeuge sind, welche Hardware sie benötigen und wo die "
-"integrierten Workflow-Vorlagen zu finden sind."
+"OpenShot kann eine Verbindung zu einem lokalen `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_-Server herstellen und KI-"
+"Workflows über die Kontextmenüs „Projektdateien“ und „Zeitleiste“ ausführen."
+" Auf dieser Seite wird erläutert, was diese Tools sind, welche Hardware sie "
+"benötigen und wo sich die integrierten Workflow-Vorlagen befinden."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:30
@@ -61,8 +61,8 @@ msgid ""
 "You must run a local `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ "
 "server."
 msgstr ""
-"Sie müssen einen lokalen `ComfyUI <https://github.com/comfyanonymous/"
-"ComfyUI>`_ Server betreiben."
+"Sie müssen einen lokalen `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ Server betreiben."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:34
@@ -94,8 +94,8 @@ msgstr "GPU"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:45
-msgid "Nvidia 5070 12GB or better (16-24GB VRAM strongly preferred)"
-msgstr "Nvidia 5070 12GB oder besser (16-24GB VRAM stark bevorzugt)"
+msgid "NVIDIA 5070 12GB or better (16-24GB VRAM strongly preferred)"
+msgstr "NVIDIA 5070 12 GB oder besser (16–24 GB VRAM dringend bevorzugt)"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:46
@@ -160,8 +160,8 @@ msgstr "Installation und Einrichtung"
 #: ../ai.rst:58
 msgid "Use this quick setup path before trying any AI workflow in OpenShot:"
 msgstr ""
-"Verwenden Sie diesen Schnell-Einrichtungsweg, bevor Sie einen KI-Workflow in "
-"OpenShot ausprobieren:"
+"Verwenden Sie diesen Schnell-Einrichtungsweg, bevor Sie einen KI-Workflow in"
+" OpenShot ausprobieren:"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:60
@@ -183,14 +183,13 @@ msgstr ""
 "Laden Sie die erforderlichen Modell-Dateien (unten aufgeführt) in die "
 "entsprechenden Modellordner herunter."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:63
 msgid ""
-"Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
-"URL` in OpenShot."
+"Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set "
+":guilabel:`ComfyUI URL`."
 msgstr ""
-"Starten Sie ComfyUI und setzen Sie dann in OpenShot :guilabel:`Einstellungen "
-"-> Experimentell -> Comfy UI URL`."
+"Starten Sie ComfyUI, öffnen Sie dann :guilabel:`Edit->Preferences->Advanced`"
+" und legen Sie :guilabel:`ComfyUI URL` fest."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:64
@@ -202,12 +201,12 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:66
 msgid ""
-"For full ComfyUI installation details, see the official repository: `ComfyUI "
-"on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
+"For full ComfyUI installation details, see the official repository: `ComfyUI"
+" on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
 msgstr ""
 "Für vollständige Installationsdetails von ComfyUI siehe das offizielle "
-"Repository: `ComfyUI auf GitHub <https://github.com/comfyanonymous/"
-"ComfyUI>`_."
+"Repository: `ComfyUI auf GitHub "
+"<https://github.com/comfyanonymous/ComfyUI>`_."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:70
@@ -340,14 +339,16 @@ msgstr "``ComfyUI/models/text_encoders/t5-base.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:97
-msgid "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
+msgid ""
+"``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 msgstr ""
 "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:98
 msgid "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
-msgstr "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
+msgstr ""
+"``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:99
@@ -372,11 +373,11 @@ msgstr "``ComfyUI/models/vae/wan2.2_vae.safetensors``"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:103
 msgid ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 msgstr ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:106
@@ -413,8 +414,8 @@ msgid ""
 "and queue badges. Outputs are saved under ``.openshot_qt/comfyui-output/``."
 msgstr ""
 "Generierte Dateien werden mit Fortschrittstext und Warteschlangenabzeichen "
-"zu :guilabel:`Projektdateien` hinzugefügt. Ausgaben werden unter ``."
-"openshot_qt/comfyui-output/`` gespeichert."
+"zu :guilabel:`Projektdateien` hinzugefügt. Ausgaben werden unter "
+"``.openshot_qt/comfyui-output/`` gespeichert."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:125
@@ -434,14 +435,14 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:130
 msgid ""
-"If ComfyUI is unavailable, OpenShot hides the AI menus. Configure the server "
-"URL in :guilabel:`Preferences -> Experimental -> Comfy UI URL`, then use "
-"the :guilabel:`Check` button to test connectivity."
+"If ComfyUI is unavailable, OpenShot disables the AI menus. Configure the "
+"server URL in :guilabel:`Edit->Preferences->Advanced`, then use the "
+":guilabel:`Check` button to test connectivity."
 msgstr ""
-"Wenn ComfyUI nicht verfügbar ist, blendet OpenShot die AI-Menüs aus. "
-"Konfigurieren Sie die Server-URL unter :guilabel:`Einstellungen -> "
-"Experimentell -> Comfy UI URL` und verwenden Sie dann die :guilabel:`Prüfen`-"
-"Schaltfläche, um die Verbindung zu testen."
+"Wenn ComfyUI nicht verfügbar ist, deaktiviert OpenShot die AI-Menüs. "
+"Konfigurieren Sie die Server-URL in :guilabel:`Edit->Preferences->Advanced` "
+"und verwenden Sie dann die Schaltfläche :guilabel:`Check`, um die "
+"Konnektivität zu testen."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:135
@@ -451,11 +452,11 @@ msgstr "Arbeitsablaufvorlagen"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:137
 msgid ""
-"OpenShot reads built-in templates from ``src/comfyui/``. It also loads "
-"custom user templates from ``~/.openshot_qt/comfyui/``."
+"OpenShot reads built-in templates from ``comfyui/``. It also loads custom "
+"user templates from ``~/.openshot_qt/comfyui/``."
 msgstr ""
-"OpenShot liest integrierte Vorlagen aus ``src/comfyui/``. Es lädt auch "
-"benutzerdefinierte Vorlagen aus ``~/.openshot_qt/comfyui/``."
+"OpenShot liest integrierte Vorlagen von ``comfyui/``. Außerdem werden "
+"benutzerdefinierte Benutzervorlagen von ``~/.openshot_qt/comfyui/`` geladen."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:140
@@ -474,8 +475,8 @@ msgstr ""
 msgid ""
 "Choose :guilabel:`Export (API)` to save the workflow as a ``*.json`` file."
 msgstr ""
-"Wählen Sie :guilabel:`Exportieren (API)`, um den Arbeitsablauf als ``*."
-"json``-Datei zu speichern."
+"Wählen Sie :guilabel:`Exportieren (API)`, um den Arbeitsablauf als "
+"``*.json``-Datei zu speichern."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:144
@@ -491,8 +492,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:147
 msgid ""
-"OpenShot will automatically load the workflow and show it in the appropriate "
-"AI menu. When you trigger it from OpenShot, the selected source file is "
+"OpenShot will automatically load the workflow and show it in the appropriate"
+" AI menu. When you trigger it from OpenShot, the selected source file is "
 "passed into the workflow, and the output from the workflow's final output "
 "node is imported back into :guilabel:`Project Files`."
 msgstr ""
@@ -586,8 +587,8 @@ msgstr "Geben Sie Tracking-Punkte/-Rechtecke für Tracking-Arbeitsabläufe an."
 msgid ""
 "Start the job with :guilabel:`Generate` or close with :guilabel:`Cancel`."
 msgstr ""
-"Starten Sie den Auftrag mit :guilabel:`Generieren` oder schließen Sie mit :"
-"guilabel:`Abbrechen`."
+"Starten Sie den Auftrag mit :guilabel:`Generieren` oder schließen Sie mit "
+":guilabel:`Abbrechen`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:179
@@ -597,13 +598,14 @@ msgstr "Tracking (Maske, Weichzeichnen, Hervorheben)"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:181
 msgid ""
-"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, :guilabel:"
-"`Mask...`) use a region screen where you mark what to include and what to "
-"ignore."
+"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, "
+":guilabel:`Mask...`) use a region screen where you mark what to include and "
+"what to ignore."
 msgstr ""
-"Tracking-Arbeitsabläufe (:guilabel:`Weichzeichnen...`, :guilabel:"
-"`Hervorheben...`, :guilabel:`Maske...`) verwenden einen Bereichsbildschirm, "
-"auf dem Sie markieren, was einbezogen und was ignoriert werden soll."
+"Tracking-Arbeitsabläufe (:guilabel:`Weichzeichnen...`, "
+":guilabel:`Hervorheben...`, :guilabel:`Maske...`) verwenden einen "
+"Bereichsbildschirm, auf dem Sie markieren, was einbezogen und was ignoriert "
+"werden soll."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:188
@@ -617,8 +619,8 @@ msgid ""
 "example, you can blur a face, highlight a player, or generate a clean mask "
 "that follows the same object across many frames."
 msgstr ""
-"Tracking hilft dabei, dass Ihr Effekt über die Zeit an einem sich bewegenden "
-"Objekt haftet. Zum Beispiel können Sie ein Gesicht weichzeichnen, einen "
+"Tracking hilft dabei, dass Ihr Effekt über die Zeit an einem sich bewegenden"
+" Objekt haftet. Zum Beispiel können Sie ein Gesicht weichzeichnen, einen "
 "Spieler hervorheben oder eine saubere Maske erzeugen, die dasselbe Objekt "
 "über viele Frames verfolgt."
 
@@ -697,14 +699,15 @@ msgstr "Wie Tracking funktioniert"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:217
 msgid ""
-"OpenShot sends your positive and negative markers as seed coordinates to the "
-"tracking model, which builds a mask for the subject and then follows it over "
-"time. Better seeds usually produce cleaner masks and less drift. [sam2]_"
+"OpenShot sends your positive and negative markers as seed coordinates to the"
+" tracking model, which builds a mask for the subject and then follows it "
+"over time. Better seeds usually produce cleaner masks and less drift. "
+"[sam2]_"
 msgstr ""
 "OpenShot sendet Ihre positiven und negativen Marker als "
-"Stützpunktkoordinaten an das Tracking-Modell, das eine Maske für das Subjekt "
-"erstellt und diese dann über die Zeit verfolgt. Bessere Stützpunkte erzeugen "
-"in der Regel sauberere Masken und weniger Drift. [sam2]_"
+"Stützpunktkoordinaten an das Tracking-Modell, das eine Maske für das Subjekt"
+" erstellt und diese dann über die Zeit verfolgt. Bessere Stützpunkte "
+"erzeugen in der Regel sauberere Masken und weniger Drift. [sam2]_"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:222
@@ -725,13 +728,15 @@ msgstr "Beginnen Sie mit einem blauen Punkt auf dem Subjekt."
 #: ../ai.rst:226
 msgid "Add red dots on nearby background only if needed."
 msgstr ""
-"Fügen Sie rote Punkte nur bei Bedarf auf dem nahegelegenen Hintergrund hinzu."
+"Fügen Sie rote Punkte nur bei Bedarf auf dem nahegelegenen Hintergrund "
+"hinzu."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:227
 msgid "Add rectangles when you need faster broad selection."
 msgstr ""
-"Fügen Sie Rechtecke hinzu, wenn Sie eine schnellere breite Auswahl benötigen."
+"Fügen Sie Rechtecke hinzu, wenn Sie eine schnellere breite Auswahl "
+"benötigen."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:228
@@ -752,19 +757,21 @@ msgstr ""
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:233
-msgid "Add or adjust dots/rectangles on frames where tracking starts to drift."
+msgid ""
+"Add or adjust dots/rectangles on frames where tracking starts to drift."
 msgstr ""
-"Fügen Sie Punkte/Rechtecke hinzu oder passen Sie sie an Frames an, bei denen "
-"das Tracking zu driften beginnt."
+"Fügen Sie Punkte/Rechtecke hinzu oder passen Sie sie an Frames an, bei denen"
+" das Tracking zu driften beginnt."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:234
 msgid ""
-"Use additional seed points only where needed, especially on occlusions, fast "
-"motion, or major shape changes."
+"Use additional seed points only where needed, especially on occlusions, fast"
+" motion, or major shape changes."
 msgstr ""
 "Verwenden Sie zusätzliche Stützpunkte nur dort, wo sie benötigt werden, "
-"insbesondere bei Verdeckungen, schneller Bewegung oder großen Formänderungen."
+"insbesondere bei Verdeckungen, schneller Bewegung oder großen "
+"Formänderungen."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:236
@@ -794,7 +801,8 @@ msgstr "Fügen Sie nur dort weitere Punkte hinzu, wo das Tracking versagt."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:246
 msgid ""
-"If needed, add a more nuanced set of positive/negative points and rectangles."
+"If needed, add a more nuanced set of positive/negative points and "
+"rectangles."
 msgstr ""
 "Fügen Sie bei Bedarf eine differenziertere Menge positiver/negativer Punkte "
 "und Rechtecke hinzu."
@@ -816,11 +824,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:250
 msgid ""
-"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 msgstr ""
-"*SAM2 (Segment Anything Model 2) Projekt:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) Projekt:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:253
@@ -851,10 +859,14 @@ msgstr ""
 "Abgeschlossene Ausgaben werden zurück in :guilabel:`Projektdateien` "
 "importiert."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:260
-msgid "Active jobs can be canceled from the same AI workflow flow."
-msgstr "Aktive Aufträge können im selben KI-Arbeitsablauf abgebrochen werden."
+msgid ""
+"Active jobs can be canceled by right-clicking the generated project file "
+"with the progress bar and choosing :guilabel:`Cancel Job`."
+msgstr ""
+"Aktive Jobs können abgebrochen werden, indem Sie mit der rechten Maustaste "
+"auf die generierte Projektdatei mit dem Fortschrittsbalken klicken und "
+":guilabel:`Cancel Job` auswählen."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:261
@@ -869,13 +881,14 @@ msgstr "Eingebaute JSON-Arbeitsabläufe"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:266
 msgid ""
-"The sections below map directly to built-in JSON templates in ``src/comfyui/"
-"``. Each subsection describes why you might use it, how to run it, and key "
+"The sections below map directly to built-in JSON templates in ``comfyui/``. "
+"Each subsection describes why you might use it, how to run it, and key "
 "details."
 msgstr ""
-"Die folgenden Abschnitte entsprechen direkt den eingebauten JSON-Vorlagen in "
-"``src/comfyui/``. Jeder Unterabschnitt beschreibt, warum Sie es verwenden "
-"könnten, wie man es ausführt und wichtige Details."
+"Die folgenden Abschnitte sind direkt den integrierten JSON-Vorlagen in "
+"``comfyui/`` zugeordnet. In jedem Unterabschnitt wird beschrieben, warum Sie"
+" es verwenden können, wie es ausgeführt wird und welche wichtigen Details es"
+" gibt."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:270
@@ -904,11 +917,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:277
 msgid ""
-"Details: Uses ``src/comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/txt2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Details: Verwendet ``src/comfyui/txt2img-basic.json`` mit ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Verwendet ``comfyui/txt2img-basic.json`` mit "
+"``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:280
@@ -932,10 +945,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:284
 msgid ""
-"Details: Uses ``src/comfyui/txt2video-svd.json`` with WAN video generation "
+"Details: Uses ``comfyui/txt2video-svd.json`` with WAN video generation "
 "models."
 msgstr ""
-"Details: Verwendet ``src/comfyui/txt2video-svd.json`` mit WAN-"
+"Details: Verwendet ``comfyui/txt2video-svd.json`` mit WAN-"
 "Videogenerierungsmodellen."
 
 # Translated with gpt-4.1-mini
@@ -960,11 +973,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:291
 msgid ""
-"Details: Uses ``src/comfyui/txt2audio-stable-open.json`` with Stable Audio "
-"Open models."
+"Details: Uses ``comfyui/txt2audio-stable-open.json`` with Stable Audio Open "
+"models."
 msgstr ""
-"Details: Verwendet ``src/comfyui/txt2audio-stable-open.json`` mit Stable "
-"Audio Open-Modellen."
+"Details: Verwendet ``comfyui/txt2audio-stable-open.json`` mit Stable Audio "
+"Open-Modellen."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:294
@@ -979,8 +992,8 @@ msgstr "Warum: Erzeugen Sie Musik aus Stil/Tags (und optionalen Texten)."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:297
 msgid ""
-"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt "
-"text, then generate."
+"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt"
+" text, then generate."
 msgstr ""
 "Wie: Wählen Sie :guilabel:`Mit KI erstellen` -> :guilabel:`Musik...`, geben "
 "Sie einen Prompttext ein und generieren Sie dann."
@@ -988,11 +1001,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:298
 msgid ""
-"Details: Uses ``src/comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
+"Details: Uses ``comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
 "checkpoint."
 msgstr ""
-"Details: Verwendet ``src/comfyui/txt2music-ace-step.json`` mit einem Ace-"
-"Step 1.5 Checkpoint."
+"Details: Verwendet ``comfyui/txt2music-ace-step.json`` mit einem Ace-Step "
+"1.5-Prüfpunkt."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:301
@@ -1023,11 +1036,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:308
 msgid ""
-"Details: Uses ``src/comfyui/img2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/img2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Details: Verwendet ``src/comfyui/img2img-basic.json`` mit ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Verwendet ``comfyui/img2img-basic.json`` mit "
+"``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:311
@@ -1045,16 +1058,15 @@ msgid ""
 "How: Choose :guilabel:`Enhance with AI` on an image, provide prompt "
 "guidance, then generate."
 msgstr ""
-"Wie: Wählen Sie :guilabel:`Mit KI verbessern` bei einem Bild, geben Sie eine "
-"Prompt-Anleitung ein und generieren Sie dann."
+"Wie: Wählen Sie :guilabel:`Mit KI verbessern` bei einem Bild, geben Sie eine"
+" Prompt-Anleitung ein und generieren Sie dann."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:315
 msgid ""
-"Details: Uses ``src/comfyui/img2video-svd.json`` with WAN image-to-video "
-"models."
+"Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video models."
 msgstr ""
-"Details: Verwendet ``src/comfyui/img2video-svd.json`` mit WAN Bild-zu-Video-"
+"Details: Verwendet ``comfyui/img2video-svd.json`` mit WAN-Bild-zu-Video-"
 "Modellen."
 
 # Translated with gpt-4.1-mini
@@ -1079,10 +1091,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:322
 msgid ""
-"Details: Uses ``src/comfyui/video2video-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/video2video-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Details: Verwendet ``src/comfyui/video2video-basic.json`` mit "
+"Details: Verwendet ``comfyui/video2video-basic.json`` mit "
 "``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1107,10 +1119,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:329
 msgid ""
-"Details: Uses ``src/comfyui/upscale-realesrgan-x4.json`` with "
+"Details: Uses ``comfyui/upscale-realesrgan-x4.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Details: Verwendet ``src/comfyui/upscale-realesrgan-x4.json`` mit "
+"Details: Verwendet ``comfyui/upscale-realesrgan-x4.json`` mit "
 "``RealESRGAN_x4plus.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1135,10 +1147,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:336
 msgid ""
-"Details: Uses ``src/comfyui/video-upscale-gan.json`` with "
+"Details: Uses ``comfyui/video-upscale-gan.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Details: Verwendet ``src/comfyui/video-upscale-gan.json`` mit "
+"Details: Verwendet ``comfyui/video-upscale-gan.json`` mit "
 "``RealESRGAN_x4plus.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1164,10 +1176,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:343
 msgid ""
-"Details: Uses ``src/comfyui/video-frame-interpolation-rife2x.json`` with "
+"Details: Uses ``comfyui/video-frame-interpolation-rife2x.json`` with "
 "``rife47.pth``."
 msgstr ""
-"Details: Verwendet ``src/comfyui/video-frame-interpolation-rife2x.json`` mit "
+"Details: Verwendet ``comfyui/video-frame-interpolation-rife2x.json`` mit "
 "``rife47.pth``."
 
 # Translated with gpt-4.1-mini
@@ -1195,10 +1207,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:350
 msgid ""
-"Details: Uses ``src/comfyui/video-segment-scenes-transnet.json`` with "
+"Details: Uses ``comfyui/video-segment-scenes-transnet.json`` with "
 "TransNetV2."
 msgstr ""
-"Details: Verwendet ``src/comfyui/video-segment-scenes-transnet.json`` mit "
+"Details: Verwendet ``comfyui/video-segment-scenes-transnet.json`` mit "
 "TransNetV2."
 
 # Translated with gpt-4.1-mini
@@ -1223,9 +1235,9 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:357
 msgid ""
-"Details: Uses ``src/comfyui/video-whisper-srt.json`` and creates SRT output."
+"Details: Uses ``comfyui/video-whisper-srt.json`` and creates SRT output."
 msgstr ""
-"Details: Verwendet ``src/comfyui/video-whisper-srt.json`` und erstellt SRT-"
+"Details: Verwendet ``comfyui/video-whisper-srt.json`` und erstellt eine SRT-"
 "Ausgabe."
 
 # Translated with gpt-4.1-mini
@@ -1239,8 +1251,8 @@ msgid ""
 "These workflows use the same region/tracking input flow and are grouped in "
 "the tracking context menu."
 msgstr ""
-"Diese Workflows verwenden denselben Bereichs-/Tracking-Eingabefluss und sind "
-"im Tracking-Kontextmenü gruppiert."
+"Diese Workflows verwenden denselben Bereichs-/Tracking-Eingabefluss und sind"
+" im Tracking-Kontextmenü gruppiert."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:366
@@ -1260,11 +1272,11 @@ msgstr "Wie: Punkte/Rechtecke für das Motiv auswählen, dann generieren."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:370
 msgid ""
-"Details: Uses ``src/comfyui/image-blur-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-blur-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Details: Verwendet ``src/comfyui/image-blur-anything-sam2.json`` mit SAM2 "
-"Bildsegmentierung."
+"Details: Verwendet ``comfyui/image-blur-anything-sam2.json`` mit "
+"SAM2-Bildsegmentierung."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:373
@@ -1279,11 +1291,11 @@ msgstr "Warum: Ausgewählte Motivbereiche in einem Standbild hervorheben."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:377
 msgid ""
-"Details: Uses ``src/comfyui/image-highlight-anything-sam2.json`` with SAM2 "
-"image segmentation."
+"Details: Uses ``comfyui/image-highlight-anything-sam2.json`` with SAM2 image"
+" segmentation."
 msgstr ""
-"Details: Verwendet ``src/comfyui/image-highlight-anything-sam2.json`` mit "
-"SAM2 Bildsegmentierung."
+"Details: Verwendet ``comfyui/image-highlight-anything-sam2.json`` mit "
+"SAM2-Bildsegmentierung."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:380
@@ -1298,11 +1310,11 @@ msgstr "Warum: Eine Bildmaske für ausgewählte Motivbereiche erzeugen."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:384
 msgid ""
-"Details: Uses ``src/comfyui/image-mask-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-mask-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Details: Verwendet ``src/comfyui/image-mask-anything-sam2.json`` mit SAM2 "
-"Bildsegmentierung."
+"Details: Verwendet ``comfyui/image-mask-anything-sam2.json`` mit "
+"SAM2-Bildsegmentierung."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:387
@@ -1312,7 +1324,8 @@ msgstr "Weichzeichnen... (Video) (``video-blur-anything-sam2``)"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:389
 msgid "Why: Track and blur a moving subject in video."
-msgstr "Warum: Ein sich bewegendes Motiv im Video verfolgen und weichzeichnen."
+msgstr ""
+"Warum: Ein sich bewegendes Motiv im Video verfolgen und weichzeichnen."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:390 ../ai.rst:397 ../ai.rst:404
@@ -1323,11 +1336,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:391
 msgid ""
-"Details: Uses ``src/comfyui/video-blur-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-blur-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Details: Verwendet ``src/comfyui/video-blur-anything-sam2.json`` mit SAM2 "
-"Video-Tracking."
+"Details: Verwendet ``comfyui/video-blur-anything-sam2.json`` mit "
+"SAM2-Videoverfolgung."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:394
@@ -1342,11 +1355,11 @@ msgstr "Warum: Ein sich bewegendes Motiv im Video verfolgen und hervorheben."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:398
 msgid ""
-"Details: Uses ``src/comfyui/video-highlight-anything-sam2.json`` with SAM2 "
-"video tracking."
+"Details: Uses ``comfyui/video-highlight-anything-sam2.json`` with SAM2 video"
+" tracking."
 msgstr ""
-"Details: Verwendet ``src/comfyui/video-highlight-anything-sam2.json`` mit "
-"SAM2 Video-Tracking."
+"Details: Verwendet ``comfyui/video-highlight-anything-sam2.json`` mit "
+"SAM2-Videoverfolgung."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:401
@@ -1362,11 +1375,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:405
 msgid ""
-"Details: Uses ``src/comfyui/video-mask-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-mask-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Details: Verwendet ``src/comfyui/video-mask-anything-sam2.json`` mit SAM2 "
-"Video-Tracking."
+"Details: Verwendet ``comfyui/video-mask-anything-sam2.json`` mit "
+"SAM2-Videoverfolgung."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:408
@@ -1417,8 +1430,8 @@ msgstr "Wenn KI-Menüs nicht erscheinen oder Aufgaben sofort fehlschlagen:"
 #: ../ai.rst:423
 msgid "Verify ComfyUI is running and reachable at the configured URL."
 msgstr ""
-"Überprüfen Sie, ob ComfyUI läuft und unter der konfigurierten URL erreichbar "
-"ist."
+"Überprüfen Sie, ob ComfyUI läuft und unter der konfigurierten URL erreichbar"
+" ist."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:424
@@ -1448,8 +1461,20 @@ msgstr "Testen Sie zuerst mit einem kurzen Clip oder einem Standbild erneut."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:429
 msgid ""
-"For general performance and cache tuning, see :ref:`preferences_ref` and :"
-"ref:`playback_ref`."
+"For general performance and cache tuning, see :ref:`preferences_ref` and "
+":ref:`playback_ref`."
 msgstr ""
-"Für allgemeine Leistungs- und Cache-Optimierung siehe :ref:`preferences_ref` "
-"und :ref:`playback_ref`."
+"Für allgemeine Leistungs- und Cache-Optimierung siehe :ref:`preferences_ref`"
+" und :ref:`playback_ref`."
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
+#~ "URL` in OpenShot."
+#~ msgstr ""
+#~ "Starten Sie ComfyUI und setzen Sie dann in OpenShot :guilabel:`Einstellungen"
+#~ " -> Experimentell -> Comfy UI URL`."
+
+# Translated with gpt-4.1-mini
+#~ msgid "Active jobs can be canceled from the same AI workflow flow."
+#~ msgstr "Aktive Aufträge können im selben KI-Arbeitsablauf abgebrochen werden."

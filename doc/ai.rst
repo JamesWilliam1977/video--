@@ -23,7 +23,7 @@ Advanced AI: ComfyUI
 ====================
 
 OpenShot can connect to a local `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ server and run AI workflows from the
-Project Files and timeline context menus. This page explains what these tools
+Project Files and Timeline context menus. This page explains what these tools
 are, what hardware they require, and where the built-in workflow templates live.
 
 .. warning::
@@ -42,7 +42,7 @@ Minimum Recommended Hardware
    ==========================  ==========================================================
    Component                   Recommendation
    ==========================  ==========================================================
-   GPU                         Nvidia 5070 12GB or better (16-24GB VRAM strongly preferred)
+   GPU                         NVIDIA 5070 12GB or better (16-24GB VRAM strongly preferred)
    CPU                         Ryzen 9 5900-class CPU (or equivalent high-clock multi-core)
    System memory               64GB RAM or more
    Storage                     200GB free space for models, cache, and generated outputs
@@ -60,7 +60,7 @@ Use this quick setup path before trying any AI workflow in OpenShot:
 1. Install ComfyUI and confirm it starts correctly.
 2. Install required custom nodes (listed below).
 3. Download required model files (listed below) into matching model folders.
-4. Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI URL` in OpenShot.
+4. Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set :guilabel:`ComfyUI URL`.
 5. Click :guilabel:`Check` to confirm OpenShot can reach the server.
 
 For full ComfyUI installation details, see the official repository:
@@ -127,14 +127,14 @@ temporary ``.openshot_qt`` AI working folders so you begin with a clean slate.
 Your saved projects are not affected, and any assets previously copied into a
 ``PROJECTNAME_Assets`` folder remain in that project's directory.
 
-If ComfyUI is unavailable, OpenShot hides the AI menus. Configure the server URL
-in :guilabel:`Preferences -> Experimental -> Comfy UI URL`, then use the
+If ComfyUI is unavailable, OpenShot disables the AI menus. Configure the server URL
+in :guilabel:`Edit->Preferences->Advanced`, then use the
 :guilabel:`Check` button to test connectivity.
 
 Workflow Templates
 ------------------
 
-OpenShot reads built-in templates from ``src/comfyui/``. It also loads custom
+OpenShot reads built-in templates from ``comfyui/``. It also loads custom
 user templates from ``~/.openshot_qt/comfyui/``.
 
 To add your own workflow:
@@ -257,13 +257,13 @@ OpenShot's AI job queue.
 
 - Progress is shown in :guilabel:`Project Files` (badges and status text).
 - Completed outputs are imported back into :guilabel:`Project Files`.
-- Active jobs can be canceled from the same AI workflow flow.
+- Active jobs can be canceled by right-clicking the generated project file with the progress bar and choosing :guilabel:`Cancel Job`.
 - Outputs are written under ``.openshot_qt/comfyui-output/``.
 
 Built-in JSON Workflows
 -----------------------
 
-The sections below map directly to built-in JSON templates in ``src/comfyui/``.
+The sections below map directly to built-in JSON templates in ``comfyui/``.
 Each subsection describes why you might use it, how to run it, and key details.
 
 Create with AI
@@ -274,28 +274,28 @@ Image... (``txt2img-basic``)
 
 - Why: Generate still images from a text prompt.
 - How: Choose :guilabel:`Create with AI` -> :guilabel:`Image...`, enter a prompt, then generate.
-- Details: Uses ``src/comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0.safetensors``.
+- Details: Uses ``comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0.safetensors``.
 
 Video... (``txt2video-svd``)
 """"""""""""""""""""""""""""
 
 - Why: Generate short video clips from text.
 - How: Choose :guilabel:`Create with AI` -> :guilabel:`Video...`, enter a prompt, then generate.
-- Details: Uses ``src/comfyui/txt2video-svd.json`` with WAN video generation models.
+- Details: Uses ``comfyui/txt2video-svd.json`` with WAN video generation models.
 
 Sound... (``txt2audio-stable-open``)
 """"""""""""""""""""""""""""""""""""
 
 - Why: Generate non-musical audio from text prompts.
 - How: Choose :guilabel:`Create with AI` -> :guilabel:`Sound...`, enter a prompt, then generate.
-- Details: Uses ``src/comfyui/txt2audio-stable-open.json`` with Stable Audio Open models.
+- Details: Uses ``comfyui/txt2audio-stable-open.json`` with Stable Audio Open models.
 
 Music... (``txt2music-ace-step``)
 """""""""""""""""""""""""""""""""
 
 - Why: Generate music from style/tags (and optional lyrics).
 - How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt text, then generate.
-- Details: Uses ``src/comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 checkpoint.
+- Details: Uses ``comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 checkpoint.
 
 Enhance with AI
 ^^^^^^^^^^^^^^^
@@ -305,56 +305,56 @@ Change Image Style... (``img2img-basic``)
 
 - Why: Restyle an existing image while keeping the source composition.
 - How: Choose :guilabel:`Enhance with AI` on an image, enter a style prompt, then generate.
-- Details: Uses ``src/comfyui/img2img-basic.json`` with ``sd_xl_base_1.0.safetensors``.
+- Details: Uses ``comfyui/img2img-basic.json`` with ``sd_xl_base_1.0.safetensors``.
 
 Image to Video... (``img2video-svd``)
 """""""""""""""""""""""""""""""""""""
 
 - Why: Turn a still image into a generated video shot.
 - How: Choose :guilabel:`Enhance with AI` on an image, provide prompt guidance, then generate.
-- Details: Uses ``src/comfyui/img2video-svd.json`` with WAN image-to-video models.
+- Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video models.
 
 Change Video Style... (``video2video-basic``)
 """"""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Apply a new visual style to a source video.
 - How: Choose :guilabel:`Enhance with AI` on a video, enter a style prompt, then generate.
-- Details: Uses ``src/comfyui/video2video-basic.json`` with ``sd_xl_base_1.0.safetensors``.
+- Details: Uses ``comfyui/video2video-basic.json`` with ``sd_xl_base_1.0.safetensors``.
 
 Increase Resolution (image) (``upscale-realesrgan-x4``)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Upscale low-resolution images.
 - How: Choose :guilabel:`Enhance with AI` on an image, select increase resolution, then generate.
-- Details: Uses ``src/comfyui/upscale-realesrgan-x4.json`` with ``RealESRGAN_x4plus.safetensors``.
+- Details: Uses ``comfyui/upscale-realesrgan-x4.json`` with ``RealESRGAN_x4plus.safetensors``.
 
 Increase Resolution (video) (``video-upscale-gan``)
 """"""""""""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Upscale video frames for higher apparent detail.
 - How: Choose :guilabel:`Enhance with AI` on a video, select increase resolution, then generate.
-- Details: Uses ``src/comfyui/video-upscale-gan.json`` with ``RealESRGAN_x4plus.safetensors``.
+- Details: Uses ``comfyui/video-upscale-gan.json`` with ``RealESRGAN_x4plus.safetensors``.
 
 Smooth Motion (2x Frame Rate) (``video-frame-interpolation-rife2x``)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Increase frame rate for smoother perceived motion.
 - How: Choose :guilabel:`Enhance with AI` on a video, select smooth motion, then generate.
-- Details: Uses ``src/comfyui/video-frame-interpolation-rife2x.json`` with ``rife47.pth``.
+- Details: Uses ``comfyui/video-frame-interpolation-rife2x.json`` with ``rife47.pth``.
 
 Split into Scenes (``video-segment-scenes-transnet``)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Automatically detect scene changes and split long clips into segments.
 - How: Choose :guilabel:`Enhance with AI` on a video, select scene splitting, then generate.
-- Details: Uses ``src/comfyui/video-segment-scenes-transnet.json`` with TransNetV2.
+- Details: Uses ``comfyui/video-segment-scenes-transnet.json`` with TransNetV2.
 
 Add Captions from Speech (``video-whisper-srt``)
 """""""""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Transcribe speech into subtitle/caption files.
 - How: Choose :guilabel:`Enhance with AI` on a video, select captions, then generate.
-- Details: Uses ``src/comfyui/video-whisper-srt.json`` and creates SRT output.
+- Details: Uses ``comfyui/video-whisper-srt.json`` and creates SRT output.
 
 Tracking Workflows (SAM2)
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -367,42 +367,42 @@ Blur... (image) (``image-blur-anything-sam2``)
 
 - Why: Blur selected subject areas in a still image.
 - How: Select points/rectangles for the subject, then generate.
-- Details: Uses ``src/comfyui/image-blur-anything-sam2.json`` with SAM2 image segmentation.
+- Details: Uses ``comfyui/image-blur-anything-sam2.json`` with SAM2 image segmentation.
 
 Highlight... (image) (``image-highlight-anything-sam2``)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Emphasize selected subject areas in a still image.
 - How: Select points/rectangles for the subject, then generate.
-- Details: Uses ``src/comfyui/image-highlight-anything-sam2.json`` with SAM2 image segmentation.
+- Details: Uses ``comfyui/image-highlight-anything-sam2.json`` with SAM2 image segmentation.
 
 Mask... (image) (``image-mask-anything-sam2``)
 """"""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Generate an image mask for selected subject areas.
 - How: Select points/rectangles for the subject, then generate.
-- Details: Uses ``src/comfyui/image-mask-anything-sam2.json`` with SAM2 image segmentation.
+- Details: Uses ``comfyui/image-mask-anything-sam2.json`` with SAM2 image segmentation.
 
 Blur... (video) (``video-blur-anything-sam2``)
 """"""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Track and blur a moving subject in video.
 - How: Mark subject/background in the region screen, then generate.
-- Details: Uses ``src/comfyui/video-blur-anything-sam2.json`` with SAM2 video tracking.
+- Details: Uses ``comfyui/video-blur-anything-sam2.json`` with SAM2 video tracking.
 
 Highlight... (video) (``video-highlight-anything-sam2``)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Track and highlight a moving subject in video.
 - How: Mark subject/background in the region screen, then generate.
-- Details: Uses ``src/comfyui/video-highlight-anything-sam2.json`` with SAM2 video tracking.
+- Details: Uses ``comfyui/video-highlight-anything-sam2.json`` with SAM2 video tracking.
 
 Mask... (video) (``video-mask-anything-sam2``)
 """"""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Generate an animated mask that follows a moving subject.
 - How: Mark subject/background in the region screen, then generate.
-- Details: Uses ``src/comfyui/video-mask-anything-sam2.json`` with SAM2 video tracking.
+- Details: Uses ``comfyui/video-mask-anything-sam2.json`` with SAM2 video tracking.
 
 Starting Points for New Users
 -----------------------------

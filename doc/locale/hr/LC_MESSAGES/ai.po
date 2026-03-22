@@ -4,12 +4,11 @@
 # Editor package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-03-20 19:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,16 +25,17 @@ msgstr "Napredna AI: ComfyUI"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:25
 msgid ""
-"OpenShot can connect to a local `ComfyUI <https://github.com/comfyanonymous/"
-"ComfyUI>`_ server and run AI workflows from the Project Files and timeline "
-"context menus. This page explains what these tools are, what hardware they "
-"require, and where the built-in workflow templates live."
+"OpenShot can connect to a local `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ server and run AI workflows "
+"from the Project Files and Timeline context menus. This page explains what "
+"these tools are, what hardware they require, and where the built-in workflow"
+" templates live."
 msgstr ""
-"OpenShot se može povezati s lokalnim `ComfyUI <https://github.com/"
-"comfyanonymous/ComfyUI>`_ poslužiteljem i pokretati AI radne tokove iz "
-"kontekstnih izbornika Projektnih datoteka i vremenske linije. Ova stranica "
-"objašnjava što su ti alati, kakav hardver zahtijevaju i gdje se nalaze "
-"ugrađeni predlošci radnih tokova."
+"OpenShot se može povezati s lokalnim `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ poslužiteljem i pokretati AI "
+"tijekove rada iz projektnih datoteka i kontekstnih izbornika Vremenske "
+"trake. Ova stranica objašnjava koji su to alati, koji hardver zahtijevaju i "
+"gdje se nalaze ugrađeni predlošci tijeka rada."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:30
@@ -52,8 +52,8 @@ msgid ""
 "These tools are **not recommended** for laptops, mid-range desktops, or "
 "budget systems."
 msgstr ""
-"Ovi alati **nisu preporučeni** za prijenosna računala, srednje snažne stolne "
-"računale ili sustave s ograničenim budžetom."
+"Ovi alati **nisu preporučeni** za prijenosna računala, srednje snažne stolne"
+" računale ili sustave s ograničenim budžetom."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:33
@@ -61,8 +61,8 @@ msgid ""
 "You must run a local `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ "
 "server."
 msgstr ""
-"Morate pokrenuti lokalni `ComfyUI <https://github.com/comfyanonymous/"
-"ComfyUI>`_ poslužitelj."
+"Morate pokrenuti lokalni `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ poslužitelj."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:34
@@ -94,8 +94,8 @@ msgstr "GPU"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:45
-msgid "Nvidia 5070 12GB or better (16-24GB VRAM strongly preferred)"
-msgstr "Nvidia 5070 12GB ili bolja (16-24GB VRAM snažno preporučeno)"
+msgid "NVIDIA 5070 12GB or better (16-24GB VRAM strongly preferred)"
+msgstr "NVIDIA 5070 12GB ili bolje (16-24GB VRAM jako poželjno)"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:46
@@ -146,8 +146,8 @@ msgid ""
 "unstable results. If your GPU has 8GB or less of VRAM, you will run out of "
 "memory running these models."
 msgstr ""
-"Ako je vaš sustav ispod ovih razina, zadaci će zastajkivati, ne uspijevati i "
-"proizvoditi nestabilne rezultate. Ako vaš GPU ima 8GB ili manje VRAM-a, "
+"Ako je vaš sustav ispod ovih razina, zadaci će zastajkivati, ne uspijevati i"
+" proizvoditi nestabilne rezultate. Ako vaš GPU ima 8GB ili manje VRAM-a, "
 "ponestajat će vam memorije pri pokretanju ovih modela."
 
 # Translated with gpt-4.1-mini
@@ -177,17 +177,16 @@ msgstr "Instalirajte potrebne prilagođene čvorove (navedene u nastavku)."
 msgid ""
 "Download required model files (listed below) into matching model folders."
 msgstr ""
-"Preuzmite potrebne datoteke modela (navedene u nastavku) u odgovarajuće mape "
-"modela."
+"Preuzmite potrebne datoteke modela (navedene u nastavku) u odgovarajuće mape"
+" modela."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:63
 msgid ""
-"Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
-"URL` in OpenShot."
+"Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set "
+":guilabel:`ComfyUI URL`."
 msgstr ""
-"Pokrenite ComfyUI, zatim postavite :guilabel:`Preferences -> Experimental -> "
-"Comfy UI URL` u OpenShot-u."
+"Pokrenite ComfyUI, zatim otvorite :guilabel:`Edit->Preferences->Advanced` i "
+"postavite :guilabel:`ComfyUI URL`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:64
@@ -199,8 +198,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:66
 msgid ""
-"For full ComfyUI installation details, see the official repository: `ComfyUI "
-"on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
+"For full ComfyUI installation details, see the official repository: `ComfyUI"
+" on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
 msgstr ""
 "Za potpune detalje instalacije ComfyUI-a, pogledajte službeni repozitorij: "
 "`ComfyUI na GitHubu <https://github.com/comfyanonymous/ComfyUI>`_."
@@ -336,14 +335,16 @@ msgstr "``ComfyUI/models/text_encoders/t5-base.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:97
-msgid "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
+msgid ""
+"``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 msgstr ""
 "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:98
 msgid "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
-msgstr "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
+msgstr ""
+"``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:99
@@ -368,11 +369,11 @@ msgstr "``ComfyUI/models/vae/wan2.2_vae.safetensors``"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:103
 msgid ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 msgstr ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:106
@@ -407,8 +408,8 @@ msgid ""
 "Generated files are added to :guilabel:`Project Files` with progress text "
 "and queue badges. Outputs are saved under ``.openshot_qt/comfyui-output/``."
 msgstr ""
-"Generirane datoteke dodaju se u :guilabel:`Project Files` s tekstom napretka "
-"i oznakama u redu čekanja. Izlazi se spremaju u ``.openshot_qt/comfyui-"
+"Generirane datoteke dodaju se u :guilabel:`Project Files` s tekstom napretka"
+" i oznakama u redu čekanja. Izlazi se spremaju u ``.openshot_qt/comfyui-"
 "output/``."
 
 # Translated with gpt-4.1-mini
@@ -428,13 +429,13 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:130
 msgid ""
-"If ComfyUI is unavailable, OpenShot hides the AI menus. Configure the server "
-"URL in :guilabel:`Preferences -> Experimental -> Comfy UI URL`, then use "
-"the :guilabel:`Check` button to test connectivity."
+"If ComfyUI is unavailable, OpenShot disables the AI menus. Configure the "
+"server URL in :guilabel:`Edit->Preferences->Advanced`, then use the "
+":guilabel:`Check` button to test connectivity."
 msgstr ""
-"Ako ComfyUI nije dostupan, OpenShot skriva AI izbornike. Konfigurirajte URL "
-"poslužitelja u :guilabel:`Preferences -> Experimental -> Comfy UI URL`, "
-"zatim upotrijebite gumb :guilabel:`Check` za testiranje veze."
+"Ako ComfyUI nije dostupan, OpenShot onemogućuje AI izbornike. Konfigurirajte"
+" URL poslužitelja u :guilabel:`Edit->Preferences->Advanced`, a zatim "
+"koristite gumb :guilabel:`Check` za testiranje povezivosti."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:135
@@ -444,10 +445,10 @@ msgstr "Predlošci radnog toka"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:137
 msgid ""
-"OpenShot reads built-in templates from ``src/comfyui/``. It also loads "
-"custom user templates from ``~/.openshot_qt/comfyui/``."
+"OpenShot reads built-in templates from ``comfyui/``. It also loads custom "
+"user templates from ``~/.openshot_qt/comfyui/``."
 msgstr ""
-"OpenShot učitava ugrađene predloške iz ``src/comfyui/``. Također učitava "
+"OpenShot čita ugrađene predloške iz ``comfyui/``. Također učitava "
 "prilagođene korisničke predloške iz ``~/.openshot_qt/comfyui/``."
 
 # Translated with gpt-4.1-mini
@@ -481,15 +482,15 @@ msgstr "Ponovno pokrenite OpenShot ili po potrebi ponovno otvorite projekt."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:147
 msgid ""
-"OpenShot will automatically load the workflow and show it in the appropriate "
-"AI menu. When you trigger it from OpenShot, the selected source file is "
+"OpenShot will automatically load the workflow and show it in the appropriate"
+" AI menu. When you trigger it from OpenShot, the selected source file is "
 "passed into the workflow, and the output from the workflow's final output "
 "node is imported back into :guilabel:`Project Files`."
 msgstr ""
 "OpenShot će automatski učitati radni tok i prikazati ga u odgovarajućem AI "
 "izborniku. Kada ga pokrenete iz OpenShota, odabrana izvorna datoteka se "
-"prosljeđuje u radni tok, a izlaz s završnog izlaznog čvora radnog toka uvozi "
-"se natrag u :guilabel:`Project Files`."
+"prosljeđuje u radni tok, a izlaz s završnog izlaznog čvora radnog toka uvozi"
+" se natrag u :guilabel:`Project Files`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:152
@@ -579,13 +580,13 @@ msgstr "Praćenje (Maska, Zamućenje, Isticanje)"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:181
 msgid ""
-"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, :guilabel:"
-"`Mask...`) use a region screen where you mark what to include and what to "
-"ignore."
+"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, "
+":guilabel:`Mask...`) use a region screen where you mark what to include and "
+"what to ignore."
 msgstr ""
-"Radni tokovi praćenja (:guilabel:`Blur...`, :guilabel:`Highlight...`, :"
-"guilabel:`Mask...`) koriste zaslon regije na kojem označavate što uključiti, "
-"a što zanemariti."
+"Radni tokovi praćenja (:guilabel:`Blur...`, :guilabel:`Highlight...`, "
+":guilabel:`Mask...`) koriste zaslon regije na kojem označavate što "
+"uključiti, a što zanemariti."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:188
@@ -667,7 +668,8 @@ msgstr "Ikona za brisanje"
 #: ../ai.rst:212
 msgid "Clear all current tracking seeds (points/rectangles) and start over."
 msgstr ""
-"Obriši sve trenutne oznake praćenja (točke/pravokutnike) i započni ispočetka."
+"Obriši sve trenutne oznake praćenja (točke/pravokutnike) i započni "
+"ispočetka."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:215
@@ -677,9 +679,10 @@ msgstr "Kako praćenje funkcionira"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:217
 msgid ""
-"OpenShot sends your positive and negative markers as seed coordinates to the "
-"tracking model, which builds a mask for the subject and then follows it over "
-"time. Better seeds usually produce cleaner masks and less drift. [sam2]_"
+"OpenShot sends your positive and negative markers as seed coordinates to the"
+" tracking model, which builds a mask for the subject and then follows it "
+"over time. Better seeds usually produce cleaner masks and less drift. "
+"[sam2]_"
 msgstr ""
 "OpenShot šalje vaše pozitivne i negativne oznake kao koordinate sjemena "
 "modelu praćenja, koji gradi masku za subjekt i prati je tijekom vremena. "
@@ -727,7 +730,8 @@ msgstr "Pomaknite klizač kadrova na različite trenutke u isječku."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:233
-msgid "Add or adjust dots/rectangles on frames where tracking starts to drift."
+msgid ""
+"Add or adjust dots/rectangles on frames where tracking starts to drift."
 msgstr ""
 "Dodajte ili prilagodite točke/pravokutnike na kadrovima gdje praćenje "
 "počinje skretati."
@@ -735,8 +739,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:234
 msgid ""
-"Use additional seed points only where needed, especially on occlusions, fast "
-"motion, or major shape changes."
+"Use additional seed points only where needed, especially on occlusions, fast"
+" motion, or major shape changes."
 msgstr ""
 "Koristite dodatne točke sjemena samo gdje je potrebno, posebno kod zaklona, "
 "brzog pokreta ili velikih promjena oblika."
@@ -769,7 +773,8 @@ msgstr "Dodajte više točaka samo tamo gdje praćenje ne uspijeva."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:246
 msgid ""
-"If needed, add a more nuanced set of positive/negative points and rectangles."
+"If needed, add a more nuanced set of positive/negative points and "
+"rectangles."
 msgstr ""
 "Ako je potrebno, dodajte detaljniji skup pozitivnih/negativnih točaka i "
 "pravokutnika."
@@ -791,11 +796,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:250
 msgid ""
-"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 msgstr ""
-"*SAM2 (Segment Anything Model 2) projekt:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) projekt:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:253
@@ -808,8 +813,8 @@ msgid ""
 "After you click :guilabel:`Generate`, the request is queued and runs in "
 "OpenShot's AI job queue."
 msgstr ""
-"Nakon što kliknete :guilabel:`Generiraj`, zahtjev se stavlja u red čekanja i "
-"izvršava u OpenShotovom AI redu zadataka."
+"Nakon što kliknete :guilabel:`Generiraj`, zahtjev se stavlja u red čekanja i"
+" izvršava u OpenShotovom AI redu zadataka."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:258
@@ -824,10 +829,13 @@ msgstr ""
 msgid "Completed outputs are imported back into :guilabel:`Project Files`."
 msgstr "Dovršeni rezultati se uvoze natrag u :guilabel:`Datoteke projekta`."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:260
-msgid "Active jobs can be canceled from the same AI workflow flow."
-msgstr "Aktivni zadaci mogu se otkazati iz istog AI tijeka rada."
+msgid ""
+"Active jobs can be canceled by right-clicking the generated project file "
+"with the progress bar and choosing :guilabel:`Cancel Job`."
+msgstr ""
+"Aktivni poslovi se mogu otkazati desnim klikom na generiranu datoteku "
+"projekta s trakom napretka i odabirom :guilabel:`Otkaži posao`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:261
@@ -842,13 +850,13 @@ msgstr "Ugrađeni JSON tijekovi rada"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:266
 msgid ""
-"The sections below map directly to built-in JSON templates in ``src/comfyui/"
-"``. Each subsection describes why you might use it, how to run it, and key "
+"The sections below map directly to built-in JSON templates in ``comfyui/``. "
+"Each subsection describes why you might use it, how to run it, and key "
 "details."
 msgstr ""
-"Donji odjeljci izravno odgovaraju ugrađenim JSON predlošcima u ``src/comfyui/"
-"``. Svaki pododjeljak opisuje zašto biste ga mogli koristiti, kako ga "
-"pokrenuti i ključne detalje."
+"Odjeljci u nastavku preslikavaju se izravno na ugrađene JSON predloške u "
+"``comfyui/``. Svaki pododjeljak opisuje zašto biste ga mogli koristiti, kako"
+" ga pokrenuti i ključne pojedinosti."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:270
@@ -877,11 +885,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:277
 msgid ""
-"Details: Uses ``src/comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/txt2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/txt2img-basic.json`` s ``sd_xl_base_1.0."
-"safetensors``."
+"Pojedinosti: koristi ``comfyui/txt2img-basic.json`` sa "
+"``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:280
@@ -905,11 +913,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:284
 msgid ""
-"Details: Uses ``src/comfyui/txt2video-svd.json`` with WAN video generation "
+"Details: Uses ``comfyui/txt2video-svd.json`` with WAN video generation "
 "models."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/txt2video-svd.json`` s WAN modelima za "
-"generiranje videa."
+"Pojedinosti: koristi ``comfyui/txt2video-svd.json`` s modelima generiranja "
+"video zapisa WAN."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:287
@@ -927,16 +935,16 @@ msgid ""
 "How: Choose :guilabel:`Create with AI` -> :guilabel:`Sound...`, enter a "
 "prompt, then generate."
 msgstr ""
-"Kako: Odaberite :guilabel:`Stvori pomoću AI` -> :guilabel:`Zvuk...`, unesite "
-"upit, zatim generirajte."
+"Kako: Odaberite :guilabel:`Stvori pomoću AI` -> :guilabel:`Zvuk...`, unesite"
+" upit, zatim generirajte."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:291
 msgid ""
-"Details: Uses ``src/comfyui/txt2audio-stable-open.json`` with Stable Audio "
-"Open models."
+"Details: Uses ``comfyui/txt2audio-stable-open.json`` with Stable Audio Open "
+"models."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/txt2audio-stable-open.json`` sa Stable Audio "
+"Pojedinosti: koristi ``comfyui/txt2audio-stable-open.json`` s Stable Audio "
 "Open modelima."
 
 # Translated with gpt-4.1-mini
@@ -952,8 +960,8 @@ msgstr "Zašto: Generirajte glazbu iz stila/oznake (i opcionalno tekstova)."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:297
 msgid ""
-"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt "
-"text, then generate."
+"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt"
+" text, then generate."
 msgstr ""
 "Kako: Odaberite :guilabel:`Stvori pomoću AI` -> :guilabel:`Glazba...`, "
 "unesite tekst upita, zatim generirajte."
@@ -961,11 +969,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:298
 msgid ""
-"Details: Uses ``src/comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
+"Details: Uses ``comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
 "checkpoint."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/txt2music-ace-step.json`` s Ace-Step 1.5 "
-"kontrolnom točkom."
+"Pojedinosti: koristi ``comfyui/txt2music-ace-step.json`` s kontrolnom točkom"
+" Ace-Step 1.5."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:301
@@ -995,11 +1003,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:308
 msgid ""
-"Details: Uses ``src/comfyui/img2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/img2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/img2img-basic.json`` s ``sd_xl_base_1.0."
-"safetensors``."
+"Pojedinosti: koristi ``comfyui/img2img-basic.json`` sa "
+"``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:311
@@ -1023,11 +1031,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:315
 msgid ""
-"Details: Uses ``src/comfyui/img2video-svd.json`` with WAN image-to-video "
-"models."
+"Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video models."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/img2video-svd.json`` s WAN modelima za "
-"pretvorbu slike u video."
+"Pojedinosti: koristi ``comfyui/img2video-svd.json`` s WAN modelima slika-"
+"video."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:318
@@ -1051,11 +1058,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:322
 msgid ""
-"Details: Uses ``src/comfyui/video2video-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/video2video-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/video2video-basic.json`` s ``sd_xl_base_1.0."
-"safetensors``."
+"Pojedinosti: koristi ``comfyui/video2video-basic.json`` sa "
+"``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:325
@@ -1079,10 +1086,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:329
 msgid ""
-"Details: Uses ``src/comfyui/upscale-realesrgan-x4.json`` with "
+"Details: Uses ``comfyui/upscale-realesrgan-x4.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/upscale-realesrgan-x4.json`` s "
+"Pojedinosti: koristi ``comfyui/upscale-realesrgan-x4.json`` s "
 "``RealESRGAN_x4plus.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1107,10 +1114,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:336
 msgid ""
-"Details: Uses ``src/comfyui/video-upscale-gan.json`` with "
+"Details: Uses ``comfyui/video-upscale-gan.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/video-upscale-gan.json`` s "
+"Pojedinosti: koristi ``comfyui/video-upscale-gan.json`` s "
 "``RealESRGAN_x4plus.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1136,10 +1143,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:343
 msgid ""
-"Details: Uses ``src/comfyui/video-frame-interpolation-rife2x.json`` with "
+"Details: Uses ``comfyui/video-frame-interpolation-rife2x.json`` with "
 "``rife47.pth``."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/video-frame-interpolation-rife2x.json`` s "
+"Pojedinosti: koristi ``comfyui/video-frame-interpolation-rife2x.json`` s "
 "``rife47.pth``."
 
 # Translated with gpt-4.1-mini
@@ -1167,10 +1174,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:350
 msgid ""
-"Details: Uses ``src/comfyui/video-segment-scenes-transnet.json`` with "
+"Details: Uses ``comfyui/video-segment-scenes-transnet.json`` with "
 "TransNetV2."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/video-segment-scenes-transnet.json`` s "
+"Pojedinosti: koristi ``comfyui/video-segment-scenes-transnet.json`` s "
 "TransNetV2."
 
 # Translated with gpt-4.1-mini
@@ -1195,9 +1202,9 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:357
 msgid ""
-"Details: Uses ``src/comfyui/video-whisper-srt.json`` and creates SRT output."
+"Details: Uses ``comfyui/video-whisper-srt.json`` and creates SRT output."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/video-whisper-srt.json`` i stvara SRT izlaz."
+"Pojedinosti: koristi ``comfyui/video-whisper-srt.json`` i stvara SRT izlaz."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:360
@@ -1231,10 +1238,10 @@ msgstr "Kako: Odaberite točke/pravokutnike za subjekt, zatim generirajte."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:370
 msgid ""
-"Details: Uses ``src/comfyui/image-blur-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-blur-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/image-blur-anything-sam2.json`` sa SAM2 "
+"Pojedinosti: koristi ``comfyui/image-blur-anything-sam2.json`` sa SAM2 "
 "segmentacijom slike."
 
 # Translated with gpt-4.1-mini
@@ -1250,10 +1257,10 @@ msgstr "Zašto: Naglasi odabrana područja subjekta na statičnoj slici."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:377
 msgid ""
-"Details: Uses ``src/comfyui/image-highlight-anything-sam2.json`` with SAM2 "
-"image segmentation."
+"Details: Uses ``comfyui/image-highlight-anything-sam2.json`` with SAM2 image"
+" segmentation."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/image-highlight-anything-sam2.json`` sa SAM2 "
+"Pojedinosti: koristi ``comfyui/image-highlight-anything-sam2.json`` sa SAM2 "
 "segmentacijom slike."
 
 # Translated with gpt-4.1-mini
@@ -1269,10 +1276,10 @@ msgstr "Zašto: Generiraj masku slike za odabrana područja subjekta."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:384
 msgid ""
-"Details: Uses ``src/comfyui/image-mask-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-mask-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/image-mask-anything-sam2.json`` sa SAM2 "
+"Pojedinosti: koristi ``comfyui/image-mask-anything-sam2.json`` sa SAM2 "
 "segmentacijom slike."
 
 # Translated with gpt-4.1-mini
@@ -1293,11 +1300,11 @@ msgstr "Kako: Označi subjekt/pozadinu na zaslonu regije, zatim generiraj."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:391
 msgid ""
-"Details: Uses ``src/comfyui/video-blur-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-blur-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/video-blur-anything-sam2.json`` sa SAM2 "
-"praćenjem videa."
+"Pojedinosti: koristi ``comfyui/video-blur-anything-sam2.json`` sa SAM2 video"
+" praćenjem."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:394
@@ -1312,11 +1319,11 @@ msgstr "Zašto: Prati i istakni pokretni subjekt u videu."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:398
 msgid ""
-"Details: Uses ``src/comfyui/video-highlight-anything-sam2.json`` with SAM2 "
-"video tracking."
+"Details: Uses ``comfyui/video-highlight-anything-sam2.json`` with SAM2 video"
+" tracking."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/video-highlight-anything-sam2.json`` sa SAM2 "
-"praćenjem videa."
+"Pojedinosti: koristi ``comfyui/video-highlight-anything-sam2.json`` sa SAM2 "
+"video praćenjem."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:401
@@ -1331,11 +1338,11 @@ msgstr "Zašto: Generiraj animiranu masku koja prati pokretnog subjekta."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:405
 msgid ""
-"Details: Uses ``src/comfyui/video-mask-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-mask-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Detalji: Koristi ``src/comfyui/video-mask-anything-sam2.json`` sa SAM2 "
-"praćenjem videa."
+"Pojedinosti: koristi ``comfyui/video-mask-anything-sam2.json`` sa SAM2 video"
+" praćenjem."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:408
@@ -1398,7 +1405,8 @@ msgstr "Potvrdite da potrebni modeli postoje u vašem ComfyUI okruženju."
 msgid ""
 "Confirm custom node packages are installed for the workflow you selected."
 msgstr ""
-"Potvrdite da su instalirani prilagođeni paketi čvorova za odabrani radni tok."
+"Potvrdite da su instalirani prilagođeni paketi čvorova za odabrani radni "
+"tok."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:426
@@ -1413,8 +1421,20 @@ msgstr "Ponovno testirajte prvo s kratkim isječkom ili statičnom slikom."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:429
 msgid ""
-"For general performance and cache tuning, see :ref:`preferences_ref` and :"
-"ref:`playback_ref`."
+"For general performance and cache tuning, see :ref:`preferences_ref` and "
+":ref:`playback_ref`."
 msgstr ""
-"Za opće podešavanje performansi i predmemorije, pogledajte :ref:"
-"`preferences_ref` i :ref:`playback_ref`."
+"Za opće podešavanje performansi i predmemorije, pogledajte "
+":ref:`preferences_ref` i :ref:`playback_ref`."
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
+#~ "URL` in OpenShot."
+#~ msgstr ""
+#~ "Pokrenite ComfyUI, zatim postavite :guilabel:`Preferences -> Experimental ->"
+#~ " Comfy UI URL` u OpenShot-u."
+
+# Translated with gpt-4.1-mini
+#~ msgid "Active jobs can be canceled from the same AI workflow flow."
+#~ msgstr "Aktivni zadaci mogu se otkazati iz istog AI tijeka rada."

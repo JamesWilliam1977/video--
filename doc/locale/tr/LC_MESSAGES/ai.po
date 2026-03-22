@@ -4,12 +4,11 @@
 # Editor package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-03-20 19:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,16 +25,17 @@ msgstr "Gelişmiş Yapay Zeka: ComfyUI"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:25
 msgid ""
-"OpenShot can connect to a local `ComfyUI <https://github.com/comfyanonymous/"
-"ComfyUI>`_ server and run AI workflows from the Project Files and timeline "
-"context menus. This page explains what these tools are, what hardware they "
-"require, and where the built-in workflow templates live."
+"OpenShot can connect to a local `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ server and run AI workflows "
+"from the Project Files and Timeline context menus. This page explains what "
+"these tools are, what hardware they require, and where the built-in workflow"
+" templates live."
 msgstr ""
-"OpenShot, yerel bir `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ "
-"sunucusuna bağlanabilir ve Proje Dosyaları ile zaman çizelgesi bağlam "
-"menülerinden yapay zeka iş akışlarını çalıştırabilir. Bu sayfa, bu araçların "
-"ne olduğunu, hangi donanımı gerektirdiğini ve yerleşik iş akışı "
-"şablonlarının nerede bulunduğunu açıklar."
+"OpenShot yerel bir `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ "
+"sunucusuna bağlanabilir ve Proje Dosyaları ve Zaman Çizelgesi içerik "
+"menülerinden AI iş akışlarını çalıştırabilir. Bu sayfada bu araçların ne "
+"olduğu, hangi donanıma ihtiyaç duyduğu ve yerleşik iş akışı şablonlarının "
+"nerede bulunduğu açıklanmaktadır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:30
@@ -94,8 +94,9 @@ msgstr "GPU"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:45
-msgid "Nvidia 5070 12GB or better (16-24GB VRAM strongly preferred)"
-msgstr "Nvidia 5070 12GB veya daha iyisi (16-24GB VRAM şiddetle tercih edilir)"
+msgid "NVIDIA 5070 12GB or better (16-24GB VRAM strongly preferred)"
+msgstr ""
+"NVIDIA 5070 12 GB veya daha iyisi (16-24 GB VRAM kesinlikle tercih edilir)"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:46
@@ -180,14 +181,13 @@ msgstr ""
 "Gerekli model dosyalarını (aşağıda listelenmiştir) uygun model klasörlerine "
 "indirin."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:63
 msgid ""
-"Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
-"URL` in OpenShot."
+"Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set "
+":guilabel:`ComfyUI URL`."
 msgstr ""
-"ComfyUI'yi başlatın, ardından OpenShot'ta :guilabel:`Tercihler -> Deneysel -"
-"> Comfy UI URL` ayarını yapın."
+"ComfyUI'yi başlatın, ardından :guilabel:`Edit->Preferences->Advanced`'yi "
+"açın ve :guilabel:`ComfyUI URL`'i ayarlayın."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:64
@@ -199,8 +199,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:66
 msgid ""
-"For full ComfyUI installation details, see the official repository: `ComfyUI "
-"on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
+"For full ComfyUI installation details, see the official repository: `ComfyUI"
+" on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
 msgstr ""
 "Tam ComfyUI kurulum detayları için resmi depoya bakın: `ComfyUI on GitHub "
 "<https://github.com/comfyanonymous/ComfyUI>`_."
@@ -336,14 +336,16 @@ msgstr "``ComfyUI/models/text_encoders/t5-base.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:97
-msgid "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
+msgid ""
+"``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 msgstr ""
 "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:98
 msgid "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
-msgstr "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
+msgstr ""
+"``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:99
@@ -368,11 +370,11 @@ msgstr "``ComfyUI/models/vae/wan2.2_vae.safetensors``"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:103
 msgid ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 msgstr ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:106
@@ -411,9 +413,9 @@ msgid ""
 "Generated files are added to :guilabel:`Project Files` with progress text "
 "and queue badges. Outputs are saved under ``.openshot_qt/comfyui-output/``."
 msgstr ""
-"Oluşturulan dosyalar, ilerleme metni ve kuyruk rozetleri ile birlikte :"
-"guilabel:`Proje Dosyaları` bölümüne eklenir. Çıktılar ``.openshot_qt/comfyui-"
-"output/`` altında kaydedilir."
+"Oluşturulan dosyalar, ilerleme metni ve kuyruk rozetleri ile birlikte "
+":guilabel:`Proje Dosyaları` bölümüne eklenir. Çıktılar "
+"``.openshot_qt/comfyui-output/`` altında kaydedilir."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:125
@@ -424,23 +426,22 @@ msgid ""
 "copied into a ``PROJECTNAME_Assets`` folder remain in that project's "
 "directory."
 msgstr ""
-"**Yeni bir proje** başlatmak veya **var olan bir projeyi** açmak, geçici ``."
-"openshot_qt`` AI çalışma klasörlerini temizler, böylece temiz bir sayfa ile "
-"başlarsınız. Kaydedilmiş projeleriniz etkilenmez ve daha önce "
+"**Yeni bir proje** başlatmak veya **var olan bir projeyi** açmak, geçici "
+"``.openshot_qt`` AI çalışma klasörlerini temizler, böylece temiz bir sayfa "
+"ile başlarsınız. Kaydedilmiş projeleriniz etkilenmez ve daha önce "
 "``PROJECTNAME_Assets`` klasörüne kopyalanmış varlıklar o projenin dizininde "
 "kalır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:130
 msgid ""
-"If ComfyUI is unavailable, OpenShot hides the AI menus. Configure the server "
-"URL in :guilabel:`Preferences -> Experimental -> Comfy UI URL`, then use "
-"the :guilabel:`Check` button to test connectivity."
+"If ComfyUI is unavailable, OpenShot disables the AI menus. Configure the "
+"server URL in :guilabel:`Edit->Preferences->Advanced`, then use the "
+":guilabel:`Check` button to test connectivity."
 msgstr ""
-"ComfyUI kullanılamıyorsa, OpenShot AI menülerini gizler. Sunucu URL'sini :"
-"guilabel:`Tercihler -> Deneysel -> Comfy UI URL` bölümünde yapılandırın, "
-"ardından bağlantıyı test etmek için :guilabel:`Kontrol Et` düğmesini "
-"kullanın."
+"ComfyUI kullanılamıyorsa OpenShot AI menülerini devre dışı bırakır. "
+":guilabel:`Edit->Preferences->Advanced`'da sunucu URL'sini yapılandırın, "
+"ardından bağlantıyı test etmek için :guilabel:`Check` düğmesini kullanın."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:135
@@ -450,11 +451,11 @@ msgstr "İş Akışı Şablonları"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:137
 msgid ""
-"OpenShot reads built-in templates from ``src/comfyui/``. It also loads "
-"custom user templates from ``~/.openshot_qt/comfyui/``."
+"OpenShot reads built-in templates from ``comfyui/``. It also loads custom "
+"user templates from ``~/.openshot_qt/comfyui/``."
 msgstr ""
-"OpenShot, yerleşik şablonları ``src/comfyui/`` klasöründen okur. Ayrıca özel "
-"kullanıcı şablonlarını ``~/.openshot_qt/comfyui/`` klasöründen yükler."
+"OpenShot, ``comfyui/``'den yerleşik şablonları okur. Ayrıca "
+"``~/.openshot_qt/comfyui/``'den özel kullanıcı şablonlarını da yükler."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:140
@@ -487,8 +488,8 @@ msgstr "OpenShot'ı yeniden başlatın veya gerekirse projeyi tekrar açın."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:147
 msgid ""
-"OpenShot will automatically load the workflow and show it in the appropriate "
-"AI menu. When you trigger it from OpenShot, the selected source file is "
+"OpenShot will automatically load the workflow and show it in the appropriate"
+" AI menu. When you trigger it from OpenShot, the selected source file is "
 "passed into the workflow, and the output from the workflow's final output "
 "node is imported back into :guilabel:`Project Files`."
 msgstr ""
@@ -587,12 +588,12 @@ msgstr "Takip (Maske, Bulanıklaştırma, Vurgulama)"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:181
 msgid ""
-"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, :guilabel:"
-"`Mask...`) use a region screen where you mark what to include and what to "
-"ignore."
+"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, "
+":guilabel:`Mask...`) use a region screen where you mark what to include and "
+"what to ignore."
 msgstr ""
-"Takip iş akışları (:guilabel:`Bulanıklaştır...`, :guilabel:`Vurgula...`, :"
-"guilabel:`Maske...`) dahil edilecek ve hariç tutulacak alanları "
+"Takip iş akışları (:guilabel:`Bulanıklaştır...`, :guilabel:`Vurgula...`, "
+":guilabel:`Maske...`) dahil edilecek ve hariç tutulacak alanları "
 "işaretlediğiniz bir bölge ekranı kullanır."
 
 # Translated with gpt-4.1-mini
@@ -676,8 +677,8 @@ msgstr "Simgeyi sil"
 #: ../ai.rst:212
 msgid "Clear all current tracking seeds (points/rectangles) and start over."
 msgstr ""
-"Tüm mevcut takip başlangıçlarını (noktalar/dikdörtgenler) temizle ve yeniden "
-"başla."
+"Tüm mevcut takip başlangıçlarını (noktalar/dikdörtgenler) temizle ve yeniden"
+" başla."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:215
@@ -687,13 +688,14 @@ msgstr "Takip Nasıl Çalışır"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:217
 msgid ""
-"OpenShot sends your positive and negative markers as seed coordinates to the "
-"tracking model, which builds a mask for the subject and then follows it over "
-"time. Better seeds usually produce cleaner masks and less drift. [sam2]_"
+"OpenShot sends your positive and negative markers as seed coordinates to the"
+" tracking model, which builds a mask for the subject and then follows it "
+"over time. Better seeds usually produce cleaner masks and less drift. "
+"[sam2]_"
 msgstr ""
 "OpenShot, pozitif ve negatif işaretleyicilerinizi takip modeline başlangıç "
-"koordinatları olarak gönderir; model nesne için bir maske oluşturur ve zaman "
-"içinde takip eder. Daha iyi başlangıçlar genellikle daha temiz maskeler ve "
+"koordinatları olarak gönderir; model nesne için bir maske oluşturur ve zaman"
+" içinde takip eder. Daha iyi başlangıçlar genellikle daha temiz maskeler ve "
 "daha az kayma sağlar. [sam2]_"
 
 # Translated with gpt-4.1-mini
@@ -738,7 +740,8 @@ msgstr "Klipte farklı anlara gitmek için kare kaydırıcısını hareket ettir
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:233
-msgid "Add or adjust dots/rectangles on frames where tracking starts to drift."
+msgid ""
+"Add or adjust dots/rectangles on frames where tracking starts to drift."
 msgstr ""
 "Takip kaymaya başladığında karelerde noktalar/dikdörtgenler ekleyin veya "
 "ayarlayın."
@@ -746,8 +749,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:234
 msgid ""
-"Use additional seed points only where needed, especially on occlusions, fast "
-"motion, or major shape changes."
+"Use additional seed points only where needed, especially on occlusions, fast"
+" motion, or major shape changes."
 msgstr ""
 "Ek başlangıç noktalarını yalnızca gerektiğinde kullanın, özellikle "
 "örtünmelerde, hızlı hareketlerde veya büyük şekil değişikliklerinde."
@@ -780,7 +783,8 @@ msgstr "Takip başarısız olduğunda sadece o yerlere daha fazla nokta ekleyin.
 # Translated with gpt-4.1-mini
 #: ../ai.rst:246
 msgid ""
-"If needed, add a more nuanced set of positive/negative points and rectangles."
+"If needed, add a more nuanced set of positive/negative points and "
+"rectangles."
 msgstr ""
 "Gerekirse, daha ayrıntılı pozitif/negatif noktalar ve dikdörtgenler ekleyin."
 
@@ -801,11 +805,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:250
 msgid ""
-"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 msgstr ""
-"*SAM2 (Segment Anything Model 2) projesi:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) projesi:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:253
@@ -826,17 +830,21 @@ msgstr ""
 msgid ""
 "Progress is shown in :guilabel:`Project Files` (badges and status text)."
 msgstr ""
-"İlerleme :guilabel:`Proje Dosyaları` nda (rozetler ve durum metni) gösterilir."
+"İlerleme :guilabel:`Proje Dosyaları` nda (rozetler ve durum metni) "
+"gösterilir."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:259
 msgid "Completed outputs are imported back into :guilabel:`Project Files`."
 msgstr "Tamamlanan çıktılar :guilabel:`Proje Dosyaları` na geri aktarılır."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:260
-msgid "Active jobs can be canceled from the same AI workflow flow."
-msgstr "Aktif işler aynı AI iş akışından iptal edilebilir."
+msgid ""
+"Active jobs can be canceled by right-clicking the generated project file "
+"with the progress bar and choosing :guilabel:`Cancel Job`."
+msgstr ""
+"Etkin işler, oluşturulan proje dosyasına ilerleme çubuğuyla sağ tıklayıp "
+":guilabel:`Cancel Job` seçilerek iptal edilebilir."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:261
@@ -851,13 +859,13 @@ msgstr "Dahili JSON İş Akışları"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:266
 msgid ""
-"The sections below map directly to built-in JSON templates in ``src/comfyui/"
-"``. Each subsection describes why you might use it, how to run it, and key "
+"The sections below map directly to built-in JSON templates in ``comfyui/``. "
+"Each subsection describes why you might use it, how to run it, and key "
 "details."
 msgstr ""
-"Aşağıdaki bölümler doğrudan ``src/comfyui/`` içindeki dahili JSON "
-"şablonlarına karşılık gelir. Her alt bölüm, neden kullanabileceğinizi, nasıl "
-"çalıştırılacağını ve önemli detayları açıklar."
+"Aşağıdaki bölümler doğrudan ``comfyui/`` içindeki yerleşik JSON "
+"şablonlarıyla eşleşir. Her alt bölüm, onu neden kullanabileceğinizi, nasıl "
+"çalıştıracağınızı ve önemli ayrıntıları açıklar."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:270
@@ -886,11 +894,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:277
 msgid ""
-"Details: Uses ``src/comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/txt2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detaylar: ``sd_xl_base_1.0.safetensors`` ile ``src/comfyui/txt2img-basic."
-"json`` kullanır."
+"Ayrıntılar: ``comfyui/txt2img-basic.json`` ile "
+"``sd_xl_base_1.0.safetensors``'yi kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:280
@@ -914,11 +922,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:284
 msgid ""
-"Details: Uses ``src/comfyui/txt2video-svd.json`` with WAN video generation "
+"Details: Uses ``comfyui/txt2video-svd.json`` with WAN video generation "
 "models."
 msgstr ""
-"Detaylar: WAN video oluşturma modelleri ile ``src/comfyui/txt2video-svd."
-"json`` kullanır."
+"Ayrıntılar: WAN video oluşturma modelleriyle ``comfyui/txt2video-svd.json`` "
+"kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:287
@@ -942,11 +950,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:291
 msgid ""
-"Details: Uses ``src/comfyui/txt2audio-stable-open.json`` with Stable Audio "
-"Open models."
+"Details: Uses ``comfyui/txt2audio-stable-open.json`` with Stable Audio Open "
+"models."
 msgstr ""
-"Detaylar: Stable Audio Open modelleri ile ``src/comfyui/txt2audio-stable-"
-"open.json`` kullanır."
+"Ayrıntılar: ``comfyui/txt2audio-stable-open.json``'yi Stabil Ses Açık "
+"modelleriyle birlikte kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:294
@@ -962,8 +970,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:297
 msgid ""
-"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt "
-"text, then generate."
+"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt"
+" text, then generate."
 msgstr ""
 "Nasıl: :guilabel:`AI ile Oluştur` -> :guilabel:`Müzik...` seçin, istem "
 "metnini girin ve ardından oluşturun."
@@ -971,11 +979,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:298
 msgid ""
-"Details: Uses ``src/comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
+"Details: Uses ``comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
 "checkpoint."
 msgstr ""
-"Detaylar: Ace-Step 1.5 kontrol noktası ile ``src/comfyui/txt2music-ace-step."
-"json`` kullanır."
+"Ayrıntılar: ``comfyui/txt2music-ace-step.json``'yi Ace-Step 1.5 kontrol "
+"noktasıyla birlikte kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:301
@@ -1006,11 +1014,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:308
 msgid ""
-"Details: Uses ``src/comfyui/img2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/img2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detaylar: ``sd_xl_base_1.0.safetensors`` ile ``src/comfyui/img2img-basic."
-"json`` kullanır."
+"Ayrıntılar: ``comfyui/img2img-basic.json`` ile "
+"``sd_xl_base_1.0.safetensors``'yi kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:311
@@ -1035,11 +1043,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:315
 msgid ""
-"Details: Uses ``src/comfyui/img2video-svd.json`` with WAN image-to-video "
-"models."
+"Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video models."
 msgstr ""
-"Detaylar: WAN resimden videoya modelleri ile ``src/comfyui/img2video-svd."
-"json`` kullanır."
+"Ayrıntılar: WAN görüntüden videoya modelleriyle ``comfyui/img2video-"
+"svd.json`` kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:318
@@ -1063,11 +1070,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:322
 msgid ""
-"Details: Uses ``src/comfyui/video2video-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/video2video-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detaylar: ``sd_xl_base_1.0.safetensors`` ile ``src/comfyui/video2video-basic."
-"json`` kullanır."
+"Ayrıntılar: ``comfyui/video2video-basic.json`` ile "
+"``sd_xl_base_1.0.safetensors``'yi kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:325
@@ -1091,11 +1098,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:329
 msgid ""
-"Details: Uses ``src/comfyui/upscale-realesrgan-x4.json`` with "
+"Details: Uses ``comfyui/upscale-realesrgan-x4.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Detaylar: ``RealESRGAN_x4plus.safetensors`` ile ``src/comfyui/upscale-"
-"realesrgan-x4.json`` kullanır."
+"Ayrıntılar: ``comfyui/upscale-realesrgan-x4.json`` ile "
+"``RealESRGAN_x4plus.safetensors``'yi kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:332
@@ -1119,11 +1126,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:336
 msgid ""
-"Details: Uses ``src/comfyui/video-upscale-gan.json`` with "
+"Details: Uses ``comfyui/video-upscale-gan.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Detaylar: ``RealESRGAN_x4plus.safetensors`` ile ``src/comfyui/video-upscale-"
-"gan.json`` kullanır."
+"Ayrıntılar: ``comfyui/video-upscale-gan.json`` ile "
+"``RealESRGAN_x4plus.safetensors``'yi kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:339
@@ -1147,11 +1154,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:343
 msgid ""
-"Details: Uses ``src/comfyui/video-frame-interpolation-rife2x.json`` with "
+"Details: Uses ``comfyui/video-frame-interpolation-rife2x.json`` with "
 "``rife47.pth``."
 msgstr ""
-"Detaylar: ``rife47.pth`` ile ``src/comfyui/video-frame-interpolation-rife2x."
-"json`` kullanır."
+"Ayrıntılar: ``comfyui/video-frame-interpolation-rife2x.json`` ile "
+"``rife47.pth``'yi kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:346
@@ -1172,17 +1179,17 @@ msgid ""
 "How: Choose :guilabel:`Enhance with AI` on a video, select scene splitting, "
 "then generate."
 msgstr ""
-"Nasıl: Bir videoda :guilabel:`AI ile Geliştir` seçin, sahne bölme seçeneğini "
-"seçin ve ardından oluşturun."
+"Nasıl: Bir videoda :guilabel:`AI ile Geliştir` seçin, sahne bölme seçeneğini"
+" seçin ve ardından oluşturun."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:350
 msgid ""
-"Details: Uses ``src/comfyui/video-segment-scenes-transnet.json`` with "
+"Details: Uses ``comfyui/video-segment-scenes-transnet.json`` with "
 "TransNetV2."
 msgstr ""
-"Detaylar: TransNetV2 ile ``src/comfyui/video-segment-scenes-transnet.json`` "
-"kullanılır."
+"Ayrıntılar: TransNetV2 ile ``comfyui/video-segment-scenes-transnet.json`` "
+"kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:353
@@ -1206,9 +1213,9 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:357
 msgid ""
-"Details: Uses ``src/comfyui/video-whisper-srt.json`` and creates SRT output."
+"Details: Uses ``comfyui/video-whisper-srt.json`` and creates SRT output."
 msgstr ""
-"Detaylar: ``src/comfyui/video-whisper-srt.json`` kullanır ve SRT çıktısı "
+"Ayrıntılar: ``comfyui/video-whisper-srt.json`` kullanır ve SRT çıktısı "
 "oluşturur."
 
 # Translated with gpt-4.1-mini
@@ -1244,10 +1251,10 @@ msgstr "Nasıl: Konu için noktalar/dikdörtgenler seçin, ardından oluşturun.
 # Translated with gpt-4.1-mini
 #: ../ai.rst:370
 msgid ""
-"Details: Uses ``src/comfyui/image-blur-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-blur-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Detaylar: SAM2 resim segmentasyonu ile ``src/comfyui/image-blur-anything-"
+"Ayrıntılar: SAM2 görüntü segmentasyonuyla ``comfyui/image-blur-anything-"
 "sam2.json`` kullanır."
 
 # Translated with gpt-4.1-mini
@@ -1263,10 +1270,10 @@ msgstr "Neden: Sabit bir resimde seçilen konu alanlarını vurgulamak için."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:377
 msgid ""
-"Details: Uses ``src/comfyui/image-highlight-anything-sam2.json`` with SAM2 "
-"image segmentation."
+"Details: Uses ``comfyui/image-highlight-anything-sam2.json`` with SAM2 image"
+" segmentation."
 msgstr ""
-"Detaylar: SAM2 resim segmentasyonu ile ``src/comfyui/image-highlight-"
+"Ayrıntılar: SAM2 görüntü segmentasyonuyla ``comfyui/image-highlight-"
 "anything-sam2.json`` kullanır."
 
 # Translated with gpt-4.1-mini
@@ -1282,10 +1289,10 @@ msgstr "Neden: Seçilen konu alanları için bir resim maskesi oluşturmak için
 # Translated with gpt-4.1-mini
 #: ../ai.rst:384
 msgid ""
-"Details: Uses ``src/comfyui/image-mask-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-mask-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Detaylar: SAM2 resim segmentasyonu ile ``src/comfyui/image-mask-anything-"
+"Ayrıntılar: SAM2 görüntü segmentasyonuyla ``comfyui/image-mask-anything-"
 "sam2.json`` kullanır."
 
 # Translated with gpt-4.1-mini
@@ -1307,11 +1314,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:391
 msgid ""
-"Details: Uses ``src/comfyui/video-blur-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-blur-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Detaylar: SAM2 video takibi ile ``src/comfyui/video-blur-anything-sam2."
-"json`` kullanır."
+"Ayrıntılar: SAM2 video izlemeyle ``comfyui/video-blur-anything-sam2.json`` "
+"kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:394
@@ -1326,11 +1333,11 @@ msgstr "Neden: Videoda hareket eden bir konuyu izleyip vurgulamak için."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:398
 msgid ""
-"Details: Uses ``src/comfyui/video-highlight-anything-sam2.json`` with SAM2 "
-"video tracking."
+"Details: Uses ``comfyui/video-highlight-anything-sam2.json`` with SAM2 video"
+" tracking."
 msgstr ""
-"Detaylar: SAM2 video takibi ile ``src/comfyui/video-highlight-anything-sam2."
-"json`` kullanır."
+"Ayrıntılar: SAM2 video izlemeyle ``comfyui/video-highlight-anything-"
+"sam2.json`` kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:401
@@ -1347,11 +1354,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:405
 msgid ""
-"Details: Uses ``src/comfyui/video-mask-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-mask-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Detaylar: SAM2 video takibi ile ``src/comfyui/video-mask-anything-sam2."
-"json`` kullanır."
+"Ayrıntılar: SAM2 video izlemeyle ``comfyui/video-mask-anything-sam2.json`` "
+"kullanır."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:408
@@ -1431,8 +1438,20 @@ msgstr "Önce kısa bir klip veya sabit resim ile tekrar test edin."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:429
 msgid ""
-"For general performance and cache tuning, see :ref:`preferences_ref` and :"
-"ref:`playback_ref`."
+"For general performance and cache tuning, see :ref:`preferences_ref` and "
+":ref:`playback_ref`."
 msgstr ""
-"Genel performans ve önbellek ayarları için bkz. :ref:`preferences_ref` ve :"
-"ref:`playback_ref`."
+"Genel performans ve önbellek ayarları için bkz. :ref:`preferences_ref` ve "
+":ref:`playback_ref`."
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
+#~ "URL` in OpenShot."
+#~ msgstr ""
+#~ "ComfyUI'yi başlatın, ardından OpenShot'ta :guilabel:`Tercihler -> Deneysel "
+#~ "-> Comfy UI URL` ayarını yapın."
+
+# Translated with gpt-4.1-mini
+#~ msgid "Active jobs can be canceled from the same AI workflow flow."
+#~ msgstr "Aktif işler aynı AI iş akışından iptal edilebilir."

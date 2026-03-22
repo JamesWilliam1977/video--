@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-03-20 19:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgid "Advanced AI: ComfyUI"
 msgstr ""
 
 #: ../ai.rst:25
-msgid "OpenShot can connect to a local `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ server and run AI workflows from the Project Files and timeline context menus. This page explains what these tools are, what hardware they require, and where the built-in workflow templates live."
+msgid "OpenShot can connect to a local `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ server and run AI workflows from the Project Files and Timeline context menus. This page explains what these tools are, what hardware they require, and where the built-in workflow templates live."
 msgstr ""
 
 #: ../ai.rst:30
@@ -57,7 +57,7 @@ msgid "GPU"
 msgstr ""
 
 #: ../ai.rst:45
-msgid "Nvidia 5070 12GB or better (16-24GB VRAM strongly preferred)"
+msgid "NVIDIA 5070 12GB or better (16-24GB VRAM strongly preferred)"
 msgstr ""
 
 #: ../ai.rst:46
@@ -117,7 +117,7 @@ msgid "Download required model files (listed below) into matching model folders.
 msgstr ""
 
 #: ../ai.rst:63
-msgid "Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI URL` in OpenShot."
+msgid "Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set :guilabel:`ComfyUI URL`."
 msgstr ""
 
 #: ../ai.rst:64
@@ -277,7 +277,7 @@ msgid "Starting a **new project** or opening an **existing project** clears the 
 msgstr ""
 
 #: ../ai.rst:130
-msgid "If ComfyUI is unavailable, OpenShot hides the AI menus. Configure the server URL in :guilabel:`Preferences -> Experimental -> Comfy UI URL`, then use the :guilabel:`Check` button to test connectivity."
+msgid "If ComfyUI is unavailable, OpenShot disables the AI menus. Configure the server URL in :guilabel:`Edit->Preferences->Advanced`, then use the :guilabel:`Check` button to test connectivity."
 msgstr ""
 
 #: ../ai.rst:135
@@ -285,7 +285,7 @@ msgid "Workflow Templates"
 msgstr ""
 
 #: ../ai.rst:137
-msgid "OpenShot reads built-in templates from ``src/comfyui/``. It also loads custom user templates from ``~/.openshot_qt/comfyui/``."
+msgid "OpenShot reads built-in templates from ``comfyui/``. It also loads custom user templates from ``~/.openshot_qt/comfyui/``."
 msgstr ""
 
 #: ../ai.rst:140
@@ -537,7 +537,7 @@ msgid "Completed outputs are imported back into :guilabel:`Project Files`."
 msgstr ""
 
 #: ../ai.rst:260
-msgid "Active jobs can be canceled from the same AI workflow flow."
+msgid "Active jobs can be canceled by right-clicking the generated project file with the progress bar and choosing :guilabel:`Cancel Job`."
 msgstr ""
 
 #: ../ai.rst:261
@@ -549,7 +549,7 @@ msgid "Built-in JSON Workflows"
 msgstr ""
 
 #: ../ai.rst:266
-msgid "The sections below map directly to built-in JSON templates in ``src/comfyui/``. Each subsection describes why you might use it, how to run it, and key details."
+msgid "The sections below map directly to built-in JSON templates in ``comfyui/``. Each subsection describes why you might use it, how to run it, and key details."
 msgstr ""
 
 #: ../ai.rst:270
@@ -569,7 +569,7 @@ msgid "How: Choose :guilabel:`Create with AI` -> :guilabel:`Image...`, enter a p
 msgstr ""
 
 #: ../ai.rst:277
-msgid "Details: Uses ``src/comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0.safetensors``."
+msgid "Details: Uses ``comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0.safetensors``."
 msgstr ""
 
 #: ../ai.rst:280
@@ -585,7 +585,7 @@ msgid "How: Choose :guilabel:`Create with AI` -> :guilabel:`Video...`, enter a p
 msgstr ""
 
 #: ../ai.rst:284
-msgid "Details: Uses ``src/comfyui/txt2video-svd.json`` with WAN video generation models."
+msgid "Details: Uses ``comfyui/txt2video-svd.json`` with WAN video generation models."
 msgstr ""
 
 #: ../ai.rst:287
@@ -601,7 +601,7 @@ msgid "How: Choose :guilabel:`Create with AI` -> :guilabel:`Sound...`, enter a p
 msgstr ""
 
 #: ../ai.rst:291
-msgid "Details: Uses ``src/comfyui/txt2audio-stable-open.json`` with Stable Audio Open models."
+msgid "Details: Uses ``comfyui/txt2audio-stable-open.json`` with Stable Audio Open models."
 msgstr ""
 
 #: ../ai.rst:294
@@ -617,7 +617,7 @@ msgid "How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter pro
 msgstr ""
 
 #: ../ai.rst:298
-msgid "Details: Uses ``src/comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 checkpoint."
+msgid "Details: Uses ``comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 checkpoint."
 msgstr ""
 
 #: ../ai.rst:301
@@ -637,7 +637,7 @@ msgid "How: Choose :guilabel:`Enhance with AI` on an image, enter a style prompt
 msgstr ""
 
 #: ../ai.rst:308
-msgid "Details: Uses ``src/comfyui/img2img-basic.json`` with ``sd_xl_base_1.0.safetensors``."
+msgid "Details: Uses ``comfyui/img2img-basic.json`` with ``sd_xl_base_1.0.safetensors``."
 msgstr ""
 
 #: ../ai.rst:311
@@ -653,7 +653,7 @@ msgid "How: Choose :guilabel:`Enhance with AI` on an image, provide prompt guida
 msgstr ""
 
 #: ../ai.rst:315
-msgid "Details: Uses ``src/comfyui/img2video-svd.json`` with WAN image-to-video models."
+msgid "Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video models."
 msgstr ""
 
 #: ../ai.rst:318
@@ -669,7 +669,7 @@ msgid "How: Choose :guilabel:`Enhance with AI` on a video, enter a style prompt,
 msgstr ""
 
 #: ../ai.rst:322
-msgid "Details: Uses ``src/comfyui/video2video-basic.json`` with ``sd_xl_base_1.0.safetensors``."
+msgid "Details: Uses ``comfyui/video2video-basic.json`` with ``sd_xl_base_1.0.safetensors``."
 msgstr ""
 
 #: ../ai.rst:325
@@ -685,7 +685,7 @@ msgid "How: Choose :guilabel:`Enhance with AI` on an image, select increase reso
 msgstr ""
 
 #: ../ai.rst:329
-msgid "Details: Uses ``src/comfyui/upscale-realesrgan-x4.json`` with ``RealESRGAN_x4plus.safetensors``."
+msgid "Details: Uses ``comfyui/upscale-realesrgan-x4.json`` with ``RealESRGAN_x4plus.safetensors``."
 msgstr ""
 
 #: ../ai.rst:332
@@ -701,7 +701,7 @@ msgid "How: Choose :guilabel:`Enhance with AI` on a video, select increase resol
 msgstr ""
 
 #: ../ai.rst:336
-msgid "Details: Uses ``src/comfyui/video-upscale-gan.json`` with ``RealESRGAN_x4plus.safetensors``."
+msgid "Details: Uses ``comfyui/video-upscale-gan.json`` with ``RealESRGAN_x4plus.safetensors``."
 msgstr ""
 
 #: ../ai.rst:339
@@ -717,7 +717,7 @@ msgid "How: Choose :guilabel:`Enhance with AI` on a video, select smooth motion,
 msgstr ""
 
 #: ../ai.rst:343
-msgid "Details: Uses ``src/comfyui/video-frame-interpolation-rife2x.json`` with ``rife47.pth``."
+msgid "Details: Uses ``comfyui/video-frame-interpolation-rife2x.json`` with ``rife47.pth``."
 msgstr ""
 
 #: ../ai.rst:346
@@ -733,7 +733,7 @@ msgid "How: Choose :guilabel:`Enhance with AI` on a video, select scene splittin
 msgstr ""
 
 #: ../ai.rst:350
-msgid "Details: Uses ``src/comfyui/video-segment-scenes-transnet.json`` with TransNetV2."
+msgid "Details: Uses ``comfyui/video-segment-scenes-transnet.json`` with TransNetV2."
 msgstr ""
 
 #: ../ai.rst:353
@@ -749,7 +749,7 @@ msgid "How: Choose :guilabel:`Enhance with AI` on a video, select captions, then
 msgstr ""
 
 #: ../ai.rst:357
-msgid "Details: Uses ``src/comfyui/video-whisper-srt.json`` and creates SRT output."
+msgid "Details: Uses ``comfyui/video-whisper-srt.json`` and creates SRT output."
 msgstr ""
 
 #: ../ai.rst:360
@@ -775,7 +775,7 @@ msgid "How: Select points/rectangles for the subject, then generate."
 msgstr ""
 
 #: ../ai.rst:370
-msgid "Details: Uses ``src/comfyui/image-blur-anything-sam2.json`` with SAM2 image segmentation."
+msgid "Details: Uses ``comfyui/image-blur-anything-sam2.json`` with SAM2 image segmentation."
 msgstr ""
 
 #: ../ai.rst:373
@@ -787,7 +787,7 @@ msgid "Why: Emphasize selected subject areas in a still image."
 msgstr ""
 
 #: ../ai.rst:377
-msgid "Details: Uses ``src/comfyui/image-highlight-anything-sam2.json`` with SAM2 image segmentation."
+msgid "Details: Uses ``comfyui/image-highlight-anything-sam2.json`` with SAM2 image segmentation."
 msgstr ""
 
 #: ../ai.rst:380
@@ -799,7 +799,7 @@ msgid "Why: Generate an image mask for selected subject areas."
 msgstr ""
 
 #: ../ai.rst:384
-msgid "Details: Uses ``src/comfyui/image-mask-anything-sam2.json`` with SAM2 image segmentation."
+msgid "Details: Uses ``comfyui/image-mask-anything-sam2.json`` with SAM2 image segmentation."
 msgstr ""
 
 #: ../ai.rst:387
@@ -817,7 +817,7 @@ msgid "How: Mark subject/background in the region screen, then generate."
 msgstr ""
 
 #: ../ai.rst:391
-msgid "Details: Uses ``src/comfyui/video-blur-anything-sam2.json`` with SAM2 video tracking."
+msgid "Details: Uses ``comfyui/video-blur-anything-sam2.json`` with SAM2 video tracking."
 msgstr ""
 
 #: ../ai.rst:394
@@ -829,7 +829,7 @@ msgid "Why: Track and highlight a moving subject in video."
 msgstr ""
 
 #: ../ai.rst:398
-msgid "Details: Uses ``src/comfyui/video-highlight-anything-sam2.json`` with SAM2 video tracking."
+msgid "Details: Uses ``comfyui/video-highlight-anything-sam2.json`` with SAM2 video tracking."
 msgstr ""
 
 #: ../ai.rst:401
@@ -841,7 +841,7 @@ msgid "Why: Generate an animated mask that follows a moving subject."
 msgstr ""
 
 #: ../ai.rst:405
-msgid "Details: Uses ``src/comfyui/video-mask-anything-sam2.json`` with SAM2 video tracking."
+msgid "Details: Uses ``comfyui/video-mask-anything-sam2.json`` with SAM2 video tracking."
 msgstr ""
 
 #: ../ai.rst:408

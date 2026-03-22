@@ -4,12 +4,11 @@
 # Editor package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-03-20 19:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,16 +25,17 @@ msgstr "AI Lanjutan: ComfyUI"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:25
 msgid ""
-"OpenShot can connect to a local `ComfyUI <https://github.com/comfyanonymous/"
-"ComfyUI>`_ server and run AI workflows from the Project Files and timeline "
-"context menus. This page explains what these tools are, what hardware they "
-"require, and where the built-in workflow templates live."
+"OpenShot can connect to a local `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ server and run AI workflows "
+"from the Project Files and Timeline context menus. This page explains what "
+"these tools are, what hardware they require, and where the built-in workflow"
+" templates live."
 msgstr ""
-"OpenShot dapat terhubung ke server lokal `ComfyUI <https://github.com/"
-"comfyanonymous/ComfyUI>`_ dan menjalankan alur kerja AI dari menu konteks "
-"Berkas Proyek dan timeline. Halaman ini menjelaskan apa alat-alat ini, "
-"perangkat keras apa yang mereka butuhkan, dan di mana template alur kerja "
-"bawaan berada."
+"OpenShot dapat terhubung ke server `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_ lokal dan menjalankan alur "
+"kerja AI dari menu konteks File Proyek dan Timeline. Halaman ini menjelaskan"
+" apa saja alat-alat tersebut, perangkat keras apa yang diperlukan, dan di "
+"mana templat alur kerja bawaan berada."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:30
@@ -43,8 +43,8 @@ msgid ""
 "AI features in OpenShot are **experimental** and require a **high-end "
 "workstation**."
 msgstr ""
-"Fitur AI di OpenShot bersifat **eksperimental** dan memerlukan **workstation "
-"kelas atas**."
+"Fitur AI di OpenShot bersifat **eksperimental** dan memerlukan **workstation"
+" kelas atas**."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:32
@@ -61,8 +61,8 @@ msgid ""
 "You must run a local `ComfyUI <https://github.com/comfyanonymous/ComfyUI>`_ "
 "server."
 msgstr ""
-"Anda harus menjalankan server lokal `ComfyUI <https://github.com/"
-"comfyanonymous/ComfyUI>`_."
+"Anda harus menjalankan server lokal `ComfyUI "
+"<https://github.com/comfyanonymous/ComfyUI>`_."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:34
@@ -94,8 +94,8 @@ msgstr "GPU"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:45
-msgid "Nvidia 5070 12GB or better (16-24GB VRAM strongly preferred)"
-msgstr "Nvidia 5070 12GB atau lebih baik (16-24GB VRAM sangat disarankan)"
+msgid "NVIDIA 5070 12GB or better (16-24GB VRAM strongly preferred)"
+msgstr "NVIDIA 5070 12GB atau lebih baik (VRAM 16-24GB sangat disukai)"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:46
@@ -179,14 +179,13 @@ msgstr ""
 "Unduh berkas model yang diperlukan (tercantum di bawah) ke dalam folder "
 "model yang sesuai."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:63
 msgid ""
-"Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
-"URL` in OpenShot."
+"Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set "
+":guilabel:`ComfyUI URL`."
 msgstr ""
-"Mulai ComfyUI, lalu atur :guilabel:`Preferences -> Experimental -> Comfy UI "
-"URL` di OpenShot."
+"Mulai ComfyUI, lalu buka :guilabel:`Edit->Preferences->Advanced` dan atur "
+":guilabel:`ComfyUI URL`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:64
@@ -197,8 +196,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:66
 msgid ""
-"For full ComfyUI installation details, see the official repository: `ComfyUI "
-"on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
+"For full ComfyUI installation details, see the official repository: `ComfyUI"
+" on GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
 msgstr ""
 "Untuk detail instalasi lengkap ComfyUI, lihat repositori resmi: `ComfyUI on "
 "GitHub <https://github.com/comfyanonymous/ComfyUI>`_."
@@ -334,14 +333,16 @@ msgstr "``ComfyUI/models/text_encoders/t5-base.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:97
-msgid "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
+msgid ""
+"``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 msgstr ""
 "``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:98
 msgid "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
-msgstr "``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
+msgstr ""
+"``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:99
@@ -366,11 +367,11 @@ msgstr "``ComfyUI/models/vae/wan2.2_vae.safetensors``"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:103
 msgid ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 msgstr ""
-"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights."
-"pth``"
+"``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-"
+"weights.pth``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:106
@@ -404,8 +405,8 @@ msgid ""
 "and queue badges. Outputs are saved under ``.openshot_qt/comfyui-output/``."
 msgstr ""
 "File yang dihasilkan ditambahkan ke :guilabel:`Project Files` dengan teks "
-"kemajuan dan lencana antrean. Output disimpan di bawah ``.openshot_qt/"
-"comfyui-output/``."
+"kemajuan dan lencana antrean. Output disimpan di bawah "
+"``.openshot_qt/comfyui-output/``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:125
@@ -418,20 +419,20 @@ msgid ""
 msgstr ""
 "Memulai **proyek baru** atau membuka **proyek yang sudah ada** akan "
 "menghapus folder kerja AI sementara ``.openshot_qt`` sehingga Anda memulai "
-"dengan keadaan bersih. Proyek yang disimpan tidak terpengaruh, dan aset yang "
-"sebelumnya disalin ke folder ``PROJECTNAME_Assets`` tetap berada di "
+"dengan keadaan bersih. Proyek yang disimpan tidak terpengaruh, dan aset yang"
+" sebelumnya disalin ke folder ``PROJECTNAME_Assets`` tetap berada di "
 "direktori proyek tersebut."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:130
 msgid ""
-"If ComfyUI is unavailable, OpenShot hides the AI menus. Configure the server "
-"URL in :guilabel:`Preferences -> Experimental -> Comfy UI URL`, then use "
-"the :guilabel:`Check` button to test connectivity."
+"If ComfyUI is unavailable, OpenShot disables the AI menus. Configure the "
+"server URL in :guilabel:`Edit->Preferences->Advanced`, then use the "
+":guilabel:`Check` button to test connectivity."
 msgstr ""
-"Jika ComfyUI tidak tersedia, OpenShot menyembunyikan menu AI. Konfigurasikan "
-"URL server di :guilabel:`Preferences -> Experimental -> Comfy UI URL`, lalu "
-"gunakan tombol :guilabel:`Check` untuk menguji konektivitas."
+"Jika ComfyUI tidak tersedia, OpenShot menonaktifkan menu AI. Konfigurasikan "
+"URL server di :guilabel:`Edit->Preferences->Advanced`, lalu gunakan tombol "
+":guilabel:`Check` untuk menguji konektivitas."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:135
@@ -441,11 +442,11 @@ msgstr "Template Alur Kerja"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:137
 msgid ""
-"OpenShot reads built-in templates from ``src/comfyui/``. It also loads "
-"custom user templates from ``~/.openshot_qt/comfyui/``."
+"OpenShot reads built-in templates from ``comfyui/``. It also loads custom "
+"user templates from ``~/.openshot_qt/comfyui/``."
 msgstr ""
-"OpenShot membaca template bawaan dari ``src/comfyui/``. Juga memuat template "
-"pengguna kustom dari ``~/.openshot_qt/comfyui/``."
+"OpenShot membaca templat bawaan dari ``comfyui/``. Itu juga memuat templat "
+"pengguna khusus dari ``~/.openshot_qt/comfyui/``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:140
@@ -462,8 +463,8 @@ msgstr "Di ComfyUI, buka tab alur kerja yang ingin Anda gunakan."
 msgid ""
 "Choose :guilabel:`Export (API)` to save the workflow as a ``*.json`` file."
 msgstr ""
-"Pilih :guilabel:`Export (API)` untuk menyimpan alur kerja sebagai file ``*."
-"json``."
+"Pilih :guilabel:`Export (API)` untuk menyimpan alur kerja sebagai file "
+"``*.json``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:144
@@ -478,8 +479,8 @@ msgstr "Mulai ulang OpenShot, atau buka kembali proyek jika diperlukan."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:147
 msgid ""
-"OpenShot will automatically load the workflow and show it in the appropriate "
-"AI menu. When you trigger it from OpenShot, the selected source file is "
+"OpenShot will automatically load the workflow and show it in the appropriate"
+" AI menu. When you trigger it from OpenShot, the selected source file is "
 "passed into the workflow, and the output from the workflow's final output "
 "node is imported back into :guilabel:`Project Files`."
 msgstr ""
@@ -569,8 +570,8 @@ msgstr "Berikan titik/rectangle pelacakan untuk alur kerja pelacakan."
 msgid ""
 "Start the job with :guilabel:`Generate` or close with :guilabel:`Cancel`."
 msgstr ""
-"Mulai pekerjaan dengan :guilabel:`Generate` atau tutup dengan :guilabel:"
-"`Cancel`."
+"Mulai pekerjaan dengan :guilabel:`Generate` atau tutup dengan "
+":guilabel:`Cancel`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:179
@@ -580,13 +581,13 @@ msgstr "Pelacakan (Masker, Blur, Sorot)"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:181
 msgid ""
-"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, :guilabel:"
-"`Mask...`) use a region screen where you mark what to include and what to "
-"ignore."
+"Tracking workflows (:guilabel:`Blur...`, :guilabel:`Highlight...`, "
+":guilabel:`Mask...`) use a region screen where you mark what to include and "
+"what to ignore."
 msgstr ""
-"Alur kerja pelacakan (:guilabel:`Blur...`, :guilabel:`Highlight...`, :"
-"guilabel:`Mask...`) menggunakan layar wilayah di mana Anda menandai apa yang "
-"harus disertakan dan apa yang harus diabaikan."
+"Alur kerja pelacakan (:guilabel:`Blur...`, :guilabel:`Highlight...`, "
+":guilabel:`Mask...`) menggunakan layar wilayah di mana Anda menandai apa "
+"yang harus disertakan dan apa yang harus diabaikan."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:188
@@ -600,8 +601,8 @@ msgid ""
 "example, you can blur a face, highlight a player, or generate a clean mask "
 "that follows the same object across many frames."
 msgstr ""
-"Pelacakan membantu efek Anda tetap melekat pada subjek yang bergerak seiring "
-"waktu. Misalnya, Anda dapat memburamkan wajah, menyorot pemain, atau "
+"Pelacakan membantu efek Anda tetap melekat pada subjek yang bergerak seiring"
+" waktu. Misalnya, Anda dapat memburamkan wajah, menyorot pemain, atau "
 "menghasilkan masker bersih yang mengikuti objek yang sama di banyak frame."
 
 # Translated with gpt-4.1-mini
@@ -637,7 +638,8 @@ msgstr "Titik merah"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:206
 msgid "Negative tracking coordinate (background/exclusion seed point)."
-msgstr "Koordinat pelacakan negatif (titik benih latar belakang/pengecualian)."
+msgstr ""
+"Koordinat pelacakan negatif (titik benih latar belakang/pengecualian)."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:207
@@ -679,9 +681,10 @@ msgstr "Cara Kerja Pelacakan"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:217
 msgid ""
-"OpenShot sends your positive and negative markers as seed coordinates to the "
-"tracking model, which builds a mask for the subject and then follows it over "
-"time. Better seeds usually produce cleaner masks and less drift. [sam2]_"
+"OpenShot sends your positive and negative markers as seed coordinates to the"
+" tracking model, which builds a mask for the subject and then follows it "
+"over time. Better seeds usually produce cleaner masks and less drift. "
+"[sam2]_"
 msgstr ""
 "OpenShot mengirimkan penanda positif dan negatif Anda sebagai koordinat "
 "benih ke model pelacakan, yang membangun masker untuk subjek dan kemudian "
@@ -733,7 +736,8 @@ msgstr "Geser penggeser frame ke momen berbeda dalam klip."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:233
-msgid "Add or adjust dots/rectangles on frames where tracking starts to drift."
+msgid ""
+"Add or adjust dots/rectangles on frames where tracking starts to drift."
 msgstr ""
 "Tambahkan atau sesuaikan titik/persegi panjang pada frame di mana pelacakan "
 "mulai melenceng."
@@ -741,8 +745,8 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:234
 msgid ""
-"Use additional seed points only where needed, especially on occlusions, fast "
-"motion, or major shape changes."
+"Use additional seed points only where needed, especially on occlusions, fast"
+" motion, or major shape changes."
 msgstr ""
 "Gunakan titik benih tambahan hanya di tempat yang diperlukan, terutama pada "
 "oklusi, gerakan cepat, atau perubahan bentuk besar."
@@ -775,7 +779,8 @@ msgstr "Tambahkan lebih banyak titik hanya di tempat pelacakan gagal."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:246
 msgid ""
-"If needed, add a more nuanced set of positive/negative points and rectangles."
+"If needed, add a more nuanced set of positive/negative points and "
+"rectangles."
 msgstr ""
 "Jika perlu, tambahkan set titik positif/negatif dan persegi panjang yang "
 "lebih rinci."
@@ -791,17 +796,17 @@ msgid ""
 "If tracking becomes messy, use the Delete icon and restart with cleaner "
 "seeds."
 msgstr ""
-"Jika pelacakan menjadi berantakan, gunakan ikon Hapus dan mulai ulang dengan "
-"titik awal yang lebih bersih."
+"Jika pelacakan menjadi berantakan, gunakan ikon Hapus dan mulai ulang dengan"
+" titik awal yang lebih bersih."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:250
 msgid ""
-"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*SAM2 (Segment Anything Model 2) project:* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 msgstr ""
-"*Proyek SAM2 (Segment Anything Model 2):* `facebookresearch/sam2 <https://"
-"github.com/facebookresearch/sam2>`_"
+"*Proyek SAM2 (Segment Anything Model 2):* `facebookresearch/sam2 "
+"<https://github.com/facebookresearch/sam2>`_"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:253
@@ -829,10 +834,13 @@ msgstr ""
 msgid "Completed outputs are imported back into :guilabel:`Project Files`."
 msgstr "Output yang selesai diimpor kembali ke :guilabel:`Project Files`."
 
-# Translated with gpt-4.1-mini
 #: ../ai.rst:260
-msgid "Active jobs can be canceled from the same AI workflow flow."
-msgstr "Pekerjaan aktif dapat dibatalkan dari alur kerja AI yang sama."
+msgid ""
+"Active jobs can be canceled by right-clicking the generated project file "
+"with the progress bar and choosing :guilabel:`Cancel Job`."
+msgstr ""
+"Pekerjaan aktif dapat dibatalkan dengan mengklik kanan file proyek yang "
+"dihasilkan dengan bilah kemajuan dan memilih :guilabel:`Batalkan Pekerjaan`."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:261
@@ -847,13 +855,13 @@ msgstr "Alur Kerja JSON Bawaan"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:266
 msgid ""
-"The sections below map directly to built-in JSON templates in ``src/comfyui/"
-"``. Each subsection describes why you might use it, how to run it, and key "
+"The sections below map directly to built-in JSON templates in ``comfyui/``. "
+"Each subsection describes why you might use it, how to run it, and key "
 "details."
 msgstr ""
-"Bagian-bagian di bawah ini langsung terkait dengan template JSON bawaan di "
-"``src/comfyui/``. Setiap subbagian menjelaskan mengapa Anda mungkin "
-"menggunakannya, cara menjalankannya, dan detail penting."
+"Bagian di bawah ini dipetakan langsung ke templat JSON bawaan di "
+"``comfyui/``. Setiap subbagian menjelaskan alasan Anda menggunakannya, cara "
+"menjalankannya, dan detail penting."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:270
@@ -882,10 +890,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:277
 msgid ""
-"Details: Uses ``src/comfyui/txt2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/txt2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/txt2img-basic.json`` dengan "
+"Detail: Menggunakan ``comfyui/txt2img-basic.json`` dengan "
 "``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -910,11 +918,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:284
 msgid ""
-"Details: Uses ``src/comfyui/txt2video-svd.json`` with WAN video generation "
+"Details: Uses ``comfyui/txt2video-svd.json`` with WAN video generation "
 "models."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/txt2video-svd.json`` dengan model "
-"pembuatan video WAN."
+"Detail: Menggunakan ``comfyui/txt2video-svd.json`` dengan model pembuatan "
+"video WAN."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:287
@@ -938,10 +946,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:291
 msgid ""
-"Details: Uses ``src/comfyui/txt2audio-stable-open.json`` with Stable Audio "
-"Open models."
+"Details: Uses ``comfyui/txt2audio-stable-open.json`` with Stable Audio Open "
+"models."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/txt2audio-stable-open.json`` dengan model "
+"Detail: Menggunakan ``comfyui/txt2audio-stable-open.json`` dengan model "
 "Stable Audio Open."
 
 # Translated with gpt-4.1-mini
@@ -957,8 +965,8 @@ msgstr "Mengapa: Menghasilkan musik dari gaya/tag (dan lirik opsional)."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:297
 msgid ""
-"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt "
-"text, then generate."
+"How: Choose :guilabel:`Create with AI` -> :guilabel:`Music...`, enter prompt"
+" text, then generate."
 msgstr ""
 "Cara: Pilih :guilabel:`Create with AI` -> :guilabel:`Music...`, masukkan "
 "teks perintah, lalu buat."
@@ -966,11 +974,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:298
 msgid ""
-"Details: Uses ``src/comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
+"Details: Uses ``comfyui/txt2music-ace-step.json`` with an Ace-Step 1.5 "
 "checkpoint."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/txt2music-ace-step.json`` dengan "
-"checkpoint Ace-Step 1.5."
+"Detail: Menggunakan ``comfyui/txt2music-ace-step.json`` dengan pos "
+"pemeriksaan Ace-Step 1.5."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:301
@@ -995,16 +1003,16 @@ msgid ""
 "How: Choose :guilabel:`Enhance with AI` on an image, enter a style prompt, "
 "then generate."
 msgstr ""
-"Cara: Pilih :guilabel:`Enhance with AI` pada gambar, masukkan perintah gaya, "
-"lalu buat."
+"Cara: Pilih :guilabel:`Enhance with AI` pada gambar, masukkan perintah gaya,"
+" lalu buat."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:308
 msgid ""
-"Details: Uses ``src/comfyui/img2img-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/img2img-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/img2img-basic.json`` dengan "
+"Detail: Menggunakan ``comfyui/img2img-basic.json`` dengan "
 "``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1029,11 +1037,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:315
 msgid ""
-"Details: Uses ``src/comfyui/img2video-svd.json`` with WAN image-to-video "
-"models."
+"Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video models."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/img2video-svd.json`` dengan model WAN "
-"gambar-ke-video."
+"Detail: Menggunakan ``comfyui/img2video-svd.json`` dengan model gambar-ke-"
+"video WAN."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:318
@@ -1057,10 +1064,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:322
 msgid ""
-"Details: Uses ``src/comfyui/video2video-basic.json`` with ``sd_xl_base_1.0."
-"safetensors``."
+"Details: Uses ``comfyui/video2video-basic.json`` with "
+"``sd_xl_base_1.0.safetensors``."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/video2video-basic.json`` dengan "
+"Detail: Menggunakan ``comfyui/video2video-basic.json`` dengan "
 "``sd_xl_base_1.0.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1085,10 +1092,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:329
 msgid ""
-"Details: Uses ``src/comfyui/upscale-realesrgan-x4.json`` with "
+"Details: Uses ``comfyui/upscale-realesrgan-x4.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/upscale-realesrgan-x4.json`` dengan "
+"Detail: Menggunakan ``comfyui/upscale-realesrgan-x4.json`` dengan "
 "``RealESRGAN_x4plus.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1114,10 +1121,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:336
 msgid ""
-"Details: Uses ``src/comfyui/video-upscale-gan.json`` with "
+"Details: Uses ``comfyui/video-upscale-gan.json`` with "
 "``RealESRGAN_x4plus.safetensors``."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/video-upscale-gan.json`` dengan "
+"Detail: Menggunakan ``comfyui/video-upscale-gan.json`` dengan "
 "``RealESRGAN_x4plus.safetensors``."
 
 # Translated with gpt-4.1-mini
@@ -1144,11 +1151,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:343
 msgid ""
-"Details: Uses ``src/comfyui/video-frame-interpolation-rife2x.json`` with "
+"Details: Uses ``comfyui/video-frame-interpolation-rife2x.json`` with "
 "``rife47.pth``."
 msgstr ""
-"Detail: Menggunakan ``src/comfyui/video-frame-interpolation-rife2x.json`` "
-"dengan ``rife47.pth``."
+"Detail: Menggunakan ``comfyui/video-frame-interpolation-rife2x.json`` dengan"
+" ``rife47.pth``."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:346
@@ -1175,11 +1182,11 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:350
 msgid ""
-"Details: Uses ``src/comfyui/video-segment-scenes-transnet.json`` with "
+"Details: Uses ``comfyui/video-segment-scenes-transnet.json`` with "
 "TransNetV2."
 msgstr ""
-"Rincian: Menggunakan ``src/comfyui/video-segment-scenes-transnet.json`` "
-"dengan TransNetV2."
+"Detail: Menggunakan ``comfyui/video-segment-scenes-transnet.json`` dengan "
+"TransNetV2."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:353
@@ -1203,10 +1210,10 @@ msgstr ""
 # Translated with gpt-4.1-mini
 #: ../ai.rst:357
 msgid ""
-"Details: Uses ``src/comfyui/video-whisper-srt.json`` and creates SRT output."
+"Details: Uses ``comfyui/video-whisper-srt.json`` and creates SRT output."
 msgstr ""
-"Rincian: Menggunakan ``src/comfyui/video-whisper-srt.json`` dan membuat "
-"keluaran SRT."
+"Detail: Menggunakan ``comfyui/video-whisper-srt.json`` dan membuat keluaran "
+"SRT."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:360
@@ -1240,10 +1247,10 @@ msgstr "Cara: Pilih titik/persegi panjang untuk subjek, lalu buat."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:370
 msgid ""
-"Details: Uses ``src/comfyui/image-blur-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-blur-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Rincian: Menggunakan ``src/comfyui/image-blur-anything-sam2.json`` dengan "
+"Detail: Menggunakan ``comfyui/image-blur-anything-sam2.json`` dengan "
 "segmentasi gambar SAM2."
 
 # Translated with gpt-4.1-mini
@@ -1259,11 +1266,11 @@ msgstr "Mengapa: Tekankan area subjek yang dipilih dalam gambar diam."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:377
 msgid ""
-"Details: Uses ``src/comfyui/image-highlight-anything-sam2.json`` with SAM2 "
-"image segmentation."
+"Details: Uses ``comfyui/image-highlight-anything-sam2.json`` with SAM2 image"
+" segmentation."
 msgstr ""
-"Rincian: Menggunakan ``src/comfyui/image-highlight-anything-sam2.json`` "
-"dengan segmentasi gambar SAM2."
+"Detail: Menggunakan ``comfyui/image-highlight-anything-sam2.json`` dengan "
+"segmentasi gambar SAM2."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:380
@@ -1278,10 +1285,10 @@ msgstr "Mengapa: Buat masker gambar untuk area subjek yang dipilih."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:384
 msgid ""
-"Details: Uses ``src/comfyui/image-mask-anything-sam2.json`` with SAM2 image "
+"Details: Uses ``comfyui/image-mask-anything-sam2.json`` with SAM2 image "
 "segmentation."
 msgstr ""
-"Rincian: Menggunakan ``src/comfyui/image-mask-anything-sam2.json`` dengan "
+"Detail: Menggunakan ``comfyui/image-mask-anything-sam2.json`` dengan "
 "segmentasi gambar SAM2."
 
 # Translated with gpt-4.1-mini
@@ -1302,10 +1309,10 @@ msgstr "Cara: Tandai subjek/latar belakang di layar wilayah, lalu buat."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:391
 msgid ""
-"Details: Uses ``src/comfyui/video-blur-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-blur-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Rincian: Menggunakan ``src/comfyui/video-blur-anything-sam2.json`` dengan "
+"Detail: Menggunakan ``comfyui/video-blur-anything-sam2.json`` dengan "
 "pelacakan video SAM2."
 
 # Translated with gpt-4.1-mini
@@ -1321,11 +1328,11 @@ msgstr "Mengapa: Lacak dan sorot subjek yang bergerak dalam video."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:398
 msgid ""
-"Details: Uses ``src/comfyui/video-highlight-anything-sam2.json`` with SAM2 "
-"video tracking."
+"Details: Uses ``comfyui/video-highlight-anything-sam2.json`` with SAM2 video"
+" tracking."
 msgstr ""
-"Rincian: Menggunakan ``src/comfyui/video-highlight-anything-sam2.json`` "
-"dengan pelacakan video SAM2."
+"Detail: Menggunakan ``comfyui/video-highlight-anything-sam2.json`` dengan "
+"pelacakan video SAM2."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:401
@@ -1340,10 +1347,10 @@ msgstr "Mengapa: Buat masker animasi yang mengikuti subjek yang bergerak."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:405
 msgid ""
-"Details: Uses ``src/comfyui/video-mask-anything-sam2.json`` with SAM2 video "
+"Details: Uses ``comfyui/video-mask-anything-sam2.json`` with SAM2 video "
 "tracking."
 msgstr ""
-"Rincian: Menggunakan ``src/comfyui/video-mask-anything-sam2.json`` dengan "
+"Detail: Menggunakan ``comfyui/video-mask-anything-sam2.json`` dengan "
 "pelacakan video SAM2."
 
 # Translated with gpt-4.1-mini
@@ -1395,7 +1402,8 @@ msgstr "Jika menu AI tidak muncul atau pekerjaan gagal segera:"
 # Translated with gpt-4.1-mini
 #: ../ai.rst:423
 msgid "Verify ComfyUI is running and reachable at the configured URL."
-msgstr "Pastikan ComfyUI berjalan dan dapat diakses di URL yang dikonfigurasi."
+msgstr ""
+"Pastikan ComfyUI berjalan dan dapat diakses di URL yang dikonfigurasi."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:424
@@ -1422,8 +1430,20 @@ msgstr "Uji ulang dengan klip pendek atau gambar diam terlebih dahulu."
 # Translated with gpt-4.1-mini
 #: ../ai.rst:429
 msgid ""
-"For general performance and cache tuning, see :ref:`preferences_ref` and :"
-"ref:`playback_ref`."
+"For general performance and cache tuning, see :ref:`preferences_ref` and "
+":ref:`playback_ref`."
 msgstr ""
-"Untuk penyetelan kinerja umum dan cache, lihat :ref:`preferences_ref` dan :"
-"ref:`playback_ref`."
+"Untuk penyetelan kinerja umum dan cache, lihat :ref:`preferences_ref` dan "
+":ref:`playback_ref`."
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy UI "
+#~ "URL` in OpenShot."
+#~ msgstr ""
+#~ "Mulai ComfyUI, lalu atur :guilabel:`Preferences -> Experimental -> Comfy UI "
+#~ "URL` di OpenShot."
+
+# Translated with gpt-4.1-mini
+#~ msgid "Active jobs can be canceled from the same AI workflow flow."
+#~ msgstr "Pekerjaan aktif dapat dibatalkan dari alur kerja AI yang sama."
