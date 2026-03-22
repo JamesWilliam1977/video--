@@ -37,6 +37,7 @@ from classes import info
 from classes.app import get_app
 from classes.logger import log
 from classes.query import File
+from classes.qt_types import font_metrics_horizontal_advance
 from .ai_tools_menu import add_ai_tools_menu
 from .menu import StyledContextMenu
 
@@ -123,7 +124,7 @@ class FilesListProgressDelegate(QStyledItemDelegate):
         if status == "queued":
             label = "Queued"
             fm = QFontMetrics(painter.font())
-            text_w = fm.horizontalAdvance(label)
+            text_w = font_metrics_horizontal_advance(fm, label)
             text_h = fm.height()
             pad_x = 5
             pad_y = 2

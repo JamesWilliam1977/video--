@@ -54,6 +54,7 @@ from classes.logger import log
 from classes.time_parts import secondsToTime
 from classes import info
 from classes.clip_utils import is_single_image_media
+from classes.qt_types import font_metrics_horizontal_advance
 
 from .base import BasePainter
 
@@ -1496,7 +1497,7 @@ class ClipPainter(BasePainter):
             )
             letter = label.strip()[0].upper() if isinstance(label, str) and label.strip() else "?"
 
-            text_width = metrics.horizontalAdvance(letter)
+            text_width = font_metrics_horizontal_advance(metrics, letter)
             badge_width = max(text_width + 6.0, badge_height)
             if badge_width > available:
                 break
@@ -1571,7 +1572,7 @@ class ClipPainter(BasePainter):
         painter.drawText(text_draw_rect, self.w._clip_text_flags, title)
 
         # Restrict hover to actual rendered text, not the entire clip region.
-        text_advance = float(metrics.horizontalAdvance(title))
+        text_advance = float(font_metrics_horizontal_advance(metrics, title))
         hit_width = min(max(1.0, text_advance), max(1.0, text_draw_rect.width()))
         hit_rect = QRectF(text_draw_rect.x(), text_draw_rect.y(), hit_width, max(1.0, text_draw_rect.height()))
         return {"rect": hit_rect, "title": title_raw}

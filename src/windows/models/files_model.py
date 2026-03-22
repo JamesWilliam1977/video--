@@ -48,6 +48,7 @@ from classes.query import File
 from classes.logger import log
 from classes.app import get_app
 from classes.thumbnail import GetThumbPath
+from classes.qt_types import model_index_sibling_at_column
 
 import openshot
 
@@ -449,7 +450,10 @@ class FilesModel(QObject, updates.UpdateInterface):
             if index.isValid():
                 # Select & scroll to selection
                 self.selection_model.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-                get_app().window.filesView.scrollTo(index.siblingAtColumn(0), QAbstractItemView.PositionAtCenter)
+                get_app().window.filesView.scrollTo(
+                    model_index_sibling_at_column(index, 0),
+                    QAbstractItemView.PositionAtCenter,
+                )
                 last_selected_index = index
         if last_selected_index.isValid():
             # Keep current index aligned with the newly selected file so actions
