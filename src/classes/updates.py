@@ -363,6 +363,14 @@ class UpdateManager:
         # Every dispatched action reflects a project mutation; bump the version
         self.data_version += 1
 
+        log.debug(
+            "Dispatch action: type=%s key=%s ignore_history=%s transaction=%s",
+            action.type,
+            action.key,
+            self.ignore_history,
+            action.transaction,
+        )
+
         try:
             # Loop through all listeners
             for listener in self.updateListeners:
