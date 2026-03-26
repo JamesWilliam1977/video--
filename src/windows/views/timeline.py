@@ -4390,6 +4390,8 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         self.update_transition_data(transition_data, only_basic_props=False, ignore_refresh=ignore_refresh)
 
         # Track the added transition
+        if not isinstance(getattr(self, "item_ids", None), list):
+            self.item_ids = []
         self.item_ids.append(transition_data.get('id'))
 
         # Init javascript bounding box (for snapping support)
