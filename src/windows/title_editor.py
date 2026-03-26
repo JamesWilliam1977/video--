@@ -886,6 +886,9 @@ class TitleEditor(QDialog):
                 self.load_svg_template(filename_field=filename_text)
                 self.display_svg()
 
+        except FileNotFoundError as ex:
+            log.info("Failed to launch advanced title editor: %s", ex)
+            QMessageBox.warning(self, error_title, error_msg)
         except Exception as ex:
             log.error("Failed to launch advanced title editor: %s", ex)
             QMessageBox.warning(self, error_title, error_msg)
