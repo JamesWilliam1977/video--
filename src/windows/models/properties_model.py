@@ -1113,15 +1113,23 @@ class PropertiesModel(updates.UpdateInterface):
                 all_tracks = get_app().project.get("layers")
                 display_count = len(all_tracks)
                 display_label = None
+                try:
+                    value_int = int(float(value))
+                except (TypeError, ValueError):
+                    value_int = value
                 for track in reversed(sorted(all_tracks, key=itemgetter('number'))):
-                    if track.get("number") == value:
+                    if track.get("number") == value_int:
                         display_label = track.get("label")
                         break
                     display_count -= 1
                 track_name = display_label or _("Track %s") % QLocale().toString(display_count)
                 col.setText(track_name)
             elif type == "int":
-                col.setText("%d" % value)
+                try:
+                    int_value = int(float(value))
+                    col.setText("%d" % int_value)
+                except (TypeError, ValueError):
+                    col.setText("" if value is None else str(value))
             elif type == "reader":
                 col.setText(self._reader_display_name(c, property[1].get("memo")))
             else:
