@@ -562,6 +562,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         daily_limit = int(max_files * 0.7)
         historical_limit = max_files - daily_limit  # Remaining for previous days
 
+        if not os.path.exists(file_path):
+            return
+
         folder_path, file_name = os.path.split(file_path)
         file_name, file_ext = os.path.splitext(file_name)
 

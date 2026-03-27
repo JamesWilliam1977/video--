@@ -852,7 +852,7 @@ class Worker(QObject):
             self.blender_error_nodata.emit()
             return False
         except FileNotFoundError:
-            log.error("Blender executable not found at path: %s", self.blender_exec_path)
+            log.info("Blender executable not found at path: %s", self.blender_exec_path)
             self.blender_error_nodata.emit()
             return False
         except Exception:

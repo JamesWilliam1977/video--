@@ -4390,6 +4390,8 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         self.update_transition_data(transition_data, only_basic_props=False, ignore_refresh=ignore_refresh)
 
         # Track the added transition
+        if not isinstance(getattr(self, "item_ids", None), list):
+            self.item_ids = []
         self.item_ids.append(transition_data.get('id'))
 
         # Init javascript bounding box (for snapping support)
@@ -4621,6 +4623,10 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
     def dragLeaveEvent(self, event):
         """A drag is in-progress and the user moves mouse outside of timeline"""
+        if ViewClass == TimelineWidget:
+            TimelineWidget.dragLeaveEvent(self, event)
+            return
+
         log.debug('dragLeaveEvent - Undo drop')
 
         # Accept event
@@ -4645,7 +4651,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         # Clear new clip
         self.new_item = False
         self.item_type = None
-        self.item_ids = None
+        self.item_ids = []
 
     def redraw_audio_onTimeout(self):
         """Timer is ready to redraw audio (if any)"""

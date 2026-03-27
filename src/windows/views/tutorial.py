@@ -296,9 +296,6 @@ class TutorialManager(QObject):
             for w in self.win.actionPlay.associatedWidgets():
                 if isinstance(w, QToolButton) and w.isVisible():
                     return w
-            for w in self.win.actionPause.associatedWidgets():
-                if isinstance(w, QToolButton) and w.isVisible():
-                    return w
         elif object_id == "export_button":
             # Find export toolbar button on main window
             for w in reversed(self.win.actionExportVideo.associatedWidgets()):

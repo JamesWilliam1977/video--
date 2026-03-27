@@ -1558,7 +1558,7 @@ class TimelineWidgetBase(QWidget):
         ids = payload.get("ids")
         if not ids:
             return False
-        if not hasattr(self, "item_ids"):
+        if not isinstance(getattr(self, "item_ids", None), list):
             self.item_ids = []
         self.item_ids.clear()
         if track_num is None:
