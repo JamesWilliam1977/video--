@@ -302,24 +302,17 @@ class ClipInteractionMixin:
         return False
 
     def _resize_preview_focus_item(self):
-        """Choose a single item from the resize group for player preview updates."""
+        """Choose the primary grabbed item for player preview updates."""
         items = list(self._active_resize_items())
         if not items:
             return None
-
-        def sort_key(item):
-            data = getattr(item, "data", None)
-            if not isinstance(data, dict):
-                data = {}
-            try:
-                layer = int(data.get("layer", 0) or 0)
-            except (TypeError, ValueError):
-                layer = 0
-            item_id = str(getattr(item, "id", "") or "")
-            is_clip = isinstance(item, Clip)
-            return (1 if is_clip else 0, layer, item_id)
-
-        return max(items, key=sort_key)
+        primary = getattr(self, "_resizing_item", None)
+        if primary is not None:
+            primary_id = getattr(primary, "id", None)
+            for item in items:
+                if item is primary or getattr(item, "id", None) == primary_id:
+                    return item
+        return items[0]
 
     def _transition_uses_static_mask(self, transition_data):
         reader = {}

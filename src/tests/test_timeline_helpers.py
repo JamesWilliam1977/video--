@@ -1798,9 +1798,20 @@ class TimelineHelperTests(unittest.TestCase):
             self.qwidget_clip_module.ClipInteractionMixin._itemResizeMove(helper)
 
         self.assertEqual(sorted(helper._resize_results.keys()), ["A", "B"])
-        self.assertEqual(helper.preview_calls, [("B", 97)])
+        self.assertEqual(helper.preview_calls, [("A", 73)])
         self.assertEqual(helper.transition_preview_calls, [])
         self.assertEqual(helper.update_calls, 1)
+
+    def test_qwidget_resize_preview_focus_item_prefers_primary_resizing_item(self):
+        helper = self.make_qwidget_group_resize_preview_helper()
+        clip = types.SimpleNamespace(id="C1", data={"layer": 2})
+        transition = types.SimpleNamespace(id="T1", data={"layer": 5})
+        helper._resize_items = [transition, clip]
+        helper._resizing_item = clip
+
+        focus = self.qwidget_clip_module.ClipInteractionMixin._resize_preview_focus_item(helper)
+
+        self.assertIs(focus, clip)
 
     def test_qwidget_group_resize_preview_uses_shared_left_edge_for_mixed_items(self):
         helper = self.make_qwidget_shared_resize_math_helper()
