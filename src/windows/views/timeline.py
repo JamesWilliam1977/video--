@@ -731,6 +731,23 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             if "co" in point and "X" in point["co"] and point["co"]["X"] != 1:
                 point["co"]["X"] = round((point["co"]["X"] - 1) * factor) + 1
 
+    def _anchor_transition_endpoint_keyframes(self, transition_data, total_frames):
+        """Keep static transition endpoint keyframes anchored to the clip edges."""
+        if total_frames <= 0 or not isinstance(transition_data, dict):
+            return
+        last_frame = int(total_frames) + 1
+        for prop in ("brightness", "contrast"):
+            keyframe = transition_data.get(prop)
+            points = keyframe.get("Points") if isinstance(keyframe, dict) else None
+            if not isinstance(points, list) or len(points) < 2:
+                continue
+            first = points[0].get("co") if isinstance(points[0], dict) else None
+            last = points[-1].get("co") if isinstance(points[-1], dict) else None
+            if isinstance(first, dict):
+                first["X"] = 1
+            if isinstance(last, dict):
+                last["X"] = last_frame
+
     def _transition_mask_reader(self, transition_data, fallback_data=None):
         """Return reader metadata for a transition payload."""
         if isinstance(transition_data, dict):
@@ -1027,6 +1044,8 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                 for prop in ("brightness", "contrast"):
                     if prop in existing_item.data:
                         self._scale_keyframes(existing_item.data[prop], scale)
+            if uses_static_mask and new_frames:
+                self._anchor_transition_endpoint_keyframes(existing_item.data, new_frames)
         elif old_data and self._transition_reader_changed(existing_item.data, old_data):
             self._set_transition_mask_defaults(existing_item.data, old_data)
 

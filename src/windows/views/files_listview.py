@@ -39,6 +39,7 @@ from classes.logger import log
 from classes.query import File
 from classes.qt_types import font_metrics_horizontal_advance
 from .ai_tools_menu import add_ai_tools_menu
+from .files_thumbnail_overlay import paint_media_overlay
 from .menu import StyledContextMenu
 
 
@@ -71,6 +72,16 @@ class FilesListProgressDelegate(QStyledItemDelegate):
         if not source_index or not source_index.isValid():
             return
 
+        opt = QStyleOptionViewItem(option)
+        self.initStyleOption(opt, index)
+        style = opt.widget.style() if opt.widget else self.view.style()
+        deco_rect = style.subElementRect(QStyle.SE_ItemViewItemDecoration, opt, opt.widget)
+        if not deco_rect.isValid():
+            return
+
+        media_type = source_index.sibling(source_index.row(), 3).data(Qt.DisplayRole)
+        paint_media_overlay(painter, deco_rect, media_type)
+
         file_id = source_index.sibling(source_index.row(), 5).data(Qt.DisplayRole)
         queue = getattr(self.view.win, "generation_queue", None)
         if not file_id or not queue:
@@ -95,13 +106,6 @@ class FilesListProgressDelegate(QStyledItemDelegate):
             # Keep active jobs visible even before numeric progress starts.
             progress = max(progress, 2)
         if progress <= 0:
-            return
-
-        opt = QStyleOptionViewItem(option)
-        self.initStyleOption(opt, index)
-        style = opt.widget.style() if opt.widget else self.view.style()
-        deco_rect = style.subElementRect(QStyle.SE_ItemViewItemDecoration, opt, opt.widget)
-        if not deco_rect.isValid():
             return
 
         bar_height = 3

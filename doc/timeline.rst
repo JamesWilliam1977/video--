@@ -91,6 +91,10 @@ retime, razor, markers, centering, and zoom).
 Tip: If timeline editing feels crowded, zoom in with the timeline slider to make
 small clip adjustments easier.
 
+You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget
+timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth
+zooming.
+
 Tracks, Locking, and Inserting
 ------------------------------
 

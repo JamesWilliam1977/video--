@@ -31,6 +31,7 @@ import openshot
 import socket
 import time
 import shutil
+from datetime import datetime
 from requests import get
 from threading import Thread
 from classes import info
@@ -47,9 +48,32 @@ from socketserver import ThreadingMixIn
 #  http://127.0.0.1:33723/thumbnails/9ATJTBQ71V/1/
 #  http://127.0.0.1:33723/thumbnails/9ATJTBQ71V/1
 REGEX_THUMBNAIL_URL = re.compile(r"/thumbnails/(?P<file_id>.+?)/(?P<file_frame>\d+)/*(?P<only_path>path)?/*(?P<no_cache>no-cache)?")
+THUMBNAIL_CACHE_VERSION = "20260327170000"
+THUMBNAIL_CACHE_VERSION_TS = datetime.strptime(
+    THUMBNAIL_CACHE_VERSION,
+    "%Y%m%d%H%M%S",
+).timestamp()
 
 
-def GetThumbPath(file_id, thumbnail_frame, clear_cache=False):
+def GetThumbDeviceScale():
+    """Return the current Qt device scale used for thumbnail assets."""
+    try:
+        app = get_app()
+        scale = 1.0
+
+        window = getattr(app, "window", None)
+        if window and hasattr(window, "devicePixelRatioF"):
+            scale = float(window.devicePixelRatioF())
+        elif app and hasattr(app, "primaryScreen"):
+            screen = app.primaryScreen()
+            if screen:
+                scale = float(screen.devicePixelRatio())
+    except Exception:
+        scale = 1.0
+    return max(1.0, scale)
+
+
+def GetThumbPath(file_id, thumbnail_frame, clear_cache=False, attempts=1):
     """Get thumbnail path by invoking HTTP thumbnail request"""
 
     # Clear thumb cache (if requested)
@@ -65,12 +89,39 @@ def GetThumbPath(file_id, thumbnail_frame, clear_cache=False):
         file_id,
         thumbnail_frame,
         thumb_cache)
-    r = get(thumb_address)
-    if r.ok:
-        # Update thumbnail path to real one
-        return r.text
-    else:
-        return ''
+    attempts = max(1, int(attempts or 1))
+    for attempt in range(1, attempts + 1):
+        try:
+            r = get(thumb_address)
+        except Exception:
+            log.warning(
+                "Thumbnail path request failed file_id=%s frame=%s attempt=%s/%s",
+                file_id,
+                thumbnail_frame,
+                attempt,
+                attempts,
+                exc_info=1,
+            )
+            r = None
+
+        if r is not None and r.ok and r.text:
+            # Update thumbnail path to real one
+            return r.text
+
+        if r is not None:
+            log.warning(
+                "Thumbnail path request returned empty/miss file_id=%s frame=%s attempt=%s/%s status=%s",
+                file_id,
+                thumbnail_frame,
+                attempt,
+                attempts,
+                getattr(r, "status_code", "n/a"),
+            )
+
+        if attempt < attempts:
+            time.sleep(0.05)
+
+    return ''
 
 
 def GenerateThumbnail(file_path, thumb_path, thumbnail_frame, width, height, mask, overlay):
@@ -87,7 +138,7 @@ def GenerateThumbnail(file_path, thumb_path, thumbnail_frame, width, height, mas
         return
 
     try:
-        scale = float(get_app().devicePixelRatioF())
+        scale = GetThumbDeviceScale()
     except Exception:
         scale = 1.0
 
@@ -95,29 +146,55 @@ def GenerateThumbnail(file_path, thumb_path, thumbnail_frame, width, height, mas
         clip.scale_x.AddPoint(1.0, 1.0 * scale)
         clip.scale_y.AddPoint(1.0, 1.0 * scale)
 
-    # Open reader
-    reader.Open()
-
-    # Get the 'rotate' metadata (if any)
-    rotate = 0.0
-    try:
-        if reader.info.metadata.count("rotate"):
-            rotate_data = reader.info.metadata["rotate"]
-            rotate = float(rotate_data)
-    except ValueError as ex:
-        log.warning("Could not parse rotation value {}: {}".format(rotate_data, ex))
-    except Exception:
-        log.warning("Error reading rotation metadata from {}".format(file_path), exc_info=1)
-
     # Create thumbnail folder (if needed)
     parent_path = os.path.dirname(thumb_path)
     if not os.path.exists(parent_path):
         os.mkdir(parent_path)
 
-    # Save thumbnail image and close readers
-    reader.GetFrame(thumbnail_frame).Thumbnail(thumb_path, round(width * scale), round(height * scale), mask, overlay, "#000", False, "png", 85, rotate)
-    reader.Close()
-    clip.Close()
+    thumb_width = round(width * scale)
+    thumb_height = round(height * scale)
+
+    try:
+        reader.Open()
+
+        # Get the 'rotate' metadata (if any)
+        rotate = 0.0
+        try:
+            if reader.info.metadata.count("rotate"):
+                rotate_data = reader.info.metadata["rotate"]
+                rotate = float(rotate_data)
+        except ValueError as ex:
+            log.warning("Could not parse rotation value {}: {}".format(rotate_data, ex))
+        except Exception:
+            log.warning("Error reading rotation metadata from {}".format(file_path), exc_info=1)
+
+        reader.GetFrame(thumbnail_frame).Thumbnail(
+            thumb_path,
+            thumb_width,
+            thumb_height,
+            mask,
+            overlay,
+            "#000",
+            False,
+            "png",
+            85,
+            rotate,
+            openshot.SCALE_CROP,
+        )
+    finally:
+        try:
+            reader.Close()
+        except Exception:
+            pass
+        clip.Close()
+
+
+def ThumbnailCacheIsStale(thumb_path):
+    """Return True when an on-disk thumbnail predates the current cache format."""
+    try:
+        return os.path.getmtime(thumb_path) < THUMBNAIL_CACHE_VERSION_TS
+    except OSError:
+        return True
 
 
 class httpThumbnailServer(ThreadingMixIn, HTTPServer):
@@ -245,13 +322,8 @@ class httpThumbnailHandler(BaseHTTPRequestHandler):
             # Try with ID and frame # in filename (for backwards compatibility)
             thumb_path = os.path.join(info.THUMBNAIL_PATH, "%s-%s.png" % (file_id, file_frame))
 
-        if not os.path.exists(thumb_path) or no_cache:
+        if not os.path.exists(thumb_path) or no_cache or ThumbnailCacheIsStale(thumb_path):
             # Generate thumbnail (since we can't find it)
-
-            # Determine if video overlay should be applied to thumbnail
-            overlay_path = ""
-            if file.data["media_type"] == "video":
-                overlay_path = os.path.join(info.IMAGES_PATH, "overlay.png")
 
             # Create thumbnail image
             GenerateThumbnail(
@@ -260,7 +332,7 @@ class httpThumbnailHandler(BaseHTTPRequestHandler):
                 file_frame,
                 98, 64,
                 mask_path,
-                overlay_path)
+                "")
 
         # Send message back to client
         if os.path.exists(thumb_path):
