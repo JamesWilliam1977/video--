@@ -1119,6 +1119,101 @@ class TimelineHelperTests(unittest.TestCase):
             )
         )
 
+    def test_anchor_transition_endpoint_keyframes_keeps_first_and_last_frames_aligned(self):
+        helper = self.make_helper()
+        transition_data = {
+            "brightness": {
+                "Points": [
+                    {"co": {"X": 2, "Y": 1.0}},
+                    {"co": {"X": 5, "Y": -1.0}},
+                ]
+            },
+            "contrast": {
+                "Points": [
+                    {"co": {"X": 3, "Y": 3.0}},
+                    {"co": {"X": 6, "Y": 3.0}},
+                ]
+            },
+        }
+
+        self.timeline_module.TimelineView._anchor_transition_endpoint_keyframes(
+            helper,
+            transition_data,
+            4,
+        )
+
+        self.assertEqual(transition_data["brightness"]["Points"][0]["co"]["X"], 1)
+        self.assertEqual(transition_data["brightness"]["Points"][-1]["co"]["X"], 5)
+        self.assertEqual(transition_data["contrast"]["Points"][0]["co"]["X"], 1)
+        self.assertEqual(transition_data["contrast"]["Points"][-1]["co"]["X"], 5)
+
+    def test_update_transition_data_reanchors_static_transition_endpoints_without_frame_count_change(self):
+        helper = types.SimpleNamespace(
+            _transition_uses_static_mask=lambda transition_data, fallback_data=None: self.timeline_module.TimelineView._transition_uses_static_mask(
+                helper, transition_data, fallback_data
+            ),
+            _transition_mask_reader=lambda transition_data, fallback_data=None: self.timeline_module.TimelineView._transition_mask_reader(
+                helper, transition_data, fallback_data
+            ),
+            _transition_reader_changed=lambda transition_data, fallback_data=None: self.timeline_module.TimelineView._transition_reader_changed(
+                helper, transition_data, fallback_data
+            ),
+            _scale_keyframes=lambda keyframe, factor: self.timeline_module.TimelineView._scale_keyframes(
+                helper, keyframe, factor
+            ),
+            _anchor_transition_endpoint_keyframes=lambda transition_data, total_frames: self.timeline_module.TimelineView._anchor_transition_endpoint_keyframes(
+                helper, transition_data, total_frames
+            ),
+            _auto_orient_transition_keyframes=lambda transition_data: None,
+            delete_invalid_timeline_item=lambda _item: False,
+            window=types.SimpleNamespace(
+                IgnoreUpdates=types.SimpleNamespace(emit=lambda *_args, **_kwargs: None)
+            ),
+            show_wait_spinner=False,
+        )
+        old_data = {
+            "id": "T1",
+            "layer": 1,
+            "position": 10.0,
+            "start": 0.0,
+            "end": 2.0,
+            "reader": {"has_single_image": True},
+            "brightness": {
+                "Points": [
+                    {"co": {"X": 1, "Y": 1.0}},
+                    {"co": {"X": 62, "Y": -1.0}},
+                ]
+            },
+            "contrast": {"Points": [{"co": {"X": 1, "Y": 3.0}}, {"co": {"X": 62, "Y": 3.0}}]},
+        }
+        saved = []
+        existing_transition = types.SimpleNamespace(
+            id="T1",
+            data=copy.deepcopy(old_data),
+            save=lambda: saved.append(copy.deepcopy(existing_transition.data)),
+        )
+        transition_json = {
+            "id": "T1",
+            "layer": 1,
+            "position": 10.0,
+            "start": 0.0,
+            "end": (61.0 / 30.0),
+            "reader": {"has_single_image": True},
+        }
+
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(self.timeline_module.Transition, "get", return_value=existing_transition))
+            stack.enter_context(patch.object(self.timeline_module, "get_app", return_value=types.SimpleNamespace(
+                project=types.SimpleNamespace(get=lambda key: {"fps": {"num": 30, "den": 1}}[key]),
+                updates=types.SimpleNamespace(transaction_id=None),
+            )))
+            self.timeline_module.TimelineView.update_transition_data(helper, transition_json, only_basic_props=True)
+
+        self.assertTrue(saved)
+        saved_data = saved[-1]
+        self.assertEqual(saved_data["brightness"]["Points"][0]["co"]["X"], 1)
+        self.assertEqual(saved_data["brightness"]["Points"][-1]["co"]["X"], 62)
+
     def test_find_missing_transition_details_returns_overlap(self):
         clip_data = {"id": "B", "layer": 1, "position": 4.0, "start": 0.0, "end": 6.0}
         existing_clip = types.SimpleNamespace(data={"id": "A", "position": 0.0, "start": 0.0, "end": 5.0})
@@ -1773,9 +1868,9 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertEqual([entry["id"] for entry in helper.clip_updates], ["A", "B"])
         self.assertEqual(helper.clip_updates[0]["override_keys"], ["A", "B"])
         self.assertEqual(helper.clip_updates[1]["override_keys"], ["A", "B"])
-        self.assertFalse(helper._preserve_overrides_once)
-        self.assertEqual(helper._pending_clip_overrides, {})
-        self.assertEqual(helper.changed_calls, 1)
+        self.assertTrue(helper._preserve_overrides_once)
+        self.assertEqual(helper._pending_clip_overrides, {"A": {"position": 1.0}, "B": {"position": 4.0}})
+        self.assertEqual(helper.changed_calls, 0)
 
     def test_qwidget_finish_item_resize_batches_multi_retime_commits(self):
         helper = self.make_qwidget_finish_resize_helper()
@@ -1830,7 +1925,7 @@ class TimelineHelperTests(unittest.TestCase):
             helper.waveform_refresh_calls,
             [(["A", "B"], helper.clip_updates[0]["kwargs"]["transaction_id"])],
         )
-        self.assertEqual(helper.changed_calls, 1)
+        self.assertEqual(helper.changed_calls, 0)
 
     def test_qwidget_finish_item_resize_preserves_shared_right_edge_after_snapping(self):
         helper = self.make_qwidget_finish_resize_helper()

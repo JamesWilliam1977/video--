@@ -807,6 +807,10 @@ class TimelineWidgetBase(QWidget):
         self.transition_painter.clear_cache()
         self.geometry.mark_dirty()
 
+        # Some trim/retime commits intentionally leave preview overrides alive
+        # for exactly one backend-driven refresh. This avoids rebuilding
+        # keyframes/geometry against committed data while stale preview state is
+        # still being torn down.
         preserve_overrides = getattr(self, "_preserve_overrides_once", False)
         if preserve_overrides:
             self._preserve_overrides_once = False
