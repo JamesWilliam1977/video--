@@ -63,6 +63,9 @@ Use this quick setup path before trying any AI workflow in OpenShot:
 4. Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set :guilabel:`ComfyUI URL`.
 5. Click :guilabel:`Check` to confirm OpenShot can reach the server.
 
+For a full step-by-step server setup guide, see the OpenShot wiki:
+`ComfyUI: Advanced AI Setup Guide <https://github.com/OpenShot/openshot-qt/wiki/ComfyUI:-Advanced-AI-Setup-Guide>`_.
+
 For full ComfyUI installation details, see the official repository:
 `ComfyUI on GitHub <https://github.com/comfyanonymous/ComfyUI>`_.
 
