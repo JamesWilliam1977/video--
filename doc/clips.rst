@@ -93,6 +93,9 @@ Here is a list of all methods for cutting and/or trimming clips in OpenShot:
 
 Keep in mind that the above cutting methods also have :ref:`keyboard_shortcut_ref`, to save even more time.
 
+If multiple selected clips and/or transitions share the same left edge or right
+edge, you can drag that shared edge once to trim them together.
+
 Selections
 ----------
 Selecting clips and transitions on the timeline is an essential part of editing in OpenShot. Multiple selection methods
@@ -255,6 +258,9 @@ Timing Tool
 Another way to change a clip's speed is with the :guilabel:`Timing` tool on the timeline toolbar. Enable the clock
 icon and drag a clip's edges. Lengthening the clip slows playback, while shotening it speeds the clip up.
 All keyframes on the clip and its effects are scaled so their relative positions remain intact.
+
+If you select multiple clips and/or transitions that share the same left edge or
+right edge, you can retime that shared edge together in one drag.
 
 Volume
 """"""
