@@ -1102,7 +1102,7 @@ class TimelineHelperTests(unittest.TestCase):
         )
         frames = []
 
-        def fake_get_thumbnail_pixmap(_self, clip_key, file_id, frame, rect, generation, allow_request=True):
+        def fake_get_thumbnail_pixmap(_self, _clip, clip_key, file_id, frame, rect, generation, allow_request=True):
             frames.append(frame)
             return None
 
@@ -1151,7 +1151,7 @@ class TimelineHelperTests(unittest.TestCase):
         painter.w._press_hit = "clip-edge"
         painter.w.clip_has_pending_override = lambda candidate: getattr(candidate, "id", None) == clip.id
 
-        def fake_get_thumbnail_pixmap(_self, clip_key, file_id, frame, rect, generation, allow_request=True):
+        def fake_get_thumbnail_pixmap(_self, _clip, clip_key, file_id, frame, rect, generation, allow_request=True):
             frames.append(frame)
             return None
 
@@ -2907,7 +2907,7 @@ class TimelineHelperTests(unittest.TestCase):
         )
         frames = []
 
-        def fake_get_thumbnail_pixmap(_self, clip_key, file_id, frame, rect, generation, allow_request=True):
+        def fake_get_thumbnail_pixmap(_self, _clip, clip_key, file_id, frame, rect, generation, allow_request=True):
             frames.append(frame)
             return None
 
@@ -3065,6 +3065,65 @@ class TimelineHelperTests(unittest.TestCase):
         )
 
         self.assertIn("C1", painter._retime_preview_cache)
+
+    def test_clear_render_cache_preserves_loaded_thumbnail_pixmaps(self):
+        painter = self.make_clip_painter()
+        thumb = self.clip_paint_module.QPixmap(48, 36)
+        thumb.fill(QColor("blue"))
+        painter.thumb_cache[("C1", 25)] = thumb
+        painter.clip_cache[("C1", 72, 40, None, 1.0, 0.0, 3.0, True, True)] = ("cached", 0.0, [], False, None)
+        painter._retime_preview_cache["C1"] = {"pix": thumb, "blur": 0.0}
+
+        painter.clear_render_cache()
+
+        self.assertEqual(painter.clip_cache, {})
+        self.assertIn(("C1", 25), painter.thumb_cache)
+        self.assertEqual(painter._retime_preview_cache, {})
+
+    def test_existing_thumb_path_reuses_rounded_cached_thumbnail(self):
+        painter = self.make_clip_painter()
+        rounded_path = os.path.join("/tmp/thumbs", "F1", "19.png")
+
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(info, "THUMBNAIL_PATH", "/tmp/thumbs"))
+            stack.enter_context(
+                patch.object(
+                    self.clip_paint_module.os.path,
+                    "exists",
+                    side_effect=lambda path: path == rounded_path,
+                )
+            )
+            path = painter._existing_thumb_path("F1", 20, fps=24.0)
+
+        self.assertEqual(path, rounded_path)
+
+    def test_qwidget_changed_preserves_loaded_thumbnail_pixmaps(self):
+        helper = types.SimpleNamespace()
+        helper.fps_float = 24.0
+        helper.win = types.SimpleNamespace(_trim_refresh_pending=False)
+        thumb = self.clip_paint_module.QPixmap(48, 36)
+        thumb.fill(QColor("green"))
+        helper.clip_painter = self.make_clip_painter()
+        helper.clip_painter.thumb_cache[("C1", 1)] = thumb
+        helper.transition_painter = types.SimpleNamespace(clear_cache=lambda: None)
+        helper.geometry = types.SimpleNamespace(mark_dirty=lambda: None, ensure=lambda: None, track_list=[])
+        helper._dragging_panel_keyframes = False
+        helper._dragging_keyframe = False
+        helper._update_track_panel_properties = lambda: None
+        helper._keyframes_dirty = False
+        helper._snap_keyframe_seconds = []
+        helper._pending_clip_overrides = {}
+        helper._pending_transition_overrides = {}
+        helper._preserve_overrides_once = False
+        helper._preserve_overrides_during_batch = False
+        helper._suspend_changed_update = 1
+        helper.update = lambda: None
+
+        app = types.SimpleNamespace(project=types.SimpleNamespace(get=lambda key: {"num": 24, "den": 1} if key == "fps" else None))
+        with patch.object(self.qwidget_base_module, "get_app", return_value=app):
+            self.qwidget_base_module.TimelineWidgetBase.changed(helper, None)
+
+        self.assertIn(("C1", 1), helper.clip_painter.thumb_cache)
 
     def test_compute_clip_resize_timing_left_edge_allows_growth_past_timeline_zero(self):
         helper = self.make_qwidget_clip_helper()

@@ -51,6 +51,7 @@ import openshot
 from classes.app import get_app
 from classes.keyframe_scaler import KeyframeScaler
 from classes.logger import log
+from classes.thumbnail import RoundFrameToThumbnailGrid
 from classes.time_parts import secondsToTime
 from classes import info
 from classes.clip_utils import is_single_image_media
@@ -246,6 +247,12 @@ class ClipPainter(BasePainter):
         self._last_thumb_request_time.clear()
         self._slot_fallback_cache.clear()
         self._retime_preview_cache.clear()
+
+    def clear_render_cache(self, *, drop_preview=True):
+        """Clear only cached clip renders while keeping loaded thumbnail pixmaps."""
+        self.clip_cache.clear()
+        if drop_preview:
+            self._retime_preview_cache.clear()
 
     def invalidate_clip_thumbnails(
         self,
@@ -531,7 +538,7 @@ class ClipPainter(BasePainter):
             end = start
         return start, max(0.0, end - start)
 
-    def _existing_thumb_path(self, file_id, frame):
+    def _existing_thumb_path(self, file_id, frame, fps=0.0):
         subdir = os.path.join(info.THUMBNAIL_PATH, file_id)
         candidates = [
             os.path.join(subdir, f"{frame}.png"),
@@ -544,6 +551,20 @@ class ClipPainter(BasePainter):
         for path in candidates:
             if path and os.path.exists(path):
                 return path
+
+        fps = float(fps or 0.0)
+        if fps > 0.0:
+            rounded_frame = RoundFrameToThumbnailGrid(frame, fps)
+            if rounded_frame != frame:
+                rounded_path = os.path.join(subdir, f"{rounded_frame}.png")
+                if os.path.exists(rounded_path):
+                    return rounded_path
+                if rounded_frame == 1:
+                    legacy_path = os.path.join(info.THUMBNAIL_PATH, f"{file_id}.png")
+                else:
+                    legacy_path = os.path.join(info.THUMBNAIL_PATH, f"{file_id}-{rounded_frame}.png")
+                if os.path.exists(legacy_path):
+                    return legacy_path
         return ""
 
     def _frame_for_offset(self, offset, fps):
@@ -1365,6 +1386,7 @@ class ClipPainter(BasePainter):
 
                 # Always queue/load for all slots in the clip (since clip is visible during paint)
                 pix = self._get_thumbnail_pixmap(
+                    clip,
                     clip_key,
                     file_id,
                     frame,
@@ -1386,7 +1408,7 @@ class ClipPainter(BasePainter):
 
         return pending
 
-    def _get_thumbnail_pixmap(self, clip_key, file_id, frame, rect, generation, *, allow_request=True):
+    def _get_thumbnail_pixmap(self, clip, clip_key, file_id, frame, rect, generation, *, allow_request=True):
         key = (clip_key, frame)
 
         # 1. If we already have it cached → return it immediately
@@ -1403,7 +1425,7 @@ class ClipPainter(BasePainter):
             return None
 
         # 3. Load existing on-disk thumbnail if available
-        path = self._existing_thumb_path(file_id, frame)
+        path = self._existing_thumb_path(file_id, frame, self._clip_media_fps(clip))
         if path:
             pix = QPixmap(path)
             if not pix.isNull():
