@@ -42,7 +42,7 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QApplication
 
 from classes.project_data import ProjectDataStore
-from classes.proxy_service import ProxyService
+from classes.proxy_service import ProxyService, dialog_preview_reader_data
 from classes.updates import UpdateManager
 from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
 
@@ -133,6 +133,43 @@ class ProxyServiceTests(unittest.TestCase):
      def tearDown(self):
          self.service.shutdown()
          ensure_app_state(self.app)
+
+     def test_dialog_preview_reader_data_prefers_valid_proxy_reader(self):
+         file_obj = types.SimpleNamespace(
+             id="F1",
+             data={
+                 "id": "F1",
+                 "path": "/media/source.mp4",
+                 "proxy_reader": {"path": "/optimized/F1.mp4", "width": 640},
+             },
+         )
+
+         with patch("classes.proxy_service.absolute_media_path", side_effect=lambda path: path), \
+              patch("classes.proxy_service.os.path.exists", side_effect=lambda path: path == "/optimized/F1.mp4"):
+             reader_data = dialog_preview_reader_data(file_obj)
+
+         self.assertEqual(reader_data["path"], "/optimized/F1.mp4")
+         self.assertEqual(reader_data["width"], 640)
+         self.assertEqual(reader_data["id"], "F1")
+
+     def test_dialog_preview_reader_data_falls_back_when_proxy_missing(self):
+         file_obj = types.SimpleNamespace(
+             id="F1",
+             data={
+                 "id": "F1",
+                 "path": "/media/source.mp4",
+                 "width": 1920,
+                 "proxy_reader": {"path": "/optimized/F1.mp4", "width": 640},
+             },
+         )
+
+         with patch("classes.proxy_service.absolute_media_path", side_effect=lambda path: path), \
+              patch("classes.proxy_service.os.path.exists", return_value=False):
+             reader_data = dialog_preview_reader_data(file_obj)
+
+         self.assertEqual(reader_data["path"], "/media/source.mp4")
+         self.assertEqual(reader_data["width"], 1920)
+         self.assertEqual(reader_data["id"], "F1")
 
      def test_rewrite_json_for_preview_replaces_clip_and_effect_readers_only(self):
          payload = {

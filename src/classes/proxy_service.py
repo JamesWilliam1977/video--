@@ -51,6 +51,32 @@ from classes.thumbnail import (
 from classes.updates import UpdateAction
 
 
+def dialog_preview_reader_data(file_obj, prefer_proxy=True):
+     """Return reader payload for dialog previews, optionally preferring a valid proxy reader."""
+     data = getattr(file_obj, "data", {}) if file_obj else {}
+     if not isinstance(data, dict):
+         data = {}
+
+     file_id = str(getattr(file_obj, "id", "") or data.get("id") or "")
+     proxy_reader = data.get("proxy_reader")
+     if prefer_proxy and isinstance(proxy_reader, dict):
+         proxy_path = absolute_media_path(proxy_reader.get("path"))
+         if proxy_path and os.path.exists(proxy_path):
+             resolved = copy.deepcopy(proxy_reader)
+             resolved["path"] = proxy_path
+             if file_id:
+                 resolved["id"] = file_id
+             return resolved
+
+     resolved = copy.deepcopy(data)
+     source_path = absolute_media_path(resolved.get("path"))
+     if source_path:
+         resolved["path"] = source_path
+     if file_id:
+         resolved["id"] = file_id
+     return resolved
+
+
 class ProxyService(QObject):
      """Encapsulates optimized-preview proxy generation, linking, and runtime rewrites."""
 
