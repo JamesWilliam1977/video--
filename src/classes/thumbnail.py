@@ -53,6 +53,7 @@ THUMBNAIL_CACHE_VERSION_TS = datetime.strptime(
     THUMBNAIL_CACHE_VERSION,
     "%Y%m%d%H%M%S",
 ).timestamp()
+THUMBNAIL_PREWARM_FPS = 4
 
 
 def GetThumbDeviceScale():
@@ -71,6 +72,89 @@ def GetThumbDeviceScale():
     except Exception:
         scale = 1.0
     return max(1.0, scale)
+
+
+def ThumbnailFrameStepForFps(fps, target_fps=THUMBNAIL_PREWARM_FPS):
+    """Return the coarse thumbnail frame step for a source FPS."""
+    fps = float(fps or 0.0)
+    target_fps = max(1.0, float(target_fps or 1.0))
+    if fps <= 0.0:
+        return 1
+    return max(1, int(round(fps / target_fps)))
+
+
+def RoundFrameToThumbnailGrid(frame_number, fps, target_fps=THUMBNAIL_PREWARM_FPS):
+    """Round a requested frame to the nearest coarse thumbnail grid frame."""
+    frame_number = max(1, int(frame_number or 1))
+    step = ThumbnailFrameStepForFps(fps, target_fps=target_fps)
+    return max(1, int(round((frame_number - 1) / float(step))) * step + 1)
+
+
+def ThumbnailPathForFrame(file_id, thumbnail_frame):
+    """Return the canonical thumbnail path for a file/frame pair."""
+    return os.path.join(info.THUMBNAIL_PATH, str(file_id), "{}.png".format(int(thumbnail_frame or 1)))
+
+
+def MigrateThumbnailLayout(thumbnail_root):
+    """Move flat thumbnail files into per-file subfolders."""
+    thumbnail_root = str(thumbnail_root or "")
+    if not thumbnail_root or not os.path.isdir(thumbnail_root):
+        return 0
+
+    migrated = 0
+    for entry in os.listdir(thumbnail_root):
+        source_path = os.path.join(thumbnail_root, entry)
+        if not os.path.isfile(source_path):
+            continue
+        if not entry.lower().endswith(".png"):
+            continue
+
+        stem = entry[:-4]
+        file_id = stem
+        frame = "1"
+        if "-" in stem:
+            file_id, frame = stem.split("-", 1)
+            if not frame.isdigit():
+                continue
+
+        target_dir = os.path.join(thumbnail_root, file_id)
+        target_path = os.path.join(target_dir, "{}.png".format(frame))
+        os.makedirs(target_dir, exist_ok=True)
+        if os.path.abspath(source_path) == os.path.abspath(target_path):
+            continue
+        if not os.path.exists(target_path):
+            shutil.move(source_path, target_path)
+        else:
+            os.remove(source_path)
+        migrated += 1
+    return migrated
+
+
+def GenerateThumbnailFromFrame(frame, thumb_path, width, height, mask, overlay, rotate=0.0):
+    """Create thumbnail image from an existing decoded frame."""
+    try:
+        scale = GetThumbDeviceScale()
+    except Exception:
+        scale = 1.0
+
+    parent_path = os.path.dirname(thumb_path)
+    os.makedirs(parent_path, exist_ok=True)
+
+    thumb_width = round(width * scale)
+    thumb_height = round(height * scale)
+    frame.Thumbnail(
+        thumb_path,
+        thumb_width,
+        thumb_height,
+        mask,
+        overlay,
+        "#000",
+        False,
+        "png",
+        85,
+        float(rotate or 0.0),
+        openshot.SCALE_CROP,
+    )
 
 
 def GetThumbPath(file_id, thumbnail_frame, clear_cache=False, attempts=1):
@@ -314,13 +398,24 @@ class httpThumbnailHandler(BaseHTTPRequestHandler):
         self.end_headers()
 
         # Locate thumbnail
-        thumb_path = os.path.join(info.THUMBNAIL_PATH, file_id, "%s.png" % file_frame)
+        thumb_path = ThumbnailPathForFrame(file_id, file_frame)
         if not os.path.exists(thumb_path) and file_frame == 1:
             # Try ID with no frame # (for backwards compatibility)
             thumb_path = os.path.join(info.THUMBNAIL_PATH, "%s.png" % file_id)
         if not os.path.exists(thumb_path) and file_frame != 1:
             # Try with ID and frame # in filename (for backwards compatibility)
             thumb_path = os.path.join(info.THUMBNAIL_PATH, "%s-%s.png" % (file_id, file_frame))
+
+        if not os.path.exists(thumb_path) and not no_cache:
+            fps_data = file.data.get("fps", {}) if isinstance(getattr(file, "data", None), dict) else {}
+            fps_num = float(fps_data.get("num", 0.0) or 0.0)
+            fps_den = float(fps_data.get("den", 1.0) or 1.0)
+            fps = (fps_num / fps_den) if fps_num > 0.0 and fps_den > 0.0 else 0.0
+            rounded_frame = RoundFrameToThumbnailGrid(file_frame, fps)
+            if rounded_frame != file_frame:
+                rounded_thumb_path = ThumbnailPathForFrame(file_id, rounded_frame)
+                if os.path.exists(rounded_thumb_path) and not ThumbnailCacheIsStale(rounded_thumb_path):
+                    thumb_path = rounded_thumb_path
 
         if not os.path.exists(thumb_path) or no_cache or ThumbnailCacheIsStale(thumb_path):
             # Generate thumbnail (since we can't find it)

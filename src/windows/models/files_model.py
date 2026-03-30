@@ -175,6 +175,21 @@ class FilesModel(QObject, updates.UpdateInterface):
         thumb_source, name, media_type = self._thumbnail_source_for_file(file)
         return QIcon(thumb_source), name, media_type
 
+    def _tooltip_for_file(self, file, name):
+        tooltip = str(name or "")
+        app = get_app()
+        window = getattr(app, "window", None) if app else None
+        proxy_service = getattr(window, "proxy_service", None) if window else None
+        if not proxy_service or not file:
+            return tooltip
+
+        state = proxy_service.get_proxy_state(file)
+        if state == "ready":
+            return "{} {}".format(tooltip, app._tr("(Optimized)"))
+        if state == "missing":
+            return "{} {}".format(tooltip, app._tr("(Optimized)"))
+        return tooltip
+
     # This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface)
     def changed(self, action):
 
@@ -184,10 +199,10 @@ class FilesModel(QObject, updates.UpdateInterface):
             if action.type == "insert":
                 # Don't clear the existing items if only inserting new things
                 self.update_model(clear=False)
-            elif action.type == "delete" and action.key[0].lower() == "files":
-                # Don't clear the existing items if only deleting things
+            elif action.type == "delete" and action.key[0].lower() == "files" and len(action.key) == 2:
+                # Delete a top-level file row only when the file object itself was deleted.
                 self.update_model(clear=False, delete_file_id=action.key[1].get('id', ''))
-            elif action.type == "update" and action.key[0].lower() == "files":
+            elif action.type in ("update", "delete") and action.key[0].lower() == "files":
                 # Update a single file (if found)
                 self.update_model(clear=False, update_file_id=action.key[1].get('id', ''))
             else:
@@ -235,6 +250,9 @@ class FilesModel(QObject, updates.UpdateInterface):
                 row_num = id_index.row()
                 if f.data.get("tags") != self.model.item(row_num, 2).text():
                     self.model.item(row_num, 2).setText(f.data.get("tags"))
+                path, filename = os.path.split(f.data["path"])
+                name = f.data.get("name", filename)
+                self.model.item(row_num, 0).setToolTip(self._tooltip_for_file(f, name))
 
         # Clear all items
         if clear:
@@ -267,7 +285,7 @@ class FilesModel(QObject, updates.UpdateInterface):
 
             # Append thumbnail
             col = QStandardItem(thumb_icon, name)
-            col.setToolTip(name)
+            col.setToolTip(self._tooltip_for_file(file, name))
             col.setFlags(flags)
             col.setAccessibleText(name)
             row.append(col)
@@ -613,7 +631,7 @@ class FilesModel(QObject, updates.UpdateInterface):
             item = m.itemFromIndex(thumb_index)
             item.setIcon(thumb_icon)
             item.setText(name)
-            item.setToolTip(name)
+            item.setToolTip(self._tooltip_for_file(file, name))
             item.setAccessibleText(name)
 
             # Update display name
@@ -740,8 +758,9 @@ class FilesModel(QObject, updates.UpdateInterface):
         finally:
             self._syncing_selection = False
 
-    def __init__(self, generation_queue=None, *args):
+    def __init__(self, generation_queue=None, proxy_service=None, *args):
         self.generation_queue = generation_queue
+        self.proxy_service = proxy_service
 
         # Add self as listener to project data updates
         # (undo/redo, as well as normal actions handled within this class all update the model)
@@ -790,6 +809,9 @@ class FilesModel(QObject, updates.UpdateInterface):
             self.generation_queue.job_updated.connect(self._on_generation_job_updated)
             self.generation_queue.job_finished.connect(self._on_generation_job_finished)
             self.generation_queue.job_removed.connect(self._on_generation_job_removed)
+        if self.proxy_service:
+            self.proxy_service.file_job_changed.connect(self._refresh_file_generation_display)
+            self.proxy_service.queue_changed.connect(self._refresh_all_generation_displays)
 
         # Call init for superclass QObject
         super(QObject, FilesModel).__init__(self, *args)
@@ -1003,6 +1025,11 @@ class FilesModel(QObject, updates.UpdateInterface):
         if not id_index.isValid():
             return
         row = id_index.row()
+        file_obj = File.get(id=file_id)
+        if file_obj:
+            path, filename = os.path.split(file_obj.data["path"])
+            name = file_obj.data.get("name", filename)
+            self.model.item(row, 0).setToolTip(self._tooltip_for_file(file_obj, name))
         left = self.model.index(row, 0)
         right = self.model.index(row, 0)
         self.model.dataChanged.emit(left, right, [Qt.DisplayRole, Qt.AccessibleTextRole])

@@ -48,7 +48,7 @@ from PyQt5.QtGui import QIcon, QCursor, QKeySequence, QTextCursor
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QDockWidget,
     QMessageBox, QDialog, QFileDialog, QInputDialog,
-    QAction, QActionGroup, QSizePolicy,
+    QAction, QActionGroup, QSizePolicy, QMenu,
     QStatusBar, QToolBar, QToolButton,
     QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar, QAbstractButton,
     QPlainTextEdit, QSpinBox, QDoubleSpinBox
@@ -66,6 +66,7 @@ from classes.path_utils import comparable_local_path, native_display_path, norma
 from classes.query import File, Clip, Transition, Marker, Track, Effect
 from classes.generation_queue import GenerationQueueManager
 from classes.generation_service import GenerationService
+from classes.proxy_service import ProxyService
 from classes.thumbnail import httpThumbnailServerThread, httpThumbnailException
 from classes.time_parts import secondsToTimecode
 from classes.timeline import TimelineSync
@@ -75,6 +76,7 @@ from themes.manager import ThemeName
 from windows.models.effects_model import EffectsModel
 from windows.models.emoji_model import EmojisModel
 from windows.models.files_model import FilesModel
+from windows.views.optimized_preview_menu import optimized_preview_icon, populate_optimized_preview_menu
 from windows.models.transition_model import TransitionsModel
 from windows.preview_thread import PreviewParent
 from windows.video_widget import VideoWidget
@@ -226,6 +228,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if getattr(self, "generation_service", None):
             self.generation_service.shutdown()
             self.generation_service.cleanup_temp_files()
+        if getattr(self, "proxy_service", None):
+            self.proxy_service.shutdown()
 
         # Stop ZMQ polling thread (if any)
         if app.logger_libopenshot:
@@ -721,6 +725,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 info.get_default_path("TITLE_PATH"),
                 info.get_default_path("CLIPBOARD_PATH"),
                 info.get_default_path("COMFYUI_OUTPUT_PATH"),
+                info.get_default_path("PROXY_PATH"),
                 ]:
             try:
                 if os.path.exists(temp_dir):
@@ -2090,6 +2095,48 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
     def _on_generation_job_finished(self, job_id, status):
         self.generation_service.on_generation_job_finished(job_id, status)
+
+    def _optimized_preview_files_for_action(self):
+        files = []
+        for file_obj in (self.selected_files() or []):
+            if not file_obj:
+                continue
+            data = getattr(file_obj, "data", {}) or {}
+            if str(data.get("media_type", "") or "").strip().lower() == "video":
+                files.append(file_obj)
+        if files:
+            return files
+
+        target_ids = [str(file_id or "") for file_id in getattr(self, "_optimized_preview_target_file_ids", []) if str(file_id or "")]
+        if not target_ids:
+            return []
+        return [
+            file_obj for file_obj in (File.get(id=file_id) for file_id in target_ids)
+            if file_obj and str((getattr(file_obj, "data", {}) or {}).get("media_type", "") or "").strip().lower() == "video"
+        ]
+
+    def actionOptimizedPreviewCreate_trigger(self, checked=True):
+        files = self._optimized_preview_files_for_action()
+        log.debug("actionOptimizedPreviewCreate_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.create_for_files(files)
+
+    def actionOptimizedPreviewUseExisting_trigger(self, checked=True):
+        files = self._optimized_preview_files_for_action()
+        log.debug("actionOptimizedPreviewUseExisting_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.use_existing_for_files(files)
+
+    def actionOptimizedPreviewRemove_trigger(self, checked=True):
+        files = self._optimized_preview_files_for_action()
+        log.debug("actionOptimizedPreviewRemove_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.remove_for_files(files)
+
+    def actionOptimizedPreviewCancel_trigger(self, checked=True):
+        files = self._optimized_preview_files_for_action()
+        log.debug("actionOptimizedPreviewCancel_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.cancel_for_files(files)
+
+    def _refresh_optimized_preview_action_states(self):
+        populate_optimized_preview_menu(self, self.optimizedPreviewMenu)
 
     def actionRemove_from_Project_trigger(self):
         log.debug("actionRemove_from_Project_trigger")
@@ -3535,7 +3582,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         s = get_app().get_settings()
 
         # Setup files tree and list view (both share a model)
-        self.files_model = FilesModel(generation_queue=self.generation_queue)
+        self.files_model = FilesModel(generation_queue=self.generation_queue, proxy_service=self.proxy_service)
         self.filesTreeView = FilesTreeView(self.files_model)
         self.filesListView = FilesListView(self.files_model)
         self.files_model.update_model()
@@ -3609,6 +3656,38 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.actionCancelGenerationJob = QAction("Cancel Job", self)
         self.actionCancelGenerationJob.setObjectName("actionCancelGenerationJob")
         self.actionCancelGenerationJob.triggered.connect(self.actionCancelGenerationJob_trigger)
+
+    def _init_proxy_actions(self):
+        self.actionOptimizedPreviewCreate = QAction("Optimize", self)
+        self.actionOptimizedPreviewCreate.setObjectName("actionOptimizedPreviewCreate")
+        self.actionOptimizedPreviewCreate.triggered.connect(self.actionOptimizedPreviewCreate_trigger)
+
+        self.actionOptimizedPreviewUseExisting = QAction("Locate Existing...", self)
+        self.actionOptimizedPreviewUseExisting.setObjectName("actionOptimizedPreviewUseExisting")
+        self.actionOptimizedPreviewUseExisting.triggered.connect(self.actionOptimizedPreviewUseExisting_trigger)
+
+        self.actionOptimizedPreviewRemove = QAction("Remove", self)
+        self.actionOptimizedPreviewRemove.setObjectName("actionOptimizedPreviewRemove")
+        self.actionOptimizedPreviewRemove.triggered.connect(self.actionOptimizedPreviewRemove_trigger)
+
+        self.actionOptimizedPreviewCancel = QAction("Cancel Job", self)
+        self.actionOptimizedPreviewCancel.setObjectName("actionOptimizedPreviewCancel")
+        self.actionOptimizedPreviewCancel.triggered.connect(self.actionOptimizedPreviewCancel_trigger)
+
+        _ = get_app()._tr
+        preview_menu = getattr(self, "menuPreview", None)
+        if preview_menu is None:
+            preview_menu = QMenu(_("Preview"), self)
+            preview_menu.setObjectName("menuPreview")
+            if hasattr(self, "menuHelp") and self.menuHelp:
+                self.menubar.insertMenu(self.menuHelp.menuAction(), preview_menu)
+            else:
+                self.menubar.addMenu(preview_menu)
+            self.menuPreview = preview_menu
+
+        self.optimizedPreviewMenu = preview_menu.addMenu(_("Optimize Preview"))
+        self.optimizedPreviewMenu.setIcon(optimized_preview_icon("ready"))
+        self.optimizedPreviewMenu.aboutToShow.connect(self._refresh_optimized_preview_action_states)
 
     def actionInsertKeyframe(self):
         log.debug("actionInsertKeyframe")
@@ -4211,9 +4290,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Create dock toolbars, set initial state of items, etc
         self.setup_toolbars()
         self.generation_service = GenerationService(self)
+        self.proxy_service = ProxyService(self)
         self.generation_queue = GenerationQueueManager(self)
         self.generation_queue.job_finished.connect(self._on_generation_job_finished)
         self._init_generation_actions()
+        self._init_proxy_actions()
         self.refresh_comfy_availability_async()
 
         # Add window as watcher to receive undo/redo status updates
@@ -4396,16 +4477,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 1, int(str(s.get("ff_threads_number"))))
         else:
             lib_settings.FF_THREADS = 8
-
-        # Set use max width decode hw environment variable
-        if s.get("decode_hw_max_width"):
-            lib_settings.DE_LIMIT_WIDTH_MAX = int(
-                str(s.get("decode_hw_max_width")))
-
-        # Set use max height decode hw environment variable
-        if s.get("decode_hw_max_height"):
-            lib_settings.DE_LIMIT_HEIGHT_MAX = int(
-                str(s.get("decode_hw_max_height")))
 
         # Create lock file
         self.create_lock_file()

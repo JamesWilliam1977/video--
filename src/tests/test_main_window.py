@@ -205,6 +205,30 @@ class MainWindowTests(unittest.TestCase):
             self.assertEqual(saved.calls, [(project_path,)])
             self.assertEqual(failed.calls, [])
 
+    def test_optimized_preview_actions_use_cached_menu_targets_when_selection_is_empty(self):
+        proxy_calls = []
+        file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "media_type": "video"})
+        fake_window = types.SimpleNamespace(
+            selected_files=lambda: [],
+            _optimized_preview_target_file_ids=["F1"],
+            proxy_service=types.SimpleNamespace(
+                remove_for_files=lambda files: proxy_calls.append(("remove", [getattr(f, "id", None) for f in files])),
+                create_for_files=lambda files: proxy_calls.append(("create", [getattr(f, "id", None) for f in files])),
+                use_existing_for_files=lambda files: proxy_calls.append(("locate", [getattr(f, "id", None) for f in files])),
+                cancel_for_files=lambda files: proxy_calls.append(("cancel", [getattr(f, "id", None) for f in files])),
+            ),
+        )
+        fake_window._optimized_preview_files_for_action = lambda: self.main_window_module.MainWindow._optimized_preview_files_for_action(fake_window)
+
+        with patch.object(self.main_window_module.File, "get", return_value=file_obj):
+            files = self.main_window_module.MainWindow._optimized_preview_files_for_action(fake_window)
+            self.assertEqual([f.id for f in files], ["F1"])
+
+            self.main_window_module.MainWindow.actionOptimizedPreviewRemove_trigger(fake_window)
+            self.main_window_module.MainWindow.actionOptimizedPreviewCreate_trigger(fake_window)
+
+        self.assertEqual(proxy_calls, [("remove", ["F1"]), ("create", ["F1"])])
+
     def test_open_project_missing_file_removes_recent_project_and_seeks_start(self):
         status_messages = []
         removed = []

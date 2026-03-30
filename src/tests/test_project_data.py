@@ -183,6 +183,57 @@ class ProjectDataTests(unittest.TestCase):
         self.assertTrue(clear_waveform_action.enabled)
         self.assertEqual(loaded_payloads, [store._data])
 
+    def test_load_migrates_flat_thumbnails_into_per_file_folders(self):
+        store = make_store()
+        project_data = {
+            "clips": [],
+            "effects": [],
+            "markers": [],
+            "layers": [],
+            "files": [{"id": "F1", "path": "/tmp/source.mp4"}],
+            "history": {"undo": [], "redo": []},
+            "version": {"openshot-qt": "3.4.0", "libopenshot": "0.5.0"},
+        }
+
+        clear_waveform_action = DummyAction()
+        self.app.window = types.SimpleNamespace(actionClearWaveformData=clear_waveform_action)
+        self.app.updates = types.SimpleNamespace(load=lambda payload: None)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_path = os.path.join(tmpdir, "example.osp")
+            assets_path = os.path.join(tmpdir, "example_assets")
+            thumbnail_root = os.path.join(assets_path, "thumbnail")
+            os.makedirs(thumbnail_root, exist_ok=True)
+            flat_thumb = os.path.join(thumbnail_root, "F1-8.png")
+            with open(flat_thumb, "w", encoding="utf-8") as handle:
+                handle.write("thumb")
+
+            default_thumb_root = os.path.join(tmpdir, "default-thumbs")
+            os.mkdir(default_thumb_root)
+
+            with ExitStack() as stack:
+                stack.enter_context(
+                    patch.object(store, "new", lambda: setattr(store, "_data", project_data.copy()))
+                )
+                stack.enter_context(
+                    patch.object(
+                        store,
+                        "read_from_file",
+                        lambda file_path, path_mode="ignore": project_data.copy(),
+                    )
+                )
+                stack.enter_context(patch.object(store, "check_if_paths_are_valid", lambda: None))
+                stack.enter_context(patch.object(store, "add_to_recent_files", lambda file_path: None))
+                stack.enter_context(patch.object(store, "upgrade_project_data_structures", lambda: None))
+                stack.enter_context(patch.object(store, "get_profile", lambda **kwargs: object()))
+                stack.enter_context(patch.object(store, "apply_default_audio_settings", lambda: None))
+                stack.enter_context(patch("classes.project_data.get_assets_path", return_value=assets_path))
+                stack.enter_context(patch("classes.project_data.info.get_default_path", return_value=default_thumb_root))
+                ProjectDataStore.load(store, project_path, clear_thumbnails=True)
+
+            self.assertFalse(os.path.exists(flat_thumb))
+            self.assertTrue(os.path.exists(os.path.join(thumbnail_root, "F1", "8.png")))
+
     def test_upgrade_project_data_structures_migrates_25_crop_effect(self):
         store = make_store()
         self.app.project = types.SimpleNamespace(generate_id=lambda: "EFF-1")
@@ -227,6 +278,110 @@ class ProjectDataTests(unittest.TestCase):
                 [one, three, two],
             )
             self.assertTrue(self.app.settings.saved)
+
+    def test_move_temp_paths_to_project_folder_copies_proxy_reader_into_project_assets(self):
+        store = make_store()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            proxy_root = os.path.join(tmpdir, "runtime-optimized")
+            os.mkdir(proxy_root)
+            proxy_file = os.path.join(proxy_root, "F1.mp4")
+            with open(proxy_file, "wb") as handle:
+                handle.write(b"proxy")
+
+            project_path = os.path.join(tmpdir, "example.osp")
+            asset_path = os.path.join(tmpdir, "example_assets")
+            target_proxy_path = os.path.join(asset_path, "optimized")
+
+            store._data = {
+                "files": [
+                    {
+                        "id": "F1",
+                        "path": os.path.join(tmpdir, "source.mp4"),
+                        "proxy_reader": {
+                            "id": "F1",
+                            "path": proxy_file,
+                        },
+                    }
+                ],
+                "clips": [],
+            }
+
+            with ExitStack() as stack:
+                stack.enter_context(patch("classes.project_data.get_assets_path", lambda path, create_paths=True: asset_path))
+                stack.enter_context(patch("classes.project_data.info.PROXY_PATH", proxy_root))
+                stack.enter_context(patch("classes.project_data.info.THUMBNAIL_PATH", os.path.join(tmpdir, "thumbs")))
+                stack.enter_context(patch("classes.project_data.info.TITLE_PATH", os.path.join(tmpdir, "titles")))
+                stack.enter_context(patch("classes.project_data.info.BLENDER_PATH", os.path.join(tmpdir, "blender")))
+                stack.enter_context(patch("classes.project_data.info.PROTOBUF_DATA_PATH", os.path.join(tmpdir, "protobuf")))
+                stack.enter_context(patch("classes.project_data.info.CLIPBOARD_PATH", os.path.join(tmpdir, "clipboard")))
+                stack.enter_context(patch("classes.project_data.info.COMFYUI_OUTPUT_PATH", os.path.join(tmpdir, "comfy")))
+                for folder in ("thumbs", "titles", "blender", "protobuf", "clipboard", "comfy"):
+                    os.mkdir(os.path.join(tmpdir, folder))
+                ProjectDataStore.move_temp_paths_to_project_folder(store, project_path)
+
+            self.assertTrue(os.path.exists(os.path.join(target_proxy_path, "F1.mp4")))
+            self.assertEqual(
+                store._data["files"][0]["proxy_reader"]["path"],
+                os.path.join(target_proxy_path, "F1.mp4"),
+            )
+
+    def test_load_migrates_legacy_proxy_folder_to_optimized(self):
+        store = make_store()
+        project_data = {
+            "clips": [],
+            "effects": [],
+            "markers": [],
+            "layers": [],
+            "files": [{
+                "id": "F1",
+                "path": "/tmp/source.mp4",
+                "proxy_reader": {"path": ""},
+            }],
+            "history": {"undo": [], "redo": []},
+            "version": {"openshot-qt": "3.4.0", "libopenshot": "0.5.0"},
+        }
+
+        clear_waveform_action = DummyAction()
+        self.app.window = types.SimpleNamespace(actionClearWaveformData=clear_waveform_action)
+        self.app.updates = types.SimpleNamespace(load=lambda payload: None)
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_path = os.path.join(tmpdir, "example.osp")
+            assets_path = os.path.join(tmpdir, "example_assets")
+            legacy_proxy_root = os.path.join(assets_path, "proxies")
+            os.makedirs(legacy_proxy_root, exist_ok=True)
+            legacy_proxy = os.path.join(legacy_proxy_root, "F1.mp4")
+            with open(legacy_proxy, "wb") as handle:
+                handle.write(b"proxy")
+            project_data["files"][0]["proxy_reader"]["path"] = legacy_proxy
+
+            default_thumb_root = os.path.join(tmpdir, "default-thumbs")
+            os.mkdir(default_thumb_root)
+
+            with ExitStack() as stack:
+                stack.enter_context(
+                    patch.object(store, "new", lambda: setattr(store, "_data", project_data.copy()))
+                )
+                stack.enter_context(
+                    patch.object(
+                        store,
+                        "read_from_file",
+                        lambda file_path, path_mode="ignore": project_data.copy(),
+                    )
+                )
+                stack.enter_context(patch.object(store, "check_if_paths_are_valid", lambda: None))
+                stack.enter_context(patch.object(store, "add_to_recent_files", lambda file_path: None))
+                stack.enter_context(patch.object(store, "upgrade_project_data_structures", lambda: None))
+                stack.enter_context(patch.object(store, "get_profile", lambda **kwargs: object()))
+                stack.enter_context(patch.object(store, "apply_default_audio_settings", lambda: None))
+                stack.enter_context(patch("classes.project_data.get_assets_path", return_value=assets_path))
+                stack.enter_context(patch("classes.project_data.info.get_default_path", return_value=default_thumb_root))
+                ProjectDataStore.load(store, project_path, clear_thumbnails=True)
+
+            expected_proxy = os.path.join(assets_path, "optimized", "F1.mp4")
+            self.assertFalse(os.path.exists(legacy_proxy))
+            self.assertTrue(os.path.exists(expected_proxy))
+            self.assertEqual(store._data["files"][0]["proxy_reader"]["path"], expected_proxy)
 
     def test_upgrade_project_data_structures_migrates_tracker_alpha_and_parent(self):
         store = make_store()
@@ -451,3 +606,50 @@ class ProjectDataTests(unittest.TestCase):
             self.assertEqual(store._data["files"][0]["path"], expected_title)
             self.assertEqual(store._data["clips"][0]["reader"]["path"], expected_title)
             self.assertTrue(os.path.exists(expected_title))
+
+    def test_move_temp_paths_to_project_folder_copies_nested_thumbnail_layout(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = os.path.abspath(tmpdir)
+            old_title_dir = os.path.join(tmpdir, "working_title")
+            old_thumb_dir = os.path.join(tmpdir, "working_thumb")
+            old_blender_dir = os.path.join(tmpdir, "working_blender")
+            old_proto_dir = os.path.join(tmpdir, "working_proto")
+            old_clipboard_dir = os.path.join(tmpdir, "working_clipboard")
+            old_comfy_dir = os.path.join(tmpdir, "working_comfy")
+            for path in [
+                old_title_dir, old_thumb_dir, old_blender_dir,
+                old_proto_dir, old_clipboard_dir, old_comfy_dir,
+            ]:
+                os.mkdir(path)
+
+            nested_thumb_dir = os.path.join(old_thumb_dir, "F1")
+            os.mkdir(nested_thumb_dir)
+            nested_thumb_path = os.path.join(nested_thumb_dir, "8.png")
+            with open(nested_thumb_path, "w", encoding="utf-8") as handle:
+                handle.write("thumb")
+
+            store = make_store()
+            store._data = {"files": [], "clips": []}
+
+            target_assets = os.path.join(tmpdir, "project_assets")
+            project_file = os.path.join(tmpdir, "project.osp")
+
+            with ExitStack() as stack:
+                stack.enter_context(
+                    patch("classes.project_data.get_assets_path", return_value=target_assets)
+                )
+                stack.enter_context(patch("classes.project_data.info.THUMBNAIL_PATH", old_thumb_dir))
+                stack.enter_context(patch("classes.project_data.info.TITLE_PATH", old_title_dir))
+                stack.enter_context(patch("classes.project_data.info.BLENDER_PATH", old_blender_dir))
+                stack.enter_context(
+                    patch("classes.project_data.info.PROTOBUF_DATA_PATH", old_proto_dir)
+                )
+                stack.enter_context(
+                    patch("classes.project_data.info.CLIPBOARD_PATH", old_clipboard_dir)
+                )
+                stack.enter_context(
+                    patch("classes.project_data.info.COMFYUI_OUTPUT_PATH", old_comfy_dir)
+                )
+                ProjectDataStore.move_temp_paths_to_project_folder(store, project_file)
+
+            self.assertTrue(os.path.exists(os.path.join(target_assets, "thumbnail", "F1", "8.png")))

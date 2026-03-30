@@ -269,6 +269,49 @@
     "type": "spinner"
   },
   {
+    "max": 8,
+    "title": "Optimize Preview Jobs",
+    "category": "Preview",
+    "min": 1,
+    "setting": "optimize-preview-jobs",
+    "value": 1,
+    "type": "spinner-int"
+  },
+  {
+    "title": "Optimize Preview Max Size",
+    "category": "Preview",
+    "setting": "optimize-preview-max-size",
+    "type": "dropdown",
+    "value": "1280x720",
+    "values": [
+      {
+        "value": "640x360",
+        "name": "360p"
+      },
+      {
+        "value": "960x540",
+        "name": "540p"
+      },
+      {
+        "value": "1280x720",
+        "name": "720p"
+      },
+      {
+        "value": "1920x1080",
+        "name": "1080p"
+      }
+    ]
+  },
+  {
+    "max": 12,
+    "title": "Optimize Preview Thumbnails",
+    "category": "Preview",
+    "min": 1,
+    "setting": "optimize-preview-thumbnails",
+    "value": 4,
+    "type": "spinner-int"
+  },
+  {
     "value": true,
     "title": "Enable Autosave",
     "type": "bool",

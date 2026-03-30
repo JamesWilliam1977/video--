@@ -96,6 +96,12 @@ def get_assets_path(file_path=None, create_paths=True):
                 os.mkdir(asset_comfy_output_folder)
                 log.info("New ComfyUI output folder: {}".format(asset_comfy_output_folder))
 
+            # Create asset optimized-preview folder
+            asset_proxy_folder = os.path.join(asset_path, "optimized")
+            if not os.path.exists(asset_proxy_folder):
+                os.mkdir(asset_proxy_folder)
+                log.info("New optimized folder: {}".format(asset_proxy_folder))
+
         return asset_path
 
     except Exception as ex:
