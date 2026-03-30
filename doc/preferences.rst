@@ -234,10 +234,10 @@ NOTE: On systems with older graphics cards, hardware acceleration may not always
      - Choose which GPU device is used for hardware decoding.
    * - Hardware Encoder Graphics Card
      - Choose which GPU device is used for hardware encoding.
-   * - OMP Threads (0 = Default)
-     - Number of OpenMP worker threads used by performance-sensitive processing. Use ``0`` to let OpenShot choose automatically.
-   * - FFmpeg Threads (0 = Default)
-     - Number of FFmpeg threads used for decoding/encoding. Use ``0`` for automatic thread selection.
+   * - OMP Threads
+     - Number of OpenMP worker threads used by performance-sensitive processing.
+   * - FFmpeg Threads
+     - Number of FFmpeg threads used for decoding/encoding.
    * - Hardware Decoder Max Width (0 = Default)
      - Optional maximum width for hardware decoding. Use ``0`` for no explicit limit.
    * - Hardware Decoder Max Height (0 = Default)
