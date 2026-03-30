@@ -74,7 +74,7 @@ class ProxyService(QObject):
 
      def shutdown(self):
          if getattr(self, "_executor", None):
-             self._executor.shutdown(wait=False, cancel_futures=True)
+             self._shutdown_executor(self._executor)
 
      def create_for_files(self, files):
          files = [f for f in (files or []) if getattr(f, "id", None)]
@@ -776,7 +776,16 @@ class ProxyService(QObject):
                  thread_name_prefix="optimized-preview",
              )
          if old_executor:
-             old_executor.shutdown(wait=False, cancel_futures=True)
+             self._shutdown_executor(old_executor)
+
+     @staticmethod
+     def _shutdown_executor(executor):
+         if not executor:
+             return
+         try:
+             executor.shutdown(wait=False, cancel_futures=True)
+         except TypeError:
+             executor.shutdown(wait=False)
 
      def _optimize_worker_count(self):
          value = self._setting_value("optimize-preview-jobs", 1)
