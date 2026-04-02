@@ -25,6 +25,19 @@ done
 This updates each existing PO file in place and disables fuzzy matching during
 the merge.
 
+## Validate PO files
+
+After updating or importing doc translations, validate all doc PO files with:
+
+```bash
+cd doc
+python3 ../src/language/test_translations.py --docs
+```
+
+This checks PO syntax with `msgfmt`, verifies Python-style placeholders still
+match the source strings, and ensures Sphinx substitution tokens such as
+`|icon_echo|` are not dropped or added accidentally.
+
 Translator note: do not translate Sphinx substitution tokens like
 `|icon_echo|`. Keep the `|...|` text unchanged in `msgid`/`msgstr`.
 
