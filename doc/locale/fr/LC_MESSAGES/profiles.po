@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -1176,7 +1177,7 @@ msgid "192 kb/s"
 msgstr "192 kb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst
+#: ../profiles.rst:0
 msgid "All Profiles"
 msgstr "Tous les profils"
 
@@ -1598,7 +1599,7 @@ msgid "256 kb/s"
 msgstr "256 kb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1698
+#: ../profiles.rst:0 ../profiles.rst:1698
 msgid "HD 720p 30 fps"
 msgstr "HD 720p 30 ips"
 
@@ -1631,7 +1632,7 @@ msgid "320 kb/s"
 msgstr "320 kb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst
+#: ../profiles.rst:0
 msgid "NTSC SD 1/4 QVGA 240p 29.97 fps"
 msgstr "NTSC SD 1/4 QVGA 240p 29,97 ips"
 
@@ -1654,17 +1655,17 @@ msgid "8 Mb/s"
 msgstr "8 Mb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1657
+#: ../profiles.rst:0 ../profiles.rst:1657
 msgid "FHD 1080p 29.97 fps"
 msgstr "FHD 1080p 29,97 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1694
+#: ../profiles.rst:0 ../profiles.rst:1694
 msgid "HD 720p 29.97 fps"
 msgstr "HD 720p 29,97 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1836
+#: ../profiles.rst:0 ../profiles.rst:1836
 msgid "NTSC SD Widescreen Anamorphic 480i 29.97 fps"
 msgstr "NTSC SD Grand écran Anamorphique 480i 29,97 ips"
 
@@ -1679,12 +1680,12 @@ msgid "Flickr-HD"
 msgstr "Flickr-HD"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1662
+#: ../profiles.rst:0 ../profiles.rst:1662
 msgid "FHD PAL 1080p 25 fps"
 msgstr "FHD PAL 1080p 25 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1699
+#: ../profiles.rst:0 ../profiles.rst:1699
 msgid "HD 720p 25 fps"
 msgstr "HD 720p 25 ips"
 
@@ -1704,27 +1705,27 @@ msgid "5.50 Mb/s"
 msgstr "5,50 Mb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1661
+#: ../profiles.rst:0 ../profiles.rst:1661
 msgid "FHD 1080p 30 fps"
 msgstr "FHD 1080p 30 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1707
+#: ../profiles.rst:0 ../profiles.rst:1707
 msgid "FHD Vertical 1080p 25 fps"
 msgstr "FHD Vertical 1080p 25 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1706
+#: ../profiles.rst:0 ../profiles.rst:1706
 msgid "FHD Vertical 1080p 30 fps"
 msgstr "FHD Vertical 1080p 30 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1797
+#: ../profiles.rst:0 ../profiles.rst:1797
 msgid "HD Vertical 720p 25 fps"
 msgstr "HD Vertical 720p 25 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1796
+#: ../profiles.rst:0 ../profiles.rst:1796
 msgid "HD Vertical 720p 30 fps"
 msgstr "HD Vertical 720p 30 ips"
 
@@ -1739,7 +1740,7 @@ msgid "44100"
 msgstr "44100"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst
+#: ../profiles.rst:0
 msgid "NTSC SD SQ VGA 480p 29.97 fps"
 msgstr "NTSC SD SQ VGA 480p 29,97 ips"
 
@@ -1764,7 +1765,7 @@ msgid "Vimeo"
 msgstr "Vimeo"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst
+#: ../profiles.rst:0
 msgid "NTSC SD Wide FWVGA 480p 29.97 fps"
 msgstr "NTSC SD Large FWVGA 480p 29,97 ips"
 
@@ -1784,22 +1785,22 @@ msgid "12 Mb/s"
 msgstr "12 Mb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1658
+#: ../profiles.rst:0 ../profiles.rst:1658
 msgid "FHD 1080p 23.98 fps"
 msgstr "FHD 1080p 23,98 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1663
+#: ../profiles.rst:0 ../profiles.rst:1663
 msgid "FHD 1080p 24 fps"
 msgstr "FHD 1080p 24 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1695
+#: ../profiles.rst:0 ../profiles.rst:1695
 msgid "HD 720p 23.98 fps"
 msgstr "HD 720p 23,98 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1700
+#: ../profiles.rst:0 ../profiles.rst:1700
 msgid "HD 720p 24 fps"
 msgstr "HD 720p 24 ips"
 
@@ -1819,47 +1820,47 @@ msgid "10 Mb/s"
 msgstr "10 Mb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1656
+#: ../profiles.rst:0 ../profiles.rst:1656
 msgid "FHD 1080p 59.94 fps"
 msgstr "FHD 1080p 59,94 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1659
+#: ../profiles.rst:0 ../profiles.rst:1659
 msgid "FHD 1080p 60 fps"
 msgstr "FHD 1080p 60 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1660
+#: ../profiles.rst:0 ../profiles.rst:1660
 msgid "FHD PAL 1080p 50 fps"
 msgstr "FHD PAL 1080p 50 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1703
+#: ../profiles.rst:0 ../profiles.rst:1703
 msgid "FHD Vertical 1080p 23.98 fps"
 msgstr "FHD Vertical 1080p 23,98 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1708
+#: ../profiles.rst:0 ../profiles.rst:1708
 msgid "FHD Vertical 1080p 24 fps"
 msgstr "FHD Vertical 1080p 24 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1702
+#: ../profiles.rst:0 ../profiles.rst:1702
 msgid "FHD Vertical 1080p 29.97 fps"
 msgstr "FHD Vertical 1080p 29,97 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1705
+#: ../profiles.rst:0 ../profiles.rst:1705
 msgid "FHD Vertical 1080p 50 fps"
 msgstr "FHD Vertical 1080p 50 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1701
+#: ../profiles.rst:0 ../profiles.rst:1701
 msgid "FHD Vertical 1080p 59.94 fps"
 msgstr "FHD Vertical 1080p 59,94 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1704
+#: ../profiles.rst:0 ../profiles.rst:1704
 msgid "FHD Vertical 1080p 60 fps"
 msgstr "FHD Vertical 1080p 60 ips"
 
@@ -1884,42 +1885,42 @@ msgid "24 Mb/s"
 msgstr "24 Mb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1650
+#: ../profiles.rst:0 ../profiles.rst:1650
 msgid "2.5K WQHD 1440p 23.98 fps"
 msgstr "2,5K WQHD 1440p 23,98 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1655
+#: ../profiles.rst:0 ../profiles.rst:1655
 msgid "2.5K WQHD 1440p 24 fps"
 msgstr "2,5K WQHD 1440p 24 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1654
+#: ../profiles.rst:0 ../profiles.rst:1654
 msgid "2.5K WQHD 1440p 25 fps"
 msgstr "2,5K WQHD 1440p 25 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1649
+#: ../profiles.rst:0 ../profiles.rst:1649
 msgid "2.5K WQHD 1440p 29.97 fps"
 msgstr "2,5K WQHD 1440p 29,97 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1653
+#: ../profiles.rst:0 ../profiles.rst:1653
 msgid "2.5K WQHD 1440p 30 fps"
 msgstr "2,5K WQHD 1440p 30 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1652
+#: ../profiles.rst:0 ../profiles.rst:1652
 msgid "2.5K WQHD 1440p 50 fps"
 msgstr "2,5K WQHD 1440p 50 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1648
+#: ../profiles.rst:0 ../profiles.rst:1648
 msgid "2.5K WQHD 1440p 59.94 fps"
 msgstr "2,5K WQHD 1440p 59,94 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1651
+#: ../profiles.rst:0 ../profiles.rst:1651
 msgid "2.5K WQHD 1440p 60 fps"
 msgstr "2,5K WQHD 1440p 60 ips"
 
@@ -1944,42 +1945,42 @@ msgid "68 Mb/s"
 msgstr "68 Mb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1630
+#: ../profiles.rst:0 ../profiles.rst:1630
 msgid "4K UHD 2160p 23.98 fps"
 msgstr "4K UHD 2160p 23,98 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1635
+#: ../profiles.rst:0 ../profiles.rst:1635
 msgid "4K UHD 2160p 24 fps"
 msgstr "4K UHD 2160p 24 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1634
+#: ../profiles.rst:0 ../profiles.rst:1634
 msgid "4K UHD 2160p 25 fps"
 msgstr "4K UHD 2160p 25 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1629
+#: ../profiles.rst:0 ../profiles.rst:1629
 msgid "4K UHD 2160p 29.97 fps"
 msgstr "4K UHD 2160p 29,97 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1633
+#: ../profiles.rst:0 ../profiles.rst:1633
 msgid "4K UHD 2160p 30 fps"
 msgstr "4K UHD 2160p 30 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1632
+#: ../profiles.rst:0 ../profiles.rst:1632
 msgid "4K UHD 2160p 50 fps"
 msgstr "4K UHD 2160p 50 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1628
+#: ../profiles.rst:0 ../profiles.rst:1628
 msgid "4K UHD 2160p 59.94 fps"
 msgstr "4K UHD 2160p 59,94 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1631
+#: ../profiles.rst:0 ../profiles.rst:1631
 msgid "4K UHD 2160p 60 fps"
 msgstr "4K UHD 2160p 60 ips"
 
@@ -2004,42 +2005,42 @@ msgid "240 Mb/s"
 msgstr "240 Mb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1609
+#: ../profiles.rst:0 ../profiles.rst:1609
 msgid "8K UHD 4320p 23.98 fps"
 msgstr "8K UHD 4320p 23,98 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1614
+#: ../profiles.rst:0 ../profiles.rst:1614
 msgid "8K UHD 4320p 24 fps"
 msgstr "8K UHD 4320p 24 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1613
+#: ../profiles.rst:0 ../profiles.rst:1613
 msgid "8K UHD 4320p 25 fps"
 msgstr "8K UHD 4320p 25 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1608
+#: ../profiles.rst:0 ../profiles.rst:1608
 msgid "8K UHD 4320p 29.97 fps"
 msgstr "8K UHD 4320p 29,97 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1612
+#: ../profiles.rst:0 ../profiles.rst:1612
 msgid "8K UHD 4320p 30 fps"
 msgstr "8K UHD 4320p 30 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1611
+#: ../profiles.rst:0 ../profiles.rst:1611
 msgid "8K UHD 4320p 50 fps"
 msgstr "8K UHD 4320p 50 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1607
+#: ../profiles.rst:0 ../profiles.rst:1607
 msgid "8K UHD 4320p 59.94 fps"
 msgstr "8K UHD 4320p 59,94 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1610
+#: ../profiles.rst:0 ../profiles.rst:1610
 msgid "8K UHD 4320p 60 fps"
 msgstr "8K UHD 4320p 60 ips"
 
@@ -2049,47 +2050,47 @@ msgid "YouTube Standard"
 msgstr "YouTube Standard"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1693
+#: ../profiles.rst:0 ../profiles.rst:1693
 msgid "HD 720p 59.94 fps"
 msgstr "HD 720p 59,94 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1696
+#: ../profiles.rst:0 ../profiles.rst:1696
 msgid "HD 720p 60 fps"
 msgstr "HD 720p 60 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1793
+#: ../profiles.rst:0 ../profiles.rst:1793
 msgid "HD Vertical 720p 23.98 fps"
 msgstr "HD Vertical 720p 23,98 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1798
+#: ../profiles.rst:0 ../profiles.rst:1798
 msgid "HD Vertical 720p 24 fps"
 msgstr "HD Vertical 720p 24 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1792
+#: ../profiles.rst:0 ../profiles.rst:1792
 msgid "HD Vertical 720p 29.97 fps"
 msgstr "HD Vertical 720p 29,97 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1795
+#: ../profiles.rst:0 ../profiles.rst:1795
 msgid "HD Vertical 720p 50 fps"
 msgstr "HD Vertical 720p 50 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1791
+#: ../profiles.rst:0 ../profiles.rst:1791
 msgid "HD Vertical 720p 59.94 fps"
 msgstr "HD Vertical 720p 59,94 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1794
+#: ../profiles.rst:0 ../profiles.rst:1794
 msgid "HD Vertical 720p 60 fps"
 msgstr "HD Vertical 720p 60 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1697
+#: ../profiles.rst:0 ../profiles.rst:1697
 msgid "PAL HD 720p 50 fps"
 msgstr "PAL HD 720p 50 ips"
 
@@ -2114,12 +2115,12 @@ msgid "40 Mb/s"
 msgstr "40 Mb/s"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1665
+#: ../profiles.rst:0 ../profiles.rst:1665
 msgid "FHD 1080i 30 fps"
 msgstr "FHD 1080i 30 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1666
+#: ../profiles.rst:0 ../profiles.rst:1666
 msgid "FHD PAL 1080i 25 fps"
 msgstr "FHD PAL 1080i 25 ips"
 
@@ -2139,7 +2140,7 @@ msgid "ac3"
 msgstr "ac3"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst
+#: ../profiles.rst:0
 msgid "NTSC SD Anamorphic 480i 29.97 fps"
 msgstr "NTSC SD Anamorphique 480i 29,97 ips"
 
@@ -2149,12 +2150,12 @@ msgid "DVD-PAL"
 msgstr "DVD-PAL"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst
+#: ../profiles.rst:0
 msgid "PAL SD Anamorphic 576i 25 fps"
 msgstr "PAL SD Anamorphique 576i 25 ips"
 
 # Translated with gpt-4.1-mini
-#: ../profiles.rst ../profiles.rst:1803
+#: ../profiles.rst:0 ../profiles.rst:1803
 msgid "PAL SD Widescreen Anamorphic 576i 25 fps"
 msgstr "PAL SD Widescreen Anamorphique 576i 25 ips"
 

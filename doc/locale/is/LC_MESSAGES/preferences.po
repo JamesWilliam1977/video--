@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-04-02 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -65,22 +66,22 @@ msgstr ""
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:46 ../preferences.rst:107 ../preferences.rst:130
-#: ../preferences.rst:152 ../preferences.rst:199 ../preferences.rst:229
-#: ../preferences.rst:285 ../preferences.rst:315
+#: ../preferences.rst:155 ../preferences.rst:202 ../preferences.rst:232
+#: ../preferences.rst:288 ../preferences.rst:318
 msgid "Setting"
 msgstr "Stilling"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:47 ../preferences.rst:50 ../preferences.rst:107
-#: ../preferences.rst:130 ../preferences.rst:132 ../preferences.rst:152
-#: ../preferences.rst:316
+#: ../preferences.rst:130 ../preferences.rst:132 ../preferences.rst:155
+#: ../preferences.rst:319
 msgid "Default"
 msgstr "Sjálfgefið"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:48 ../preferences.rst:107 ../preferences.rst:130
-#: ../preferences.rst:199 ../preferences.rst:230 ../preferences.rst:285
-#: ../preferences.rst:296 ../preferences.rst:317
+#: ../preferences.rst:202 ../preferences.rst:233 ../preferences.rst:288
+#: ../preferences.rst:299 ../preferences.rst:320
 msgid "Description"
 msgstr "Lýsing"
 
@@ -341,8 +342,8 @@ msgid "Auto-Transition (overlap clips)"
 msgstr "Sjálfvirk skipting (klippur skarast)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:112 ../preferences.rst:154 ../preferences.rst:328
-#: ../preferences.rst:334
+#: ../preferences.rst:112 ../preferences.rst:157 ../preferences.rst:331
+#: ../preferences.rst:337
 msgid "Enabled"
 msgstr "Virkt"
 
@@ -357,7 +358,7 @@ msgid "Enable Legacy Timeline (web-based)"
 msgstr "Virkja eldri tímalínu (vefmiðað)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:113 ../preferences.rst:325 ../preferences.rst:331
+#: ../preferences.rst:113 ../preferences.rst:328 ../preferences.rst:334
 #, fuzzy
 msgid "Disabled"
 msgstr "Virkt"
@@ -372,15 +373,12 @@ msgstr "Nota eldri vefmiðaða tímalínu (WebEngine/WebKit sjálfval)"
 msgid "Preview"
 msgstr "Forskoðun"
 
-# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
-"behavior, including device selection, sample rate, channels, buffering, and "
-"playback volume."
+"behavior, including device selection, sample rate, channels, buffering, "
+"playback volume, and optimized preview behavior."
 msgstr ""
-"Forskoðunarfipinn í Stillingum stjórnar hljóðhegðun í rauntíma forskoðun, "
-"þar með talið val á tæki, sýnatökuhraða, rásum, skyndiminni og hljóðstyrk."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -454,13 +452,51 @@ msgstr "75"
 msgid "Preview playback volume percentage"
 msgstr "Hlutfall hljóðstyrks forskoðunar"
 
+#: ../preferences.rst:137
+msgid "Concurrent Optimize Jobs"
+msgstr ""
+
+#: ../preferences.rst:137
+msgid "2"
+msgstr ""
+
+#: ../preferences.rst:137
+msgid "Number of video files OpenShot can optimize at the same time"
+msgstr ""
+
+#: ../preferences.rst:138
+msgid "Optimized Preview Resolution"
+msgstr ""
+
+#: ../preferences.rst:138
+msgid "1280x720"
+msgstr ""
+
+#: ../preferences.rst:138
+msgid "Maximum resolution used when creating optimized preview files"
+msgstr ""
+
+#: ../preferences.rst:139
+msgid "Thumbnail Preload Rate / second"
+msgstr ""
+
+#: ../preferences.rst:139
+msgid "4"
+msgstr ""
+
+#: ../preferences.rst:139
+msgid ""
+"How many thumbnail preview frames per second are pre-generated while "
+"optimizing video"
+msgstr ""
+
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:140
+#: ../preferences.rst:143
 msgid "Autosave"
 msgstr "Sjálfvirk vistun"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:144
+#: ../preferences.rst:147
 msgid ""
 "Autosave is a feature in OpenShot which automatically saves the current "
 "changes to your project after a specific number of minutes, helping to "
@@ -472,47 +508,47 @@ msgstr ""
 "áhættu eða áhrifum gagnataps vegna hnökrar, kyrrstöðu eða notendavillu."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:154
+#: ../preferences.rst:157
 msgid "Enable Autosave"
 msgstr "Virkja sjálfvirka vistun"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:155
+#: ../preferences.rst:158
 msgid "Autosave Interval (minutes)"
 msgstr "Millibil sjálfvirkrar vistunar (mínútur)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:155
+#: ../preferences.rst:158
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:156
+#: ../preferences.rst:159
 msgid "History Limit (# of undo/redo)"
 msgstr "Takmörkun á sögu (fjöldi afturkalla/endurtekninga)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:156
+#: ../preferences.rst:159
 msgid "15"
 msgstr "15"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:157
+#: ../preferences.rst:160
 msgid "Recovery Limit (# of project copies)"
 msgstr "Takmörkun endurheimtar (fjöldi verkefnakopia)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:157
+#: ../preferences.rst:160
 msgid "30"
 msgstr "30"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:161
+#: ../preferences.rst:164
 msgid "Recovery"
 msgstr "Endurheimt"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:163
+#: ../preferences.rst:166
 msgid ""
 "**Before each save**, a compressed ``*.zip`` copy of the current project is "
 "saved in the recovery folder, to further reduce the risk of data loss. The "
@@ -525,7 +561,7 @@ msgstr ""
 "\\Users\\USERNAME\\.openshot_qt\\recovery``."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:167
+#: ../preferences.rst:170
 msgid ""
 "To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:"
 "`File->Recovery` menu on the main window after opening your project. If "
@@ -549,7 +585,7 @@ msgstr ""
 "endurheimta það."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:175
+#: ../preferences.rst:178
 msgid ""
 "To **manually** recover a corrupt or broken ``*.osp`` project file, please "
 "find the most recent copy in the recovery folder, and copy/paste the file "
@@ -570,12 +606,12 @@ msgstr ""
 "endurheimta."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:185
+#: ../preferences.rst:188
 msgid "Cache"
 msgstr "Skyndiminni"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:189
+#: ../preferences.rst:192
 msgid ""
 "Cache settings can be adjusted to make real-time playback faster or less CPU "
 "intensive. The cache is used to store image and audio data for each frame of "
@@ -595,12 +631,12 @@ msgstr ""
 "hnökralaust. Sjá :ref:`playback_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:201
+#: ../preferences.rst:204
 msgid "Cache Mode"
 msgstr "Stilling skyndiminnis"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:201
+#: ../preferences.rst:204
 msgid ""
 "Choose between Memory or Disk caching (memory caching is preferred). Disk "
 "caching writes image data to the hard disk for later retrieving, and works "
@@ -611,12 +647,12 @@ msgstr ""
 "notkunar og virkar best með SSD."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:202
+#: ../preferences.rst:205
 msgid "Cache Limit (MB)"
 msgstr "Takmörk skyndiminnis (MB)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:202
+#: ../preferences.rst:205
 msgid ""
 "How many MB are set aside for cache related data. Larger numbers are not "
 "always better, since it takes more CPU to generate more frames to fill the "
@@ -627,22 +663,22 @@ msgstr ""
 "að fylla skyndiminnið."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:203
+#: ../preferences.rst:206
 msgid "Image Format (Disk Only)"
 msgstr "Myndasnið (aðeins diskur)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:203
+#: ../preferences.rst:206
 msgid "Image format to store disk cache image data"
 msgstr "Myndasnið til að geyma myndagögn í diskaskyndiminni"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:204
+#: ../preferences.rst:207
 msgid "Scale Factor (Disk Only)"
 msgstr "Stærðarstuðull (aðeins diskur)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:204
+#: ../preferences.rst:207
 msgid ""
 "Percentage (0.1 to 1.0) to reduce the size of disk based image files stored "
 "in the disk cache. Smaller numbers make writing and reading cached image "
@@ -653,12 +689,12 @@ msgstr ""
 "hraðari."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:205
+#: ../preferences.rst:208
 msgid "Image Quality (Disk Only)"
 msgstr "Myndgæði (aðeins diskur)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:205
+#: ../preferences.rst:208
 msgid ""
 "Quality of the image files used in disk cache. The higher compression can "
 "cause more slowness, but results in smaller file sizes."
@@ -667,12 +703,12 @@ msgstr ""
 "valdið meiri hægagang, en skilar minni skráarstærðum."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:206
+#: ../preferences.rst:209
 msgid "Cache Pre-roll: Min Frames:"
 msgstr "Forspilun skyndiminnis: Lágmarksrammar:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:206
+#: ../preferences.rst:209
 msgid ""
 "Minimum # of frames that must be cached before playback begins. The larger "
 "the #, the larger the wait before playback begins."
@@ -681,12 +717,12 @@ msgstr ""
 "Því stærri sem fjöldinn er, því lengri bið verður áður en spilun hefst."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:207
+#: ../preferences.rst:210
 msgid "Cache Pre-roll: Max Frames:"
 msgstr "Forspilun skyndiminnis: Hámarksrammar:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:207
+#: ../preferences.rst:210
 msgid ""
 "Maximum # of frames that can be cached during playback (in front of the "
 "playhead). The larger the #, the more CPU is required to cache ahead - vs "
@@ -697,12 +733,12 @@ msgstr ""
 "þarf til að geyma fram í tímann - í stað þess að sýna þegar geymda ramma."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:208
+#: ../preferences.rst:211
 msgid "Cache Ahead (Percent):"
 msgstr "Geymsla fram í tímann (prósenta):"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:208
+#: ../preferences.rst:211
 msgid ""
 "Between 0.0 and 1.0. This represents how much % we cache ahead of the "
 "playhead. For example, 0.5 would cache 50% behind and 50% ahead of the "
@@ -713,12 +749,12 @@ msgstr ""
 "spilhausinn. 0,8 myndi geyma 20% fyrir aftan og 80% fyrir framan spilhausinn."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:209
+#: ../preferences.rst:212
 msgid "Cache Max Frames:"
 msgstr "Hámarksfjöldi ramma í skyndiminni:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:209
+#: ../preferences.rst:212
 #, fuzzy
 msgid ""
 "This is an override on the total allowed frames that can be cached by our "
@@ -742,7 +778,7 @@ msgstr ""
 "OpenShot mikið vinnsluminni."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:212
+#: ../preferences.rst:215
 msgid ""
 "OpenShot's default cache settings now target a balanced preview experience: "
 "roughly **50% behind / 50% ahead** of the playhead, **768 MB** cache memory, "
@@ -755,12 +791,12 @@ msgstr ""
 "spilun og minnkar úreltar forskoðunar rammar á hægari kerfum."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:218
+#: ../preferences.rst:221
 msgid "Performance"
 msgstr "Frammistaða"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:221
+#: ../preferences.rst:224
 msgid ""
 "Please keep in mind that GPU hardware acceleration is experimental at the "
 "moment. OpenShot supports both decoding and encoding acceleration. For more "
@@ -777,12 +813,12 @@ msgstr ""
 "CPU."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:231
+#: ../preferences.rst:234
 msgid "Hardware Decoder Mode"
 msgstr "Hugbúnaðarafkóðunarstilling"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:232
+#: ../preferences.rst:235
 msgid ""
 "Select the hardware decoding backend to use. Use :guilabel:`Test` to verify "
 "the selected decoder mode."
@@ -791,60 +827,49 @@ msgstr ""
 "að staðfesta valda afkóðunarstillingu."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:233
+#: ../preferences.rst:236
 msgid "Hardware Decoder Graphics Card"
 msgstr "Vélbúnaðarafkóðunar skjákort"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:234
+#: ../preferences.rst:237
 msgid "Choose which GPU device is used for hardware decoding."
 msgstr "Veldu hvaða GPU tæki er notað fyrir vélbúnaðarafkóðun."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:235
+#: ../preferences.rst:238
 msgid "Hardware Encoder Graphics Card"
 msgstr "Vélbúnaðarþjöppunar skjákort"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:236
+#: ../preferences.rst:239
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "Veldu hvaða GPU tæki er notað fyrir vélbúnaðarþjöppun."
 
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:237
-msgid "OMP Threads (0 = Default)"
-msgstr "OMP þræðir (0 = Sjálfgefið)"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:238
-msgid ""
-"Number of OpenMP worker threads used by performance-sensitive processing. "
-"Use ``0`` to let OpenShot choose automatically."
-msgstr ""
-"Fjöldi OpenMP vinnuþráða sem notaðir eru í afköstnæma vinnslu. Notaðu ``0`` "
-"til að láta OpenShot velja sjálfkrafa."
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:239
-msgid "FFmpeg Threads (0 = Default)"
-msgstr "FFmpeg þræðir (0 = Sjálfgefið)"
-
-# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
-msgid ""
-"Number of FFmpeg threads used for decoding/encoding. Use ``0`` for automatic "
-"thread selection."
+msgid "OMP Threads"
 msgstr ""
-"Fjöldi FFmpeg þráða sem notaðir eru við afkóðun/þjöppun. Notaðu ``0`` fyrir "
-"sjálfvirka þráða val."
+
+#: ../preferences.rst:241
+msgid ""
+"Number of OpenMP worker threads used by performance-sensitive processing."
+msgstr ""
+
+#: ../preferences.rst:242
+msgid "FFmpeg Threads"
+msgstr ""
+
+#: ../preferences.rst:243
+msgid "Number of FFmpeg threads used for decoding/encoding."
+msgstr ""
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:241
+#: ../preferences.rst:244
 msgid "Hardware Decoder Max Width (0 = Default)"
 msgstr "Hámarksbreidd vélbúnaðarafkóðunar (0 = Sjálfgefið)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:242
+#: ../preferences.rst:245
 msgid ""
 "Optional maximum width for hardware decoding. Use ``0`` for no explicit "
 "limit."
@@ -853,12 +878,12 @@ msgstr ""
 "takmörk."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:243
+#: ../preferences.rst:246
 msgid "Hardware Decoder Max Height (0 = Default)"
 msgstr "Hámarkshæð vélbúnaðarafkóðunar (0 = Sjálfgefið)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:244
+#: ../preferences.rst:247
 msgid ""
 "Optional maximum height for hardware decoding. Use ``0`` for no explicit "
 "limit."
@@ -867,22 +892,22 @@ msgstr ""
 "takmörk."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:245
+#: ../preferences.rst:248
 msgid "Use Blender GPU rendering for Animated Titles"
 msgstr "Nota Blender GPU útfærslu fyrir hreyfð titla"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:246
+#: ../preferences.rst:249
 msgid "Enable GPU rendering for Blender-based animated titles."
 msgstr "Virkja GPU útfærslu fyrir Blender-undirstaða hreyfða titla."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:251
+#: ../preferences.rst:254
 msgid "Keyboard"
 msgstr "Lyklaborð"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:254
+#: ../preferences.rst:257
 msgid ""
 "This section allows you to view and customize hotkeys for various actions in "
 "the application. Here, you can assign and manage multiple shortcuts for the "
@@ -893,7 +918,7 @@ msgstr ""
 "fyrir sömu aðgerð og endurstillt sjálfgefna flýtilykla ef þörf krefur."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:257
+#: ../preferences.rst:260
 msgid ""
 "**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to "
 "the same action by separating them with a pipe (``|``) delimiter. This "
@@ -906,7 +931,7 @@ msgstr ""
 "fyrir hverja aðgerð."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:260
+#: ../preferences.rst:263
 msgid ""
 "**Immediate Application**: No restart is required after adjusting keyboard "
 "shortcuts. Changes are applied immediately, so you can start using your "
@@ -917,7 +942,7 @@ msgstr ""
 "uppfærða flýtilykla strax."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:263
+#: ../preferences.rst:266
 msgid ""
 "**Restore Default Shortcuts**: If needed, you can reset all keyboard "
 "shortcuts to their default settings by clicking on the :guilabel:`Restore "
@@ -929,7 +954,7 @@ msgstr ""
 "guilabel:`Restore Defaults: Keyboard` neðst til vinstri í valmynd Stillinga."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:266
+#: ../preferences.rst:269
 msgid ""
 "**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are "
 "any duplicate shortcuts, they will be highlighted in **red** and will not "
@@ -940,7 +965,7 @@ msgstr ""
 "virka ekki þar til árekstrinum er leyst."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:270
+#: ../preferences.rst:273
 msgid ""
 "For more detailed information on how to use and customize keyboard "
 "shortcuts, see :ref:`keyboard_shortcut_ref`."
@@ -949,12 +974,12 @@ msgstr ""
 "ref:`keyboard_shortcut_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:273
+#: ../preferences.rst:276
 msgid "Location"
 msgstr "Staðsetning"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:277
+#: ../preferences.rst:280
 msgid ""
 "Default file path locations for saving/opening projects, importing files, "
 "and exporting videos can be configured here. This can save you time by "
@@ -967,47 +992,47 @@ msgstr ""
 "neðan)."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:287
+#: ../preferences.rst:290
 msgid "File Import"
 msgstr "Innflutningur skráa"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:287
+#: ../preferences.rst:290
 msgid "Default folder to choose when importing a file"
 msgstr "Sjálfgefin mappa til að velja þegar skrá er flutt inn"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:288
+#: ../preferences.rst:291
 msgid "Save or Open Project"
 msgstr "Vista eða opna verkefni"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:288
+#: ../preferences.rst:291
 msgid "Default folder to choose when saving or opening a project file"
 msgstr "Sjálfgefin mappa til að velja þegar verkefnaskrá er vistuð eða opnuð"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:289
+#: ../preferences.rst:292
 msgid "Video Export"
 msgstr "Útflutningur myndbands"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:289
+#: ../preferences.rst:292
 msgid "Default folder to choose when exporting a video"
 msgstr "Sjálfgefin mappa til að velja þegar myndband er flutt út"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:296
+#: ../preferences.rst:299
 msgid "Values"
 msgstr "Gildi"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:298
+#: ../preferences.rst:301
 msgid "**Recent Folder**"
 msgstr "**Nýjasta mappa**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:298
+#: ../preferences.rst:301
 msgid ""
 "The last folder used for this same operation. Project folders, Import "
 "folders, and Export folders are tracked separately."
@@ -1016,12 +1041,12 @@ msgstr ""
 "innflutningsmöppur og útflutningsmöppur eru skráðar sér."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:299
+#: ../preferences.rst:302
 msgid "**Project Folder**"
 msgstr "**Verkefnismappa**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:299
+#: ../preferences.rst:302
 msgid ""
 "The current project folder (or the user's home folder, if the project is not "
 "yet saved)"
@@ -1030,88 +1055,88 @@ msgstr ""
 "verið vistað)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:305
+#: ../preferences.rst:308
 msgid "Advanced"
 msgstr "Ítarlegt"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:309
+#: ../preferences.rst:312
 msgid "The Advanced tab includes ComfyUI integration and debugging options."
 msgstr ""
 "Ítarlegi flipinn inniheldur ComfyUI samþættingu og villuleitarmöguleika."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:318
+#: ../preferences.rst:321
 msgid "Comfy UI URL"
 msgstr "Comfy UI slóð"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:319
+#: ../preferences.rst:322
 msgid "``http://127.0.0.1:8188``"
 msgstr "``http://127.0.0.1:8188``"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:320
+#: ../preferences.rst:323
 msgid "URL of your local or remote ComfyUI server"
 msgstr "Slóð á staðbundinn eða fjarstýrðan ComfyUI þjón"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:321
+#: ../preferences.rst:324
 msgid "Debug Mode (Port)"
 msgstr "Villuleitarmáti (Höfn)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:322
+#: ../preferences.rst:325
 msgid "5556"
 msgstr "5556"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:323
+#: ../preferences.rst:326
 msgid "Port used by debug logging features"
 msgstr "Höfn notuð af villuleitar skráningar eiginleikum"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:324
+#: ../preferences.rst:327
 msgid "Debug Mode (Verbose)"
 msgstr "Villuleitarmáti (Nákvæm)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:326
+#: ../preferences.rst:329
 msgid "Enable verbose debugging output"
 msgstr "Virkja nákvæma villuleitar úttak"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:327
+#: ../preferences.rst:330
 msgid "Send Anonymous Metrics and Errors"
 msgstr "Senda nafnlausar mælingar og villur"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:329
+#: ../preferences.rst:332
 msgid "Send anonymous telemetry and error reports"
 msgstr "Senda nafnlausar fjartölusendingar og villuskýrslur"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:330
+#: ../preferences.rst:333
 msgid "Show Playback Performance (FPS)"
 msgstr "Sýna spilunarafköst (FPS)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:332
+#: ../preferences.rst:335
 msgid "Display live FPS in preview playback"
 msgstr "Sýna lifandi FPS í forskoðun spilunar"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:333
+#: ../preferences.rst:336
 msgid "Show Export Dialog when Finished"
 msgstr "Sýna Útflutningsglugga þegar Lokið er"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:335
+#: ../preferences.rst:338
 msgid "Display the Export Video window when export completes"
 msgstr "Sýna útflutningsglugga þegar útflutningur lýkur"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:337
+#: ../preferences.rst:340
 msgid ""
 "The ComfyUI **Check** button updates an inline status icon: green checkmark "
 "for success, red icon for failure. If OpenShot cannot reach this server, AI "
@@ -1124,12 +1149,12 @@ msgstr ""
 "fyrir uppsetningarupplýsingar, kröfur og vinnuflæðisvalkosti."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:344
+#: ../preferences.rst:347
 msgid "Reset (Default Values)"
 msgstr "Endurstilla (sjálfgefin gildi)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:346
+#: ../preferences.rst:349
 msgid ""
 "To reset **all** preferences to their default values, please delete the "
 "``openshot.settings`` file and re-launch OpenShot. The settings file can be "
@@ -1146,7 +1171,7 @@ msgstr ""
 "sjálfgefnum gildum."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:351
+#: ../preferences.rst:354
 msgid ""
 "Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch "
 "OpenShot. However, please make a **backup** of any customized folders: "
@@ -1161,7 +1186,7 @@ msgstr ""
 "verkefnum þínum (``*.osp`` skrár)."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:356
+#: ../preferences.rst:359
 msgid ""
 "Deleting the ``.openshot_qt/`` folder is the quickest method to restore "
 "OpenShot preferences and settings to their Default values (i.e. also called "
@@ -1177,3 +1202,36 @@ msgstr ""
 "skref leiðbeiningar <https://github.com/OpenShot/openshot-qt/wiki/Clean-"
 "Installation-of-OpenShot>`_ fyrir frekari upplýsingar um **hreinar "
 "uppsetningar** OpenShot."
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "The Preview tab of the Preferences window controls real-time preview "
+#~ "audio behavior, including device selection, sample rate, channels, "
+#~ "buffering, and playback volume."
+#~ msgstr ""
+#~ "Forskoðunarfipinn í Stillingum stjórnar hljóðhegðun í rauntíma forskoðun, "
+#~ "þar með talið val á tæki, sýnatökuhraða, rásum, skyndiminni og hljóðstyrk."
+
+# Translated with gpt-4.1-mini
+#~ msgid "OMP Threads (0 = Default)"
+#~ msgstr "OMP þræðir (0 = Sjálfgefið)"
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
+#~ "Use ``0`` to let OpenShot choose automatically."
+#~ msgstr ""
+#~ "Fjöldi OpenMP vinnuþráða sem notaðir eru í afköstnæma vinnslu. Notaðu "
+#~ "``0`` til að láta OpenShot velja sjálfkrafa."
+
+# Translated with gpt-4.1-mini
+#~ msgid "FFmpeg Threads (0 = Default)"
+#~ msgstr "FFmpeg þræðir (0 = Sjálfgefið)"
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
+#~ "automatic thread selection."
+#~ msgstr ""
+#~ "Fjöldi FFmpeg þráða sem notaðir eru við afkóðun/þjöppun. Notaðu ``0`` "
+#~ "fyrir sjálfvirka þráða val."

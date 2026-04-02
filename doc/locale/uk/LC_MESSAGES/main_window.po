@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-04-02 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -49,7 +50,7 @@ msgstr "Назва"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:35 ../main_window.rst:80 ../main_window.rst:103
-#: ../main_window.rst:237 ../main_window.rst:308
+#: ../main_window.rst:238 ../main_window.rst:309
 msgid "Description"
 msgstr "Опис"
 
@@ -90,7 +91,7 @@ msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:39 ../main_window.rst:315
+#: ../main_window.rst:39 ../main_window.rst:316
 msgid "Project Files"
 msgstr "Файли проєкту"
 
@@ -437,15 +438,13 @@ msgstr ""
 "Вирівняйте видиму область часової шкали по центру навколо поточної позиції "
 "відтворення."
 
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
-"to pan, and double-click to fit timeline."
+"to pan, and double-click to fit timeline. You can also use :kbd:`Ctrl+Scroll "
+"Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
+"mouse button for smooth zooming."
 msgstr ""
-"Керуйте видимим діапазоном часової шкали. Перетягуйте ручки для збільшення/"
-"зменшення масштабу, перетягуйте центр для панорамування, двічі клацніть, щоб "
-"підлаштувати часову шкалу."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -535,7 +534,7 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:292
+#: ../main_window.rst:146 ../main_window.rst:293
 msgid "Advanced View"
 msgstr "Розширений вигляд"
 
@@ -604,798 +603,806 @@ msgstr "Очистити історію"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
+msgid "Delete Optimized Videos"
+msgstr ""
+
+#: ../main_window.rst:153
+msgid ":kbd:`Ctrl+Shift+O`"
+msgstr ""
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:154
 msgid "Clear Waveform Display Data"
 msgstr "Очистити дані відображення форми хвилі"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:153
+#: ../main_window.rst:154
 msgid ":kbd:`Ctrl+Shift+W`"
 msgstr ":kbd:`Ctrl+Shift+W`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:154
+#: ../main_window.rst:155
 msgid "Copy"
 msgstr "Копіювати"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:154
+#: ../main_window.rst:155
 msgid ":kbd:`Ctrl+C`"
 msgstr ":kbd:`Ctrl+C`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:155
+#: ../main_window.rst:156
 msgid "Cut"
 msgstr "Вирізати"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:155
+#: ../main_window.rst:156
 msgid ":kbd:`Ctrl+X`"
 msgstr ":kbd:`Ctrl+X`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:156
+#: ../main_window.rst:157
 msgid "Delete Item"
 msgstr "Видалити елемент"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:156
+#: ../main_window.rst:157
 msgid ":kbd:`Delete`"
 msgstr ":kbd:`Delete`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:156
+#: ../main_window.rst:157
 msgid ":kbd:`Backspace`"
 msgstr ":kbd:`Backspace`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:157
+#: ../main_window.rst:158
 msgid "Delete Item (Ripple)"
 msgstr "Видалити елемент (зсув)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:157
+#: ../main_window.rst:158
 msgid ":kbd:`Shift+Delete`"
 msgstr ":kbd:`Shift+Delete`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:158
+#: ../main_window.rst:159
 msgid "Details View"
 msgstr "Перегляд деталей"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:158
+#: ../main_window.rst:159
 msgid ":kbd:`Ctrl+Page Up`"
 msgstr ":kbd:`Ctrl+Page Up`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:159
+#: ../main_window.rst:160
 msgid "Donate"
 msgstr "Пожертвувати"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:159
+#: ../main_window.rst:160
 msgid ":kbd:`F7`"
 msgstr ":kbd:`F7`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:160
+#: ../main_window.rst:161
 msgid "Duplicate"
 msgstr "Дублювати"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:160
+#: ../main_window.rst:161
 msgid ":kbd:`Ctrl+Shift+/`"
 msgstr ":kbd:`Ctrl+Shift+/`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:161
+#: ../main_window.rst:162
 msgid "Edit Title"
 msgstr "Редагувати заголовок"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:161
+#: ../main_window.rst:162
 msgid ":kbd:`Alt+T`"
 msgstr ":kbd:`Alt+T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:162
+#: ../main_window.rst:163
 msgid "Export Selected Files"
 msgstr "Експортувати вибрані файли"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:162
+#: ../main_window.rst:163
 msgid ":kbd:`Ctrl+Shift+E`"
 msgstr ":kbd:`Ctrl+Shift+E`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:163
+#: ../main_window.rst:164
 msgid "Export Video / Media"
 msgstr "Експортувати відео / медіа"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:163
+#: ../main_window.rst:164
 msgid ":kbd:`Ctrl+E`"
 msgstr ":kbd:`Ctrl+E`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:163
+#: ../main_window.rst:164
 msgid ":kbd:`Ctrl+M`"
 msgstr ":kbd:`Ctrl+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:164
+#: ../main_window.rst:165
 msgid "Fast Forward"
 msgstr "Швидке перемотування вперед"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:164
+#: ../main_window.rst:165
 msgid ":kbd:`L`"
 msgstr ":kbd:`L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:165
+#: ../main_window.rst:166
 msgid "File Properties"
 msgstr "Властивості файлу"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:165
+#: ../main_window.rst:166
 msgid ":kbd:`Alt+I`"
 msgstr ":kbd:`Alt+I`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:165
+#: ../main_window.rst:166
 msgid ":kbd:`Ctrl+Double Click`"
 msgstr ":kbd:`Ctrl+Double Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:166
+#: ../main_window.rst:167
 msgid "Freeze View"
 msgstr "Заморозити вигляд"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:166
+#: ../main_window.rst:167
 msgid ":kbd:`Ctrl+F`"
 msgstr ":kbd:`Ctrl+F`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:167
+#: ../main_window.rst:168
 msgid "Fullscreen"
 msgstr "Повноекранний режим"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:167
+#: ../main_window.rst:168
 msgid ":kbd:`F11`"
 msgstr ":kbd:`F11`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:168
+#: ../main_window.rst:169
 msgid "Import Files..."
 msgstr "Імпортувати файли..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:168
+#: ../main_window.rst:169
 msgid ":kbd:`Ctrl+I`"
 msgstr ":kbd:`Ctrl+I`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:169
+#: ../main_window.rst:170
 msgid "Insert Keyframe"
 msgstr "Вставити ключовий кадр"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:169
+#: ../main_window.rst:170
 msgid ":kbd:`Alt+Shift+K`"
 msgstr ":kbd:`Alt+Shift+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:170
+#: ../main_window.rst:171
 msgid "Join our Community..."
 msgstr "Приєднуйтесь до нашої спільноти..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:170
+#: ../main_window.rst:171
 msgid ":kbd:`F5`"
 msgstr ":kbd:`F5`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:171
+#: ../main_window.rst:172
 msgid "Jump To End"
 msgstr "Перейти до кінця"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:171
+#: ../main_window.rst:172
 msgid ":kbd:`End`"
 msgstr ":kbd:`End`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:172
+#: ../main_window.rst:173
 msgid "Jump To Start"
 msgstr "Перейти на початок"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:172
+#: ../main_window.rst:173
 msgid ":kbd:`Home`"
 msgstr ":kbd:`Home`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:173
+#: ../main_window.rst:174
 msgid "Launch Tutorial"
 msgstr "Запустити навчання"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:173
+#: ../main_window.rst:174
 msgid ":kbd:`F2`"
 msgstr ":kbd:`F2`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:174
+#: ../main_window.rst:175
 msgid "New Project"
 msgstr "Новий проект"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:174
+#: ../main_window.rst:175
 msgid ":kbd:`Ctrl+N`"
 msgstr ":kbd:`Ctrl+N`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:176
 msgid "Next Frame"
 msgstr "Наступний кадр"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:176
 msgid ":kbd:`Right`"
 msgstr ":kbd:`Right`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:176
 msgid ":kbd:`.`"
 msgstr ":kbd:`.`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:176
+#: ../main_window.rst:177
 msgid "Next Marker"
 msgstr "Наступний маркер"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:176
+#: ../main_window.rst:177
 msgid ":kbd:`Shift+M`"
 msgstr ":kbd:`Shift+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:176
+#: ../main_window.rst:177
 msgid ":kbd:`Alt+Right`"
 msgstr ":kbd:`Alt+Right`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:177
+#: ../main_window.rst:178
 msgid "Nudge left (1 Frame)"
 msgstr "Зсунути вліво (1 кадр)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:177
+#: ../main_window.rst:178
 msgid ":kbd:`Ctrl+Left`"
 msgstr ":kbd:`Ctrl+Left`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:178
+#: ../main_window.rst:179
 msgid "Nudge left (5 Frames)"
 msgstr "Зсунути вліво (5 кадрів)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:178
+#: ../main_window.rst:179
 msgid ":kbd:`Shift+Ctrl+Left`"
 msgstr ":kbd:`Shift+Ctrl+Left`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:179
+#: ../main_window.rst:180
 msgid "Nudge right (1 Frame)"
 msgstr "Зсунути вправо (1 кадр)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:179
+#: ../main_window.rst:180
 msgid ":kbd:`Ctrl+Right`"
 msgstr ":kbd:`Ctrl+Right`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:180
+#: ../main_window.rst:181
 msgid "Nudge right (5 Frames)"
 msgstr "Зсунути вправо (5 кадрів)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:180
+#: ../main_window.rst:181
 msgid ":kbd:`Shift+Ctrl+Right`"
 msgstr ":kbd:`Shift+Ctrl+Right`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:181
+#: ../main_window.rst:182
 msgid "Open Help Contents"
 msgstr "Відкрити довідку"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:181
+#: ../main_window.rst:182
 msgid ":kbd:`F1`"
 msgstr ":kbd:`F1`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:182
+#: ../main_window.rst:183
 msgid "Open Project..."
 msgstr "Відкрити проект..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:182
+#: ../main_window.rst:183
 msgid ":kbd:`Ctrl+O`"
 msgstr ":kbd:`Ctrl+O`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:183
+#: ../main_window.rst:184
 msgid "Paste"
 msgstr "Вставити"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:183
+#: ../main_window.rst:184
 msgid ":kbd:`Ctrl+V`"
 msgstr ":kbd:`Ctrl+V`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:185
 msgid "Play/Pause Toggle"
 msgstr "Відтворити/Пауза"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:185
 msgid ":kbd:`Space`"
 msgstr ":kbd:`Space`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:185
 msgid ":kbd:`Up`"
 msgstr ":kbd:`Up`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:185
 msgid ":kbd:`Down`"
 msgstr ":kbd:`Down`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:185
+#: ../main_window.rst:186
 msgid "Preferences"
 msgstr "Налаштування"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:185
+#: ../main_window.rst:186
 msgid ":kbd:`Ctrl+P`"
 msgstr ":kbd:`Ctrl+P`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:186
+#: ../main_window.rst:187
 msgid "Preview File"
 msgstr "Попередній перегляд файлу"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:186
+#: ../main_window.rst:187
 msgid ":kbd:`Alt+P`"
 msgstr ":kbd:`Alt+P`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:186 ../main_window.rst:223
+#: ../main_window.rst:187 ../main_window.rst:224
 msgid ":kbd:`Double Click`"
 msgstr ":kbd:`Double Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:187
+#: ../main_window.rst:188
 msgid "Previous Frame"
 msgstr "Попередній кадр"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:187
+#: ../main_window.rst:188
 msgid ":kbd:`Left`"
 msgstr ":kbd:`Left`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:187
+#: ../main_window.rst:188
 msgid ":kbd:`,`"
 msgstr ":kbd:`,`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:188
+#: ../main_window.rst:189
 msgid "Previous Marker"
 msgstr "Попередній маркер"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:188
+#: ../main_window.rst:189
 msgid ":kbd:`Ctrl+Shift+M`"
 msgstr ":kbd:`Ctrl+Shift+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:188
+#: ../main_window.rst:189
 msgid ":kbd:`Alt+Left`"
 msgstr ":kbd:`Alt+Left`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:189 ../main_window.rst:317
+#: ../main_window.rst:190 ../main_window.rst:318
 msgid "Properties"
 msgstr "Властивості"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:189
+#: ../main_window.rst:190
 msgid ":kbd:`U`"
 msgstr ":kbd:`U`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:190
+#: ../main_window.rst:191
 msgid "Quit"
 msgstr "Вийти"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:190
+#: ../main_window.rst:191
 msgid ":kbd:`Ctrl+Q`"
 msgstr ":kbd:`Ctrl+Q`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:192
 msgid "Razor Toggle"
 msgstr "Перемикач леза"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:192
 msgid ":kbd:`C`"
 msgstr ":kbd:`C`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:192
 msgid ":kbd:`B`"
 msgstr ":kbd:`B`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:192
 msgid ":kbd:`R`"
 msgstr ":kbd:`R`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:192
+#: ../main_window.rst:193
 msgid "Redo"
 msgstr "Повторити"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:192
+#: ../main_window.rst:193
 msgid ":kbd:`Ctrl+Shift+Z`"
 msgstr ":kbd:`Ctrl+Shift+Z`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:193
+#: ../main_window.rst:194
 msgid "Report a Bug..."
 msgstr "Повідомити про помилку..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:193
+#: ../main_window.rst:194
 msgid ":kbd:`F3`"
 msgstr ":kbd:`F3`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:194
+#: ../main_window.rst:195
 msgid "Rewind"
 msgstr "Перемотати назад"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:194
+#: ../main_window.rst:195
 msgid ":kbd:`J`"
 msgstr ":kbd:`J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:195 ../main_window.rst:196
+#: ../main_window.rst:196 ../main_window.rst:197
 msgid "Save Current Frame"
 msgstr "Зберегти поточний кадр"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:195 ../main_window.rst:196
+#: ../main_window.rst:196 ../main_window.rst:197
 msgid ":kbd:`Ctrl+Shift+Y`"
 msgstr ":kbd:`Ctrl+Shift+Y`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:197
+#: ../main_window.rst:198
 msgid "Save Project"
 msgstr "Зберегти проект"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:197
+#: ../main_window.rst:198
 msgid ":kbd:`Ctrl+S`"
 msgstr ":kbd:`Ctrl+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:198
+#: ../main_window.rst:199
 msgid "Save Project As..."
 msgstr "Зберегти проект як..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:198
+#: ../main_window.rst:199
 msgid ":kbd:`Ctrl+Shift+S`"
 msgstr ":kbd:`Ctrl+Shift+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:199
+#: ../main_window.rst:200
 msgid "Select All"
 msgstr "Вибрати все"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:199
+#: ../main_window.rst:200
 msgid ":kbd:`Ctrl+A`"
 msgstr ":kbd:`Ctrl+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:200
+#: ../main_window.rst:201
 msgid "Select Item (Ripple)"
 msgstr "Вибрати елемент (з ефектом хвилі)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:200
+#: ../main_window.rst:201
 msgid ":kbd:`Alt+A`"
 msgstr ":kbd:`Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:200
+#: ../main_window.rst:201
 msgid ":kbd:`Alt+Click`"
 msgstr ":kbd:`Alt+Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:201
+#: ../main_window.rst:202
 msgid "Select None"
 msgstr "Зняти виділення"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:201
+#: ../main_window.rst:202
 msgid ":kbd:`Ctrl+Shift+A`"
 msgstr ":kbd:`Ctrl+Shift+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:202
+#: ../main_window.rst:203
 msgid "Show All Docks"
 msgstr "Показати всі панелі"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:202
+#: ../main_window.rst:203
 msgid ":kbd:`Ctrl+Shift+D`"
 msgstr ":kbd:`Ctrl+Shift+D`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:203 ../main_window.rst:285
+#: ../main_window.rst:204 ../main_window.rst:286
 msgid "Simple View"
 msgstr "Простий вигляд"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:203
+#: ../main_window.rst:204
 msgid ":kbd:`Alt+Shift+0`"
 msgstr ":kbd:`Alt+Shift+0`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:204
+#: ../main_window.rst:205
 msgid "Slice All: Keep Both Sides"
 msgstr "Розрізати все: зберегти обидві сторони"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:204
+#: ../main_window.rst:205
 msgid ":kbd:`Ctrl+Shift+K`"
 msgstr ":kbd:`Ctrl+Shift+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:205
+#: ../main_window.rst:206
 msgid "Slice All: Keep Left Side"
 msgstr "Розрізати все: зберегти ліву сторону"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:205
+#: ../main_window.rst:206
 msgid ":kbd:`Ctrl+Shift+J`"
 msgstr ":kbd:`Ctrl+Shift+J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:206
+#: ../main_window.rst:207
 msgid "Slice All: Keep Right Side"
 msgstr "Розрізати все: зберегти праву сторону"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:206
+#: ../main_window.rst:207
 msgid ":kbd:`Ctrl+Shift+L`"
 msgstr ":kbd:`Ctrl+Shift+L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:207
+#: ../main_window.rst:208
 msgid "Slice Selected: Keep Both Sides"
 msgstr "Розрізати вибране: зберегти обидві сторони"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:207
+#: ../main_window.rst:208
 msgid ":kbd:`Ctrl+K`"
 msgstr ":kbd:`Ctrl+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:208
+#: ../main_window.rst:209
 msgid "Slice Selected: Keep Left Side"
 msgstr "Розрізати вибране: зберегти ліву сторону"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:208
+#: ../main_window.rst:209
 msgid ":kbd:`Ctrl+J`"
 msgstr ":kbd:`Ctrl+J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:209
+#: ../main_window.rst:210
 msgid "Slice Selected: Keep Right Side"
 msgstr "Розрізати вибране: зберегти праву сторону"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:209
+#: ../main_window.rst:210
 msgid ":kbd:`Ctrl+L`"
 msgstr ":kbd:`Ctrl+L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:210
+#: ../main_window.rst:211
 msgid "Slice Selected: Keep Left (Ripple)"
 msgstr "Розрізати вибране: зберегти ліву (з ефектом хвилі)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:210
+#: ../main_window.rst:211
 msgid ":kbd:`W`"
 msgstr ":kbd:`W`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:211
+#: ../main_window.rst:212
 msgid "Slice Selected: Keep Right (Ripple)"
 msgstr "Розрізати вибране: зберегти праву (з ефектом хвилі)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:211
+#: ../main_window.rst:212
 msgid ":kbd:`Q`"
 msgstr ":kbd:`Q`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:212
+#: ../main_window.rst:213
 msgid "Snapping Toggle"
 msgstr "Перемикач прив’язки"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:212
+#: ../main_window.rst:213
 msgid ":kbd:`S`"
 msgstr ":kbd:`S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:213
+#: ../main_window.rst:214
 msgid "Split File"
 msgstr "Розділити файл"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:213
+#: ../main_window.rst:214
 msgid ":kbd:`Alt+S`"
 msgstr ":kbd:`Alt+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:213
+#: ../main_window.rst:214
 msgid ":kbd:`Shift+Double Click`"
 msgstr ":kbd:`Shift+Double Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:214
+#: ../main_window.rst:215
 msgid "Thumbnail View"
 msgstr "Перегляд ескізів"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:214
+#: ../main_window.rst:215
 msgid ":kbd:`Ctrl+Page Down`"
 msgstr ":kbd:`Ctrl+Page Down`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:215
+#: ../main_window.rst:216
 msgid "Timing Toggle"
 msgstr "Перемикання часу"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:215
+#: ../main_window.rst:216
 msgid ":kbd:`T`"
 msgstr ":kbd:`T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:216 ../main_window.rst:257
+#: ../main_window.rst:217 ../main_window.rst:258
 msgid "Title"
 msgstr "Заголовок"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:216
+#: ../main_window.rst:217
 msgid ":kbd:`Ctrl+T`"
 msgstr ":kbd:`Ctrl+T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:217
+#: ../main_window.rst:218
 msgid "Translate this Application..."
 msgstr "Перекласти цей додаток..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:217
+#: ../main_window.rst:218
 msgid ":kbd:`F6`"
 msgstr ":kbd:`F6`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:218
+#: ../main_window.rst:219
 msgid "Un-Freeze View"
 msgstr "Розморозити вигляд"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:218
+#: ../main_window.rst:219
 msgid ":kbd:`Ctrl+Shift+F`"
 msgstr ":kbd:`Ctrl+Shift+F`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:219
+#: ../main_window.rst:220
 msgid "Undo"
 msgstr "Скасувати"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:219
+#: ../main_window.rst:220
 msgid ":kbd:`Ctrl+Z`"
 msgstr ":kbd:`Ctrl+Z`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:220
+#: ../main_window.rst:221
 msgid "View Toolbar"
 msgstr "Показати панель інструментів"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:220
+#: ../main_window.rst:221
 msgid ":kbd:`Ctrl+Shift+B`"
 msgstr ":kbd:`Ctrl+Shift+B`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:221
+#: ../main_window.rst:222
 msgid "Zoom In"
 msgstr "Збільшити"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:221
+#: ../main_window.rst:222
 msgid ":kbd:`=`"
 msgstr ":kbd:`=`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:221
+#: ../main_window.rst:222
 msgid ":kbd:`Ctrl+=`"
 msgstr ":kbd:`Ctrl+=`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:222
+#: ../main_window.rst:223
 msgid "Zoom Out"
 msgstr "Зменшити"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:222
+#: ../main_window.rst:223
 msgid ":kbd:`-`"
 msgstr ":kbd:`-`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:222
+#: ../main_window.rst:223
 msgid ":kbd:`Ctrl+-`"
 msgstr ":kbd:`Ctrl+-`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:223
+#: ../main_window.rst:224
 msgid "Zoom to Timeline"
 msgstr "Масштабувати до часової шкали"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:223
+#: ../main_window.rst:224
 msgid ":kbd:`\\\\`"
 msgstr ":kbd:`\\\\`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:223
+#: ../main_window.rst:224
 msgid ":kbd:`Shift+\\\\`"
 msgstr ":kbd:`Shift+\\\\`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:227
+#: ../main_window.rst:228
 msgid "Menu"
 msgstr "Меню"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:228
+#: ../main_window.rst:229
 msgid ""
 "The following menu options are available on the main window on OpenShot. "
 "Most of these options can be accessed by the keyboard shortcuts mentioned "
@@ -1408,32 +1415,32 @@ msgstr ""
 "або бути переставлені."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:236
+#: ../main_window.rst:237
 msgid "Menu Name"
 msgstr "Назва меню"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:238
+#: ../main_window.rst:239
 msgid "File"
 msgstr "Файл"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:240
+#: ../main_window.rst:241
 msgid ":guilabel:`New Project` Create a blank new project."
 msgstr ":guilabel:`Новий проект` Створити порожній новий проект."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:241
+#: ../main_window.rst:242
 msgid ":guilabel:`Open Project` Open an existing project."
 msgstr ":guilabel:`Відкрити проект` Відкрити існуючий проект."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:242
+#: ../main_window.rst:243
 msgid ":guilabel:`Recent Projects` Access recently opened projects."
 msgstr ":guilabel:`Останні проекти` Відкрити нещодавно відкриті проекти."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:243
+#: ../main_window.rst:244
 msgid ""
 ":guilabel:`Recovery` Restore a previously saved version of your current "
 "project."
@@ -1441,17 +1448,17 @@ msgstr ""
 ":guilabel:`Відновлення` Відновити раніше збережену версію поточного проекту."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:244
+#: ../main_window.rst:245
 msgid ":guilabel:`Save Project` Save the current project."
 msgstr ":guilabel:`Зберегти проект` Зберегти поточний проект."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:245
+#: ../main_window.rst:246
 msgid ":guilabel:`Import Files` Import media files into the project."
 msgstr ":guilabel:`Імпортувати файли` Імпортувати медіафайли до проекту."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:246
+#: ../main_window.rst:247
 msgid ""
 ":guilabel:`Choose Profile` Select a project profile (*i.e. 1080p @ 30fps, "
 "720p @ 24fps, ...*)."
@@ -1460,7 +1467,7 @@ msgstr ""
 "30fps, 720p @ 24fps, ...*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:247
+#: ../main_window.rst:248
 msgid ""
 ":guilabel:`Save Current Frame` Save the current preview video frame as an "
 "image (sometimes represented with a camera icon)."
@@ -1469,7 +1476,7 @@ msgstr ""
 "перегляду як зображення (іноді позначається іконкою камери)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:248
+#: ../main_window.rst:249
 msgid ""
 ":guilabel:`Import Project` Import another project into the current project "
 "(*Adobe and Final Cut Pro formats partially supported*)."
@@ -1478,7 +1485,7 @@ msgstr ""
 "(*часткова підтримка форматів Adobe та Final Cut Pro*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:249
+#: ../main_window.rst:250
 msgid ""
 ":guilabel:`Export Project` Export the current project to a specified format "
 "(*EDL, Adobe, and Final Cut Pro formats partially supported*)."
@@ -1487,27 +1494,27 @@ msgstr ""
 "формат (*часткова підтримка форматів EDL, Adobe та Final Cut Pro*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:250
+#: ../main_window.rst:251
 msgid ":guilabel:`Quit` Exit the application."
 msgstr ":guilabel:`Вийти` Вийти з програми."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:251
+#: ../main_window.rst:252
 msgid "Edit"
 msgstr "Редагувати"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:253
+#: ../main_window.rst:254
 msgid ":guilabel:`Undo` Undo the last action."
 msgstr ":guilabel:`Скасувати` Скасувати останню дію."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:254
+#: ../main_window.rst:255
 msgid ":guilabel:`Redo` Redo the last undone action."
 msgstr ":guilabel:`Повторити` Повторити останню скасовану дію."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:255
+#: ../main_window.rst:256
 msgid ""
 ":guilabel:`Clear` Clear the current history or waveform cached data. This "
 "makes the `.osp project` file a much smaller file size."
@@ -1516,7 +1523,7 @@ msgstr ""
 "Це значно зменшує розмір файлу проекту `.osp`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:256
+#: ../main_window.rst:257
 msgid ""
 ":guilabel:`Preferences` Open the preferences dialog to customize settings."
 msgstr ""
@@ -1524,7 +1531,7 @@ msgstr ""
 "параметрів."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:259
+#: ../main_window.rst:260
 msgid ""
 ":guilabel:`Title` Add a SVG vector title to the project. See :ref:"
 "`text_and_titles_ref`."
@@ -1533,7 +1540,7 @@ msgstr ""
 "`text_and_titles_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:260
+#: ../main_window.rst:261
 msgid ""
 ":guilabel:`Animated Title` Add an animated title to the project. See :ref:"
 "`animated_titles_ref`."
@@ -1542,25 +1549,25 @@ msgstr ""
 "Див. :ref:`animated_titles_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:261
+#: ../main_window.rst:262
 msgid "View"
 msgstr "Вигляд"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:263
+#: ../main_window.rst:264
 msgid ":guilabel:`Toolbar` Show or hide the main window toolbar."
 msgstr ""
 ":guilabel:`Панель інструментів` Показати або приховати панель інструментів "
 "головного вікна."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:264
+#: ../main_window.rst:265
 msgid ":guilabel:`Fullscreen` Toggle fullscreen mode."
 msgstr ""
 ":guilabel:`Повноекранний режим` Увімкнути або вимкнути повноекранний режим."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:265
+#: ../main_window.rst:266
 msgid ""
 ":guilabel:`Views` Switch or reset the main window layout (*Simple, Advanced, "
 "Freeze, Show All*)."
@@ -1569,7 +1576,7 @@ msgstr ""
 "Розширений, Заморозити, Показати все*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:266
+#: ../main_window.rst:267
 msgid ""
 ":guilabel:`Docks` Show or hide various dockable panels (*Captions, Effects, "
 "Emojis, Project Files, Properties, Transitions, Video Preview*)."
@@ -1579,45 +1586,45 @@ msgstr ""
 "відео*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:267
+#: ../main_window.rst:268
 msgid "Help"
 msgstr "Довідка"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:269
+#: ../main_window.rst:270
 msgid ":guilabel:`Contents` Open the user guide online."
 msgstr ":guilabel:`Зміст` Відкрити онлайн-керівництво користувача."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:270
+#: ../main_window.rst:271
 msgid ":guilabel:`Tutorial` Access the built-in tutorial for new users."
 msgstr ""
 ":guilabel:`Навчання` Отримати доступ до вбудованого навчального посібника "
 "для новачків."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:271
+#: ../main_window.rst:272
 msgid ":guilabel:`Report a Bug` Report a bug or issue."
 msgstr ""
 ":guilabel:`Повідомити про помилку` Повідомити про помилку або проблему."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:272
+#: ../main_window.rst:273
 msgid ":guilabel:`Ask a Question` Ask a question about the software."
 msgstr ":guilabel:`Задати питання` Задати питання про програмне забезпечення."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:273
+#: ../main_window.rst:274
 msgid ":guilabel:`Translate` Contribute to translations of the software."
 msgstr ":guilabel:`Переклад` Допомогти з перекладом програмного забезпечення."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:274
+#: ../main_window.rst:275
 msgid ":guilabel:`Donate` Make a donation to support the project."
 msgstr ":guilabel:`Пожертвувати` Зробити пожертву на підтримку проекту."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:275
+#: ../main_window.rst:276
 msgid ""
 ":guilabel:`About` View information about the software (version, "
 "contributors, translators, changelog, and supporters)."
@@ -1626,12 +1633,12 @@ msgstr ""
 "учасники, перекладачі, журнал змін та підтримувачі)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:278
+#: ../main_window.rst:279
 msgid "Views"
 msgstr "Вигляди"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:280
+#: ../main_window.rst:281
 msgid ""
 "The OpenShot main window is composed of multiple **docks**. These **docks** "
 "are arranged and snapped together into a grouping that we call a **View**. "
@@ -1644,7 +1651,7 @@ msgstr ""
 "`Розширений вигляд`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:286
+#: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
 "for first-time users. It contains :guilabel:`Project Files` on the top "
@@ -1661,7 +1668,7 @@ msgstr ""
 "меню :guilabel:`Вигляд->Вигляди->Простий вигляд` у верхній частині екрана."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:293
+#: ../main_window.rst:294
 msgid ""
 "This is an advanced view, which adds more docks to the screen at once, "
 "improving access to many features that are not visible in Simple View. Once "
@@ -1676,12 +1683,12 @@ msgstr ""
 "вигляду."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:298
+#: ../main_window.rst:299
 msgid "Docks"
 msgstr "Доки"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:299
+#: ../main_window.rst:300
 msgid ""
 "Each widget on the OpenShot main window is contained in a **dock**. These "
 "docks can be dragged and snapped around the main window, and even grouped "
@@ -1696,17 +1703,17 @@ msgstr ""
 "власне розташування доків."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:307
+#: ../main_window.rst:308
 msgid "Dock Name"
 msgstr "Назва доку"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:309
+#: ../main_window.rst:310
 msgid "Captions"
 msgstr "Субтитри"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:310
+#: ../main_window.rst:311
 msgid ""
 "Manage and add captions or subtitles to your video project. Allows you to "
 "create, edit, and manage caption data. See :ref:`caption_effect_ref` effect."
@@ -1716,12 +1723,12 @@ msgstr ""
 "`caption_effect_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:311
+#: ../main_window.rst:312
 msgid "Effects"
 msgstr "Ефекти"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:312
+#: ../main_window.rst:313
 msgid ""
 "Browse and apply video and audio effects to your video clips. Includes "
 "filters, color adjustments, and special effects. See :ref:`effects_ref`."
@@ -1731,12 +1738,12 @@ msgstr ""
 "`effects_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:313
+#: ../main_window.rst:314
 msgid "Emojis"
 msgstr "Емодзі"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:314
+#: ../main_window.rst:315
 msgid ""
 "Add emoji graphics to your video project. Choose from a variety of emojis to "
 "enhance your video content."
@@ -1745,7 +1752,7 @@ msgstr ""
 "емодзі, щоб покращити ваш відеоконтент."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:316
+#: ../main_window.rst:317
 msgid ""
 "View and manage all the media files imported into your project. Organize, "
 "filter, and tag video, audio, and image files. See :ref:`files_ref`."
@@ -1755,7 +1762,7 @@ msgstr ""
 "ref:`files_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:318
+#: ../main_window.rst:319
 msgid ""
 "View and edit the properties of a selected effect, transition, or clip. "
 "Adjust settings such as duration, size, position, etc... See :ref:"
@@ -1766,12 +1773,12 @@ msgstr ""
 "`clip_properties_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:319
+#: ../main_window.rst:320
 msgid "Transitions"
 msgstr "Переходи"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:320
+#: ../main_window.rst:321
 msgid ""
 "Browse and apply transitions between video clips. Choose from a variety of "
 "transition wipes to create smooth changes between scenes. See :ref:"
@@ -1781,12 +1788,12 @@ msgstr ""
 "різноманіття переходів для плавної зміни сцен. Див. :ref:`transitions_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:321
+#: ../main_window.rst:322
 msgid "Video Preview"
 msgstr "Попередній перегляд відео"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:322
+#: ../main_window.rst:323
 msgid ""
 "Preview the current state of your video project. Allows you to play back and "
 "review your edits in real-time. See :ref:`playback_ref`."
@@ -1795,7 +1802,7 @@ msgstr ""
 "переглядати ваші редагування в реальному часі. Див. :ref:`playback_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:324
+#: ../main_window.rst:325
 msgid ""
 "If you have accidentally closed or moved a dock and can no longer find it, "
 "there are a couple easy solutions. First, you can use the :guilabel:`View-"
@@ -1809,3 +1816,12 @@ msgstr ""
 "відновити вигляд за замовчуванням. Або ви можете скористатися меню :guilabel:"
 "`Вигляд->Вигляди->Доки->...` для показу або приховування конкретних доків у "
 "головному вікні."
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
+#~ "center to pan, and double-click to fit timeline."
+#~ msgstr ""
+#~ "Керуйте видимим діапазоном часової шкали. Перетягуйте ручки для "
+#~ "збільшення/зменшення масштабу, перетягуйте центр для панорамування, двічі "
+#~ "клацніть, щоб підлаштувати часову шкалу."

@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-04-02 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -83,8 +84,8 @@ msgid "Import File Method"
 msgstr "Methode voor bestand importeren"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:48 ../files.rst:85 ../files.rst:137 ../files.rst:171
-#: ../files.rst:195
+#: ../files.rst:48 ../files.rst:85 ../files.rst:142 ../files.rst:182
+#: ../files.rst:216 ../files.rst:240
 msgid "Description"
 msgstr "Beschrijving"
 
@@ -246,7 +247,7 @@ msgid "Switch the Project Files panel to details view"
 msgstr "Schakel het Projectbestanden-paneel over naar detailsweergave"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:92 ../files.rst:112
+#: ../files.rst:92 ../files.rst:114
 msgid "Preview File"
 msgstr "Bestand bekijken"
 
@@ -256,7 +257,7 @@ msgid "Preview a media file"
 msgstr "Bekijk een mediabestand"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:94 ../files.rst:125
+#: ../files.rst:94 ../files.rst:170
 msgid "Split File"
 msgstr "Bestand splitsen"
 
@@ -270,7 +271,7 @@ msgstr ""
 "bestanden verschijnen in de lijst met projectbestanden."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:96 ../files.rst:148
+#: ../files.rst:96 ../files.rst:193
 msgid "Export Files"
 msgstr "Bestanden exporteren"
 
@@ -281,7 +282,7 @@ msgstr ""
 "Exporteer geselecteerde bestanden (en gesplitste segmenten) naar een doelmap"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:98 ../files.rst:160
+#: ../files.rst:98 ../files.rst:205
 msgid "Add to Timeline"
 msgstr "Toevoegen aan tijdlijn"
 
@@ -311,7 +312,7 @@ msgstr ""
 "een bekend profiel, krijg je de optie om een aangepast profiel te maken."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:102 ../files.rst:197
+#: ../files.rst:102 ../files.rst:242
 msgid "File Properties"
 msgstr "Bestandseigenschappen"
 
@@ -322,35 +323,45 @@ msgstr ""
 "Bekijk de eigenschappen van een bestand, zoals framerate, grootte, "
 "enzovoort..."
 
+#: ../files.rst:104 ../files.rst:125
+msgid "Optimize"
+msgstr ""
+
+#: ../files.rst:105
+msgid ""
+"Create, link, unlink, or delete optimized preview files for the selected "
+"video files."
+msgstr ""
+
 # Translated with gpt-4.1-mini
-#: ../files.rst:104 ../files.rst:205
+#: ../files.rst:106 ../files.rst:250
 msgid "Remove from Project"
 msgstr "Verwijderen uit project"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:105
+#: ../files.rst:107
 msgid "Remove a file from the project"
 msgstr "Verwijder een bestand uit het project"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:106
+#: ../files.rst:108
 msgid "Edit Title"
 msgstr "Titel bewerken"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:107
+#: ../files.rst:109
 msgid "Edit an existing title SVG file (shown when an SVG title is selected)"
 msgstr ""
 "Bewerk een bestaand titel-SVG-bestand (wordt weergegeven wanneer een SVG-"
 "titel is geselecteerd)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:108
+#: ../files.rst:110
 msgid "Duplicate Title"
 msgstr "Titel dupliceren"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:109
+#: ../files.rst:111
 #, fuzzy
 msgid ""
 "Make a copy, and then edit the copied title SVG file (shown when an SVG "
@@ -358,7 +369,7 @@ msgid ""
 msgstr "Maak een kopie en bewerk vervolgens het gekopieerde titel-SVG-bestand"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:113
+#: ../files.rst:115
 msgid ""
 "The :guilabel:`Preview File` action opens the Preview dialog for the "
 "selected file from :guilabel:`Project Files`. Simply double check a file to "
@@ -369,27 +380,27 @@ msgstr ""
 "op een bestand om dit venster te openen."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:116
+#: ../files.rst:118
 msgid "Playback starts automatically."
 msgstr "De weergave start automatisch."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:117
+#: ../files.rst:119
 msgid "Loop is enabled by default."
 msgstr "Herhalen is standaard ingeschakeld."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:118
+#: ../files.rst:120
 msgid "Press :kbd:`Space` to toggle play/pause."
 msgstr "Druk op :kbd:`Spatie` om afspelen/pauzeren te wisselen."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:119
+#: ../files.rst:121
 msgid "Use the mouse scroll wheel to zoom in/out."
 msgstr "Gebruik het muiswiel om in/uit te zoomen."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:120
+#: ../files.rst:122
 msgid ""
 "A :guilabel:`Reset Zoom` button appears when zoom is not 100%, and resets to "
 "100%."
@@ -397,8 +408,107 @@ msgstr ""
 "Er verschijnt een :guilabel:`Zoom resetten`-knop wanneer de zoom niet 100% "
 "is, en deze zet de zoom terug naar 100%."
 
-# Translated with gpt-4.1-mini
 #: ../files.rst:126
+msgid ""
+"Optimized preview files are lower-resolution copies of your source video "
+"files (sometimes referred to as proxy files), used to improve editing "
+"responsiveness without changing the original media. They are especially "
+"helpful with large formats such as 4K, high frame rate, or high bitrate "
+"footage."
+msgstr ""
+
+#: ../files.rst:130
+msgid ""
+"For video files, the file context menu includes an :guilabel:`Optimize` "
+"submenu. This feature creates or links smaller preview copies of your source "
+"clips, which can improve playback and scrubbing on slower systems or with "
+"high-resolution footage. Optimizing also pre-loads thumbnails to further "
+"improve the editing smoothness when zooming into the timeline."
+msgstr ""
+
+#: ../files.rst:135
+msgid "The :guilabel:`Optimize` submenu contains these actions:"
+msgstr ""
+
+#: ../files.rst:141
+msgid "Action"
+msgstr ""
+
+#: ../files.rst:143
+msgid "Optimize Video"
+msgstr ""
+
+#: ../files.rst:144
+msgid ""
+"Create an optimized preview file for each selected video file. OpenShot "
+"stores these files in the project's ``optimized`` assets folder."
+msgstr ""
+
+#: ../files.rst:145
+msgid "Link to Existing..."
+msgstr ""
+
+#: ../files.rst:146
+msgid ""
+"Choose a folder containing already-created optimized files and link the best "
+"matching files to the selected source clips. This supports common proxy "
+"naming styles, known proxy suffixes, file ID suffixes, and extension changes."
+msgstr ""
+
+#: ../files.rst:147
+msgid "Unlink"
+msgstr ""
+
+#: ../files.rst:148
+msgid ""
+"Remove the optimized preview link from the selected file without deleting "
+"the optimized file from disk."
+msgstr ""
+
+#: ../files.rst:149
+msgid "Delete & Unlink"
+msgstr ""
+
+#: ../files.rst:150
+msgid ""
+"Delete the linked optimized file from disk, then remove the link from the "
+"selected file."
+msgstr ""
+
+#: ../files.rst:152
+msgid ""
+"When optimization is in progress, the submenu changes to a single :guilabel:"
+"`Cancel` action for the selected file(s). Optimized preview files are used "
+"only for editing and preview playback. Your final export still uses the "
+"original source files."
+msgstr ""
+
+#: ../files.rst:155
+msgid ""
+"When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
+"selected source clip to an existing optimized file in a safe order. It first "
+"looks for the same base filename with a different video extension, then for "
+"common proxy-style names such as ``_proxy``, ``_preview``, ``_optimized``, "
+"``_lowres``, resolution tags such as ``_720p`` or ``_1080p``, and camera/"
+"editor-style variants such as ``_p``. It also supports names that add the "
+"OpenShot file ID after a known proxy suffix, such as ``clip001_proxy_F1."
+"mp4``, and it can still match files named only by file ID, such as ``F1."
+"mp4``."
+msgstr ""
+
+#: ../files.rst:162
+msgid ""
+"Best practice when bringing your own optimized files is to keep the same "
+"base filename as the source clip and add a clear proxy-style suffix, for "
+"example ``clip001_proxy.mp4`` or ``clip001_proxy.mov``. If you need to avoid "
+"filename collisions, append the OpenShot file ID after the proxy suffix, for "
+"example ``clip001_proxy_F1.mp4``. Avoid unrelated suffixes such as "
+"``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
+"proxy naming patterns."
+msgstr ""
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:171
 msgid ""
 "If you need to cut a large video file into many smaller files before "
 "editing, the **Split File** dialog is built exactly for this purpose. Right "
@@ -416,72 +526,72 @@ msgstr ""
 "een nieuw bestand in het Projectbestanden-dialoogvenster."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:137 ../files.rst:171 ../files.rst:195
+#: ../files.rst:182 ../files.rst:216 ../files.rst:240
 msgid "#"
 msgstr "#"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:137 ../files.rst:171 ../files.rst:195
+#: ../files.rst:182 ../files.rst:216 ../files.rst:240
 msgid "Name"
 msgstr "Naam"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:139 ../files.rst:173 ../files.rst:197
+#: ../files.rst:184 ../files.rst:218 ../files.rst:242
 msgid "1"
 msgstr "1"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:139
+#: ../files.rst:184
 msgid "Start of File"
 msgstr "Begin van bestand"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:139
+#: ../files.rst:184
 msgid "Choose the starting frame of your file by clicking this button"
 msgstr "Kies het startframe van je bestand door op deze knop te klikken"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:140 ../files.rst:174 ../files.rst:198
+#: ../files.rst:185 ../files.rst:219 ../files.rst:243
 msgid "2"
 msgstr "2"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:140
+#: ../files.rst:185
 msgid "End of File"
 msgstr "Einde van bestand"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:140
+#: ../files.rst:185
 msgid "Choose the ending frame of your file by clicking this button"
 msgstr "Kies het laatste frame van uw bestand door op deze knop te klikken"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:141 ../files.rst:175
+#: ../files.rst:186 ../files.rst:220
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:141
+#: ../files.rst:186
 msgid "Name of File"
 msgstr "Bestandsnaam"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:141
+#: ../files.rst:186
 msgid "Enter an optional name"
 msgstr "Voer een optionele naam in"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:142 ../files.rst:176
+#: ../files.rst:187 ../files.rst:221
 msgid "4"
 msgstr "4"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:142
+#: ../files.rst:187
 msgid "Create Button"
 msgstr "Maak-knop"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:142
+#: ../files.rst:187
 msgid ""
 "Create the file (which resets this dialog, so you can repeat these steps for "
 "each segment)"
@@ -490,7 +600,7 @@ msgstr ""
 "voor elk segment kunt herhalen)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:145
+#: ../files.rst:190
 msgid ""
 "Please refer to the section :ref:`clips_cutting_slicing_ref` for more ways "
 "to cut and slice clips directly in the timeline."
@@ -499,7 +609,7 @@ msgstr ""
 "clips direct in de tijdlijn te knippen en te snijden."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:149
+#: ../files.rst:194
 msgid ""
 "If you want your split file segments available outside of your OpenShot "
 "project, or want to copy all your video assets to one place, you can do this "
@@ -516,7 +626,7 @@ msgstr ""
 "dialoogvenster dat verschijnt een doelmap en klik op :guilabel:`Exporteren`."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:154
+#: ../files.rst:199
 msgid ""
 "NOTE: This will export each file or file segment using its **original video "
 "profile** (width, height, framerate, aspect ratio, etc...). It also supports "
@@ -533,7 +643,7 @@ msgstr ""
 "videobestanden exporteren (met het originele videoprofiel)."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:161
+#: ../files.rst:206
 msgid ""
 "In certain cases, you might need to add many files to the timeline at the "
 "same time. For example, a photo slideshow, or a large number of short video "
@@ -547,24 +657,24 @@ msgstr ""
 "met de rechtermuisknop en kies Toevoegen aan tijdlijn."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:173
+#: ../files.rst:218
 msgid "Selected Files"
 msgstr "Geselecteerde bestanden"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:173
+#: ../files.rst:218
 msgid "The list of selected files that need to be added to the timeline"
 msgstr ""
 "De lijst met geselecteerde bestanden die aan de tijdlijn moeten worden "
 "toegevoegd"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:174
+#: ../files.rst:219
 msgid "Order of Files"
 msgstr "Volgorde van bestanden"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:174
+#: ../files.rst:219
 msgid ""
 "Use these buttons to reorder the list of files (move up, move down, "
 "randomize, remove)"
@@ -573,12 +683,12 @@ msgstr ""
 "omlaag, willekeurig, verwijderen)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:175
+#: ../files.rst:220
 msgid "Timeline Position"
 msgstr "Positie in tijdlijn"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:175
+#: ../files.rst:220
 msgid ""
 "Choose the starting position and track where these files need to be inserted "
 "on the timeline"
@@ -587,44 +697,44 @@ msgstr ""
 "worden ingevoegd"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:176
+#: ../files.rst:221
 msgid "Fade Options"
 msgstr "Overgangsopties"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:176
+#: ../files.rst:221
 msgid ""
 "Fade in, fade out, both, or none (only affects the image, and not audio)"
 msgstr ""
 "In- of uitfaden, beide of geen (beïnvloedt alleen het beeld, niet het geluid)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:177
+#: ../files.rst:222
 msgid "5"
 msgstr "5"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:177
+#: ../files.rst:222
 msgid "Zoom Options"
 msgstr "Zoomopties"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:177
+#: ../files.rst:222
 msgid "Zoom in, zoom out, or none"
 msgstr "Inzoomen, uitzoomen of geen"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:178
+#: ../files.rst:223
 msgid "6"
 msgstr "6"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:178
+#: ../files.rst:223
 msgid "Transitions"
 msgstr "Overgangen"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:178
+#: ../files.rst:223
 msgid ""
 "Choose a specific transition to use between files, random, or none (only "
 "affects the image, and not the audio)"
@@ -633,12 +743,12 @@ msgstr ""
 "(beïnvloedt alleen het beeld, niet het geluid)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:184
+#: ../files.rst:229
 msgid "Properties"
 msgstr "Eigenschappen"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:185
+#: ../files.rst:230
 msgid ""
 "To view the properties of any imported file in your video project, right "
 "click on the file, and choose **File Properties**. This will launch the file "
@@ -654,7 +764,7 @@ msgstr ""
 "kunt u in dit dialoogvenster ook de framerate aanpassen."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:197
+#: ../files.rst:242
 msgid ""
 "Select an image sequence in the **Project Files** panel, right click and "
 "choose **File Properties**"
@@ -663,19 +773,19 @@ msgstr ""
 "de rechtermuisknop en kies **Bestandseigenschappen**"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:198
+#: ../files.rst:243
 msgid "Frame Rate"
 msgstr "Framerate"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:198
+#: ../files.rst:243
 msgid ""
 "For image sequences, you can also adjust the frame rate of the animation"
 msgstr ""
 "Voor afbeeldingsreeksen kunt u ook de framerate van de animatie aanpassen"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:207
+#: ../files.rst:252
 msgid ""
 "This will remove a file from the project. It will not delete the underlying "
 "physical file though, so removing a file from the project merely makes it "
@@ -686,12 +796,12 @@ msgstr ""
 "project maakt het alleen onbeschikbaar voor dit videoproject."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:212
+#: ../files.rst:257
 msgid "Project Assets Folder"
 msgstr "Project-assetsmap"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:213
+#: ../files.rst:258
 msgid ""
 "OpenShot creates and uses a few **temporary working folders** while you "
 "edit. These live under ``.openshot_qt/`` in your user profile and hold "
@@ -702,7 +812,7 @@ msgstr ""
 "en bevatten projectspecifieke bestanden die OpenShot voor u genereert:"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:216
+#: ../files.rst:261
 msgid ""
 "``.openshot_qt/blender/`` - Blender animation renders created by the "
 "Animated Title dialog"
@@ -711,14 +821,14 @@ msgstr ""
 "dialoogvenster Geanimeerde titel"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:217
+#: ../files.rst:262
 msgid "``.openshot_qt/title/`` - SVG title files created by the Title dialog"
 msgstr ""
 "``.openshot_qt/title/`` - SVG-titelbestanden gemaakt door het dialoogvenster "
 "Titel"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:218
+#: ../files.rst:263
 msgid ""
 "``.openshot_qt/thumbnail/`` - Thumbnails generated for Project Files and "
 "Timeline"
@@ -727,7 +837,7 @@ msgstr ""
 "en tijdlijn"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:219
+#: ../files.rst:264
 msgid ""
 "``.openshot_qt/clipboard/`` - Media created from clipboard pastes (images, "
 "audio, or video that must be saved to disk first)"
@@ -735,26 +845,28 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - Media gemaakt van klembordplakken "
 "(afbeeldingen, audio of video die eerst op schijf moeten worden opgeslagen)"
 
+#: ../files.rst:265
+msgid ""
+"``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
+"editing"
+msgstr ""
+
 # Translated with gpt-4.1-mini
-#: ../files.rst:220
+#: ../files.rst:266
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr "``.openshot_qt/protobuf_data`` - Tracking- en objectdetectiegegevens"
 
-# Translated with gpt-4.1-mini
-#: ../files.rst:222
+#: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
 "project directory, inside a single folder named ``PROJECTNAME_Assets``. For "
 "example: ``MyProject_Assets/clipboard`` will contain any media you pasted "
-"from the clipboard."
+"from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
+"optimized preview files linked to the project."
 msgstr ""
-"Wanneer u **Bestand→Opslaan als** kiest, kopieert OpenShot deze mappen naar "
-"uw projectmap, binnen een enkele map genaamd ``PROJECTNAME_Assets``. "
-"Bijvoorbeeld: ``MyProject_Assets/clipboard`` bevat alle media die u van het "
-"klembord hebt geplakt."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:225
+#: ../files.rst:272
 #, fuzzy
 msgid ""
 "As part of this process, all paths inside your ``*.osp`` project file are "
@@ -766,12 +878,12 @@ msgstr ""
 "uppen als één map."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:228
+#: ../files.rst:275
 msgid "Missing Files"
 msgstr "Ontbrekende bestanden"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:230
+#: ../files.rst:277
 msgid ""
 "When you create and save a project in OpenShot, any files imported into the "
 "software (such as videos, audio, and images) must remain accessible "
@@ -789,7 +901,7 @@ msgstr ""
 "voor andere videobewerkingssoftware."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:235
+#: ../files.rst:282
 msgid ""
 "For example, users might move or delete folders, unplug their USB devices, "
 "or move or delete their project files. Any of these examples cause a :"
@@ -806,7 +918,7 @@ msgstr ""
 "ontbrekende bestanden te vinden."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:239
+#: ../files.rst:286
 msgid ""
 "When OpenShot saves a project, all file paths are converted to **relative** "
 "file paths. As long as you keep all assets organized in the same parent "
@@ -822,7 +934,7 @@ msgstr ""
 "computer verplaatsen zonder problemen."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:243
+#: ../files.rst:290
 msgid ""
 "Everyone has their unique way of organizing files, and it's crucial to "
 "remember not to make changes to file paths, rename files, or delete files "
@@ -837,3 +949,15 @@ msgstr ""
 "bestanden. Voor een gedetailleerde handleiding over ontbrekende bestanden, "
 "zie `The Case of “Missing Files”! <https://github.com/OpenShot/openshot-qt/"
 "wiki/Missing-File-Prompt>`_"
+
+# Translated with gpt-4.1-mini
+#~ msgid ""
+#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
+#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
+#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
+#~ "pasted from the clipboard."
+#~ msgstr ""
+#~ "Wanneer u **Bestand→Opslaan als** kiest, kopieert OpenShot deze mappen "
+#~ "naar uw projectmap, binnen een enkele map genaamd ``PROJECTNAME_Assets``. "
+#~ "Bijvoorbeeld: ``MyProject_Assets/clipboard`` bevat alle media die u van "
+#~ "het klembord hebt geplakt."
