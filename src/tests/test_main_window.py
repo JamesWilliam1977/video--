@@ -428,6 +428,69 @@ class MainWindowTests(unittest.TestCase):
         self.assertEqual(tracker, [False])
         self.assertTrue(fake_window.shutting_down)
 
+    def test_clear_optimized_files_cancel_does_nothing(self):
+        proxy_calls = []
+        fake_window = types.SimpleNamespace(
+            proxy_service=types.SimpleNamespace(
+                delete_internal_project_proxy_files=lambda: proxy_calls.append("delete"),
+            ),
+        )
+
+        with patch.object(
+            self.main_window_module.QMessageBox,
+            "question",
+            return_value=self.main_window_module.QMessageBox.No,
+        ):
+            self.main_window_module.MainWindow.actionClearOptimizedFiles_trigger(fake_window)
+
+        self.assertEqual(proxy_calls, [])
+
+    def test_clear_optimized_files_yes_deletes_project_optimized_files(self):
+        proxy_calls = []
+        fake_window = types.SimpleNamespace(
+            proxy_service=types.SimpleNamespace(
+                delete_internal_project_proxy_files=lambda: proxy_calls.append("delete"),
+            ),
+        )
+
+        with patch.object(
+            self.main_window_module.QMessageBox,
+            "question",
+            return_value=self.main_window_module.QMessageBox.Yes,
+        ):
+            self.main_window_module.MainWindow.actionClearOptimizedFiles_trigger(fake_window)
+
+        self.assertEqual(proxy_calls, ["delete"])
+
+    def test_refresh_clear_menu_action_states_enables_action_only_when_internal_optimized_files_exist(self):
+        enabled_calls = []
+        fake_window = types.SimpleNamespace(
+            proxy_service=types.SimpleNamespace(
+                has_internal_project_proxy_files=lambda: True,
+            ),
+            actionClearOptimizedFiles=types.SimpleNamespace(
+                setEnabled=lambda value: enabled_calls.append(value),
+            ),
+        )
+
+        self.main_window_module.MainWindow._refresh_clear_menu_action_states(fake_window)
+
+        self.assertEqual(enabled_calls, [True])
+
+        enabled_calls = []
+        fake_window = types.SimpleNamespace(
+            proxy_service=types.SimpleNamespace(
+                has_internal_project_proxy_files=lambda: False,
+            ),
+            actionClearOptimizedFiles=types.SimpleNamespace(
+                setEnabled=lambda value: enabled_calls.append(value),
+            ),
+        )
+
+        self.main_window_module.MainWindow._refresh_clear_menu_action_states(fake_window)
+
+        self.assertEqual(enabled_calls, [False])
+
     def test_close_event_no_skips_save_but_shuts_down(self):
         calls = []
 

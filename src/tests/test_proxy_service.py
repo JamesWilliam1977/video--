@@ -171,6 +171,25 @@ class ProxyServiceTests(unittest.TestCase):
          self.assertEqual(reader_data["width"], 1920)
          self.assertEqual(reader_data["id"], "F1")
 
+     def test_dialog_preview_reader_data_ignores_missing_proxy_marker_even_if_file_exists(self):
+         file_obj = types.SimpleNamespace(
+             id="F1",
+             data={
+                 "id": "F1",
+                 "path": "/media/source.mp4",
+                 "width": 1920,
+                 "proxy_reader": {"path": "/optimized/F1.mp4", "width": 640, "missing": True},
+             },
+         )
+
+         with patch("classes.proxy_service.absolute_media_path", side_effect=lambda path: path), \
+              patch("classes.proxy_service.os.path.exists", return_value=True):
+             reader_data = dialog_preview_reader_data(file_obj)
+
+         self.assertEqual(reader_data["path"], "/media/source.mp4")
+         self.assertEqual(reader_data["width"], 1920)
+         self.assertEqual(reader_data["id"], "F1")
+
      def test_rewrite_json_for_preview_replaces_clip_and_effect_readers_only(self):
          payload = {
              "files": [
@@ -460,6 +479,50 @@ class ProxyServiceTests(unittest.TestCase):
          self.assertEqual(submitted[0][1], "F2")
          self.assertEqual(self.win.status_messages[-1][0], "Optimize Preview: creating 1 item(s), skipped 1")
 
+     def test_create_for_files_links_existing_target_file_instead_of_rerendering(self):
+         file_obj = types.SimpleNamespace(
+             id="F1",
+             data={"id": "F1", "path": "/media/source.mp4", "media_type": "video"},
+         )
+         submitted = []
+
+         with patch.object(self.service, "has_missing_proxy", return_value=False), \
+              patch.object(self.service, "_existing_proxy_output_path", return_value="/tmp/optimized/source_proxy.mp4"), \
+              patch.object(self.service, "_reader_json_for_path", return_value={"id": "F1", "path": "/tmp/optimized/source_proxy.mp4"}), \
+              patch.object(self.service, "_save_proxy_reader", return_value=None) as save_proxy_reader, \
+              patch.object(self.service._executor, "submit", side_effect=lambda *args: submitted.append(args)):
+             self.service.create_for_files([file_obj])
+
+         save_proxy_reader.assert_called_once_with("F1", {"id": "F1", "path": "/tmp/optimized/source_proxy.mp4"})
+         self.assertEqual(submitted, [])
+         self.assertEqual(self.win.status_messages[-1][0], "Optimize Preview: linked 1 item(s)")
+
+     def test_create_for_files_removes_invalid_existing_target_and_rerenders(self):
+         file_obj = types.SimpleNamespace(
+             id="F1",
+             data={"id": "F1", "path": "/media/source.mp4", "media_type": "video"},
+         )
+         submitted = []
+
+         with patch.object(self.service, "has_missing_proxy", return_value=False), \
+              patch.object(self.service, "_existing_proxy_output_path", return_value="/tmp/optimized/source_proxy.mp4"), \
+              patch.object(self.service, "_reader_json_for_path", side_effect=RuntimeError("invalid proxy")), \
+              patch("classes.proxy_service.os.remove") as remove_file, \
+              patch.object(self.service, "_reserve_proxy_output_path", return_value="/tmp/optimized/source_proxy.mp4"), \
+              patch.object(self.service._executor, "submit", side_effect=lambda *args: submitted.append(args) or Mock(add_done_callback=lambda callback: None)):
+             self.service.create_for_files([file_obj])
+
+         remove_file.assert_called_once_with("/tmp/optimized/source_proxy.mp4")
+         self.assertEqual(len(submitted), 1)
+         self.assertEqual(submitted[0][1], "F1")
+
+     def test_existing_proxy_output_path_reuses_default_name_when_file_exists(self):
+         with patch.object(self.service, "_proxy_root", return_value="/project/optimized"), \
+              patch("classes.proxy_service.os.path.exists", side_effect=lambda path: path == "/project/optimized/clip001_proxy.mp4"):
+             existing_path = self.service._existing_proxy_output_path("F2", {"path": "/media/clip001.mov"})
+
+         self.assertEqual(existing_path, "/project/optimized/clip001_proxy.mp4")
+
      def test_get_proxy_state_returns_ready_and_missing(self):
          file_obj = types.SimpleNamespace(
              id="F1",
@@ -471,6 +534,14 @@ class ProxyServiceTests(unittest.TestCase):
 
          with patch("classes.proxy_service.os.path.exists", return_value=False):
              self.assertEqual(self.service.get_proxy_state(file_obj), "missing")
+
+         missing_marked = types.SimpleNamespace(
+             id="F2",
+             data={"id": "F2", "proxy_reader": {"path": "/tmp/proxies/F2.mp4", "missing": True}},
+         )
+
+         with patch("classes.proxy_service.os.path.exists", return_value=True):
+             self.assertEqual(self.service.get_proxy_state(missing_marked), "missing")
 
      def test_use_existing_for_files_links_matches_and_marks_missing(self):
          file_one = types.SimpleNamespace(id="F1", data={"id": "F1", "path": "/media/source-a.mp4"})
@@ -496,6 +567,33 @@ class ProxyServiceTests(unittest.TestCase):
          self.assertEqual(saved[1][0], "F2")
          self.assertTrue(saved[1][1]["missing"])
          self.assertEqual(saved[1][1]["path"], "/optimized/source-b_proxy.mp4")
+
+     def test_use_existing_for_files_skips_invalid_matches_without_crashing(self):
+         file_one = types.SimpleNamespace(id="F1", data={"id": "F1", "path": "/media/source-a.mp4"})
+         file_two = types.SimpleNamespace(id="F2", data={"id": "F2", "path": "/media/source-b.mp4"})
+         saved = []
+
+         def fake_reader(path, file_id):
+             if path == "/optimized/F1.mp4":
+                 raise RuntimeError("invalid proxy")
+             return {"id": file_id, "path": path}
+
+         with patch.object(self.service, "_proxy_root", return_value="/project_assets/optimized"), \
+              patch("classes.proxy_service.QFileDialog.getExistingDirectory", return_value="/optimized"), \
+              patch.object(self.service, "_index_existing_optimized_files", return_value={
+                  "basename": {"source-a.mp4": ["/optimized/F1.mp4"], "source-b.mp4": ["/optimized/F2.mp4"]},
+                  "stem": {"source-a": ["/optimized/F1.mp4"], "source-b": ["/optimized/F2.mp4"]},
+                  "path": {},
+              }), \
+              patch("classes.proxy_service.os.path.exists", side_effect=lambda path: path in {"/optimized/F1.mp4", "/optimized/F2.mp4"}), \
+              patch.object(self.service, "_reader_json_for_path", side_effect=fake_reader), \
+              patch.object(self.service, "_save_proxy_reader", side_effect=lambda file_id, reader, **kwargs: saved.append((file_id, reader))), \
+              patch.object(self.service, "apply_runtime_updates_for_files", return_value=True), \
+              patch.object(self.service, "_emit_job_change", return_value=None):
+             self.service.use_existing_for_files([file_one, file_two])
+
+         self.assertEqual(saved, [("F2", {"id": "F2", "path": "/optimized/F2.mp4"})])
+         self.assertEqual(self.win.status_messages[-1][0], "Optimize Preview: linked 1 item(s), missing 0, invalid 1")
 
      def test_match_existing_optimized_path_prefers_same_name_different_extension(self):
          file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "path": "/media/clip001.mov"})
@@ -610,7 +708,7 @@ class ProxyServiceTests(unittest.TestCase):
          self.assertNotIn("clip001_proxy.thm", index["basename"])
          self.assertNotIn("clip001_proxy.txt", index["basename"])
 
-     def test_delete_and_unlink_for_files_deletes_project_proxy_and_unlinks_external(self):
+     def test_delete_and_unlink_for_files_deletes_linked_proxy_and_unlinks_all(self):
          file_one = types.SimpleNamespace(id="F1", data={"id": "F1"})
          file_two = types.SimpleNamespace(id="F2", data={"id": "F2"})
          fresh_one = types.SimpleNamespace(
@@ -639,8 +737,7 @@ class ProxyServiceTests(unittest.TestCase):
          removed_paths = []
          self.app.updates = types.SimpleNamespace(delete=lambda key: delete_calls.append(key), transaction_id=None)
 
-         with patch.object(self.service, "_proxy_root", return_value="/project/optimized"), \
-              patch("classes.proxy_service.File.get", side_effect=[fresh_one, refreshed_one, fresh_two, refreshed_two]), \
+         with patch("classes.proxy_service.File.get", side_effect=[fresh_one, refreshed_one, fresh_two, refreshed_two]), \
               patch("classes.proxy_service.absolute_media_path", side_effect=lambda path: path), \
               patch("classes.proxy_service.os.path.exists", return_value=True), \
               patch("classes.proxy_service.os.remove", side_effect=lambda path: removed_paths.append(path)), \
@@ -648,15 +745,15 @@ class ProxyServiceTests(unittest.TestCase):
               patch.object(self.service, "_emit_job_change", return_value=None):
              deleted = self.service.delete_and_unlink_for_files([file_one, file_two])
 
-         self.assertEqual(deleted, 1)
-         self.assertEqual(removed_paths, ["/project/optimized/F1.mp4"])
+         self.assertEqual(deleted, 2)
+         self.assertEqual(removed_paths, ["/project/optimized/F1.mp4", "/external/proxy/F2.mp4"])
          fresh_one.save.assert_called_once_with()
          fresh_two.save.assert_called_once_with()
          self.assertEqual(delete_calls, [
              ["files", {"id": "F1"}, "proxy_reader"],
              ["files", {"id": "F2"}, "proxy_reader"],
          ])
-         self.assertEqual(self.win.status_messages[-1][0], "Optimize Preview: deleted 1, unlinked 2, skipped 1 external item(s)")
+         self.assertEqual(self.win.status_messages[-1][0], "Optimize Preview: deleted 2, unlinked 2")
 
      def test_remove_for_files_clears_proxy_reader_via_file_save_then_nested_delete_if_needed(self):
          file_obj = types.SimpleNamespace(id="F1", data={"id": "F1"})

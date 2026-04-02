@@ -147,7 +147,7 @@ The :guilabel:`Optimize` submenu contains these actions:
    * - Unlink
      - Remove the optimized preview link from the selected file without deleting the optimized file from disk.
    * - Delete & Unlink
-     - Delete the linked optimized file when it is inside the project's optimized folder, then remove the link from the selected file. If the linked file is outside the project assets folder, OpenShot leaves the file on disk and only removes the link.
+     - Delete the linked optimized file from disk, then remove the link from the selected file.
 
 When optimization is in progress, the submenu changes to a single :guilabel:`Cancel` action for the selected file(s).
 Optimized preview files are used only for editing and preview playback. Your final export still uses the original source files.

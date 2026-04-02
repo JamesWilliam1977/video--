@@ -37,6 +37,12 @@ def get_assets_path(file_path=None, create_paths=True):
     if not file_path:
         return info.USER_PATH
 
+    file_abs = os.path.abspath(str(file_path))
+    backup_abs = os.path.abspath(info.BACKUP_FILE)
+    recovery_abs = os.path.abspath(info.RECOVERY_PATH) + os.sep
+    if file_abs == backup_abs or file_abs.startswith(recovery_abs):
+        return info.USER_PATH
+
     try:
         # Generate asset folder name filename + "_assets"
         file_path = file_path

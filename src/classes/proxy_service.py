@@ -61,13 +61,16 @@ def dialog_preview_reader_data(file_obj, prefer_proxy=True):
      file_id = str(getattr(file_obj, "id", "") or data.get("id") or "")
      proxy_reader = data.get("proxy_reader")
      if prefer_proxy and isinstance(proxy_reader, dict):
-         proxy_path = absolute_media_path(proxy_reader.get("path"))
-         if proxy_path and os.path.exists(proxy_path):
-             resolved = copy.deepcopy(proxy_reader)
-             resolved["path"] = proxy_path
-             if file_id:
-                 resolved["id"] = file_id
-             return resolved
+         if proxy_reader.get("missing"):
+             proxy_reader = None
+         else:
+             proxy_path = absolute_media_path(proxy_reader.get("path"))
+             if proxy_path and os.path.exists(proxy_path):
+                 resolved = copy.deepcopy(proxy_reader)
+                 resolved["path"] = proxy_path
+                 if file_id:
+                     resolved["id"] = file_id
+                 return resolved
 
      resolved = copy.deepcopy(data)
      source_path = absolute_media_path(resolved.get("path"))
@@ -129,6 +132,7 @@ class ProxyService(QObject):
          self._ensure_executor()
          os.makedirs(self._proxy_root(), exist_ok=True)
          submitted = 0
+         linked_existing = 0
          skipped = 0
          for file_obj in files:
              file_id = str(file_obj.id or "")
@@ -143,6 +147,25 @@ class ProxyService(QObject):
                  skipped += 1
                  continue
              snapshot = copy.deepcopy(file_obj.data or {})
+             existing_output_path = self._existing_proxy_output_path(file_id, snapshot)
+             if existing_output_path:
+                 try:
+                     proxy_reader = self._reader_json_for_path(existing_output_path, file_id)
+                     self._save_proxy_reader(file_id, proxy_reader)
+                     log.info("Optimize Preview create_for_files file_id=%s linked existing output=%s", file_id, existing_output_path)
+                     linked_existing += 1
+                     continue
+                 except Exception as exc:
+                     log.warning(
+                         "Optimize Preview create_for_files file_id=%s ignored invalid existing output=%s (%s)",
+                         file_id,
+                         existing_output_path,
+                         exc,
+                     )
+                     try:
+                         os.remove(existing_output_path)
+                     except Exception:
+                         pass
              output_path = self._reserve_proxy_output_path(file_id, snapshot)
              with self._lock:
                  self._jobs[file_id] = {
@@ -162,9 +185,16 @@ class ProxyService(QObject):
 
          if submitted:
              status = "Optimize Preview: creating {} item(s)".format(submitted)
+             if linked_existing:
+                 status += ", linked {}".format(linked_existing)
              if skipped:
                  status += ", skipped {}".format(skipped)
              self._show_status(status)
+         elif linked_existing:
+             status = "Optimize Preview: linked {} item(s)".format(linked_existing)
+             if skipped:
+                 status += ", skipped {}".format(skipped)
+             self._show_status(status, 3000)
          elif skipped:
              self._show_status("Optimize Preview: skipped {} item(s)".format(skipped), 3000)
 
@@ -187,6 +217,7 @@ class ProxyService(QObject):
 
          matched = 0
          missing = 0
+         invalid = 0
          changed_file_ids = []
          folder_index = self._index_existing_optimized_files(selected_folder)
          updates = get_app().updates
@@ -196,13 +227,24 @@ class ProxyService(QObject):
              for file_obj in files:
                  match_path = self._match_existing_optimized_path(file_obj, selected_folder, folder_index)
                  if match_path and os.path.exists(match_path):
-                     proxy_reader = self._reader_json_for_path(match_path, file_obj.id)
-                     matched += 1
+                     try:
+                         proxy_reader = self._reader_json_for_path(match_path, file_obj.id)
+                         matched += 1
+                         self._save_proxy_reader(file_obj.id, proxy_reader, apply_runtime=False, emit_job_change=False)
+                         changed_file_ids.append(str(file_obj.id or ""))
+                     except Exception as exc:
+                         log.warning(
+                             "Optimize Preview use_existing_for_files file_id=%s skipped invalid existing file=%s (%s)",
+                             file_obj.id,
+                             match_path,
+                             exc,
+                         )
+                         invalid += 1
                  else:
                      proxy_reader = self._missing_proxy_reader(file_obj, selected_folder)
+                     self._save_proxy_reader(file_obj.id, proxy_reader, apply_runtime=False, emit_job_change=False)
+                     changed_file_ids.append(str(file_obj.id or ""))
                      missing += 1
-                 self._save_proxy_reader(file_obj.id, proxy_reader, apply_runtime=False, emit_job_change=False)
-                 changed_file_ids.append(str(file_obj.id or ""))
          finally:
              updates.transaction_id = previous_tid
 
@@ -210,10 +252,10 @@ class ProxyService(QObject):
          for file_id in changed_file_ids:
              self._emit_job_change(file_id)
 
-         self._show_status(
-             "Optimize Preview: linked {} item(s), missing {}".format(matched, missing),
-             4000,
-         )
+         status = "Optimize Preview: linked {} item(s), missing {}".format(matched, missing)
+         if invalid:
+             status += ", invalid {}".format(invalid)
+         self._show_status(status, 4000)
 
      def remove_for_files(self, files):
          files = [f for f in (files or []) if getattr(f, "id", None)]
@@ -258,11 +300,8 @@ class ProxyService(QObject):
          if not files:
              return 0
 
-         proxy_root = os.path.abspath(str(self._proxy_root() or ""))
-         proxy_root_prefix = proxy_root + os.sep if proxy_root else ""
          deleted = 0
          unlinked = 0
-         skipped_external = 0
          changed_file_ids = []
          updates = get_app().updates
          previous_tid = getattr(updates, "transaction_id", None)
@@ -280,14 +319,11 @@ class ProxyService(QObject):
                  proxy_path = absolute_media_path(proxy_reader.get("path"))
                  if proxy_path and os.path.exists(proxy_path):
                      proxy_abs = os.path.abspath(proxy_path)
-                     if proxy_root_prefix and proxy_abs.startswith(proxy_root_prefix):
-                         try:
-                             os.remove(proxy_abs)
-                             deleted += 1
-                         except Exception:
-                             log.warning("Optimize Preview delete failed for %s", proxy_abs, exc_info=1)
-                     else:
-                         skipped_external += 1
+                     try:
+                         os.remove(proxy_abs)
+                         deleted += 1
+                     except Exception:
+                         log.warning("Optimize Preview delete failed for %s", proxy_abs, exc_info=1)
 
                  data.pop("proxy_reader", None)
                  fresh_file.data = data
@@ -307,10 +343,94 @@ class ProxyService(QObject):
              self._emit_job_change(file_id)
 
          status = "Optimize Preview: deleted {}, unlinked {}".format(deleted, unlinked)
-         if skipped_external:
-             status += ", skipped {} external item(s)".format(skipped_external)
-         if unlinked or skipped_external:
+         if unlinked:
              self._show_status(status, 4000)
+         return deleted
+
+     def has_internal_project_proxy_files(self):
+         proxy_root = self._proxy_root()
+         if not proxy_root or not os.path.isdir(proxy_root):
+             return False
+         for _, _, files in os.walk(proxy_root):
+             if files:
+                 return True
+         return False
+
+     def delete_internal_project_proxy_files(self):
+         proxy_root = os.path.abspath(str(self._proxy_root() or ""))
+         proxy_root_prefix = proxy_root + os.sep if proxy_root else ""
+         if not proxy_root_prefix or not os.path.isdir(proxy_root):
+             return 0
+
+         deleted = 0
+         unlinked = 0
+         changed_file_ids = []
+         updates = get_app().updates
+         previous_tid = getattr(updates, "transaction_id", None)
+         updates.transaction_id = str(uuid.uuid4())
+         try:
+             for file_obj in File.filter():
+                 file_id = str(getattr(file_obj, "id", "") or "")
+                 if not file_id:
+                     continue
+                 fresh_file = File.get(id=file_id)
+                 data = getattr(fresh_file, "data", {}) or {}
+                 proxy_reader = data.get("proxy_reader")
+                 if not isinstance(proxy_reader, dict):
+                     continue
+
+                 proxy_path = absolute_media_path(proxy_reader.get("path"))
+                 if not proxy_path:
+                     continue
+                 proxy_abs = os.path.abspath(proxy_path)
+                 if not proxy_abs.startswith(proxy_root_prefix):
+                     continue
+
+                 self.cancel_job(file_id)
+                 if os.path.exists(proxy_abs):
+                     try:
+                         os.remove(proxy_abs)
+                         deleted += 1
+                     except Exception:
+                         log.warning("Optimize Preview delete failed for %s", proxy_abs, exc_info=1)
+
+                 data.pop("proxy_reader", None)
+                 fresh_file.data = data
+                 fresh_file.save()
+
+                 refreshed = File.get(id=file_id)
+                 refreshed_data = getattr(refreshed, "data", {}) or {}
+                 if "proxy_reader" in refreshed_data and refreshed and refreshed.key:
+                     get_app().updates.delete(refreshed.key + ["proxy_reader"])
+                 changed_file_ids.append(file_id)
+                 unlinked += 1
+         finally:
+             updates.transaction_id = previous_tid
+
+         try:
+             for root, dirs, files in os.walk(proxy_root, topdown=False):
+                 for name in files:
+                     file_path = os.path.join(root, name)
+                     try:
+                         os.remove(file_path)
+                         deleted += 1
+                     except Exception:
+                         log.warning("Optimize Preview delete failed for %s", file_path, exc_info=1)
+                 for name in dirs:
+                     dir_path = os.path.join(root, name)
+                     try:
+                         os.rmdir(dir_path)
+                     except OSError:
+                         pass
+         except Exception:
+             log.warning("Optimize Preview cleanup failed for %s", proxy_root, exc_info=1)
+
+         self.apply_runtime_updates_for_files(changed_file_ids)
+         for file_id in changed_file_ids:
+             self._emit_job_change(file_id)
+
+         if deleted or unlinked:
+             self._show_status("Optimize Preview: deleted {}, unlinked {}".format(deleted, unlinked), 4000)
          return deleted
 
      def cancel_for_files(self, files):
@@ -438,6 +558,8 @@ class ProxyService(QObject):
          proxy_reader = data.get("proxy_reader") if isinstance(data, dict) else None
          if not isinstance(proxy_reader, dict) or not proxy_reader.get("path"):
              return False
+         if proxy_reader.get("missing"):
+             return True
          return not os.path.exists(str(proxy_reader.get("path")))
 
      def get_active_job_for_file(self, file_id):
@@ -535,9 +657,16 @@ class ProxyService(QObject):
 
      def _reader_json_for_path(self, file_path, file_id):
          clip = openshot.Clip(str(file_path))
-         proxy_reader = json.loads(clip.Reader().Json())
-         proxy_reader["id"] = str(file_id or "")
-         return proxy_reader
+         try:
+             clip.Open()
+             proxy_reader = json.loads(clip.Reader().Json())
+             proxy_reader["id"] = str(file_id or "")
+             return proxy_reader
+         finally:
+             try:
+                 clip.Close()
+             except Exception:
+                 pass
 
      def _build_proxy_reader(self, file_id, file_data):
          source_path = absolute_media_path(file_data.get("path"))
@@ -828,6 +957,19 @@ class ProxyService(QObject):
          filename = self._preferred_proxy_filename(file_id, file_data, proxy_root)
          return os.path.join(proxy_root, filename)
 
+     def _existing_proxy_output_path(self, file_id, file_data):
+         proxy_root = self._proxy_root()
+         default_filename = self._preferred_proxy_filename(file_id, file_data, proxy_root, existing_names=set())
+         default_path = os.path.join(proxy_root, default_filename)
+         source_stem = os.path.splitext(os.path.basename(absolute_media_path((file_data or {}).get("path")) or ""))[0]
+         specific_path = os.path.join(proxy_root, "{}_{}.mp4".format(self._proxy_filename_stem(source_stem), str(file_id or "")))
+
+         if os.path.exists(specific_path):
+             return specific_path
+         if os.path.exists(default_path):
+             return default_path
+         return None
+
      def _reserve_proxy_output_path(self, file_id, file_data):
          proxy_root = self._proxy_root()
          os.makedirs(proxy_root, exist_ok=True)
@@ -874,6 +1016,7 @@ class ProxyService(QObject):
          if not source_stem:
              return "optimized_proxy"
          return "{}_proxy".format(source_stem)
+
 
      @staticmethod
      def _source_stem_file_id_prefix_candidates(source_stem, file_id):

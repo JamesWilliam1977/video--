@@ -1242,6 +1242,14 @@
   },
   {
     "category": "Keyboard",
+    "title": "Delete Optimized Videos",
+    "restart": false,
+    "setting": "actionClearOptimizedFiles",
+    "value": "Ctrl+Shift+O",
+    "type": "text"
+  },
+  {
+    "category": "Keyboard",
     "title": "Simple View",
     "restart": false,
     "setting": "actionSimple_View",

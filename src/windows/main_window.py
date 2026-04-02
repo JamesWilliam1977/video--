@@ -523,6 +523,23 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         get_app().updates.reset()
         log.info('History cleared')
 
+    def actionClearOptimizedFiles_trigger(self):
+        """Delete and unlink internal optimized files for the current project"""
+        _ = get_app()._tr
+        ret = QMessageBox.question(
+            self,
+            _("Delete Optimized Videos?"),
+            _("Delete optimized videos from this project's assets folder?"),
+            QMessageBox.No | QMessageBox.Yes,
+        )
+        if ret != QMessageBox.Yes:
+            return
+        self.proxy_service.delete_internal_project_proxy_files()
+
+    def _refresh_clear_menu_action_states(self):
+        has_internal_optimized = bool(getattr(self, "proxy_service", None) and self.proxy_service.has_internal_project_proxy_files())
+        self.actionClearOptimizedFiles.setEnabled(has_internal_optimized)
+
     def save_project(self, file_path):
         """ Save a project to a file path, and refresh the screen """
         with self.lock:
@@ -3709,6 +3726,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.optimizedPreviewMenu = preview_menu.addMenu(_("Optimize"))
         self.optimizedPreviewMenu.setIcon(optimized_preview_icon("ready"))
         self.optimizedPreviewMenu.aboutToShow.connect(self._refresh_optimized_preview_action_states)
+        if getattr(self, "menuClear", None):
+            self.menuClear.aboutToShow.connect(self._refresh_clear_menu_action_states)
 
     def actionInsertKeyframe(self):
         log.debug("actionInsertKeyframe")
