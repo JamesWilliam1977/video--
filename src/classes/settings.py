@@ -35,6 +35,7 @@ from classes import info
 from classes.app import get_app
 from classes.logger import log
 from classes.json_data import JsonDataStore
+import openshot
 
 
 class SettingStore(JsonDataStore):
@@ -61,6 +62,38 @@ class SettingStore(JsonDataStore):
         self.data_type = "user settings"
         self.settings_filename = "openshot.settings"
         self.defaults_path = os.path.join(info.PATH, 'settings', '_default.settings')
+
+    def _apply_runtime_defaults(self, settings_list):
+        """Overlay runtime-detected libopenshot defaults onto selected settings."""
+        lib_settings = openshot.Settings.Instance()
+        runtime_defaults = {
+            "omp_threads_number": lib_settings.DefaultOMPThreads(),
+            "ff_threads_number": lib_settings.DefaultFFThreads(),
+        }
+
+        for item in settings_list:
+            setting_name = item.get("setting")
+            if setting_name in runtime_defaults:
+                item["value"] = runtime_defaults[setting_name]
+
+        return settings_list
+
+    def has_user_value(self, key):
+        """Return True when the user settings file contains an explicit value for key."""
+        key = key.lower()
+        file_path = os.path.join(info.USER_PATH, self.settings_filename)
+        if not os.path.exists(os.fsencode(file_path)):
+            return False
+
+        try:
+            user_settings = self.read_from_file(file_path)
+        except Exception:
+            return False
+
+        for item in user_settings:
+            if item.get("setting", "").lower() == key and "value" in item:
+                return True
+        return False
 
     def get_all_settings(self):
         """ Get the entire list of settings (with all metadata) """
@@ -93,7 +126,9 @@ class SettingStore(JsonDataStore):
         Creates user settings if missing. """
 
         # try to load default settings, on failure will raise exception to caller
-        default_settings = self.read_from_file(self.defaults_path)
+        default_settings = self._apply_runtime_defaults(
+            self.read_from_file(self.defaults_path)
+        )
         self._data = default_settings
 
         # Try to find user settings dir, give up if it's not there
@@ -136,7 +171,9 @@ class SettingStore(JsonDataStore):
         requires_restart = False  # Track if any setting requires a restart
 
         try:
-            default_settings = self.read_from_file(self.defaults_path)
+            default_settings = self._apply_runtime_defaults(
+                self.read_from_file(self.defaults_path)
+            )
         except Exception as ex:
             log.error(f"Error loading default settings: {ex}")
             return False

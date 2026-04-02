@@ -3903,11 +3903,11 @@ msgid "Hardware Encoder Graphics Card"
 msgstr ""
 
 #: Settings for omp_threads_number
-msgid "OMP Threads (0 = Default)"
+msgid "OMP Threads"
 msgstr ""
 
 #: Settings for ff_threads_number
-msgid "FFmpeg Threads (0 = Default)"
+msgid "FFmpeg Threads"
 msgstr ""
 
 #: Settings for decode_hw_max_width

@@ -204,7 +204,7 @@ class GenerationService(QObject):
 
         source_path = source_file.data.get("path", "")
         media_type = source_file.data.get("media_type")
-        if template_id not in ("img2img-basic", "upscale-realesrgan-x4", "img2video-svd") or media_type != "image":
+        if template_id not in ("img2img-basic", "upscale-realesrgan-x4", "img2video-wan") or media_type != "image":
             return source_path
 
         if is_supported_img2img_path(source_path):
@@ -385,6 +385,7 @@ class GenerationService(QObject):
         prompt_text,
         source_file,
         source_path,
+        reference_image_path="",
         coordinates_positive_text="",
         coordinates_negative_text="",
         rectangles_positive_text="",
@@ -481,6 +482,14 @@ class GenerationService(QObject):
         def _is_placeholder_value(path_text):
             path_text = str(path_text or "").strip().lower()
             return path_text in ("__openshot_input__", "{{openshot_input}}", "$openshot_input")
+
+        def _is_reference_image_placeholder_value(path_text):
+            path_text = str(path_text or "").strip().lower()
+            return path_text in (
+                "__openshot_reference_image__",
+                "{{openshot_reference_image}}",
+                "$openshot_reference_image",
+            )
 
         def _is_prompt_placeholder_value(text_value):
             text_value = str(text_value or "").strip().lower()
@@ -620,10 +629,12 @@ class GenerationService(QObject):
 
             # Resolve generic OpenShot source placeholders in any string input
             # (custom nodes may use keys like `video_path` instead of `video`/`file`).
-            if source_path:
+            if source_path or reference_image_path:
                 for input_key, input_value in list(inputs.items()):
-                    if isinstance(input_value, str) and _is_placeholder_value(input_value):
+                    if isinstance(input_value, str) and source_path and _is_placeholder_value(input_value):
                         inputs[input_key] = source_path
+                    elif isinstance(input_value, str) and reference_image_path and _is_reference_image_placeholder_value(input_value):
+                        inputs[input_key] = reference_image_path
 
             if "filename_prefix" in inputs:
                 prefix_value = str(inputs.get("filename_prefix", "")).strip()
@@ -954,6 +965,12 @@ class GenerationService(QObject):
                 "OpenShot could not convert this image into PNG for ComfyUI.\n\n{}".format(ex),
             )
             return
+        reference_image_path = ""
+        reference_image_file_id = str(payload.get("reference_image_file_id") or "").strip()
+        if reference_image_file_id:
+            reference_image_file = File.get(id=reference_image_file_id)
+            if reference_image_file and isinstance(reference_image_file.data, dict):
+                reference_image_path = str(reference_image_file.data.get("path", "") or "").strip()
         try:
             workflow = self._prepare_template_workflow(
                 template_meta,
@@ -961,6 +978,7 @@ class GenerationService(QObject):
                 prompt_text=payload.get("prompt"),
                 source_file=source_file,
                 source_path=source_path,
+                reference_image_path=reference_image_path,
                 coordinates_positive_text=payload.get("coordinates_positive"),
                 coordinates_negative_text=payload.get("coordinates_negative"),
                 rectangles_positive_text=payload.get("rectangles_positive"),

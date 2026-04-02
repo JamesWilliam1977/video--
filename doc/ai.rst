@@ -63,12 +63,16 @@ Use this quick setup path before trying any AI workflow in OpenShot:
 4. Start ComfyUI, then open :guilabel:`Edit->Preferences->Advanced` and set :guilabel:`ComfyUI URL`.
 5. Click :guilabel:`Check` to confirm OpenShot can reach the server.
 
+For a full step-by-step server setup guide, see the OpenShot wiki:
+`ComfyUI: Advanced AI Setup Guide <https://github.com/OpenShot/openshot-qt/wiki/ComfyUI:-Advanced-AI-Setup-Guide>`_.
+
 For full ComfyUI installation details, see the official repository:
 `ComfyUI on GitHub <https://github.com/comfyanonymous/ComfyUI>`_.
 
 Required Custom Nodes
 ^^^^^^^^^^^^^^^^^^^^^
 
+- `comfyui_controlnet_aux <https://github.com/Fannovel16/comfyui_controlnet_aux>`_
 - `ComfyUI-Frame-Interpolation <https://github.com/Fannovel16/ComfyUI-Frame-Interpolation>`_
 - `ComfyUI-VideoHelperSuite <https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite>`_
 - `ComfyUI-Video-Segmentation <https://github.com/miaoshouai/ComfyUI-Video-Segmentation>`_
@@ -78,6 +82,7 @@ Required Custom Nodes
 Required Models / Files
 ^^^^^^^^^^^^^^^^^^^^^^^
 
+- ``ComfyUI/models/diffusion_models/wan2.1_vace_1.3B_fp16.safetensors``
 - ``ComfyUI/custom_nodes/ComfyUI-Frame-Interpolation/ckpts/rife/rife47.pth``
 - ``ComfyUI/models/checkpoints/sd_xl_base_1.0.safetensors``
 - ``ComfyUI/models/checkpoints/sd_xl_refiner_1.0.safetensors``
@@ -97,7 +102,6 @@ Required Models / Files
 - ``ComfyUI/models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors``
 - ``ComfyUI/models/TTS/Ace-Step1.5/acestep-v15-turbo/silence_latent.pt``
 - ``ComfyUI/models/upscale_models/RealESRGAN_x4plus.safetensors``
-- ``ComfyUI/models/vae/split_files/vae/wan_2.1_vae.safetensors``
 - ``ComfyUI/models/vae/wan_2.1_vae.safetensors``
 - ``ComfyUI/models/vae/wan2.2_vae.safetensors``
 - ``ComfyUI/models/VLM/transnetv2-pytorch-weights/transnetv2-pytorch-weights.pth``
@@ -172,6 +176,7 @@ What you can do in the dialog:
 - Enter the prompt text.
 - Preview the selected source file (for enhance workflows).
 - Set the output name for generated media.
+- Pick a reference image in the :guilabel:`Reference` tab for workflows that require one.
 - Provide tracking points/rectangles for tracking workflows.
 - Start the job with :guilabel:`Generate` or close with :guilabel:`Cancel`.
 
@@ -307,19 +312,47 @@ Change Image Style... (``img2img-basic``)
 - How: Choose :guilabel:`Enhance with AI` on an image, enter a style prompt, then generate.
 - Details: Uses ``comfyui/img2img-basic.json`` with ``sd_xl_base_1.0.safetensors``.
 
-Image to Video... (``img2video-svd``)
+Depth (``image-extract-depth``)
+"""""""""""""""""""""""""""""""""""
+
+- Why: Export a grayscale depth-map image from a source image.
+- How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:`Depth` on an image, then generate.
+- Details: Uses ``comfyui/image-extract-depth.json`` with ``DepthAnythingV2Preprocessor``.
+
+Lines (``image-extract-lines``)
+""""""""""""""""""""""""""""""""""
+
+- Why: Export a line-map image from a source image.
+- How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:`Lines` on an image, then generate.
+- Details: Uses ``comfyui/image-extract-lines.json`` with ``LineArtPreprocessor``.
+
+Image to Video... (``img2video-wan``)
 """""""""""""""""""""""""""""""""""""
 
 - Why: Turn a still image into a generated video shot.
 - How: Choose :guilabel:`Enhance with AI` on an image, provide prompt guidance, then generate.
-- Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video models.
+- Details: Uses ``comfyui/img2video-wan.json`` with WAN 2.2 image-to-video models.
 
 Change Video Style... (``video2video-basic``)
 """"""""""""""""""""""""""""""""""""""""""""""
 
 - Why: Apply a new visual style to a source video.
-- How: Choose :guilabel:`Enhance with AI` on a video, enter a style prompt, then generate.
-- Details: Uses ``comfyui/video2video-basic.json`` with ``sd_xl_base_1.0.safetensors``.
+- How: Choose :guilabel:`Enhance with AI` on a video, enter a style prompt, pick a reference image in the :guilabel:`Reference` tab, then generate.
+- Details: Uses ``comfyui/video2video-basic.json`` with WAN VACE video-to-video nodes, a required reference image, blended ``DepthAnythingV2Preprocessor`` depth plus Canny edge control, and the ``wan2.1_vace_1.3B_fp16.safetensors``, ``wan_2.1_vae.safetensors``, and ``umt5_xxl_fp8_e4m3fn_scaled.safetensors`` models.
+
+Depth (``video-extract-depth``)
+"""""""""""""""""""""""""""""""""""
+
+- Why: Export a grayscale depth-map version of a source video.
+- How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:`Depth` on a video, then generate.
+- Details: Uses ``comfyui/video-extract-depth.json`` with ``DepthAnythingV2Preprocessor`` and preserves the source frame rate.
+
+Lines (``video-extract-lines``)
+""""""""""""""""""""""""""""""""""
+
+- Why: Export a line-map version of a source video.
+- How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:`Lines` on a video, then generate.
+- Details: Uses ``comfyui/video-extract-lines.json`` with ``LineArtPreprocessor`` and preserves the source frame rate.
 
 Increase Resolution (image) (``upscale-realesrgan-x4``)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""

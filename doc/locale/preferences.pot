@@ -467,19 +467,19 @@ msgid "Choose which GPU device is used for hardware encoding."
 msgstr ""
 
 #: ../preferences.rst:237
-msgid "OMP Threads (0 = Default)"
+msgid "OMP Threads"
 msgstr ""
 
 #: ../preferences.rst:238
-msgid "Number of OpenMP worker threads used by performance-sensitive processing. Use ``0`` to let OpenShot choose automatically."
+msgid "Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
 
 #: ../preferences.rst:239
-msgid "FFmpeg Threads (0 = Default)"
+msgid "FFmpeg Threads"
 msgstr ""
 
 #: ../preferences.rst:240
-msgid "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for automatic thread selection."
+msgid "Number of FFmpeg threads used for decoding/encoding."
 msgstr ""
 
 #: ../preferences.rst:241
