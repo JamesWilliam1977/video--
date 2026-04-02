@@ -216,6 +216,7 @@ class MainWindowTests(unittest.TestCase):
                 create_for_files=lambda files: proxy_calls.append(("create", [getattr(f, "id", None) for f in files])),
                 use_existing_for_files=lambda files: proxy_calls.append(("locate", [getattr(f, "id", None) for f in files])),
                 cancel_for_files=lambda files: proxy_calls.append(("cancel", [getattr(f, "id", None) for f in files])),
+                delete_and_unlink_for_files=lambda files: proxy_calls.append(("delete", [getattr(f, "id", None) for f in files])),
             ),
         )
         fake_window._optimized_preview_files_for_action = lambda: self.main_window_module.MainWindow._optimized_preview_files_for_action(fake_window)
@@ -226,8 +227,32 @@ class MainWindowTests(unittest.TestCase):
 
             self.main_window_module.MainWindow.actionOptimizedPreviewRemove_trigger(fake_window)
             self.main_window_module.MainWindow.actionOptimizedPreviewCreate_trigger(fake_window)
+            self.main_window_module.MainWindow.actionOptimizedPreviewDeleteAndUnlink_trigger(fake_window)
 
-        self.assertEqual(proxy_calls, [("remove", ["F1"]), ("create", ["F1"])])
+        self.assertEqual(proxy_calls, [("remove", ["F1"]), ("create", ["F1"]), ("delete", ["F1"])])
+
+    def test_optimized_preview_cancel_targets_current_file_only(self):
+        proxy_calls = []
+        file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "media_type": "video"})
+        fake_window = types.SimpleNamespace(
+            current_file_id=lambda: "F1",
+            selected_files=lambda: [
+                types.SimpleNamespace(id="F1", data={"id": "F1", "media_type": "video"}),
+                types.SimpleNamespace(id="F2", data={"id": "F2", "media_type": "video"}),
+                types.SimpleNamespace(id="F3", data={"id": "F3", "media_type": "video"}),
+            ],
+            _optimized_preview_target_file_ids=["F1", "F2", "F3"],
+            proxy_service=types.SimpleNamespace(
+                cancel_for_files=lambda files: proxy_calls.append(("cancel", [getattr(f, "id", None) for f in files])),
+            ),
+        )
+        fake_window._optimized_preview_files_for_action = lambda: self.main_window_module.MainWindow._optimized_preview_files_for_action(fake_window)
+        fake_window._optimized_preview_file_for_cancel_action = lambda: self.main_window_module.MainWindow._optimized_preview_file_for_cancel_action(fake_window)
+
+        with patch.object(self.main_window_module.File, "get", return_value=file_obj):
+            self.main_window_module.MainWindow.actionOptimizedPreviewCancel_trigger(fake_window)
+
+        self.assertEqual(proxy_calls, [("cancel", ["F1"])])
 
     def test_open_project_missing_file_removes_recent_project_and_seeks_start(self):
         status_messages = []

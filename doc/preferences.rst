@@ -121,7 +121,7 @@ Preview
 .. image:: images/preferences-2-preview.jpg
 
 The Preview tab of the Preferences window controls real-time preview audio behavior,
-including device selection, sample rate, channels, buffering, and playback volume.
+including device selection, sample rate, channels, buffering, playback volume, and optimized preview behavior.
 
 .. table::
    :widths: 30 15 60
@@ -134,6 +134,9 @@ including device selection, sample rate, channels, buffering, and playback volum
    Default Audio Channels            Stereo (2 Channel)  Default preview channel layout
    Playback Audio Buffer Size        512                 Audio samples buffered before playback begins (128 to 4096)
    Volume                            75                  Preview playback volume percentage
+   Concurrent Optimize Jobs          2                   Number of video files OpenShot can optimize at the same time
+   Optimized Preview Resolution      1280x720            Maximum resolution used when creating optimized preview files
+   Thumbnail Preload Rate / second   4                   How many thumbnail preview frames per second are pre-generated while optimizing video
    ================================  ==================  ===========
 
 Autosave

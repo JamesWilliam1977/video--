@@ -28,6 +28,7 @@
 import copy
 import json
 import os
+import re
 import threading
 import uuid
 from concurrent.futures import ThreadPoolExecutor
@@ -88,6 +89,24 @@ class ProxyService(QObject):
      ACTIVE_STATES = ("queued", "running", "canceling")
      OPTIMIZE_CACHE_MAX_BYTES = 16 * 1024 * 1024
      OPTIMIZE_CACHE_CLEAR_INTERVAL = 120
+     MATCHABLE_VIDEO_EXTENSIONS = {
+         ".3g2", ".3gp", ".asf", ".avi", ".f4v", ".flv", ".m2t", ".m2ts", ".m4v", ".mkv",
+         ".mov", ".mp2", ".mp4", ".mpeg", ".mpg", ".mts", ".mxf", ".ogv", ".rm", ".rmvb",
+         ".ts", ".vob", ".webm", ".wmv",
+     }
+     _PROXY_PREFIX_RE = re.compile(
+         r"^(?:proxy|proxies|prox|optimized?|optimised|preview|lowres|low_res|low-res|offline|transcoded?)[\s._-]+",
+         re.IGNORECASE,
+     )
+     _PROXY_SUFFIX_RE = re.compile(
+         r"[\s._-]+(?:proxy|proxies|prox|optimized?|optimised|preview|lowres|low_res|low-res|offline|transcoded?)$",
+         re.IGNORECASE,
+     )
+     _RESOLUTION_SUFFIX_RE = re.compile(
+         r"[\s._-]+(?:360p|540p|720p|1080p|1440p|2160p|4320p|4k|8k)$",
+         re.IGNORECASE,
+     )
+     _CAMERA_PROXY_SUFFIX_RE = re.compile(r"[\s._-]+p$", re.IGNORECASE)
 
      def __init__(self, win):
          super().__init__(win)
@@ -124,12 +143,14 @@ class ProxyService(QObject):
                  skipped += 1
                  continue
              snapshot = copy.deepcopy(file_obj.data or {})
+             output_path = self._reserve_proxy_output_path(file_id, snapshot)
              with self._lock:
                  self._jobs[file_id] = {
                      "id": file_id,
                      "status": "queued",
                      "progress": 0,
                      "cancel_requested": False,
+                     "output_path": output_path,
                  }
              future = self._executor.submit(self._build_proxy_reader, file_id, snapshot)
              with self._lock:
@@ -231,6 +252,66 @@ class ProxyService(QObject):
 
          if removed:
              self._show_status("Optimize Preview: removed {} item(s)".format(removed), 3000)
+
+     def delete_and_unlink_for_files(self, files):
+         files = [f for f in (files or []) if getattr(f, "id", None)]
+         if not files:
+             return 0
+
+         proxy_root = os.path.abspath(str(self._proxy_root() or ""))
+         proxy_root_prefix = proxy_root + os.sep if proxy_root else ""
+         deleted = 0
+         unlinked = 0
+         skipped_external = 0
+         changed_file_ids = []
+         updates = get_app().updates
+         previous_tid = getattr(updates, "transaction_id", None)
+         updates.transaction_id = str(uuid.uuid4())
+         try:
+             for file_obj in files:
+                 file_id = str(file_obj.id or "")
+                 self.cancel_job(file_id)
+                 fresh_file = File.get(id=file_id)
+                 data = getattr(fresh_file, "data", {}) or {}
+                 proxy_reader = data.get("proxy_reader")
+                 if not isinstance(proxy_reader, dict):
+                     continue
+
+                 proxy_path = absolute_media_path(proxy_reader.get("path"))
+                 if proxy_path and os.path.exists(proxy_path):
+                     proxy_abs = os.path.abspath(proxy_path)
+                     if proxy_root_prefix and proxy_abs.startswith(proxy_root_prefix):
+                         try:
+                             os.remove(proxy_abs)
+                             deleted += 1
+                         except Exception:
+                             log.warning("Optimize Preview delete failed for %s", proxy_abs, exc_info=1)
+                     else:
+                         skipped_external += 1
+
+                 data.pop("proxy_reader", None)
+                 fresh_file.data = data
+                 fresh_file.save()
+
+                 refreshed = File.get(id=file_id)
+                 refreshed_data = getattr(refreshed, "data", {}) or {}
+                 if "proxy_reader" in refreshed_data and refreshed and refreshed.key:
+                     get_app().updates.delete(refreshed.key + ["proxy_reader"])
+                 changed_file_ids.append(file_id)
+                 unlinked += 1
+         finally:
+             updates.transaction_id = previous_tid
+
+         self.apply_runtime_updates_for_files(changed_file_ids)
+         for file_id in changed_file_ids:
+             self._emit_job_change(file_id)
+
+         status = "Optimize Preview: deleted {}, unlinked {}".format(deleted, unlinked)
+         if skipped_external:
+             status += ", skipped {} external item(s)".format(skipped_external)
+         if unlinked or skipped_external:
+             self._show_status(status, 4000)
+         return deleted
 
      def cancel_for_files(self, files):
          files = [f for f in (files or []) if getattr(f, "id", None)]
@@ -466,7 +547,7 @@ class ProxyService(QObject):
              raise RuntimeError("only video files are supported in V1")
 
          self._mark_running(file_id)
-         output_path = os.path.join(self._proxy_root(), "{}.mp4".format(file_id))
+         output_path = self._reserved_or_computed_proxy_output_path(file_id, file_data)
          try:
              max_width, max_height = self._max_optimize_bounds()
              optimize_timeline = self._create_optimize_timeline(max_width, max_height)
@@ -649,16 +730,23 @@ class ProxyService(QObject):
      def _index_existing_optimized_files(self, folder_path):
          basename_index = {}
          stem_index = {}
+         normalized_index = {}
          path_index = {}
          for root, _, files in os.walk(str(folder_path or "")):
              for name in files:
+                 ext = os.path.splitext(name)[1].lower()
+                 if ext not in self.MATCHABLE_VIDEO_EXTENSIONS:
+                     continue
                  full_path = os.path.join(root, name)
                  basename_index.setdefault(name.lower(), []).append(full_path)
-                 stem_index.setdefault(os.path.splitext(name)[0].lower(), []).append(full_path)
+                 stem = os.path.splitext(name)[0].lower()
+                 stem_index.setdefault(stem, []).append(full_path)
+                 normalized_index.setdefault(self._normalized_proxy_name_key(stem), []).append(full_path)
                  path_index[comparable_media_path(full_path)] = full_path
          return {
              "basename": basename_index,
              "stem": stem_index,
+             "normalized": normalized_index,
              "path": path_index,
          }
 
@@ -668,6 +756,7 @@ class ProxyService(QObject):
          file_id = str(getattr(file_obj, "id", "") or data.get("id") or "")
          basename = os.path.basename(source_path or "")
          basename_lower = basename.lower()
+         source_stem = os.path.splitext(basename_lower)[0]
          source_norm = comparable_media_path(source_path)
 
          if file_id:
@@ -680,11 +769,44 @@ class ProxyService(QObject):
              if basename_matches:
                  return basename_matches[0]
 
+         if source_stem:
+             stem_matches = folder_index.get("stem", {}).get(source_stem, [])
+             if stem_matches:
+                 return stem_matches[0]
+
+         source_variants = self._source_proxy_name_candidates(source_stem)
+         candidate_scores = {}
+         for variant in source_variants:
+             for match_path in folder_index.get("stem", {}).get(variant, []):
+                 candidate_scores[match_path] = max(candidate_scores.get(match_path, 0), 90)
+
+         normalized_key = self._normalized_proxy_name_key(source_stem)
+         if normalized_key:
+             for match_path in folder_index.get("normalized", {}).get(normalized_key, []):
+                 candidate_scores[match_path] = max(candidate_scores.get(match_path, 0), 80)
+
+         source_prefixes = self._source_stem_file_id_prefix_candidates(source_stem, file_id)
+         for candidate_stem, candidate_paths in folder_index.get("stem", {}).items():
+             if source_prefixes and any(candidate_stem.startswith(prefix) for prefix in source_prefixes):
+                 for match_path in candidate_paths:
+                     candidate_scores[match_path] = max(candidate_scores.get(match_path, 0), 75)
+
          for candidate_path in folder_index.get("path", {}).values():
              if source_norm and comparable_media_path(candidate_path).endswith(source_norm):
-                 return candidate_path
+                 candidate_scores[candidate_path] = max(candidate_scores.get(candidate_path, 0), 70)
 
-         expected_name = basename or "{}.mp4".format(file_id or "optimized")
+         if candidate_scores:
+             ranked_paths = sorted(
+                 candidate_scores.items(),
+                 key=lambda item: (
+                     -item[1],
+                     abs(len(os.path.splitext(os.path.basename(item[0]))[0]) - len(source_stem)),
+                     os.path.basename(item[0]).lower(),
+                 ),
+             )
+             return ranked_paths[0][0]
+
+         expected_name = self._preferred_proxy_filename(file_id, data, folder_path, existing_names=set())
          return os.path.join(str(folder_path or ""), expected_name)
 
      def _missing_proxy_reader(self, file_obj, folder_path):
@@ -699,6 +821,125 @@ class ProxyService(QObject):
              "missing": True,
              "name": basename,
          }
+
+     def _proxy_output_path(self, file_id, file_data):
+         proxy_root = self._proxy_root()
+         os.makedirs(proxy_root, exist_ok=True)
+         filename = self._preferred_proxy_filename(file_id, file_data, proxy_root)
+         return os.path.join(proxy_root, filename)
+
+     def _reserve_proxy_output_path(self, file_id, file_data):
+         proxy_root = self._proxy_root()
+         os.makedirs(proxy_root, exist_ok=True)
+         try:
+             existing_names = set(os.listdir(proxy_root))
+         except Exception:
+             existing_names = set()
+         with self._lock:
+             for job in self._jobs.values():
+                 output_path = job.get("output_path")
+                 if output_path:
+                     existing_names.add(os.path.basename(str(output_path)))
+         filename = self._preferred_proxy_filename(file_id, file_data, proxy_root, existing_names=existing_names)
+         return os.path.join(proxy_root, filename)
+
+     def _reserved_or_computed_proxy_output_path(self, file_id, file_data):
+         with self._lock:
+             job = self._jobs.get(str(file_id or ""))
+             reserved_path = job.get("output_path") if isinstance(job, dict) else None
+         return reserved_path or self._proxy_output_path(file_id, file_data)
+
+     def _preferred_proxy_filename(self, file_id, file_data, proxy_root, existing_names=None):
+         file_id = str(file_id or "")
+         data = file_data or {}
+         source_path = absolute_media_path(data.get("path"))
+         source_stem = os.path.splitext(os.path.basename(source_path or ""))[0]
+         base_stem = self._proxy_filename_stem(source_stem)
+         default_name = "{}.mp4".format(base_stem)
+
+         if existing_names is None:
+             try:
+                 existing_names = set(os.listdir(proxy_root))
+             except Exception:
+                 existing_names = set()
+         existing_names_lower = {str(name).lower() for name in existing_names}
+
+         if default_name.lower() not in existing_names_lower:
+             return default_name
+         return "{}_{}.mp4".format(base_stem, file_id)
+
+     @staticmethod
+     def _proxy_filename_stem(source_stem):
+         source_stem = str(source_stem or "").strip()
+         if not source_stem:
+             return "optimized_proxy"
+         return "{}_proxy".format(source_stem)
+
+     @staticmethod
+     def _source_stem_file_id_prefix_candidates(source_stem, file_id):
+         source_stem = str(source_stem or "").strip().lower()
+         file_id = str(file_id or "").strip().lower()
+         if not source_stem or not file_id:
+             return []
+         separators = ("_", "-", ".")
+         prefixes = []
+         for separator in separators:
+             prefixes.append("{}{}{}".format(source_stem, separator, file_id))
+             prefixes.append("{}{}proxy{}{}".format(source_stem, separator, separator, file_id))
+             prefixes.append("{}{}preview{}{}".format(source_stem, separator, separator, file_id))
+             prefixes.append("{}{}optimized{}{}".format(source_stem, separator, separator, file_id))
+             prefixes.append("{}{}lowres{}{}".format(source_stem, separator, separator, file_id))
+         return prefixes
+
+     @classmethod
+     def _normalized_proxy_name_key(cls, stem):
+         normalized = str(stem or "").strip().lower()
+         if not normalized:
+             return ""
+         normalized = re.sub(r"[\s.-]+", "_", normalized)
+         normalized = re.sub(r"_+", "_", normalized).strip("_")
+         previous = None
+         while normalized and normalized != previous:
+             previous = normalized
+             normalized = cls._PROXY_PREFIX_RE.sub("", normalized).strip("._- ")
+             normalized = cls._PROXY_SUFFIX_RE.sub("", normalized).strip("._- ")
+             normalized = cls._RESOLUTION_SUFFIX_RE.sub("", normalized).strip("._- ")
+             if cls._CAMERA_PROXY_SUFFIX_RE.search(normalized):
+                 trimmed = cls._CAMERA_PROXY_SUFFIX_RE.sub("", normalized).strip("._- ")
+                 if trimmed:
+                     normalized = trimmed
+         return normalized
+
+     @classmethod
+     def _source_proxy_name_candidates(cls, source_stem):
+         source_stem = str(source_stem or "").strip().lower()
+         if not source_stem:
+             return []
+
+         candidates = {
+             source_stem,
+             "{}_proxy".format(source_stem),
+             "{}-proxy".format(source_stem),
+             "{}_optimized".format(source_stem),
+             "{}-optimized".format(source_stem),
+             "{}_preview".format(source_stem),
+             "{}-preview".format(source_stem),
+             "{}_lowres".format(source_stem),
+             "{}-lowres".format(source_stem),
+             "{}_p".format(source_stem),
+             "{}-p".format(source_stem),
+             "proxy_{}".format(source_stem),
+             "proxy-{}".format(source_stem),
+             "optimized_{}".format(source_stem),
+             "optimized-{}".format(source_stem),
+             "preview_{}".format(source_stem),
+             "preview-{}".format(source_stem),
+         }
+         for size_label in ("360p", "540p", "720p", "1080p", "1440p", "2160p", "4k"):
+             candidates.add("{}_{}".format(source_stem, size_label))
+             candidates.add("{}_proxy_{}".format(source_stem, size_label))
+             candidates.add("{}_{}_proxy".format(source_stem, size_label))
+         return sorted(candidates)
 
      def _thumbnail_prewarm_frames(self, file_id, max_frame, fps, thumbs_per_second=None):
          max_frame = max(1, int(max_frame or 1))

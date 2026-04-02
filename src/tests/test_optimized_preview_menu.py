@@ -61,10 +61,11 @@ class DummyWindow(QObject):
             get_proxy_state=lambda file_obj: self._states.get(file_obj.id, "none"),
             has_proxy_reader=lambda file_obj: self._has_proxy.get(file_obj.id, False),
         )
-        self.actionOptimizedPreviewCreate = QAction("Optimize", self)
-        self.actionOptimizedPreviewUseExisting = QAction("Locate Existing...", self)
-        self.actionOptimizedPreviewRemove = QAction("Remove", self)
-        self.actionOptimizedPreviewCancel = QAction("Cancel Job", self)
+        self.actionOptimizedPreviewCreate = QAction("Optimize Video", self)
+        self.actionOptimizedPreviewUseExisting = QAction("Link to Existing...", self)
+        self.actionOptimizedPreviewRemove = QAction("Unlink", self)
+        self.actionOptimizedPreviewCancel = QAction("Cancel", self)
+        self.actionOptimizedPreviewDeleteAndUnlink = QAction("Delete && Unlink", self)
 
     def selected_files(self):
         return list(self._selected_files)
@@ -86,20 +87,22 @@ class OptimizedPreviewMenuTests(unittest.TestCase):
 
         populate_optimized_preview_menu(win, menu)
 
-        texts = [action.text() for action in menu.actions() if action.text()]
-        self.assertEqual(texts[0], "Cancel Job")
-        self.assertNotIn("Optimize", texts)
+        texts = [action.text().replace("&&", "&") for action in menu.actions() if action.text()]
+        self.assertEqual(texts[0], "Cancel")
+        self.assertNotIn("Optimize Video", texts)
         self.assertFalse(win.actionOptimizedPreviewCreate.isEnabled())
         self.assertTrue(win.actionOptimizedPreviewCancel.isEnabled())
 
-    def test_populate_menu_keeps_optimize_label_when_proxy_exists(self):
+    def test_populate_menu_shows_unlink_actions_when_proxy_exists(self):
         win = DummyWindow(states={"F1": "ready"}, has_proxy={"F1": True})
         menu = StyledContextMenu("Optimize Preview")
 
         populate_optimized_preview_menu(win, menu)
 
-        texts = [action.text() for action in menu.actions() if action.text()]
-        self.assertIn("Optimize", texts)
+        texts = [action.text().replace("&&", "&") for action in menu.actions() if action.text()]
+        self.assertIn("Optimize Video", texts)
+        self.assertIn("Unlink", texts)
+        self.assertIn("Delete & Unlink", texts)
         self.assertTrue(win.actionOptimizedPreviewRemove.isEnabled())
 
     def test_populate_menu_hides_remove_when_no_proxy_exists(self):
@@ -108,8 +111,9 @@ class OptimizedPreviewMenuTests(unittest.TestCase):
 
         populate_optimized_preview_menu(win, menu)
 
-        texts = [action.text() for action in menu.actions() if action.text()]
-        self.assertNotIn("Remove", texts)
+        texts = [action.text().replace("&&", "&") for action in menu.actions() if action.text()]
+        self.assertNotIn("Unlink", texts)
+        self.assertNotIn("Delete & Unlink", texts)
 
     def test_populate_menu_enables_locate_existing_for_multi_selection(self):
         win = DummyWindow(states={"F1": "none", "F2": "none"}, has_proxy={"F1": False, "F2": False})
@@ -122,6 +126,18 @@ class OptimizedPreviewMenuTests(unittest.TestCase):
         populate_optimized_preview_menu(win, menu)
 
         self.assertTrue(win.actionOptimizedPreviewUseExisting.isEnabled())
+
+    def test_populate_menu_keeps_optimize_video_label_for_mixed_selection(self):
+        win = DummyWindow(states={"F1": "ready", "F2": "none"}, has_proxy={"F1": True, "F2": False})
+        win._selected_files = [
+            types.SimpleNamespace(id="F1", data={"id": "F1", "media_type": "video"}),
+            types.SimpleNamespace(id="F2", data={"id": "F2", "media_type": "video"}),
+        ]
+        menu = StyledContextMenu("Optimize Preview")
+
+        populate_optimized_preview_menu(win, menu)
+
+        self.assertEqual(win.actionOptimizedPreviewCreate.text(), "Optimize Video")
 
     def test_add_menu_hides_for_non_video_selection(self):
         from windows.views.optimized_preview_menu import add_optimized_preview_menu

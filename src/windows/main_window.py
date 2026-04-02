@@ -2115,6 +2115,17 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             if file_obj and str((getattr(file_obj, "data", {}) or {}).get("media_type", "") or "").strip().lower() == "video"
         ]
 
+    def _optimized_preview_file_for_cancel_action(self):
+        file_id = self.current_file_id()
+        if file_id:
+            file_obj = File.get(id=file_id)
+            data = getattr(file_obj, "data", {}) or {}
+            if file_obj and str(data.get("media_type", "") or "").strip().lower() == "video":
+                return file_obj
+
+        files = self._optimized_preview_files_for_action()
+        return files[0] if files else None
+
     def actionOptimizedPreviewCreate_trigger(self, checked=True):
         files = self._optimized_preview_files_for_action()
         log.debug("actionOptimizedPreviewCreate_trigger files=%s", [getattr(f, "id", None) for f in files])
@@ -2131,9 +2142,15 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.proxy_service.remove_for_files(files)
 
     def actionOptimizedPreviewCancel_trigger(self, checked=True):
+        file_obj = self._optimized_preview_file_for_cancel_action()
+        log.debug("actionOptimizedPreviewCancel_trigger file=%s", getattr(file_obj, "id", None))
+        if file_obj:
+            self.proxy_service.cancel_for_files([file_obj])
+
+    def actionOptimizedPreviewDeleteAndUnlink_trigger(self, checked=True):
         files = self._optimized_preview_files_for_action()
-        log.debug("actionOptimizedPreviewCancel_trigger files=%s", [getattr(f, "id", None) for f in files])
-        self.proxy_service.cancel_for_files(files)
+        log.debug("actionOptimizedPreviewDeleteAndUnlink_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.delete_and_unlink_for_files(files)
 
     def _refresh_optimized_preview_action_states(self):
         populate_optimized_preview_menu(self, self.optimizedPreviewMenu)
@@ -3658,21 +3675,25 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.actionCancelGenerationJob.triggered.connect(self.actionCancelGenerationJob_trigger)
 
     def _init_proxy_actions(self):
-        self.actionOptimizedPreviewCreate = QAction("Optimize", self)
+        self.actionOptimizedPreviewCreate = QAction("Optimize Video", self)
         self.actionOptimizedPreviewCreate.setObjectName("actionOptimizedPreviewCreate")
         self.actionOptimizedPreviewCreate.triggered.connect(self.actionOptimizedPreviewCreate_trigger)
 
-        self.actionOptimizedPreviewUseExisting = QAction("Locate Existing...", self)
+        self.actionOptimizedPreviewUseExisting = QAction("Link to Existing...", self)
         self.actionOptimizedPreviewUseExisting.setObjectName("actionOptimizedPreviewUseExisting")
         self.actionOptimizedPreviewUseExisting.triggered.connect(self.actionOptimizedPreviewUseExisting_trigger)
 
-        self.actionOptimizedPreviewRemove = QAction("Remove", self)
+        self.actionOptimizedPreviewRemove = QAction("Unlink", self)
         self.actionOptimizedPreviewRemove.setObjectName("actionOptimizedPreviewRemove")
         self.actionOptimizedPreviewRemove.triggered.connect(self.actionOptimizedPreviewRemove_trigger)
 
-        self.actionOptimizedPreviewCancel = QAction("Cancel Job", self)
+        self.actionOptimizedPreviewCancel = QAction("Cancel", self)
         self.actionOptimizedPreviewCancel.setObjectName("actionOptimizedPreviewCancel")
         self.actionOptimizedPreviewCancel.triggered.connect(self.actionOptimizedPreviewCancel_trigger)
+
+        self.actionOptimizedPreviewDeleteAndUnlink = QAction("Delete && Unlink", self)
+        self.actionOptimizedPreviewDeleteAndUnlink.setObjectName("actionOptimizedPreviewDeleteAndUnlink")
+        self.actionOptimizedPreviewDeleteAndUnlink.triggered.connect(self.actionOptimizedPreviewDeleteAndUnlink_trigger)
 
         _ = get_app()._tr
         preview_menu = getattr(self, "menuPreview", None)
@@ -3685,7 +3706,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 self.menubar.addMenu(preview_menu)
             self.menuPreview = preview_menu
 
-        self.optimizedPreviewMenu = preview_menu.addMenu(_("Optimize Preview"))
+        self.optimizedPreviewMenu = preview_menu.addMenu(_("Optimize"))
         self.optimizedPreviewMenu.setIcon(optimized_preview_icon("ready"))
         self.optimizedPreviewMenu.aboutToShow.connect(self._refresh_optimized_preview_action_states)
 

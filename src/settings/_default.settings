@@ -270,15 +270,15 @@
   },
   {
     "max": 8,
-    "title": "Optimize Preview Jobs",
+    "title": "Concurrent Optimize Jobs",
     "category": "Preview",
     "min": 1,
     "setting": "optimize-preview-jobs",
-    "value": 1,
+    "value": 2,
     "type": "spinner-int"
   },
   {
-    "title": "Optimize Preview Max Size",
+    "title": "Optimized Preview Resolution",
     "category": "Preview",
     "setting": "optimize-preview-max-size",
     "type": "dropdown",
@@ -304,7 +304,7 @@
   },
   {
     "max": 12,
-    "title": "Optimize Preview Thumbnails",
+    "title": "Thumbnail Preload Rate / second",
     "category": "Preview",
     "min": 1,
     "setting": "optimize-preview-thumbnails",

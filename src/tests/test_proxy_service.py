@@ -386,13 +386,15 @@ class ProxyServiceTests(unittest.TestCase):
 
          with patch("classes.proxy_service.absolute_media_path", return_value="/media/source.mp4"), \
               patch("classes.proxy_service.os.path.exists", side_effect=fake_exists), \
+              patch("classes.proxy_service.os.listdir", return_value=[]), \
+              patch("classes.proxy_service.os.makedirs"), \
               patch("classes.proxy_service.openshot.Clip", return_value=clip_obj), \
               patch("classes.proxy_service.openshot.Timeline", side_effect=fake_timeline), \
               patch("classes.proxy_service.openshot.FFmpegWriter", return_value=writer_obj), \
               patch("classes.proxy_service.openshot.Fraction", side_effect=lambda num, den: (num, den)), \
               patch("classes.proxy_service.GenerateThumbnailFromFrame", side_effect=lambda frame, path, width, height, mask, overlay, rotate=0.0: thumbnail_calls.append((frame, path, width, height, rotate))), \
               patch.object(self.service, "_proxy_root", return_value="/tmp/proxies"), \
-              patch.object(self.service, "_reader_json_for_path", return_value={"id": "F1", "path": "/tmp/proxies/F1.mp4"}):
+              patch.object(self.service, "_reader_json_for_path", return_value={"id": "F1", "path": "/tmp/proxies/source_proxy.mp4"}):
              result = self.service._build_proxy_reader("F1", {"path": "/media/source.mp4", "media_type": "video"})
 
          self.assertTrue(clip_obj.opened)
@@ -410,7 +412,7 @@ class ProxyServiceTests(unittest.TestCase):
          self.assertEqual(reader_cache.max_bytes, [self.service.OPTIMIZE_CACHE_MAX_BYTES])
          self.assertGreaterEqual(clip_cache.clears, 2)
          self.assertGreaterEqual(reader_cache.clears, 2)
-         self.assertEqual(result["path"], "/tmp/proxies/F1.mp4")
+         self.assertEqual(result["path"], "/tmp/proxies/source_proxy.mp4")
 
      def test_thumbnail_prewarm_frames_uses_coarse_4fps_grid(self):
          with patch.object(self.service, "_thumbnail_prewarm_rate", return_value=4):
@@ -493,7 +495,168 @@ class ProxyServiceTests(unittest.TestCase):
          self.assertEqual(saved[0], ("F1", {"id": "F1", "path": "/optimized/F1.mp4"}))
          self.assertEqual(saved[1][0], "F2")
          self.assertTrue(saved[1][1]["missing"])
-         self.assertEqual(saved[1][1]["path"], "/optimized/source-b.mp4")
+         self.assertEqual(saved[1][1]["path"], "/optimized/source-b_proxy.mp4")
+
+     def test_match_existing_optimized_path_prefers_same_name_different_extension(self):
+         file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "path": "/media/clip001.mov"})
+         folder_index = {
+             "basename": {},
+             "stem": {"clip001": ["/optimized/clip001.mkv"]},
+             "normalized": {},
+             "path": {},
+         }
+
+         match_path = self.service._match_existing_optimized_path(file_obj, "/optimized", folder_index)
+
+         self.assertEqual(match_path, "/optimized/clip001.mkv")
+
+     def test_match_existing_optimized_path_supports_proxy_suffix(self):
+         file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "path": "/media/clip001.mov"})
+         folder_index = {
+             "basename": {},
+             "stem": {"clip001_proxy": ["/optimized/clip001_proxy.mp4"]},
+             "normalized": {"clip001": ["/optimized/clip001_proxy.mp4"]},
+             "path": {},
+         }
+
+         match_path = self.service._match_existing_optimized_path(file_obj, "/optimized", folder_index)
+
+         self.assertEqual(match_path, "/optimized/clip001_proxy.mp4")
+
+     def test_match_existing_optimized_path_does_not_match_unknown_suffix(self):
+         file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "path": "/media/clip001.mov"})
+         folder_index = {
+             "basename": {},
+             "stem": {"clip001_reviewcopy": ["/optimized/clip001_reviewcopy.mp4"]},
+             "normalized": {},
+             "path": {},
+         }
+
+         match_path = self.service._match_existing_optimized_path(file_obj, "/optimized", folder_index)
+
+         self.assertEqual(match_path, "/optimized/clip001_proxy.mp4")
+
+     def test_match_existing_optimized_path_supports_source_name_with_file_id_suffix(self):
+         file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "path": "/media/clip001.mov"})
+         folder_index = {
+             "basename": {},
+             "stem": {"clip001_proxy_f1": ["/optimized/clip001_proxy_F1.mp4"]},
+             "normalized": {},
+             "path": {},
+         }
+
+         match_path = self.service._match_existing_optimized_path(file_obj, "/optimized", folder_index)
+
+         self.assertEqual(match_path, "/optimized/clip001_proxy_F1.mp4")
+
+     def test_match_existing_optimized_path_supports_file_id_only_name(self):
+         file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "path": "/media/clip001.mov"})
+         folder_index = {
+             "basename": {},
+             "stem": {"f1": ["/optimized/F1.mp4"]},
+             "normalized": {},
+             "path": {},
+         }
+
+         match_path = self.service._match_existing_optimized_path(file_obj, "/optimized", folder_index)
+
+         self.assertEqual(match_path, "/optimized/F1.mp4")
+
+     def test_preferred_proxy_filename_uses_source_name_without_collision(self):
+         filename = self.service._preferred_proxy_filename(
+             "F1",
+             {"path": "/media/clip001.mov"},
+             "/project/optimized",
+             existing_names={"other_proxy.mp4"},
+         )
+
+         self.assertEqual(filename, "clip001_proxy.mp4")
+
+     def test_preferred_proxy_filename_appends_file_id_on_collision(self):
+         filename = self.service._preferred_proxy_filename(
+             "F1",
+             {"path": "/media/clip001.mov"},
+             "/project/optimized",
+             existing_names={"clip001_proxy.mp4"},
+         )
+
+         self.assertEqual(filename, "clip001_proxy_F1.mp4")
+
+     def test_reserve_proxy_output_path_avoids_collisions_with_already_reserved_jobs(self):
+         self.service._jobs["F1"] = {
+             "id": "F1",
+             "status": "queued",
+             "progress": 0,
+             "cancel_requested": False,
+             "output_path": "/project/optimized/clip001_proxy.mp4",
+         }
+
+         with patch.object(self.service, "_proxy_root", return_value="/project/optimized"), \
+              patch("classes.proxy_service.os.listdir", return_value=[]), \
+              patch("classes.proxy_service.os.makedirs"):
+             output_path = self.service._reserve_proxy_output_path("F2", {"path": "/media/clip001.mov"})
+
+         self.assertEqual(output_path, "/project/optimized/clip001_proxy_F2.mp4")
+
+     def test_index_existing_optimized_files_limits_matches_to_common_video_extensions(self):
+         def fake_walk(_):
+             yield ("/optimized", [], ["clip001_proxy.mp4", "clip001_proxy.thm", "clip001_proxy.txt", "clip001_proxy.mxf"])
+
+         with patch("classes.proxy_service.os.walk", side_effect=fake_walk):
+             index = self.service._index_existing_optimized_files("/optimized")
+
+         self.assertIn("clip001_proxy.mp4", index["basename"])
+         self.assertIn("clip001_proxy.mxf", index["basename"])
+         self.assertNotIn("clip001_proxy.thm", index["basename"])
+         self.assertNotIn("clip001_proxy.txt", index["basename"])
+
+     def test_delete_and_unlink_for_files_deletes_project_proxy_and_unlinks_external(self):
+         file_one = types.SimpleNamespace(id="F1", data={"id": "F1"})
+         file_two = types.SimpleNamespace(id="F2", data={"id": "F2"})
+         fresh_one = types.SimpleNamespace(
+             id="F1",
+             key=["files", {"id": "F1"}],
+             data={"id": "F1", "proxy_reader": {"path": "/project/optimized/F1.mp4"}},
+             save=Mock(),
+         )
+         refreshed_one = types.SimpleNamespace(
+             id="F1",
+             key=["files", {"id": "F1"}],
+             data={"id": "F1", "proxy_reader": {"path": "/project/optimized/F1.mp4"}},
+         )
+         fresh_two = types.SimpleNamespace(
+             id="F2",
+             key=["files", {"id": "F2"}],
+             data={"id": "F2", "proxy_reader": {"path": "/external/proxy/F2.mp4"}},
+             save=Mock(),
+         )
+         refreshed_two = types.SimpleNamespace(
+             id="F2",
+             key=["files", {"id": "F2"}],
+             data={"id": "F2", "proxy_reader": {"path": "/external/proxy/F2.mp4"}},
+         )
+         delete_calls = []
+         removed_paths = []
+         self.app.updates = types.SimpleNamespace(delete=lambda key: delete_calls.append(key), transaction_id=None)
+
+         with patch.object(self.service, "_proxy_root", return_value="/project/optimized"), \
+              patch("classes.proxy_service.File.get", side_effect=[fresh_one, refreshed_one, fresh_two, refreshed_two]), \
+              patch("classes.proxy_service.absolute_media_path", side_effect=lambda path: path), \
+              patch("classes.proxy_service.os.path.exists", return_value=True), \
+              patch("classes.proxy_service.os.remove", side_effect=lambda path: removed_paths.append(path)), \
+              patch.object(self.service, "apply_runtime_updates_for_files", return_value=True), \
+              patch.object(self.service, "_emit_job_change", return_value=None):
+             deleted = self.service.delete_and_unlink_for_files([file_one, file_two])
+
+         self.assertEqual(deleted, 1)
+         self.assertEqual(removed_paths, ["/project/optimized/F1.mp4"])
+         fresh_one.save.assert_called_once_with()
+         fresh_two.save.assert_called_once_with()
+         self.assertEqual(delete_calls, [
+             ["files", {"id": "F1"}, "proxy_reader"],
+             ["files", {"id": "F2"}, "proxy_reader"],
+         ])
+         self.assertEqual(self.win.status_messages[-1][0], "Optimize Preview: deleted 1, unlinked 2, skipped 1 external item(s)")
 
      def test_remove_for_files_clears_proxy_reader_via_file_save_then_nested_delete_if_needed(self):
          file_obj = types.SimpleNamespace(id="F1", data={"id": "F1"})

@@ -72,21 +72,23 @@ def populate_optimized_preview_menu(win, optimized_menu):
      has_proxy = bool(service and any(service.has_proxy_reader(file_obj) for file_obj in selected_files))
      has_missing = "missing" in states
      use_existing_enabled = bool(selected_files) and not has_active
-     win.actionOptimizedPreviewCreate.setText(_("Optimize"))
+     win.actionOptimizedPreviewCreate.setText(_("Optimize Video"))
      win.actionOptimizedPreviewCreate.setEnabled(not has_active)
      win.actionOptimizedPreviewUseExisting.setEnabled(use_existing_enabled)
      win.actionOptimizedPreviewRemove.setEnabled(has_proxy)
      win.actionOptimizedPreviewCancel.setEnabled(has_active)
+     win.actionOptimizedPreviewDeleteAndUnlink.setEnabled(has_proxy and not has_active)
 
      optimized_menu.setIcon(optimized_preview_icon("missing" if has_missing and not has_active else "ready"))
      if has_active:
          optimized_menu.addAction(win.actionOptimizedPreviewCancel)
-         optimized_menu.addSeparator()
+         return optimized_menu
      if not has_active:
          optimized_menu.addAction(win.actionOptimizedPreviewCreate)
      optimized_menu.addAction(win.actionOptimizedPreviewUseExisting)
      if has_proxy:
          optimized_menu.addAction(win.actionOptimizedPreviewRemove)
+         optimized_menu.addAction(win.actionOptimizedPreviewDeleteAndUnlink)
      return optimized_menu
 
 
@@ -96,7 +98,7 @@ def add_optimized_preview_menu(win, menu):
      if not selected_files:
          return None
 
-     optimized_menu = StyledContextMenu(title=get_app()._tr("Optimize Preview"), parent=menu)
+     optimized_menu = StyledContextMenu(title=get_app()._tr("Optimize"), parent=menu)
      populate_optimized_preview_menu(win, optimized_menu)
      menu.addMenu(optimized_menu)
      return optimized_menu
