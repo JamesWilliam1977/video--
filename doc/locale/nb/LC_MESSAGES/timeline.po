@@ -267,12 +267,15 @@ msgstr ""
 "Tips: Hvis tidslinjeredigering føles trang, zoom inn med "
 "tidslinjeskyveknappen for å gjøre små klippjusteringer enklere."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Du kan også zoome tidslinjen med :kbd:`Ctrl+Scroll Wheel`. På QWidget-"
+"tidslinjen, hold :kbd:`Ctrl` og dra med midtre museknapp for jevn zooming."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

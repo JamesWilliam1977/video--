@@ -271,12 +271,16 @@ msgstr ""
 "Совет: если редактирование на шкале времени кажется тесным, увеличьте "
 "масштаб с помощью ползунка, чтобы удобнее было делать мелкие правки клипов."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Вы также можете масштабировать временную шкалу с помощью :kbd:`Ctrl+Колесо "
+"прокрутки`. На временной шкале QWidget удерживайте :kbd:`Ctrl` и "
+"перетаскивайте средней кнопкой мыши для плавного масштабирования."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

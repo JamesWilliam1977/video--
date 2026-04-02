@@ -432,6 +432,7 @@ msgstr "مرکز روی سر پخش"
 msgid "Center the visible timeline area around the current playhead position."
 msgstr "ناحیه قابل مشاهده جدول زمانی را حول موقعیت فعلی پخش متمرکز کنید."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -439,6 +440,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"محدوده قابل مشاهده جدول زمانی را کنترل کنید. برای بزرگ‌نمایی/کوچک‌نمایی دسته‌ها "
+"را بکشید، مرکز را برای جابجایی بکشید و برای تطبیق جدول زمانی دوبار کلیک "
+"کنید. همچنین می‌توانید از :kbd:`Ctrl+Scroll Wheel` استفاده کنید، یا در جدول "
+"زمانی QWidget کلید :kbd:`Ctrl` را نگه داشته و با دکمه وسط ماوس برای "
+"بزرگ‌نمایی نرم بکشید."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -595,13 +601,15 @@ msgstr "پاک کردن تاریخچه"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "حذف ویدیوهای بهینه‌شده"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1794,12 +1802,3 @@ msgstr ""
 "`View->Views->Simple View` در بالای صفحه استفاده کنید تا نما را به حالت "
 "پیش‌فرض بازگردانید. یا می‌توانید از منوی :guilabel:`View->Views->Docks->...` "
 "برای نمایش یا پنهان کردن ویجت‌های داک خاص در پنجره اصلی استفاده کنید."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "محدوده قابل مشاهده جدول زمانی را کنترل کنید. برای بزرگ‌نمایی/کوچک‌نمایی "
-#~ "دستگیره‌ها را بکشید، برای جابجایی مرکز را بکشید و برای تطبیق جدول زمانی "
-#~ "دوبار کلیک کنید."

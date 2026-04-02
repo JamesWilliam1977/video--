@@ -441,6 +441,7 @@ msgstr ""
 "Wyśrodkuj widoczny obszar osi czasu wokół aktualnej pozycji wskaźnika "
 "odtwarzania."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -448,6 +449,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Kontroluj widoczny zakres osi czasu. Przeciągnij uchwyty, aby powiększyć/"
+"pomniejszyć, przeciągnij środek, aby przesunąć, a dwukrotne kliknięcie "
+"dopasuje oś czasu. Możesz także użyć :kbd:`Ctrl+Scroll Wheel` lub na osi "
+"czasu QWidget przytrzymać :kbd:`Ctrl` i przeciągnąć środkowym przyciskiem "
+"myszy, aby płynnie powiększać."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -606,13 +612,15 @@ msgstr "Wyczyść historię"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Usuń zoptymalizowane filmy"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1816,12 +1824,3 @@ msgstr ""
 "guilabel:`Widok->Widoki->Prosty widok` u góry ekranu, aby przywrócić widok "
 "do domyślnego. Możesz też użyć menu :guilabel:`Widok->Widoki->Doki->...`, "
 "aby pokazać lub ukryć konkretne widżety doków w głównym oknie."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Kontroluj widoczny zakres osi czasu. Przeciągnij uchwyty, aby powiększyć/"
-#~ "pomniejszyć, przeciągnij środek, aby przesunąć, a dwuklik dopasuje oś "
-#~ "czasu."

@@ -317,15 +317,19 @@ msgstr "Svojstva datoteke"
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "Pogledajte svojstva datoteke, poput brzine kadrova, veličine itd..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:104 ../files.rst:125
 msgid "Optimize"
-msgstr ""
+msgstr "Optimiziraj"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:105
 msgid ""
 "Create, link, unlink, or delete optimized preview files for the selected "
 "video files."
 msgstr ""
+"Stvori, poveži, odveži ili izbriši optimizirane pregledne datoteke za "
+"odabrane video datoteke."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:106 ../files.rst:250
@@ -402,6 +406,7 @@ msgstr ""
 "Gumb :guilabel:`Poništi zum` pojavljuje se kada zum nije 100% i vraća zum na "
 "100%."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:126
 msgid ""
 "Optimized preview files are lower-resolution copies of your source video "
@@ -410,7 +415,12 @@ msgid ""
 "helpful with large formats such as 4K, high frame rate, or high bitrate "
 "footage."
 msgstr ""
+"Optimizirane pregledne datoteke su kopije vaših izvornim video datoteka niže "
+"rezolucije (ponekad nazvane proxy datoteke), koje se koriste za poboljšanje "
+"odziva pri uređivanju bez mijenjanja izvornog medija. Posebno su korisne za "
+"velike formate poput 4K, visokih brzina kadrova ili visokih bitrateova."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:130
 msgid ""
 "For video files, the file context menu includes an :guilabel:`Optimize` "
@@ -419,56 +429,83 @@ msgid ""
 "high-resolution footage. Optimizing also pre-loads thumbnails to further "
 "improve the editing smoothness when zooming into the timeline."
 msgstr ""
+"Za video datoteke, kontekstni izbornik datoteke uključuje podizbornik :"
+"guilabel:`Optimiziraj`. Ova značajka stvara ili povezuje manje pregledne "
+"kopije vaših izvornim isječaka, što može poboljšati reprodukciju i pomicanje "
+"na sporijim sustavima ili s videozapisima visoke rezolucije. Optimizacija "
+"također unaprijed učitava sličice za dodatno poboljšanje glatkoće uređivanja "
+"pri zumiranju vremenske crte."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:135
 msgid "The :guilabel:`Optimize` submenu contains these actions:"
-msgstr ""
+msgstr "Podizbornik :guilabel:`Optimiziraj` sadrži ove radnje:"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:141
 msgid "Action"
-msgstr ""
+msgstr "Radnja"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:143
 msgid "Optimize Video"
-msgstr ""
+msgstr "Optimiziraj video"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:144
 msgid ""
 "Create an optimized preview file for each selected video file. OpenShot "
 "stores these files in the project's ``optimized`` assets folder."
 msgstr ""
+"Stvori optimiziranu preglednu datoteku za svaku odabranu video datoteku. "
+"OpenShot pohranjuje te datoteke u mapu ``optimized`` unutar projekta."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:145
 msgid "Link to Existing..."
-msgstr ""
+msgstr "Poveži s postojećim..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:146
 msgid ""
 "Choose a folder containing already-created optimized files and link the best "
 "matching files to the selected source clips. This supports common proxy "
 "naming styles, known proxy suffixes, file ID suffixes, and extension changes."
 msgstr ""
+"Odaberite mapu koja sadrži već stvorene optimizirane datoteke i povežite "
+"najbolje odgovarajuće datoteke s odabranim izvornim isječcima. Ovo podržava "
+"uobičajene stilove imenovanja proxy datoteka, poznate proxy sufikse, sufikse "
+"ID datoteka i promjene ekstenzija."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:147
 msgid "Unlink"
-msgstr ""
+msgstr "Odveži"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid ""
 "Remove the optimized preview link from the selected file without deleting "
 "the optimized file from disk."
 msgstr ""
+"Ukloni vezu optimizirane pregledne datoteke s odabrane datoteke bez brisanja "
+"optimizirane datoteke s diska."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Delete & Unlink"
-msgstr ""
+msgstr "Izbriši i odveži"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid ""
 "Delete the linked optimized file from disk, then remove the link from the "
 "selected file."
 msgstr ""
+"Izbriši povezanu optimiziranu datoteku s diska, zatim ukloni vezu s odabrane "
+"datoteke."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid ""
 "When optimization is in progress, the submenu changes to a single :guilabel:"
@@ -476,7 +513,12 @@ msgid ""
 "only for editing and preview playback. Your final export still uses the "
 "original source files."
 msgstr ""
+"Dok je optimizacija u tijeku, podizbornik se mijenja u jednu radnju :"
+"guilabel:`Otkaži` za odabranu datoteku(e). Optimizirane pregledne datoteke "
+"koriste se samo za uređivanje i pregled reprodukcije. Vaš konačni izvoz i "
+"dalje koristi izvorne datoteke."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:155
 msgid ""
 "When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
@@ -489,7 +531,17 @@ msgid ""
 "mp4``, and it can still match files named only by file ID, such as ``F1."
 "mp4``."
 msgstr ""
+"Kada koristite :guilabel:`Poveži s postojećim...`, OpenShot pokušava "
+"uskladiti svaki odabrani izvorni isječak s postojećom optimiziranom "
+"datotekom u sigurnom redoslijedu. Prvo traži isti osnovni naziv datoteke s "
+"različitom video ekstenzijom, zatim uobičajena imena u proxy stilu poput "
+"``_proxy``, ``_preview``, ``_optimized``, ``_lowres``, oznake rezolucije "
+"poput ``_720p`` ili ``_1080p``, te varijante u stilu kamere/uređivača poput "
+"``_p``. Također podržava imena koja dodaju OpenShot ID datoteke nakon "
+"poznatog proxy sufiksa, poput ``clip001_proxy_F1.mp4``, i može uskladiti "
+"datoteke imenovane samo po ID-u datoteke, poput ``F1.mp4``."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:162
 msgid ""
 "Best practice when bringing your own optimized files is to keep the same "
@@ -500,6 +552,13 @@ msgid ""
 "``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
 "proxy naming patterns."
 msgstr ""
+"Najbolja praksa pri korištenju vlastitih optimiziranih datoteka je zadržati "
+"isti osnovni naziv datoteke kao izvorni isječak i dodati jasan proxy stil "
+"sufiksa, na primjer ``clip001_proxy.mp4`` ili ``clip001_proxy.mov``. Ako "
+"trebate izbjeći sukobe naziva datoteka, dodajte OpenShot ID datoteke nakon "
+"proxy sufiksa, na primjer ``clip001_proxy_F1.mp4``. Izbjegavajte nepovezane "
+"sufikse poput ``_final`` ili ``_reviewcopy``, jer OpenShot ne smatra te "
+"sigurne obrasce imenovanja proxy datoteka."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:171
@@ -836,11 +895,14 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - Mediji stvoreni iz lijepljenja iz "
 "međuspremnika (slike, zvuk ili video koji se prvo moraju spremiti na disk)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:265
 msgid ""
 "``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
 "editing"
 msgstr ""
+"``.openshot_qt/optimized/`` - Optimizirane pregledne datoteke stvorene za "
+"glađe uređivanje"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:266
@@ -848,6 +910,7 @@ msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr ""
 "``.openshot_qt/protobuf_data`` - Podaci za praćenje i detekciju objekata"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
@@ -856,6 +919,11 @@ msgid ""
 "from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
 "optimized preview files linked to the project."
 msgstr ""
+"Kada odaberete **Datoteka→Spremi kao**, OpenShot kopira ove mape u "
+"direktorij vašeg projekta, unutar jedne mape nazvane ``PROJECTNAME_Assets``. "
+"Na primjer: ``MyProject_Assets/clipboard`` će sadržavati sav medij koji ste "
+"zalijepili iz međuspremnika, a ``MyProject_Assets/optimized`` će sadržavati "
+"sve optimizirane pregledne datoteke povezane s projektom."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:272
@@ -938,15 +1006,3 @@ msgstr ""
 "nedostajućim datotekama. Za detaljan vodič o nedostajućim datotekama, "
 "pogledajte `The Case of “Missing Files”! <https://github.com/OpenShot/"
 "openshot-qt/wiki/Missing-File-Prompt>`_."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
-#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
-#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
-#~ "pasted from the clipboard."
-#~ msgstr ""
-#~ "Kada odaberete **Datoteka→Spremi kao**, OpenShot kopira ove mape u "
-#~ "direktorij vašeg projekta, unutar jedne mape nazvane "
-#~ "``PROJECTNAME_Assets``. Na primjer: ``MyProject_Assets/clipboard`` će "
-#~ "sadržavati sve medije koje ste zalijepili iz međuspremnika."

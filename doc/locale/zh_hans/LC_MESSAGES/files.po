@@ -298,15 +298,17 @@ msgstr "文件属性"
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "查看文件属性，如帧率、大小等..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:104 ../files.rst:125
 msgid "Optimize"
-msgstr ""
+msgstr "优化"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:105
 msgid ""
 "Create, link, unlink, or delete optimized preview files for the selected "
 "video files."
-msgstr ""
+msgstr "为所选视频文件创建、链接、取消链接或删除优化的预览文件。"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:106 ../files.rst:250
@@ -379,6 +381,7 @@ msgid ""
 msgstr ""
 "当缩放比例不为 100% 时，会显示 :guilabel:`重置缩放` 按钮，点击可重置为 100%。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:126
 msgid ""
 "Optimized preview files are lower-resolution copies of your source video "
@@ -387,7 +390,11 @@ msgid ""
 "helpful with large formats such as 4K, high frame rate, or high bitrate "
 "footage."
 msgstr ""
+"优化的预览文件是您源视频文件的低分辨率副本（有时称为代理文件），用于在不更改"
+"原始媒体的情况下提高编辑响应速度。它们对4K、高帧率或高比特率等大格式视频特别"
+"有帮助。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:130
 msgid ""
 "For video files, the file context menu includes an :guilabel:`Optimize` "
@@ -396,56 +403,74 @@ msgid ""
 "high-resolution footage. Optimizing also pre-loads thumbnails to further "
 "improve the editing smoothness when zooming into the timeline."
 msgstr ""
+"对于视频文件，文件上下文菜单包含一个 :guilabel:`优化` 子菜单。此功能创建或链"
+"接源剪辑的较小预览副本，可改善较慢系统或高分辨率素材的播放和拖动。优化还会预"
+"加载缩略图，进一步提升缩放时间线时的编辑流畅度。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:135
 msgid "The :guilabel:`Optimize` submenu contains these actions:"
-msgstr ""
+msgstr ":guilabel:`优化` 子菜单包含以下操作："
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:141
 msgid "Action"
-msgstr ""
+msgstr "操作"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:143
 msgid "Optimize Video"
-msgstr ""
+msgstr "优化视频"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:144
 msgid ""
 "Create an optimized preview file for each selected video file. OpenShot "
 "stores these files in the project's ``optimized`` assets folder."
 msgstr ""
+"为每个选定的视频文件创建优化的预览文件。OpenShot 将这些文件存储在项目的 "
+"``optimized`` 资源文件夹中。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:145
 msgid "Link to Existing..."
-msgstr ""
+msgstr "链接到现有文件..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:146
 msgid ""
 "Choose a folder containing already-created optimized files and link the best "
 "matching files to the selected source clips. This supports common proxy "
 "naming styles, known proxy suffixes, file ID suffixes, and extension changes."
 msgstr ""
+"选择包含已创建优化文件的文件夹，并将最佳匹配的文件链接到所选源剪辑。此功能支"
+"持常见的代理命名样式、已知代理后缀、文件ID后缀和扩展名更改。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:147
 msgid "Unlink"
-msgstr ""
+msgstr "取消链接"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid ""
 "Remove the optimized preview link from the selected file without deleting "
 "the optimized file from disk."
-msgstr ""
+msgstr "从所选文件中移除优化预览链接，但不删除磁盘上的优化文件。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Delete & Unlink"
-msgstr ""
+msgstr "删除并取消链接"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid ""
 "Delete the linked optimized file from disk, then remove the link from the "
 "selected file."
-msgstr ""
+msgstr "从磁盘删除已链接的优化文件，然后从所选文件中移除链接。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid ""
 "When optimization is in progress, the submenu changes to a single :guilabel:"
@@ -453,7 +478,10 @@ msgid ""
 "only for editing and preview playback. Your final export still uses the "
 "original source files."
 msgstr ""
+"优化进行时，子菜单会变为针对所选文件的单一 :guilabel:`取消` 操作。优化的预览"
+"文件仅用于编辑和预览播放，最终导出仍使用原始源文件。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:155
 msgid ""
 "When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
@@ -466,7 +494,14 @@ msgid ""
 "mp4``, and it can still match files named only by file ID, such as ``F1."
 "mp4``."
 msgstr ""
+"使用 :guilabel:`链接到现有文件...` 时，OpenShot 会按安全顺序尝试将每个选定的"
+"源剪辑匹配到现有的优化文件。它首先查找具有不同视频扩展名但相同基本文件名的文"
+"件，然后查找常见的代理样式名称，如 ``_proxy``、``_preview``、``_optimized``、"
+"``_lowres``，分辨率标签如 ``_720p`` 或 ``_1080p``，以及摄像机/编辑器样式变体"
+"如 ``_p``。它还支持在已知代理后缀后添加 OpenShot 文件ID的名称，如 "
+"``clip001_proxy_F1.mp4``，并且仍能匹配仅以文件ID命名的文件，如 ``F1.mp4``。"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:162
 msgid ""
 "Best practice when bringing your own optimized files is to keep the same "
@@ -477,6 +512,11 @@ msgid ""
 "``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
 "proxy naming patterns."
 msgstr ""
+"自带优化文件时的最佳做法是保持与源剪辑相同的基本文件名，并添加明确的代理样式"
+"后缀，例如 ``clip001_proxy.mp4`` 或 ``clip001_proxy.mov``。如果需要避免文件名"
+"冲突，可在代理后缀后附加 OpenShot 文件ID，例如 ``clip001_proxy_F1.mp4``。避免"
+"使用无关后缀如 ``_final`` 或 ``_reviewcopy``，因为 OpenShot 不将其视为安全的"
+"代理命名模式。"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:171
@@ -783,17 +823,19 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - 从剪贴板粘贴创建的媒体（图像、音频或视频，需先"
 "保存到磁盘）"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:265
 msgid ""
 "``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
 "editing"
-msgstr ""
+msgstr "``.openshot_qt/optimized/`` - 为更流畅编辑创建的优化预览文件"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:266
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr "``.openshot_qt/protobuf_data`` - 跟踪和目标检测数据"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
@@ -802,6 +844,10 @@ msgid ""
 "from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
 "optimized preview files linked to the project."
 msgstr ""
+"当您选择 **文件→另存为** 时，OpenShot 会将这些文件夹复制到您的项目目录中，放"
+"入名为 ``PROJECTNAME_Assets`` 的单一文件夹内。例如：``MyProject_Assets/"
+"clipboard`` 将包含您从剪贴板粘贴的任何媒体，``MyProject_Assets/optimized`` 将"
+"包含链接到项目的任何优化预览文件。"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:272
@@ -875,14 +921,3 @@ msgstr ""
 "指南，请参见 `缺少文件的案例！ <https://github.com/OpenShot/openshot-qt/wiki/"
 "Missing-File-Prompt>`_ 。 `The Case of “Missing Files”! <https://github.com/"
 "OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
-#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
-#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
-#~ "pasted from the clipboard."
-#~ msgstr ""
-#~ "当您选择 **文件→另存为** 时，OpenShot 会将这些文件夹复制到您的项目目录中，"
-#~ "放入名为 ``PROJECTNAME_Assets`` 的单一文件夹内。例如：``MyProject_Assets/"
-#~ "clipboard`` 将包含您从剪贴板粘贴的所有媒体。"

@@ -264,12 +264,15 @@ msgstr ""
 "টিপ: যদি টাইমলাইন সম্পাদনা ভিড় মনে হয়, ছোট ক্লিপ সামঞ্জস্য সহজ করতে টাইমলাইন "
 "স্লাইডার দিয়ে জুম ইন করুন।"
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"আপনি :kbd:`Ctrl+Scroll Wheel` ব্যবহার করে টাইমলাইন জুম করতে পারেন। QWidget "
+"টাইমলাইনে, :kbd:`Ctrl` ধরে মাঝের মাউস বোতাম দিয়ে ড্র্যাগ করলে মসৃণ জুমিং হবে।"
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

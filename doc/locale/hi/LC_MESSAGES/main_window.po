@@ -422,6 +422,7 @@ msgstr "प्लेहेड पर केंद्रित करें"
 msgid "Center the visible timeline area around the current playhead position."
 msgstr "दृश्यमान टाइमलाइन क्षेत्र को वर्तमान प्लेहेड स्थिति के चारों ओर केंद्रित करें।"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -429,6 +430,10 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"दृश्यमान टाइमलाइन सीमा को नियंत्रित करें। ज़ूम इन/आउट के लिए हैंडल खींचें, पैन के लिए केंद्र "
+"खींचें, और टाइमलाइन फिट करने के लिए डबल-क्लिक करें। आप :kbd:`Ctrl+Scroll Wheel` का "
+"उपयोग भी कर सकते हैं, या QWidget टाइमलाइन पर :kbd:`Ctrl` दबाकर मिडल माउस बटन से "
+"खींचकर स्मूथ ज़ूमिंग कर सकते हैं।"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -584,13 +589,15 @@ msgstr "इतिहास साफ़ करें"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "संपादित वीडियो हटाएं"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1780,11 +1787,3 @@ msgstr ""
 ">Simple View` मेनू विकल्प का उपयोग करके दृश्य को उसके डिफ़ॉल्ट पर पुनर्स्थापित कर सकते हैं। "
 "या आप :guilabel:`View->Views->Docks->...` मेनू का उपयोग करके मुख्य विंडो पर विशिष्ट "
 "डॉक विजेट्स को दिखा या छिपा सकते हैं।"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "दृश्यमान टाइमलाइन सीमा को नियंत्रित करें। ज़ूम इन/आउट के लिए हैंडल खींचें, पैन करने के लिए "
-#~ "केंद्र खींचें, और टाइमलाइन फिट करने के लिए डबल-क्लिक करें।"

@@ -439,6 +439,7 @@ msgstr ""
 "Görünür zaman çizelgesi alanını mevcut oynatma kafası konumu etrafında "
 "ortalayın."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -446,6 +447,12 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Görünür zaman çizelgesi aralığını kontrol edin. Yakınlaştırmak/uzaklaştırmak "
+"için tutamaçları sürükleyin, kaydırmak için ortayı sürükleyin ve zaman "
+"çizelgesine sığdırmak için çift tıklayın. Ayrıca :kbd:`Ctrl+Kaydırma "
+"Tekerleği` kullanabilir veya QWidget zaman çizelgesinde :kbd:`Ctrl` tuşunu "
+"basılı tutup orta fare düğmesiyle sürükleyerek yumuşak yakınlaştırma "
+"yapabilirsiniz."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -602,13 +609,15 @@ msgstr "Geçmişi Temizle"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Optimize Edilmiş Videoları Sil"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1810,12 +1819,3 @@ msgstr ""
 "varsayılan haline getirebilirsiniz. Ya da :guilabel:`Görünüm->Görünümler-"
 ">Dock'lar->...` menüsünü kullanarak ana penceredeki belirli dock araçlarını "
 "gösterip gizleyebilirsiniz."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Görünür zaman çizelgesi aralığını kontrol edin. Yakınlaştırmak/"
-#~ "uzaklaştırmak için tutamaçları sürükleyin, kaydırmak için ortayı "
-#~ "sürükleyin ve zaman çizelgesine sığdırmak için çift tıklayın."

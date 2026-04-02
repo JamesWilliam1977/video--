@@ -299,11 +299,14 @@ msgid ""
 msgstr ""
 "请记住，上述切割方法也支持 :ref:`keyboard_shortcut_ref` ，以节省更多时间。"
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:96
 msgid ""
 "If multiple selected clips and/or transitions share the same left edge or "
 "right edge, you can drag that shared edge once to trim them together."
 msgstr ""
+"如果多个选中的剪辑和/或转场共享相同的左边缘或右边缘，您可以拖动该共享边缘一次"
+"来一起修剪它们。"
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:100
@@ -967,11 +970,14 @@ msgstr ""
 "时钟图标并拖动剪辑的边缘。延长剪辑会减慢播放速度，缩短剪辑会加快播放速度。剪"
 "辑及其效果上的所有关键帧都会按比例缩放，以保持它们的相对位置不变。"
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:262
 msgid ""
 "If you select multiple clips and/or transitions that share the same left "
 "edge or right edge, you can retime that shared edge together in one drag."
 msgstr ""
+"如果您选择多个共享相同左边缘或右边缘的剪辑和/或转场，您可以通过一次拖动一起重"
+"新调整该共享边缘的时间。 "
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:267

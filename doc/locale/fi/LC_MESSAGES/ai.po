@@ -194,12 +194,16 @@ msgstr ""
 "Napsauta :guilabel:`Tarkista` varmistaaksesi, että OpenShot saavuttaa "
 "palvelimen."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:66
 msgid ""
 "For a full step-by-step server setup guide, see the OpenShot wiki: `ComfyUI: "
 "Advanced AI Setup Guide <https://github.com/OpenShot/openshot-qt/wiki/"
 "ComfyUI:-Advanced-AI-Setup-Guide>`_."
 msgstr ""
+"Täydellisen vaiheittaisen palvelinasennusoppaan löydät OpenShot-wikistä: "
+"`ComfyUI: Advanced AI Setup Guide <https://github.com/OpenShot/openshot-qt/"
+"wiki/ComfyUI:-Advanced-AI-Setup-Guide>`_."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:69
@@ -215,11 +219,14 @@ msgstr ""
 msgid "Required Custom Nodes"
 msgstr "Vaaditut mukautetut solmut"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:75
 msgid ""
 "`comfyui_controlnet_aux <https://github.com/Fannovel16/"
 "comfyui_controlnet_aux>`_"
 msgstr ""
+"`comfyui_controlnet_aux <https://github.com/Fannovel16/"
+"comfyui_controlnet_aux>`_"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:76
@@ -263,9 +270,10 @@ msgstr "`OpenShot-ComfyUI <https://github.com/OpenShot/OpenShot-ComfyUI>`_"
 msgid "Required Models / Files"
 msgstr "Vaaditut mallit / tiedostot"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:85
 msgid "``ComfyUI/models/diffusion_models/wan2.1_vace_1.3B_fp16.safetensors``"
-msgstr ""
+msgstr "``ComfyUI/models/diffusion_models/wan2.1_vace_1.3B_fp16.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:86
@@ -570,11 +578,14 @@ msgstr "Esikatsele valittu lähdetiedosto (parannustyönkuluille)."
 msgid "Set the output name for generated media."
 msgstr "Aseta tuotetun median nimi."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:179
 msgid ""
 "Pick a reference image in the :guilabel:`Reference` tab for workflows that "
 "require one."
 msgstr ""
+"Valitse viitekuva :guilabel:`Reference`-välilehdeltä työnkuluille, jotka "
+"sitä vaativat."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:180
@@ -1029,49 +1040,66 @@ msgstr ""
 "Yksityiskohdat: Käyttää tiedostoa ``comfyui/img2img-basic.json`` "
 "``sd_xl_base_1.0.safetensors`` kanssa."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:316
 msgid "Depth (``image-extract-depth``)"
-msgstr ""
+msgstr "Syvyys (``image-extract-depth``)"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:318
 msgid "Why: Export a grayscale depth-map image from a source image."
-msgstr ""
+msgstr "Miksi: Vie harmaasävyinen syvyyskarttakuva lähdekuvasta."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:319
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:"
 "`Depth` on an image, then generate."
 msgstr ""
+"Miten: Valitse kuva, sitten :guilabel:`Enhance with AI` -> :guilabel:"
+"`Extract` -> :guilabel:`Depth` ja luo."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:320
 msgid ""
 "Details: Uses ``comfyui/image-extract-depth.json`` with "
 "``DepthAnythingV2Preprocessor``."
 msgstr ""
+"Yksityiskohdat: Käyttää ``comfyui/image-extract-depth.json`` tiedostoa "
+"yhdessä ``DepthAnythingV2Preprocessor`` kanssa."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:323
 msgid "Lines (``image-extract-lines``)"
-msgstr ""
+msgstr "Viivat (``image-extract-lines``)"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:325
 msgid "Why: Export a line-map image from a source image."
-msgstr ""
+msgstr "Miksi: Vie viivakarttakuva lähdekuvasta."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:326
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:"
 "`Lines` on an image, then generate."
 msgstr ""
+"Miten: Valitse kuva, sitten :guilabel:`Enhance with AI` -> :guilabel:"
+"`Extract` -> :guilabel:`Lines` ja luo."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:327
 msgid ""
 "Details: Uses ``comfyui/image-extract-lines.json`` with "
 "``LineArtPreprocessor``."
 msgstr ""
+"Yksityiskohdat: Käyttää ``comfyui/image-extract-lines.json`` tiedostoa "
+"yhdessä ``LineArtPreprocessor`` kanssa."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:330
 msgid "Image to Video... (``img2video-wan``)"
-msgstr ""
+msgstr "Kuva videoksi... (``img2video-wan``)"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:332
@@ -1087,11 +1115,14 @@ msgstr ""
 "Miten: Valitse :guilabel:`Paranna tekoälyn avulla` kuvasta, anna kehotteet "
 "ja luo."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:334
 msgid ""
 "Details: Uses ``comfyui/img2video-wan.json`` with WAN 2.2 image-to-video "
 "models."
 msgstr ""
+"Yksityiskohdat: Käyttää ``comfyui/img2video-wan.json`` tiedostoa WAN 2.2 "
+"kuva-videoksi -malleilla."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:337
@@ -1103,12 +1134,16 @@ msgstr "Vaihda videon tyyliä... (``video2video-basic``)"
 msgid "Why: Apply a new visual style to a source video."
 msgstr "Miksi: Käytä uutta visuaalista tyyliä lähdevideoon."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:340
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` on a video, enter a style prompt, "
 "pick a reference image in the :guilabel:`Reference` tab, then generate."
 msgstr ""
+"Miten: Valitse video, sitten :guilabel:`Enhance with AI`, syötä "
+"tyylikehotus, valitse viitekuva :guilabel:`Reference`-välilehdeltä ja luo."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:341
 msgid ""
 "Details: Uses ``comfyui/video2video-basic.json`` with WAN VACE video-to-"
@@ -1117,46 +1152,69 @@ msgid ""
 "``wan2.1_vace_1.3B_fp16.safetensors``, ``wan_2.1_vae.safetensors``, and "
 "``umt5_xxl_fp8_e4m3fn_scaled.safetensors`` models."
 msgstr ""
+"Yksityiskohdat: Käyttää ``comfyui/video2video-basic.json`` tiedostoa WAN "
+"VACE video-video -solmuilla, vaaditulla viitekuvalla, yhdistetyllä "
+"``DepthAnythingV2Preprocessor`` syvyydellä ja Canny-reunavalvonnalla sekä "
+"malleilla ``wan2.1_vace_1.3B_fp16.safetensors``, ``wan_2.1_vae.safetensors`` "
+"ja ``umt5_xxl_fp8_e4m3fn_scaled.safetensors``."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:344
 msgid "Depth (``video-extract-depth``)"
-msgstr ""
+msgstr "Syvyys (``video-extract-depth``)"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:346
 msgid "Why: Export a grayscale depth-map version of a source video."
-msgstr ""
+msgstr "Miksi: Vie harmaasävyinen syvyyskarttaversio lähdevideosta."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:347
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:"
 "`Depth` on a video, then generate."
 msgstr ""
+"Miten: Valitse video, sitten :guilabel:`Enhance with AI` -> :guilabel:"
+"`Extract` -> :guilabel:`Depth` ja luo."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:348
 msgid ""
 "Details: Uses ``comfyui/video-extract-depth.json`` with "
 "``DepthAnythingV2Preprocessor`` and preserves the source frame rate."
 msgstr ""
+"Yksityiskohdat: Käyttää ``comfyui/video-extract-depth.json`` tiedostoa "
+"yhdessä ``DepthAnythingV2Preprocessor`` kanssa ja säilyttää alkuperäisen "
+"kuvataajuuden."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:351
 msgid "Lines (``video-extract-lines``)"
-msgstr ""
+msgstr "Viivat (``video-extract-lines``)"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:353
 msgid "Why: Export a line-map version of a source video."
-msgstr ""
+msgstr "Miksi: Vie viivakarttaversio lähdevideosta."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:354
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:"
 "`Lines` on a video, then generate."
 msgstr ""
+"Miten: Valitse video, sitten :guilabel:`Enhance with AI` -> :guilabel:"
+"`Extract` -> :guilabel:`Lines` ja luo."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:355
 msgid ""
 "Details: Uses ``comfyui/video-extract-lines.json`` with "
 "``LineArtPreprocessor`` and preserves the source frame rate."
 msgstr ""
+"Yksityiskohdat: Käyttää ``comfyui/video-extract-lines.json`` tiedostoa "
+"yhdessä ``LineArtPreprocessor`` kanssa ja säilyttää alkuperäisen "
+"kuvataajuuden."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:358
@@ -1523,47 +1581,3 @@ msgid ""
 msgstr ""
 "Yleistä suorituskyvyn ja välimuistin säätöä varten katso :ref:"
 "`preferences_ref` ja :ref:`playback_ref`."
-
-# Translated with gpt-4.1-mini
-#~ msgid "``ComfyUI/models/vae/split_files/vae/wan_2.1_vae.safetensors``"
-#~ msgstr "``ComfyUI/models/vae/split_files/vae/wan_2.1_vae.safetensors``"
-
-# Translated with gpt-4.1-mini
-#~ msgid "Image to Video... (``img2video-svd``)"
-#~ msgstr "Kuva videoksi... (``img2video-svd``)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video "
-#~ "models."
-#~ msgstr ""
-#~ "Yksityiskohdat: Käyttää tiedostoa ``comfyui/img2video-svd.json`` WAN-"
-#~ "kuvasta videoon -mallien kanssa."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "How: Choose :guilabel:`Enhance with AI` on a video, enter a style prompt, "
-#~ "then generate."
-#~ msgstr ""
-#~ "Miten: Valitse :guilabel:`Paranna tekoälyn avulla` videosta, kirjoita "
-#~ "tyylikehotteesi ja luo."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Details: Uses ``comfyui/video2video-basic.json`` with ``sd_xl_base_1.0."
-#~ "safetensors``."
-#~ msgstr ""
-#~ "Tiedot: Käyttää tiedostoa ``comfyui/video2video-basic.json`` "
-#~ "``sd_xl_base_1.0.safetensors`` kanssa."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy "
-#~ "UI URL` in OpenShot."
-#~ msgstr ""
-#~ "Käynnistä ComfyUI, aseta sitten OpenShotissa :guilabel:`Asetukset -> "
-#~ "Kokeelliset -> Comfy UI URL`."
-
-# Translated with gpt-4.1-mini
-#~ msgid "Active jobs can be canceled from the same AI workflow flow."
-#~ msgstr "Aktiiviset työt voi peruuttaa samasta tekoälytyönkulusta."

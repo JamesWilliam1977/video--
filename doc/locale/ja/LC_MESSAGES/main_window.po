@@ -433,6 +433,7 @@ msgid "Center the visible timeline area around the current playhead position."
 msgstr ""
 "現在のプレイヘッド位置を中心に表示されているタイムライン領域を配置します。"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -440,6 +441,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"表示されているタイムラインの範囲を制御します。ハンドルをドラッグしてズームイ"
+"ン/アウトし、中央をドラッグしてパンし、ダブルクリックでタイムラインにフィット"
+"させます。また、:kbd:`Ctrl+スクロールホイール` を使用するか、QWidget タイムラ"
+"イン上で :kbd:`Ctrl` を押しながら中ボタンでドラッグしてスムーズにズームできま"
+"す。"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -595,13 +601,15 @@ msgstr "履歴をクリア"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "最適化されたビデオを削除"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1804,12 +1812,3 @@ msgstr ""
 "あります。まず、画面上部のメニュー :guilabel:`表示->ビュー->シンプルビュー` "
 "を使ってビューをデフォルトに戻せます。または、:guilabel:` 表示->ビュー->ドッ"
 "ク->...` メニューで特定のドックウィジェットを表示・非表示にできます。"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "表示されているタイムライン範囲を制御します。ハンドルをドラッグしてズームイ"
-#~ "ン/アウト、中央をドラッグしてパン、ダブルクリックでタイムラインにフィット"
-#~ "させます。"

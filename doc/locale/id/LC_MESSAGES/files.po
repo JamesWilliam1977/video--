@@ -317,15 +317,19 @@ msgstr "Properti Berkas"
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "Lihat properti berkas, seperti laju bingkai, ukuran, dll..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:104 ../files.rst:125
 msgid "Optimize"
-msgstr ""
+msgstr "Optimalkan"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:105
 msgid ""
 "Create, link, unlink, or delete optimized preview files for the selected "
 "video files."
 msgstr ""
+"Buat, tautkan, putuskan tautan, atau hapus file pratinjau yang dioptimalkan "
+"untuk file video yang dipilih."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:106 ../files.rst:250
@@ -400,6 +404,7 @@ msgstr ""
 "Tombol :guilabel:`Reset Zoom` muncul saat zoom tidak 100%, dan mengatur "
 "ulang ke 100%."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:126
 msgid ""
 "Optimized preview files are lower-resolution copies of your source video "
@@ -408,7 +413,13 @@ msgid ""
 "helpful with large formats such as 4K, high frame rate, or high bitrate "
 "footage."
 msgstr ""
+"File pratinjau yang dioptimalkan adalah salinan beresolusi lebih rendah dari "
+"file video sumber Anda (kadang disebut file proxy), digunakan untuk "
+"meningkatkan responsivitas pengeditan tanpa mengubah media asli. Ini sangat "
+"berguna untuk format besar seperti 4K, frame rate tinggi, atau rekaman "
+"bitrate tinggi."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:130
 msgid ""
 "For video files, the file context menu includes an :guilabel:`Optimize` "
@@ -417,56 +428,82 @@ msgid ""
 "high-resolution footage. Optimizing also pre-loads thumbnails to further "
 "improve the editing smoothness when zooming into the timeline."
 msgstr ""
+"Untuk file video, menu konteks file menyertakan submenu :guilabel:"
+"`Optimalkan`. Fitur ini membuat atau menautkan salinan pratinjau yang lebih "
+"kecil dari klip sumber Anda, yang dapat meningkatkan pemutaran dan "
+"pengguliran pada sistem yang lebih lambat atau dengan rekaman beresolusi "
+"tinggi. Optimasi juga memuat thumbnail sebelumnya untuk lebih meningkatkan "
+"kelancaran pengeditan saat memperbesar timeline."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:135
 msgid "The :guilabel:`Optimize` submenu contains these actions:"
-msgstr ""
+msgstr "Submenu :guilabel:`Optimalkan` berisi tindakan-tindakan berikut:"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:141
 msgid "Action"
-msgstr ""
+msgstr "Tindakan"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:143
 msgid "Optimize Video"
-msgstr ""
+msgstr "Optimalkan Video"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:144
 msgid ""
 "Create an optimized preview file for each selected video file. OpenShot "
 "stores these files in the project's ``optimized`` assets folder."
 msgstr ""
+"Buat file pratinjau yang dioptimalkan untuk setiap file video yang dipilih. "
+"OpenShot menyimpan file-file ini di folder aset ``optimized`` proyek."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:145
 msgid "Link to Existing..."
-msgstr ""
+msgstr "Tautkan ke yang Ada..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:146
 msgid ""
 "Choose a folder containing already-created optimized files and link the best "
 "matching files to the selected source clips. This supports common proxy "
 "naming styles, known proxy suffixes, file ID suffixes, and extension changes."
 msgstr ""
+"Pilih folder yang berisi file yang sudah dibuat dan tautkan file yang paling "
+"cocok ke klip sumber yang dipilih. Ini mendukung gaya penamaan proxy umum, "
+"akhiran proxy yang dikenal, akhiran ID file, dan perubahan ekstensi."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:147
 msgid "Unlink"
-msgstr ""
+msgstr "Putuskan Tautan"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid ""
 "Remove the optimized preview link from the selected file without deleting "
 "the optimized file from disk."
 msgstr ""
+"Hapus tautan pratinjau yang dioptimalkan dari file yang dipilih tanpa "
+"menghapus file yang dioptimalkan dari disk."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Delete & Unlink"
-msgstr ""
+msgstr "Hapus & Putuskan Tautan"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid ""
 "Delete the linked optimized file from disk, then remove the link from the "
 "selected file."
 msgstr ""
+"Hapus file yang dioptimalkan yang ditautkan dari disk, lalu hapus tautan "
+"dari file yang dipilih."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid ""
 "When optimization is in progress, the submenu changes to a single :guilabel:"
@@ -474,7 +511,12 @@ msgid ""
 "only for editing and preview playback. Your final export still uses the "
 "original source files."
 msgstr ""
+"Saat optimasi sedang berlangsung, submenu berubah menjadi satu tindakan :"
+"guilabel:`Batal` untuk file yang dipilih. File pratinjau yang dioptimalkan "
+"hanya digunakan untuk pengeditan dan pemutaran pratinjau. Ekspor akhir Anda "
+"tetap menggunakan file sumber asli."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:155
 msgid ""
 "When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
@@ -487,7 +529,17 @@ msgid ""
 "mp4``, and it can still match files named only by file ID, such as ``F1."
 "mp4``."
 msgstr ""
+"Saat Anda menggunakan :guilabel:`Tautkan ke yang Ada...`, OpenShot mencoba "
+"mencocokkan setiap klip sumber yang dipilih dengan file yang dioptimalkan "
+"yang sudah ada dalam urutan yang aman. Pertama mencari nama file dasar yang "
+"sama dengan ekstensi video berbeda, kemudian nama gaya proxy umum seperti "
+"``_proxy``, ``_preview``, ``_optimized``, ``_lowres``, tag resolusi seperti "
+"``_720p`` atau ``_1080p``, dan varian gaya kamera/editor seperti ``_p``. Ini "
+"juga mendukung nama yang menambahkan ID file OpenShot setelah akhiran proxy "
+"yang dikenal, seperti ``clip001_proxy_F1.mp4``, dan masih bisa mencocokkan "
+"file yang hanya dinamai dengan ID file, seperti ``F1.mp4``."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:162
 msgid ""
 "Best practice when bringing your own optimized files is to keep the same "
@@ -498,6 +550,13 @@ msgid ""
 "``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
 "proxy naming patterns."
 msgstr ""
+"Praktik terbaik saat membawa file yang dioptimalkan sendiri adalah menjaga "
+"nama file dasar yang sama dengan klip sumber dan menambahkan akhiran gaya "
+"proxy yang jelas, misalnya ``clip001_proxy.mp4`` atau ``clip001_proxy.mov``. "
+"Jika Anda perlu menghindari tabrakan nama file, tambahkan ID file OpenShot "
+"setelah akhiran proxy, misalnya ``clip001_proxy_F1.mp4``. Hindari akhiran "
+"yang tidak terkait seperti ``_final`` atau ``_reviewcopy``, karena OpenShot "
+"tidak menganggapnya sebagai pola penamaan proxy yang aman."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:171
@@ -833,17 +892,21 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - Media yang dibuat dari tempelan clipboard "
 "(gambar, audio, atau video yang harus disimpan ke disk terlebih dahulu)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:265
 msgid ""
 "``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
 "editing"
 msgstr ""
+"``.openshot_qt/optimized/`` - File pratinjau yang dioptimalkan dibuat untuk "
+"pengeditan yang lebih lancar"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:266
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr "``.openshot_qt/protobuf_data`` - Data pelacakan dan deteksi objek"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
@@ -852,6 +915,12 @@ msgid ""
 "from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
 "optimized preview files linked to the project."
 msgstr ""
+"Saat Anda memilih **File→Simpan Sebagai**, OpenShot menyalin folder-folder "
+"ini ke direktori proyek Anda, di dalam satu folder bernama "
+"``PROJECTNAME_Assets``. Misalnya: ``MyProject_Assets/clipboard`` akan berisi "
+"media apa pun yang Anda tempel dari clipboard, dan ``MyProject_Assets/"
+"optimized`` akan berisi file pratinjau yang dioptimalkan yang ditautkan ke "
+"proyek."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:272
@@ -933,15 +1002,3 @@ msgstr ""
 "menyebabkan masalah file yang hilang. Untuk panduan rinci tentang file yang "
 "hilang, lihat `The Case of “Missing Files”! <https://github.com/OpenShot/"
 "openshot-qt/wiki/Missing-File-Prompt>`_"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
-#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
-#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
-#~ "pasted from the clipboard."
-#~ msgstr ""
-#~ "Saat Anda memilih **File→Save As**, OpenShot menyalin folder-folder ini "
-#~ "ke direktori proyek Anda, di dalam satu folder bernama "
-#~ "``PROJECTNAME_Assets``. Misalnya: ``MyProject_Assets/clipboard`` akan "
-#~ "berisi media apa pun yang Anda tempel dari clipboard."

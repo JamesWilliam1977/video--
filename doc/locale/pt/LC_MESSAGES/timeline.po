@@ -266,12 +266,16 @@ msgstr ""
 "Dica: Se a edição na linha do tempo parecer apertada, aproxime com o "
 "controle deslizante para facilitar ajustes pequenos nos clipes."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Você também pode ampliar a linha do tempo com :kbd:`Ctrl+Scroll Wheel`. Na "
+"linha do tempo QWidget, segure :kbd:`Ctrl` e arraste com o botão do meio do "
+"mouse para um zoom suave."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

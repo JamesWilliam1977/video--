@@ -375,12 +375,17 @@ msgstr ""
 msgid "Preview"
 msgstr "Pré-visualização"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"A aba de Visualização da janela de Preferências controla o comportamento do "
+"áudio na pré-visualização em tempo real, incluindo seleção de dispositivo, "
+"taxa de amostragem, canais, buffer, volume de reprodução e comportamento "
+"otimizado da pré-visualização."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -457,43 +462,56 @@ msgstr "75"
 msgid "Preview playback volume percentage"
 msgstr "Porcentagem do volume de reprodução da pré-visualização"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "Tarefas de Otimização Concorrentes"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "2"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
 msgstr ""
+"Número de arquivos de vídeo que o OpenShot pode otimizar simultaneamente"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "Resolução Otimizada da Pré-visualização"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "1280x720"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
 msgstr ""
+"Resolução máxima usada ao criar arquivos de pré-visualização otimizados"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "Taxa de Pré-carregamento de Miniaturas / segundo"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "4"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
 msgstr ""
+"Quantos quadros de miniaturas por segundo são pré-gerados durante a "
+"otimização do vídeo"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -858,22 +876,28 @@ msgstr "Placa Gráfica do Codificador de Hardware"
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "Escolha qual dispositivo GPU é usado para codificação de hardware."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "Threads OMP"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
+"Número de threads de trabalho OpenMP usadas para processamento sensível ao "
+"desempenho."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "Threads FFmpeg"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "Número de threads FFmpeg usadas para decodificação/codificação."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1215,37 +1239,3 @@ msgstr ""
 "configuração. Veja nosso `guia passo a passo <https://github.com/OpenShot/"
 "openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ para mais informações "
 "sobre **instalações limpas** do OpenShot."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "A aba Pré-visualização da janela de Preferências controla o comportamento "
-#~ "do áudio na pré-visualização em tempo real, incluindo seleção de "
-#~ "dispositivo, taxa de amostragem, canais, buffer e volume de reprodução."
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "Threads OMP (0 = Padrão)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "Número de threads de trabalho OpenMP usadas por processamento sensível ao "
-#~ "desempenho. Use ``0`` para deixar o OpenShot escolher automaticamente."
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "Threads FFmpeg (0 = Padrão)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr ""
-#~ "Número de threads FFmpeg usadas para decodificação/codificação. Use ``0`` "
-#~ "para seleção automática de threads."

@@ -442,6 +442,7 @@ msgstr ""
 "Centralize a área visível da linha do tempo em torno da posição atual do "
 "cursor de reprodução."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -449,6 +450,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Controle o intervalo visível da linha do tempo. Arraste as alças para "
+"ampliar/reduzir, arraste o centro para mover, e clique duas vezes para "
+"ajustar à linha do tempo. Você também pode usar :kbd:`Ctrl+Scroll Wheel`, ou "
+"na linha do tempo QWidget segure :kbd:`Ctrl` e arraste com o botão do meio "
+"do mouse para um zoom suave."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -606,13 +612,15 @@ msgstr "Limpar Histórico"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Excluir Vídeos Otimizados"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1818,12 +1826,3 @@ msgstr ""
 "guilabel:`Exibir->Vistas->Vista Simples` no topo da tela para restaurar a "
 "vista para o padrão. Ou pode usar o menu :guilabel:`Exibir->Vistas->Docks-"
 ">...` para mostrar ou ocultar docks específicos na janela principal."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Controle o intervalo visível da linha do tempo. Arraste as alças para "
-#~ "ampliar/reduzir, arraste o centro para mover e clique duas vezes para "
-#~ "ajustar a linha do tempo."

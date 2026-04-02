@@ -371,12 +371,16 @@ msgstr "Gunakan garis waktu web warisan (WebEngine/WebKit pilih otomatis)"
 msgid "Preview"
 msgstr "Pratinjau"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"Tab Pratinjau di jendela Preferensi mengontrol perilaku audio pratinjau "
+"waktu nyata, termasuk pemilihan perangkat, laju sampel, saluran, buffering, "
+"volume pemutaran, dan perilaku pratinjau yang dioptimalkan."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -451,43 +455,56 @@ msgstr "75"
 msgid "Preview playback volume percentage"
 msgstr "Persentase volume pemutaran pratinjau"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "Pekerjaan Optimasi Bersamaan"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "2"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
-msgstr ""
+msgstr "Jumlah file video yang dapat dioptimalkan OpenShot secara bersamaan"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "Resolusi Pratinjau yang Dioptimalkan"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "1280x720"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
 msgstr ""
+"Resolusi maksimum yang digunakan saat membuat file pratinjau yang "
+"dioptimalkan"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "Laju Pra-muat Thumbnail / detik"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "4"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
 msgstr ""
+"Berapa banyak bingkai pratinjau thumbnail per detik yang diprahasilkan saat "
+"mengoptimalkan video"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -849,22 +866,27 @@ msgstr "Kartu Grafis Encoder Perangkat Keras"
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "Pilih perangkat GPU yang digunakan untuk encoding perangkat keras."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "Thread OMP"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
+"Jumlah thread pekerja OpenMP yang digunakan oleh pemrosesan sensitif kinerja."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "Thread FFmpeg"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "Jumlah thread FFmpeg yang digunakan untuk decoding/encoding."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1206,37 +1228,3 @@ msgstr ""
 "file pengaturan. Lihat `panduan langkah demi langkah <https://github.com/"
 "OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ kami untuk "
 "informasi lebih lanjut tentang **instalasi bersih** OpenShot."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "Tab Pratinjau di jendela Preferensi mengontrol perilaku audio pratinjau "
-#~ "waktu nyata, termasuk pemilihan perangkat, laju sampel, saluran, "
-#~ "buffering, dan volume pemutaran."
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "Thread OMP (0 = Default)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "Jumlah thread pekerja OpenMP yang digunakan untuk pemrosesan sensitif "
-#~ "kinerja. Gunakan ``0`` agar OpenShot memilih secara otomatis."
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "Thread FFmpeg (0 = Default)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr ""
-#~ "Jumlah thread FFmpeg yang digunakan untuk decoding/encoding. Gunakan "
-#~ "``0`` untuk pemilihan thread otomatis."

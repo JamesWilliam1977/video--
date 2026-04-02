@@ -428,6 +428,7 @@ msgstr "تمركز على رأس التشغيل"
 msgid "Center the visible timeline area around the current playhead position."
 msgstr "مركز منطقة الجدول الزمني المرئية حول موضع رأس التشغيل الحالي."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -435,6 +436,10 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"تحكم في نطاق الجدول الزمني المرئي. اسحب المقابض للتكبير/التصغير، اسحب المركز "
+"للتحريك، وانقر نقرًا مزدوجًا لتناسب الجدول الزمني. يمكنك أيضًا استخدام :kbd:"
+"`Ctrl+Scroll Wheel`، أو على الجدول الزمني QWidget اضغط مع الاستمرار على :kbd:"
+"`Ctrl` واسحب بزر الفأرة الأوسط للتكبير السلس."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -591,13 +596,15 @@ msgstr "مسح السجل"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "حذف الفيديوهات المحسّنة"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1789,11 +1796,3 @@ msgstr ""
 "العرض البسيطة` في أعلى الشاشة لاستعادة العرض إلى وضعه الافتراضي. أو يمكنك "
 "استخدام قائمة :guilabel:`عرض->طرق العرض->لوحات العرض->...` لإظهار أو إخفاء "
 "عناصر لوحة العرض المحددة في النافذة الرئيسية."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "تحكم في نطاق الجدول الزمني المرئي. اسحب المقابض للتكبير/التصغير، اسحب "
-#~ "المركز للتحريك، وانقر مزدوجًا لتناسب الجدول الزمني."

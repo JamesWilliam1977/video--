@@ -265,12 +265,16 @@ msgstr ""
 "Wskazówka: Jeśli edycja na osi czasu wydaje się zatłoczona, powiększ ją "
 "suwakiem osi czasu, aby ułatwić drobne korekty klipów."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Możesz także powiększać oś czasu za pomocą :kbd:`Ctrl+Scroll Wheel`. Na osi "
+"czasu QWidget przytrzymaj :kbd:`Ctrl` i przeciągnij środkowym przyciskiem "
+"myszy, aby płynnie powiększać."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

@@ -263,12 +263,16 @@ msgstr ""
 "نصيحة: إذا شعرت أن تحرير الجدول الزمني مزدحم، قم بالتكبير باستخدام شريط "
 "تمرير الجدول الزمني لتسهيل تعديل المقاطع الصغيرة."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"يمكنك أيضًا تكبير الجدول الزمني باستخدام :kbd:`Ctrl+Scroll Wheel`. في جدول "
+"QWidget الزمني، اضغط مع الاستمرار على :kbd:`Ctrl` واسحب بزر الفأرة الأوسط "
+"للتكبير السلس."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

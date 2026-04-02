@@ -267,12 +267,16 @@ msgstr ""
 "Mẹo: Nếu việc chỉnh sửa dòng thời gian cảm thấy chật chội, hãy thu phóng vào "
 "bằng thanh trượt dòng thời gian để dễ dàng điều chỉnh các đoạn clip nhỏ hơn."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Bạn cũng có thể phóng to dòng thời gian bằng :kbd:`Ctrl+Cuộn Chuột`. Trên "
+"dòng thời gian QWidget, giữ :kbd:`Ctrl` và kéo bằng nút chuột giữa để phóng "
+"to mượt mà."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

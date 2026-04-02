@@ -326,11 +326,14 @@ msgstr ""
 "Pamiętaj, że powyższe metody cięcia mają również :ref:"
 "`keyboard_shortcut_ref`, co pozwala zaoszczędzić jeszcze więcej czasu."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:96
 msgid ""
 "If multiple selected clips and/or transitions share the same left edge or "
 "right edge, you can drag that shared edge once to trim them together."
 msgstr ""
+"Jeśli wiele wybranych klipów i/lub przejść ma ten sam lewy lub prawy brzeg, "
+"możesz przeciągnąć ten wspólny brzeg raz, aby przyciąć je razem."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:100
@@ -1070,11 +1073,15 @@ msgstr ""
 "przyspiesza klip. Wszystkie klatki kluczowe na klipie i jego efektach są "
 "skalowane, aby ich względne pozycje pozostały nienaruszone."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:262
 msgid ""
 "If you select multiple clips and/or transitions that share the same left "
 "edge or right edge, you can retime that shared edge together in one drag."
 msgstr ""
+"Jeśli wybierzesz wiele klipów i/lub przejść, które mają ten sam lewy lub "
+"prawy brzeg, możesz wspólnie zmienić czas tego brzegu za pomocą jednego "
+"przeciągnięcia."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:267

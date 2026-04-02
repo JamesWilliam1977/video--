@@ -313,15 +313,19 @@ msgstr "Thuộc tính Tệp"
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "Xem thuộc tính của tệp, như tốc độ khung hình, kích thước, v.v..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:104 ../files.rst:125
 msgid "Optimize"
-msgstr ""
+msgstr "Tối ưu hóa"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:105
 msgid ""
 "Create, link, unlink, or delete optimized preview files for the selected "
 "video files."
 msgstr ""
+"Tạo, liên kết, hủy liên kết hoặc xóa các tệp xem trước đã tối ưu hóa cho các "
+"tệp video được chọn."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:106 ../files.rst:250
@@ -395,6 +399,7 @@ msgstr ""
 "Nút :guilabel:`Đặt Lại Thu Phóng` xuất hiện khi mức thu phóng không phải "
 "100%, và đặt lại về 100%."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:126
 msgid ""
 "Optimized preview files are lower-resolution copies of your source video "
@@ -403,7 +408,13 @@ msgid ""
 "helpful with large formats such as 4K, high frame rate, or high bitrate "
 "footage."
 msgstr ""
+"Các tệp xem trước đã tối ưu hóa là bản sao có độ phân giải thấp hơn của các "
+"tệp video gốc của bạn (đôi khi được gọi là tệp proxy), được sử dụng để cải "
+"thiện độ phản hồi khi chỉnh sửa mà không thay đổi phương tiện gốc. Chúng đặc "
+"biệt hữu ích với các định dạng lớn như 4K, tốc độ khung hình cao hoặc video "
+"có bitrate cao."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:130
 msgid ""
 "For video files, the file context menu includes an :guilabel:`Optimize` "
@@ -412,56 +423,82 @@ msgid ""
 "high-resolution footage. Optimizing also pre-loads thumbnails to further "
 "improve the editing smoothness when zooming into the timeline."
 msgstr ""
+"Đối với các tệp video, menu ngữ cảnh tệp bao gồm một menu con :guilabel:"
+"`Optimize`. Tính năng này tạo hoặc liên kết các bản xem trước nhỏ hơn của "
+"các clip nguồn của bạn, giúp cải thiện phát lại và tua trên các hệ thống "
+"chậm hơn hoặc với video có độ phân giải cao. Tối ưu hóa cũng tải trước các "
+"hình thu nhỏ để cải thiện độ mượt khi chỉnh sửa khi phóng to vào dòng thời "
+"gian."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:135
 msgid "The :guilabel:`Optimize` submenu contains these actions:"
-msgstr ""
+msgstr "Menu con :guilabel:`Optimize` chứa các hành động sau:"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:141
 msgid "Action"
-msgstr ""
+msgstr "Hành động"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:143
 msgid "Optimize Video"
-msgstr ""
+msgstr "Tối ưu hóa Video"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:144
 msgid ""
 "Create an optimized preview file for each selected video file. OpenShot "
 "stores these files in the project's ``optimized`` assets folder."
 msgstr ""
+"Tạo một tệp xem trước đã tối ưu hóa cho mỗi tệp video được chọn. OpenShot "
+"lưu các tệp này trong thư mục tài sản ``optimized`` của dự án."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:145
 msgid "Link to Existing..."
-msgstr ""
+msgstr "Liên kết với Tệp hiện có..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:146
 msgid ""
 "Choose a folder containing already-created optimized files and link the best "
 "matching files to the selected source clips. This supports common proxy "
 "naming styles, known proxy suffixes, file ID suffixes, and extension changes."
 msgstr ""
+"Chọn một thư mục chứa các tệp tối ưu hóa đã tạo sẵn và liên kết các tệp phù "
+"hợp nhất với các clip nguồn được chọn. Tính năng này hỗ trợ các kiểu đặt tên "
+"proxy phổ biến, hậu tố proxy đã biết, hậu tố ID tệp và thay đổi phần mở rộng."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:147
 msgid "Unlink"
-msgstr ""
+msgstr "Hủy liên kết"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid ""
 "Remove the optimized preview link from the selected file without deleting "
 "the optimized file from disk."
 msgstr ""
+"Xóa liên kết xem trước đã tối ưu hóa khỏi tệp được chọn mà không xóa tệp tối "
+"ưu hóa khỏi đĩa."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Delete & Unlink"
-msgstr ""
+msgstr "Xóa & Hủy liên kết"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid ""
 "Delete the linked optimized file from disk, then remove the link from the "
 "selected file."
 msgstr ""
+"Xóa tệp tối ưu hóa đã liên kết khỏi đĩa, sau đó xóa liên kết khỏi tệp được "
+"chọn."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid ""
 "When optimization is in progress, the submenu changes to a single :guilabel:"
@@ -469,7 +506,12 @@ msgid ""
 "only for editing and preview playback. Your final export still uses the "
 "original source files."
 msgstr ""
+"Khi quá trình tối ưu hóa đang diễn ra, menu con sẽ chuyển thành một hành "
+"động duy nhất :guilabel:`Cancel` cho tệp được chọn. Các tệp xem trước đã tối "
+"ưu hóa chỉ được sử dụng để chỉnh sửa và phát xem trước. Xuất cuối cùng của "
+"bạn vẫn sử dụng các tệp nguồn gốc."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:155
 msgid ""
 "When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
@@ -482,7 +524,16 @@ msgid ""
 "mp4``, and it can still match files named only by file ID, such as ``F1."
 "mp4``."
 msgstr ""
+"Khi bạn sử dụng :guilabel:`Link to Existing...`, OpenShot cố gắng khớp mỗi "
+"clip nguồn được chọn với một tệp tối ưu hóa hiện có theo thứ tự an toàn. Nó "
+"đầu tiên tìm kiếm cùng tên cơ sở với phần mở rộng video khác, sau đó tìm các "
+"tên kiểu proxy phổ biến như ``_proxy``, ``_preview``, ``_optimized``, "
+"``_lowres``, các thẻ độ phân giải như ``_720p`` hoặc ``_1080p``, và các biến "
+"thể kiểu máy quay/biên tập như ``_p``. Nó cũng hỗ trợ các tên thêm ID tệp "
+"OpenShot sau hậu tố proxy đã biết, như ``clip001_proxy_F1.mp4``, và vẫn có "
+"thể khớp các tệp chỉ được đặt tên bằng ID tệp, như ``F1.mp4``."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:162
 msgid ""
 "Best practice when bringing your own optimized files is to keep the same "
@@ -493,6 +544,12 @@ msgid ""
 "``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
 "proxy naming patterns."
 msgstr ""
+"Thực hành tốt nhất khi mang các tệp tối ưu hóa của riêng bạn là giữ cùng tên "
+"cơ sở với clip nguồn và thêm hậu tố kiểu proxy rõ ràng, ví dụ "
+"``clip001_proxy.mp4`` hoặc ``clip001_proxy.mov``. Nếu bạn cần tránh trùng "
+"tên tệp, hãy thêm ID tệp OpenShot sau hậu tố proxy, ví dụ ``clip001_proxy_F1."
+"mp4``. Tránh các hậu tố không liên quan như ``_final`` hoặc ``_reviewcopy``, "
+"vì OpenShot không coi đó là các mẫu đặt tên proxy an toàn."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:171
@@ -829,11 +886,14 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - Media được tạo từ các thao tác dán clipboard "
 "(hình ảnh, âm thanh hoặc video phải được lưu vào đĩa trước)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:265
 msgid ""
 "``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
 "editing"
 msgstr ""
+"``.openshot_qt/optimized/`` - Các tệp xem trước đã tối ưu hóa được tạo để "
+"chỉnh sửa mượt mà hơn"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:266
@@ -841,6 +901,7 @@ msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr ""
 "``.openshot_qt/protobuf_data`` - Dữ liệu theo dõi và phát hiện đối tượng"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
@@ -849,6 +910,11 @@ msgid ""
 "from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
 "optimized preview files linked to the project."
 msgstr ""
+"Khi bạn chọn **File→Save As**, OpenShot sao chép các thư mục này vào thư mục "
+"dự án của bạn, bên trong một thư mục duy nhất có tên ``PROJECTNAME_Assets``. "
+"Ví dụ: ``MyProject_Assets/clipboard`` sẽ chứa bất kỳ phương tiện nào bạn đã "
+"dán từ clipboard, và ``MyProject_Assets/optimized`` sẽ chứa các tệp xem "
+"trước đã tối ưu hóa được liên kết với dự án."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:272
@@ -930,15 +996,3 @@ msgstr ""
 "sửa video, vì điều này có thể dẫn đến các vấn đề về tệp bị thiếu. Để xem "
 "hướng dẫn chi tiết về tệp bị thiếu, hãy xem `The Case of “Missing Files”! "
 "<https://github.com/OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
-#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
-#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
-#~ "pasted from the clipboard."
-#~ msgstr ""
-#~ "Khi bạn chọn **Tập Tin→Lưu Như**, OpenShot sao chép các thư mục này vào "
-#~ "thư mục dự án của bạn, bên trong một thư mục duy nhất có tên "
-#~ "``PROJECTNAME_Assets``. Ví dụ: ``MyProject_Assets/clipboard`` sẽ chứa bất "
-#~ "kỳ media nào bạn đã dán từ clipboard."

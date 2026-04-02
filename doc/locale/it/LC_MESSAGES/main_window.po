@@ -443,6 +443,7 @@ msgstr ""
 "Centra l'area visibile della timeline attorno alla posizione corrente della "
 "testina di riproduzione."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -450,6 +451,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Controlla l'intervallo visibile della timeline. Trascina le maniglie per "
+"ingrandire/ridurre, trascina il centro per spostarti e fai doppio clic per "
+"adattare la timeline. Puoi anche usare :kbd:`Ctrl+Rotellina del mouse`, "
+"oppure sulla timeline QWidget tieni premuto :kbd:`Ctrl` e trascina con il "
+"pulsante centrale del mouse per uno zoom fluido."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -608,13 +614,15 @@ msgstr "Pulisci Cronologia"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Elimina video ottimizzati"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1824,12 +1832,3 @@ msgstr ""
 "sullo schermo, per ripristinare la vista predefinita. Oppure puoi usare il "
 "menu :guilabel:`Visualizza->Viste->Dock->...` per mostrare o nascondere "
 "specifici widget dock nella finestra principale."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Controlla l'intervallo visibile della timeline. Trascina le maniglie per "
-#~ "zoomare dentro/fuori, trascina il centro per spostare e fai doppio clic "
-#~ "per adattare la timeline."

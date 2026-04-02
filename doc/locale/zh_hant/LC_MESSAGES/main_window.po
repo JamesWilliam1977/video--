@@ -410,6 +410,7 @@ msgstr "置中播放頭"
 msgid "Center the visible timeline area around the current playhead position."
 msgstr "將可見的時間軸區域置中於目前播放頭位置。"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -417,6 +418,9 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"控制可見的時間軸範圍。拖動控制點以放大/縮小，拖動中心以平移，雙擊以適合時間"
+"軸。您也可以使用 :kbd:`Ctrl+滾輪`，或在 QWidget 時間軸上按住 :kbd:`Ctrl` 並用"
+"中鍵拖動以平滑縮放。"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -572,13 +576,15 @@ msgstr "清除歷史紀錄"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "刪除已優化影片"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1755,11 +1761,3 @@ msgstr ""
 "以使用畫面頂端的 :guilabel:`檢視->檢視->簡易檢視` 選單選項，將檢視恢復到預設"
 "狀態。或者，您可以使用 :guilabel:` 檢視->檢視->停靠視窗->...` 選單來顯示或隱"
 "藏主視窗上的特定停靠元件。"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "控制可見的時間軸範圍。拖曳控制點可放大/縮小，拖曳中心可平移，雙擊可適合時"
-#~ "間軸。"

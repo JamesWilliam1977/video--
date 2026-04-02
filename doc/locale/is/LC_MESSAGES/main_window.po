@@ -437,6 +437,7 @@ msgstr "Miðja á spilunarhaus"
 msgid "Center the visible timeline area around the current playhead position."
 msgstr "Miðja sýnilegt tímalínusvæði um núverandi stöðu spilunarhauss."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -444,6 +445,10 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Stjórna sýnilegu tímabilinu á tímalínunni. Dragðu handföngin til að stækka/"
+"minnka, dragðu miðjuna til að færa og tvísmelltu til að aðlaga tímalínuna. "
+"Þú getur einnig notað :kbd:`Ctrl+Scroll Wheel`, eða á QWidget tímalínunni "
+"haldið :kbd:`Ctrl` og dregið með miðmusarhnappinum fyrir mjúka stækkun."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -601,13 +606,15 @@ msgstr "Hreinsa sögu"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Eyða hagræddu myndböndunum"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1801,11 +1808,3 @@ msgstr ""
 "`Skoða->Útsýni->Einfalt útsýni` efst á skjánum til að endurheimta sjálfgefna "
 "útsýnið. Eða þú getur notað valmyndina :guilabel:`Skoða->Útsýni->Gluggar->..."
 "` til að sýna eða fela ákveðna glugga í aðalglugganum."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Stjórna sýnilegu sviði tímalínu. Dragðu handföng til að stækka/minnka, "
-#~ "dragðu miðjuna til að færa og tvísmelltu til að aðlaga tímalínu."

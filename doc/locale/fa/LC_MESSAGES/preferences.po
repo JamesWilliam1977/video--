@@ -365,12 +365,16 @@ msgstr "استفاده از خط زمان وب قدیمی (انتخاب خودک
 msgid "Preview"
 msgstr "پیش‌نمایش"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"زبانه پیش‌نمایش در پنجره تنظیمات، رفتار صدای پیش‌نمایش در زمان واقعی را کنترل "
+"می‌کند، از جمله انتخاب دستگاه، نرخ نمونه‌برداری، کانال‌ها، بافرینگ، حجم پخش و "
+"رفتار پیش‌نمایش بهینه‌شده."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -444,43 +448,54 @@ msgstr "۷۵"
 msgid "Preview playback volume percentage"
 msgstr "درصد حجم پخش پیش‌نمایش"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "شغل‌های بهینه‌سازی همزمان"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "۲"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
-msgstr ""
+msgstr "تعداد فایل‌های ویدیویی که OpenShot می‌تواند به طور همزمان بهینه کند"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "رزولوشن پیش‌نمایش بهینه‌شده"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "۱۲۸۰x۷۲۰"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
-msgstr ""
+msgstr "حداکثر رزولوشنی که هنگام ایجاد فایل‌های پیش‌نمایش بهینه استفاده می‌شود"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "نرخ پیش‌بارگذاری تصویر بندانگشتی در ثانیه"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "۴"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
 msgstr ""
+"تعداد فریم‌های پیش‌نمایش تصویر بندانگشتی که در هر ثانیه هنگام بهینه‌سازی ویدیو "
+"پیش‌تولید می‌شوند"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -832,22 +847,27 @@ msgstr "کارت گرافیک رمزگذار سخت‌افزاری"
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "انتخاب کنید کدام دستگاه GPU برای رمزگذاری سخت‌افزاری استفاده شود."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "رشته‌های OMP"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
+"تعداد رشته‌های کاری OpenMP که برای پردازش حساس به عملکرد استفاده می‌شوند."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "رشته‌های FFmpeg"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "تعداد رشته‌های FFmpeg که برای رمزگشایی/رمزگذاری استفاده می‌شوند."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1182,36 +1202,3 @@ msgstr ""
 "openshot_qt/``) را ایجاد خواهد کرد. برای اطلاعات بیشتر درباره **نصب‌های "
 "تمیز** OpenShot، راهنمای گام‌به‌گام ما را در `این لینک <https://github.com/"
 "OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ ببینید."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "زبانه پیش‌نمایش در پنجره تنظیمات، رفتار صدای پیش‌نمایش زنده را کنترل می‌کند، "
-#~ "از جمله انتخاب دستگاه، نرخ نمونه‌برداری، کانال‌ها، بافرینگ و حجم پخش."
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "رشته‌های OMP (۰ = پیش‌فرض)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "تعداد رشته‌های کاری OpenMP که برای پردازش حساس به عملکرد استفاده می‌شوند. "
-#~ "برای انتخاب خودکار توسط OpenShot، از ``0`` استفاده کنید."
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "رشته‌های FFmpeg (۰ = پیش‌فرض)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr ""
-#~ "تعداد رشته‌های FFmpeg که برای رمزگشایی/رمزگذاری استفاده می‌شوند. برای "
-#~ "انتخاب خودکار رشته‌ها، از ``0`` استفاده کنید."

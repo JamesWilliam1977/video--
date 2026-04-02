@@ -267,12 +267,16 @@ msgstr ""
 "Vinkki: Jos aikajanan editointi tuntuu ahtaalta, zoomaa sisään aikajanan "
 "liukusäätimellä helpottaaksesi pienten leikkeiden säätöä."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Voit myös zoomata aikajanaa painamalla :kbd:`Ctrl` ja rullaamalla hiiren "
+"rullaa. QWidget-aikajanalla pidä :kbd:`Ctrl` pohjassa ja vedä keskimmäisellä "
+"hiiren painikkeella sujuvaa zoomausta varten."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

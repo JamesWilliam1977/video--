@@ -440,6 +440,7 @@ msgid "Center the visible timeline area around the current playhead position."
 msgstr ""
 "Pusatkan area timeline yang terlihat di sekitar posisi playhead saat ini."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -447,6 +448,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Kontrol rentang timeline yang terlihat. Seret pegangan untuk memperbesar/"
+"memperkecil, seret tengah untuk menggeser, dan klik dua kali untuk "
+"menyesuaikan timeline. Anda juga dapat menggunakan :kbd:`Ctrl+Scroll Wheel`, "
+"atau pada timeline QWidget tahan :kbd:`Ctrl` dan seret dengan tombol tengah "
+"mouse untuk zoom halus."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -603,13 +609,15 @@ msgstr "Bersihkan Riwayat"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Hapus Video yang Dioptimalkan"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1809,12 +1817,3 @@ msgstr ""
 "mengembalikan tampilan ke default. Atau Anda dapat menggunakan menu :"
 "guilabel:`View->Views->Docks->...` untuk menampilkan atau menyembunyikan "
 "widget dock tertentu di jendela utama."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Kontrol rentang timeline yang terlihat. Seret pegangan untuk memperbesar/"
-#~ "memperkecil, seret tengah untuk menggeser, dan klik dua kali untuk "
-#~ "menyesuaikan timeline."

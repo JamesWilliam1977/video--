@@ -265,12 +265,16 @@ msgstr ""
 "نکته: اگر ویرایش خط زمان شلوغ به نظر می‌رسد، با لغزنده خط زمان بزرگنمایی کنید "
 "تا تنظیمات کوچک کلیپ آسان‌تر شود."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"شما همچنین می‌توانید با استفاده از :kbd:`Ctrl+Scroll Wheel` روی جدول زمانی "
+"زوم کنید. در جدول زمانی QWidget، کلید :kbd:`Ctrl` را نگه داشته و با دکمه وسط "
+"ماوس بکشید تا زوم نرم انجام شود."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

@@ -265,12 +265,16 @@ msgstr ""
 "Ábending: Ef klipping á tímalínu virðist þétt, aðdráttaðu með "
 "tímalínusleðanum til að auðvelda smávægilegar klippubreytingar."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Þú getur einnig stækkað tímalínuna með :kbd:`Ctrl+Scroll Wheel`. Á QWidget "
+"tímalínunni, haltu niðri :kbd:`Ctrl` og dragðu með miðju músarhnappinum til "
+"að fá mjúka stækkun."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

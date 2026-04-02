@@ -319,11 +319,14 @@ msgstr ""
 "به خاطر داشته باشید که روش‌های برش فوق همچنین دارای :ref:"
 "`keyboard_shortcut_ref` هستند تا زمان بیشتری صرفه‌جویی شود."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:96
 msgid ""
 "If multiple selected clips and/or transitions share the same left edge or "
 "right edge, you can drag that shared edge once to trim them together."
 msgstr ""
+"اگر چندین کلیپ و/یا انتقال انتخاب شده لبه چپ یا لبه راست مشترک داشته باشند، "
+"می‌توانید آن لبه مشترک را یک بار بکشید تا همزمان آنها را برش دهید."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:100
@@ -1039,11 +1042,14 @@ msgstr ""
 "می‌دهد. تمام کی‌فریم‌های کلیپ و افکت‌های آن مقیاس‌بندی می‌شوند تا موقعیت نسبی آن‌ها "
 "حفظ شود."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:262
 msgid ""
 "If you select multiple clips and/or transitions that share the same left "
 "edge or right edge, you can retime that shared edge together in one drag."
 msgstr ""
+"اگر چندین کلیپ و/یا انتقال که لبه چپ یا لبه راست مشترک دارند را انتخاب کنید، "
+"می‌توانید آن لبه مشترک را با یک کشیدن به صورت همزمان تغییر زمان دهید."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:267

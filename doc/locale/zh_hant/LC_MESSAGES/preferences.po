@@ -349,12 +349,15 @@ msgstr "使用舊版網頁時間軸（WebEngine/WebKit 自動選擇）"
 msgid "Preview"
 msgstr "預覽"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"偏好設定視窗的預覽標籤控制即時預覽音訊行為，包括裝置選擇、取樣率、聲道、緩"
+"衝、播放音量及優化預覽行為。"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -428,43 +431,52 @@ msgstr "75"
 msgid "Preview playback volume percentage"
 msgstr "預覽播放音量百分比"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "同時優化工作數"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "2"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
-msgstr ""
+msgstr "OpenShot 可同時優化的影片檔案數量"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "優化預覽解析度"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "1280x720"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
-msgstr ""
+msgstr "建立優化預覽檔案時使用的最大解析度"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "縮圖預載速率／秒"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "4"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
-msgstr ""
+msgstr "優化影片時每秒預先產生的縮圖預覽影格數"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -793,22 +805,26 @@ msgstr "硬體編碼顯示卡"
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "選擇用於硬體編碼的 GPU 裝置。"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "OMP 執行緒"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
-msgstr ""
+msgstr "用於效能敏感處理的 OpenMP 工作執行緒數量。"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "FFmpeg 執行緒"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "用於解碼/編碼的 FFmpeg 執行緒數量。"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1127,33 +1143,3 @@ msgstr ""
 "OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ 以了解更多關於 "
 "OpenShot **乾淨安裝** 的資訊。 `step-by-step guide <https://github.com/"
 "OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "偏好設定視窗的預覽分頁控制即時預覽音訊行為，包括裝置選擇、取樣率、聲道、緩"
-#~ "衝以及播放音量。"
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "OMP 執行緒數（0 = 預設）"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "用於效能敏感處理的 OpenMP 工作執行緒數。使用 ``0`` 讓 OpenShot 自動選擇。"
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "FFmpeg 執行緒數（0 = 預設）"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr "用於解碼/編碼的 FFmpeg 執行緒數。使用 ``0`` 以自動選擇執行緒。"

@@ -437,6 +437,7 @@ msgstr "Keskitä toistopäähän"
 msgid "Center the visible timeline area around the current playhead position."
 msgstr "Keskitä näkyvä aikajanan alue nykyisen toistopään ympärille."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -444,6 +445,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Säädä näkyvää aikajanan aluetta. Vedä kahvoja zoomataksesi sisään/ulos, vedä "
+"keskiosaa siirtääksesi näkymää ja kaksoisklikkaa sovittaaksesi aikajanan. "
+"Voit myös käyttää :kbd:`Ctrl+Vieritysrulla`, tai QWidget-aikajanalla pidä :"
+"kbd:`Ctrl` pohjassa ja vedä keskimmäisellä hiiren painikkeella sujuvaa "
+"zoomausta varten."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -601,13 +607,15 @@ msgstr "Tyhjennä historia"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Poista optimoidut videot"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1809,12 +1817,3 @@ msgstr ""
 "palauttaaksesi näkymän oletukseensa. Tai voit käyttää :guilabel:`Näytä-"
 ">Näkymät->Telakat->...` -valikkoa näyttääksesi tai piilottaaksesi tiettyjä "
 "telakkawidgettejä pääikkunassa."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Säädä näkyvää aikajanan aluetta. Vedä kahvoja zoomataksesi sisään/ulos, "
-#~ "vedä keskiosaa siirtääksesi näkymää ja kaksoisnapsauta sovittaaksesi "
-#~ "aikajanan."

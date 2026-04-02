@@ -268,12 +268,16 @@ msgstr ""
 "Savjet: Ako uređivanje vremenske crte djeluje zbijeno, povećajte zum pomoću "
 "klizača vremenske crte kako biste olakšali male prilagodbe isječaka."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Također možete zumirati vremensku crtu pomoću :kbd:`Ctrl+Scroll Wheel`. Na "
+"QWidget vremenskoj crti, držite :kbd:`Ctrl` i povucite srednjim gumbom miša "
+"za glatko zumiranje."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

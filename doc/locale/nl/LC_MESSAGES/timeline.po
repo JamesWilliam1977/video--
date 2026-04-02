@@ -271,12 +271,16 @@ msgstr ""
 "Tip: Als het bewerken op de tijdlijn druk aanvoelt, zoom dan in met de "
 "tijdlijnschuifregelaar om kleine clipaanpassingen makkelijker te maken."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"U kunt ook in- en uitzoomen op de tijdlijn met :kbd:`Ctrl+Scroll Wheel`. "
+"Houd op de QWidget-tijdlijn :kbd:`Ctrl` ingedrukt en sleep met de middelste "
+"muisknop voor vloeiend zoomen."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

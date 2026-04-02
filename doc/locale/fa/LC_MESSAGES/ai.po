@@ -190,12 +190,16 @@ msgid "Click :guilabel:`Check` to confirm OpenShot can reach the server."
 msgstr ""
 "روی :guilabel:`Check` کلیک کنید تا تأیید شود OpenShot به سرور دسترسی دارد."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:66
 msgid ""
 "For a full step-by-step server setup guide, see the OpenShot wiki: `ComfyUI: "
 "Advanced AI Setup Guide <https://github.com/OpenShot/openshot-qt/wiki/"
 "ComfyUI:-Advanced-AI-Setup-Guide>`_."
 msgstr ""
+"برای راهنمای کامل گام به گام راه‌اندازی سرور، به ویکی OpenShot مراجعه کنید: "
+"`ComfyUI: Advanced AI Setup Guide <https://github.com/OpenShot/openshot-qt/"
+"wiki/ComfyUI:-Advanced-AI-Setup-Guide>`_."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:69
@@ -211,11 +215,14 @@ msgstr ""
 msgid "Required Custom Nodes"
 msgstr "گره‌های سفارشی مورد نیاز"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:75
 msgid ""
 "`comfyui_controlnet_aux <https://github.com/Fannovel16/"
 "comfyui_controlnet_aux>`_"
 msgstr ""
+"`comfyui_controlnet_aux <https://github.com/Fannovel16/"
+"comfyui_controlnet_aux>`_"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:76
@@ -259,9 +266,10 @@ msgstr "`OpenShot-ComfyUI <https://github.com/OpenShot/OpenShot-ComfyUI>`_"
 msgid "Required Models / Files"
 msgstr "مدل‌ها / فایل‌های مورد نیاز"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:85
 msgid "``ComfyUI/models/diffusion_models/wan2.1_vace_1.3B_fp16.safetensors``"
-msgstr ""
+msgstr "``ComfyUI/models/diffusion_models/wan2.1_vace_1.3B_fp16.safetensors``"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:86
@@ -566,11 +574,14 @@ msgstr "پیش‌نمایش فایل منبع انتخاب شده (برای جر
 msgid "Set the output name for generated media."
 msgstr "نام خروجی برای رسانه تولید شده را تنظیم کنید."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:179
 msgid ""
 "Pick a reference image in the :guilabel:`Reference` tab for workflows that "
 "require one."
 msgstr ""
+"یک تصویر مرجع در زبانه :guilabel:`Reference` برای جریان‌های کاری که به آن "
+"نیاز دارند، انتخاب کنید."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:180
@@ -1013,49 +1024,66 @@ msgstr ""
 "جزئیات: از ``comfyui/img2img-basic.json`` با ``sd_xl_base_1.0.safetensors`` "
 "استفاده می کند."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:316
 msgid "Depth (``image-extract-depth``)"
-msgstr ""
+msgstr "عمق (``image-extract-depth``)"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:318
 msgid "Why: Export a grayscale depth-map image from a source image."
-msgstr ""
+msgstr "چرا: صادر کردن تصویر نقشه عمق به صورت خاکستری از یک تصویر منبع."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:319
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:"
 "`Depth` on an image, then generate."
 msgstr ""
+"چگونه: در یک تصویر، گزینه :guilabel:`Enhance with AI` -> :guilabel:`Extract` "
+"-> :guilabel:`Depth` را انتخاب کرده، سپس تولید کنید."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:320
 msgid ""
 "Details: Uses ``comfyui/image-extract-depth.json`` with "
 "``DepthAnythingV2Preprocessor``."
 msgstr ""
+"جزئیات: از ``comfyui/image-extract-depth.json`` با "
+"``DepthAnythingV2Preprocessor`` استفاده می‌کند."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:323
 msgid "Lines (``image-extract-lines``)"
-msgstr ""
+msgstr "خطوط (``image-extract-lines``)"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:325
 msgid "Why: Export a line-map image from a source image."
-msgstr ""
+msgstr "چرا: صادر کردن تصویر نقشه خطوط از یک تصویر منبع."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:326
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:"
 "`Lines` on an image, then generate."
 msgstr ""
+"چگونه: در یک تصویر، گزینه :guilabel:`Enhance with AI` -> :guilabel:`Extract` "
+"-> :guilabel:`Lines` را انتخاب کرده، سپس تولید کنید."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:327
 msgid ""
 "Details: Uses ``comfyui/image-extract-lines.json`` with "
 "``LineArtPreprocessor``."
 msgstr ""
+"جزئیات: از ``comfyui/image-extract-lines.json`` با ``LineArtPreprocessor`` "
+"استفاده می‌کند."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:330
 msgid "Image to Video... (``img2video-wan``)"
-msgstr ""
+msgstr "تصویر به ویدیو... (``img2video-wan``)"
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:332
@@ -1071,11 +1099,14 @@ msgstr ""
 "چگونه: انتخاب کنید :guilabel:`بهبود با هوش مصنوعی` روی یک تصویر، راهنمایی "
 "متنی وارد کنید، سپس تولید کنید."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:334
 msgid ""
 "Details: Uses ``comfyui/img2video-wan.json`` with WAN 2.2 image-to-video "
 "models."
 msgstr ""
+"جزئیات: از ``comfyui/img2video-wan.json`` با مدل‌های WAN 2.2 تصویر به ویدیو "
+"استفاده می‌کند."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:337
@@ -1087,12 +1118,17 @@ msgstr "تغییر سبک ویدئو... (``video2video-basic``)"
 msgid "Why: Apply a new visual style to a source video."
 msgstr "چرا: اعمال سبک بصری جدید به ویدئوی منبع."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:340
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` on a video, enter a style prompt, "
 "pick a reference image in the :guilabel:`Reference` tab, then generate."
 msgstr ""
+"چگونه: در یک ویدیو، گزینه :guilabel:`Enhance with AI` را انتخاب کنید، یک "
+"دستور سبک وارد کنید، یک تصویر مرجع در زبانه :guilabel:`Reference` انتخاب "
+"کنید، سپس تولید کنید."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:341
 msgid ""
 "Details: Uses ``comfyui/video2video-basic.json`` with WAN VACE video-to-"
@@ -1101,46 +1137,67 @@ msgid ""
 "``wan2.1_vace_1.3B_fp16.safetensors``, ``wan_2.1_vae.safetensors``, and "
 "``umt5_xxl_fp8_e4m3fn_scaled.safetensors`` models."
 msgstr ""
+"جزئیات: از ``comfyui/video2video-basic.json`` با گره‌های ویدیو به ویدیو WAN "
+"VACE، یک تصویر مرجع الزامی، عمق ترکیبی ``DepthAnythingV2Preprocessor`` به "
+"همراه کنترل لبه Canny، و مدل‌های ``wan2.1_vace_1.3B_fp16.safetensors``, "
+"``wan_2.1_vae.safetensors``, و ``umt5_xxl_fp8_e4m3fn_scaled.safetensors`` "
+"استفاده می‌کند."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:344
 msgid "Depth (``video-extract-depth``)"
-msgstr ""
+msgstr "عمق (``video-extract-depth``)"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:346
 msgid "Why: Export a grayscale depth-map version of a source video."
-msgstr ""
+msgstr "چرا: صادر کردن نسخه نقشه عمق به صورت خاکستری از یک ویدیو منبع."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:347
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:"
 "`Depth` on a video, then generate."
 msgstr ""
+"چگونه: در یک ویدیو، گزینه :guilabel:`Enhance with AI` -> :guilabel:`Extract` "
+"-> :guilabel:`Depth` را انتخاب کرده، سپس تولید کنید."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:348
 msgid ""
 "Details: Uses ``comfyui/video-extract-depth.json`` with "
 "``DepthAnythingV2Preprocessor`` and preserves the source frame rate."
 msgstr ""
+"جزئیات: از ``comfyui/video-extract-depth.json`` با "
+"``DepthAnythingV2Preprocessor`` استفاده می‌کند و نرخ فریم منبع را حفظ می‌کند."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:351
 msgid "Lines (``video-extract-lines``)"
-msgstr ""
+msgstr "خطوط (``video-extract-lines``)"
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:353
 msgid "Why: Export a line-map version of a source video."
-msgstr ""
+msgstr "چرا: صادر کردن نسخه نقشه خطوط از یک ویدیو منبع."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:354
 msgid ""
 "How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Extract` -> :guilabel:"
 "`Lines` on a video, then generate."
 msgstr ""
+"چگونه: در یک ویدیو، گزینه :guilabel:`Enhance with AI` -> :guilabel:`Extract` "
+"-> :guilabel:`Lines` را انتخاب کرده، سپس تولید کنید."
 
+# Translated with gpt-4.1-mini
 #: ../ai.rst:355
 msgid ""
 "Details: Uses ``comfyui/video-extract-lines.json`` with "
 "``LineArtPreprocessor`` and preserves the source frame rate."
 msgstr ""
+"جزئیات: از ``comfyui/video-extract-lines.json`` با ``LineArtPreprocessor`` "
+"استفاده می‌کند و نرخ فریم منبع را حفظ می‌کند."
 
 # Translated with gpt-4.1-mini
 #: ../ai.rst:358
@@ -1501,47 +1558,3 @@ msgid ""
 msgstr ""
 "برای بهینه‌سازی عملکرد کلی و تنظیم کش، به :ref:`preferences_ref` و :ref:"
 "`playback_ref` مراجعه کنید."
-
-# Translated with gpt-4.1-mini
-#~ msgid "``ComfyUI/models/vae/split_files/vae/wan_2.1_vae.safetensors``"
-#~ msgstr "``ComfyUI/models/vae/split_files/vae/wan_2.1_vae.safetensors``"
-
-# Translated with gpt-4.1-mini
-#~ msgid "Image to Video... (``img2video-svd``)"
-#~ msgstr "تصویر به ویدئو... (``img2video-svd``)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Details: Uses ``comfyui/img2video-svd.json`` with WAN image-to-video "
-#~ "models."
-#~ msgstr ""
-#~ "جزئیات: از ``comfyui/img2video-svd.json`` با مدل های WAN تصویر به ویدئو "
-#~ "استفاده می کند."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "How: Choose :guilabel:`Enhance with AI` on a video, enter a style prompt, "
-#~ "then generate."
-#~ msgstr ""
-#~ "چگونه: انتخاب کنید :guilabel:`بهبود با هوش مصنوعی` روی یک ویدئو، متن سبک "
-#~ "را وارد کنید، سپس تولید کنید."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Details: Uses ``comfyui/video2video-basic.json`` with ``sd_xl_base_1.0."
-#~ "safetensors``."
-#~ msgstr ""
-#~ "جزئیات: از ``comfyui/video2video-basic.json`` با ``sd_xl_base_1.0."
-#~ "safetensors`` استفاده می کند."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Start ComfyUI, then set :guilabel:`Preferences -> Experimental -> Comfy "
-#~ "UI URL` in OpenShot."
-#~ msgstr ""
-#~ "ComfyUI را اجرا کنید، سپس در OpenShot به :guilabel:`Preferences -> "
-#~ "Experimental -> Comfy UI URL` بروید و تنظیم کنید."
-
-# Translated with gpt-4.1-mini
-#~ msgid "Active jobs can be canceled from the same AI workflow flow."
-#~ msgstr "کارهای فعال را می‌توان از همان جریان کاری هوش مصنوعی لغو کرد."

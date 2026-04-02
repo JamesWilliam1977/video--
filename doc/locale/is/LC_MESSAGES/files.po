@@ -315,15 +315,19 @@ msgstr "Eiginleikar skráar"
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "Skoða eiginleika skráar, svo sem rammastuðul, stærð o.s.frv."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:104 ../files.rst:125
 msgid "Optimize"
-msgstr ""
+msgstr "Bæta"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:105
 msgid ""
 "Create, link, unlink, or delete optimized preview files for the selected "
 "video files."
 msgstr ""
+"Búðu til, tengdu, aftengdu eða eyðileggðu hagræddar forskoðunar skrár fyrir "
+"valdar myndbandsskrár."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:106 ../files.rst:250
@@ -398,6 +402,7 @@ msgstr ""
 "Hnappurinn :guilabel:`Endurstilla stækkun` birtist þegar stækkun er ekki "
 "100% og endurstillir í 100%."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:126
 msgid ""
 "Optimized preview files are lower-resolution copies of your source video "
@@ -406,7 +411,13 @@ msgid ""
 "helpful with large formats such as 4K, high frame rate, or high bitrate "
 "footage."
 msgstr ""
+"Hagræddar forskoðunar skrár eru afrit af upprunalegu myndbandsskrám þínum "
+"með lægri upplausn (oft kallaðar proxy skrár), notaðar til að bæta "
+"viðbragðshraða við klippingu án þess að breyta upprunalegu efni. Þær eru "
+"sérstaklega gagnlegar með stórum sniðum eins og 4K, háum rammahraða eða háum "
+"bitahraða."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:130
 msgid ""
 "For video files, the file context menu includes an :guilabel:`Optimize` "
@@ -415,56 +426,83 @@ msgid ""
 "high-resolution footage. Optimizing also pre-loads thumbnails to further "
 "improve the editing smoothness when zooming into the timeline."
 msgstr ""
+"Fyrir myndbandsskrár inniheldur samhengisvalmynd skráarinnar "
+"undirvalmyndina :guilabel:`Bæta`. Þessi eiginleiki býr til eða tengir minni "
+"forskoðunarafrit af upprunalegum klippum þínum, sem getur bætt spilun og "
+"flettingu á hægari kerfum eða með myndbandi í háupplausn. Að bæta hleður "
+"einnig forskoðunarmyndir fyrirfram til að bæta klippingu þegar að stækka á "
+"tímalínu."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:135
 msgid "The :guilabel:`Optimize` submenu contains these actions:"
-msgstr ""
+msgstr "Undirvalmyndin :guilabel:`Bæta` inniheldur eftirfarandi aðgerðir:"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:141
 msgid "Action"
-msgstr ""
+msgstr "Aðgerð"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:143
 msgid "Optimize Video"
-msgstr ""
+msgstr "Bæta myndband"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:144
 msgid ""
 "Create an optimized preview file for each selected video file. OpenShot "
 "stores these files in the project's ``optimized`` assets folder."
 msgstr ""
+"Búðu til hagrædda forskoðunar skrá fyrir hverja valda myndbandsskrá. "
+"OpenShot geymir þessar skrár í ``optimized`` eignamöppu verkefnisins."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:145
 msgid "Link to Existing..."
-msgstr ""
+msgstr "Tengja við til staðar..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:146
 msgid ""
 "Choose a folder containing already-created optimized files and link the best "
 "matching files to the selected source clips. This supports common proxy "
 "naming styles, known proxy suffixes, file ID suffixes, and extension changes."
 msgstr ""
+"Veldu möppu sem inniheldur þegar búnar hagræddar skrár og tengdu bestu "
+"samsvarandi skrár við valdar upprunalegar klippur. Þetta styður algengar "
+"proxy nafngiftarstíla, þekkt proxy viðskeyti, skráarauðkenni viðskeyti og "
+"breytingar á skráarendingum."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:147
 msgid "Unlink"
-msgstr ""
+msgstr "Aftengja"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid ""
 "Remove the optimized preview link from the selected file without deleting "
 "the optimized file from disk."
 msgstr ""
+"Fjarlægðu hagrædda forskoðunar tengilinn frá valinni skrá án þess að eyða "
+"hagræddu skránni af disknum."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Delete & Unlink"
-msgstr ""
+msgstr "Eyða og aftengja"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid ""
 "Delete the linked optimized file from disk, then remove the link from the "
 "selected file."
 msgstr ""
+"Eyða tengdri hagræddri skrá af disknum og fjarlægja síðan tengilinn frá "
+"valinni skrá."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid ""
 "When optimization is in progress, the submenu changes to a single :guilabel:"
@@ -472,7 +510,12 @@ msgid ""
 "only for editing and preview playback. Your final export still uses the "
 "original source files."
 msgstr ""
+"Þegar hagræðing er í gangi breytist undirvalmyndin í eina aðgerð :guilabel:"
+"`Hætta við` fyrir valdar skrár. Hagræddar forskoðunar skrár eru aðeins "
+"notaðar við klippingu og forskoðun. Lokaflutningurinn notar enn upprunalegu "
+"skrárnar."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:155
 msgid ""
 "When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
@@ -485,7 +528,17 @@ msgid ""
 "mp4``, and it can still match files named only by file ID, such as ``F1."
 "mp4``."
 msgstr ""
+"Þegar þú notar :guilabel:`Tengja við til staðar...`, reynir OpenShot að para "
+"hverja valda upprunalegu klippu við til staðar hagrædda skrá í öruggri röð. "
+"Fyrst leitar það að sama grunnskránarheiti með annarri myndbandsendingu, "
+"síðan algengum proxy-stíl nöfnum eins og ``_proxy``, ``_preview``, "
+"``_optimized``, ``_lowres``, upplausnartáknum eins og ``_720p`` eða "
+"``_1080p``, og myndavéla/ritstjóra-stíl afbrigðum eins og ``_p``. Það styður "
+"einnig nöfn sem bæta OpenShot skráarauðkenni eftir þekkt proxy viðskeyti, "
+"eins og ``clip001_proxy_F1.mp4``, og getur enn parað skrár sem eru aðeins "
+"nefndar með skráarauðkenni, eins og ``F1.mp4``."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:162
 msgid ""
 "Best practice when bringing your own optimized files is to keep the same "
@@ -496,6 +549,13 @@ msgid ""
 "``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
 "proxy naming patterns."
 msgstr ""
+"Bestu vinnubrögðin þegar þú notar þínar eigin hagræddu skrár eru að halda "
+"sama grunnskránarheiti og upprunalega klippan og bæta við skýru proxy-stíl "
+"viðskeyti, til dæmis ``clip001_proxy.mp4`` eða ``clip001_proxy.mov``. Ef þú "
+"þarft að forðast árekstra í skráarnafni, bættu OpenShot skráarauðkenni við "
+"eftir proxy viðskeytið, til dæmis ``clip001_proxy_F1.mp4``. Forðastu "
+"ótengdar viðskeyti eins og ``_final`` eða ``_reviewcopy``, því OpenShot "
+"meðhöndlar þau ekki sem örugga proxy nafngiftarmynstur."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:171
@@ -829,17 +889,21 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - Fjölmiðlar búnir til úr límmiðaplötu (myndir, "
 "hljóð eða myndbönd sem þarf að vista á disk fyrst)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:265
 msgid ""
 "``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
 "editing"
 msgstr ""
+"``.openshot_qt/optimized/`` - Hagræddar forskoðunar skrár búnar til fyrir "
+"mýkri klippingu"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:266
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr "``.openshot_qt/protobuf_data`` - Gögn um eftirfylgni og hlutagreiningu"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
@@ -848,6 +912,11 @@ msgid ""
 "from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
 "optimized preview files linked to the project."
 msgstr ""
+"Þegar þú velur **Skrá→Vista sem**, afritar OpenShot þessar möppur inn í "
+"verkefnismöppu þína, innan einnar möppu sem heitir ``PROJECTNAME_Assets``. "
+"Til dæmis mun ``MyProject_Assets/clipboard`` innihalda allt efni sem þú "
+"límdir úr klippiborðinu, og ``MyProject_Assets/optimized`` mun innihalda "
+"allar hagræddar forskoðunar skrár tengdar verkefninu."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:272
@@ -929,15 +998,3 @@ msgstr ""
 "vandamálum með vantar skrár. Fyrir nákvæma leiðbeiningu um vantar skrár, sjá "
 "`The Case of “Missing Files”! <https://github.com/OpenShot/openshot-qt/wiki/"
 "Missing-File-Prompt>`_."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
-#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
-#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
-#~ "pasted from the clipboard."
-#~ msgstr ""
-#~ "Þegar þú velur **Skrá→Vista sem**, afritar OpenShot þessar möppur inn í "
-#~ "verkefnismöppu þína, innan einnar möppu sem heitir "
-#~ "``PROJECTNAME_Assets``. Til dæmis mun ``MyProject_Assets/clipboard`` "
-#~ "innihalda alla fjölmiðla sem þú límdir úr límmiðaplötunni."

@@ -448,6 +448,7 @@ msgstr ""
 "Zentriere den sichtbaren Zeitleistenbereich um die aktuelle "
 "Abspielkopfposition."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -455,6 +456,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Steuern Sie den sichtbaren Zeitachsenbereich. Ziehen Sie die Griffe, um "
+"hinein- oder herauszuzoomen, ziehen Sie die Mitte, um zu verschieben, und "
+"doppelklicken Sie, um die Zeitachse anzupassen. Sie können auch :kbd:"
+"`Strg+Scrollrad` verwenden oder auf der QWidget-Zeitachse :kbd:`Strg` "
+"gedrückt halten und mit der mittleren Maustaste ziehen, um sanft zu zoomen."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -612,13 +618,15 @@ msgstr "Verlauf löschen"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Strg+Umschalt+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Optimierte Videos löschen"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Strg+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1833,12 +1841,3 @@ msgstr ""
 "verwenden, um die Ansicht auf die Standardeinstellung zurückzusetzen. Oder "
 "Sie nutzen das Menü :guilabel:`Ansicht->Ansichten->Docks->...`, um bestimmte "
 "Dock-Widgets im Hauptfenster ein- oder auszublenden."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Steuern Sie den sichtbaren Zeitleistenbereich. Ziehen Sie die Griffe zum "
-#~ "Ein- und Auszoomen, ziehen Sie die Mitte zum Verschieben und "
-#~ "doppelklicken Sie, um die Zeitleiste anzupassen."

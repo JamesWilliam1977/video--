@@ -264,12 +264,16 @@ msgstr ""
 "ヒント：タイムライン編集が窮屈に感じたら、タイムラインスライダーでズームイン"
 "して小さなクリップ調整をしやすくしましょう。"
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"タイムラインは :kbd:`Ctrl+スクロールホイール` でもズームできます。QWidget タ"
+"イムラインでは、:kbd:`Ctrl` を押しながら中ボタンをドラッグするとスムーズに"
+"ズームできます。"
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

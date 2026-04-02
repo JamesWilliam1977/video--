@@ -268,12 +268,16 @@ msgstr ""
 "Tips: Jika pengeditan garis waktu terasa padat, perbesar dengan penggeser "
 "garis waktu untuk memudahkan penyesuaian klip kecil."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Anda juga dapat memperbesar timeline dengan :kbd:`Ctrl+Scroll Wheel`. Pada "
+"timeline QWidget, tahan :kbd:`Ctrl` dan seret dengan tombol tengah mouse "
+"untuk memperbesar dengan halus."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

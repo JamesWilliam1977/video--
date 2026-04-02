@@ -374,12 +374,16 @@ msgstr ""
 msgid "Preview"
 msgstr "Esikatselu"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"Asetukset-ikkunan Esikatselu-välilehti ohjaa reaaliaikaisen esikatselun "
+"äänen toimintaa, mukaan lukien laitteen valinta, näytteenottotaajuus, "
+"kanavat, puskurointi, toistovolyymin ja optimoidun esikatselukäytöksen."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -453,43 +457,55 @@ msgstr "75"
 msgid "Preview playback volume percentage"
 msgstr "Esikatselun toiston äänenvoimakkuus prosentteina"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "Samanaikaiset optimointitehtävät"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "2"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
-msgstr ""
+msgstr "Kuinka monta videotiedostoa OpenShot voi optimoida samanaikaisesti"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "Optimoitu esikatselun tarkkuus"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "1280x720"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
 msgstr ""
+"Suurin tarkkuus, jota käytetään optimoitujen esikatselutiedostojen luomisessa"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "Pikkukuvan esilatausnopeus / sekunti"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "4"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
 msgstr ""
+"Kuinka monta pikkukuvan esikatselun ruutua sekunnissa esigeneroidaan videota "
+"optimoitaessa"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -848,22 +864,28 @@ msgstr "Laitteistokooderin näytönohjain"
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "Valitse, mitä GPU-laitetta käytetään laitteistokoodaukseen."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "OMP-säikeet"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
+"OpenMP-työsäikeiden määrä, jota käytetään suorituskykyä vaativassa "
+"käsittelyssä."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "FFmpeg-säikeet"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "FFmpeg-säikeiden määrä, jota käytetään purkuun/koodaukseen."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1206,37 +1228,3 @@ msgstr ""
 "ja asetustiedostot. Katso vaiheittainen opas `step-by-step guide <https://"
 "github.com/OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ "
 "saadaksesi lisätietoja OpenShotin **puhdistusasennuksista**."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "Esikatselu-välilehti Asetukset-ikkunassa hallitsee reaaliaikaisen "
-#~ "esikatselun ääntä, mukaan lukien laitteen valinnan, "
-#~ "näytteenottotaajuuden, kanavat, puskuroinnin ja toiston äänenvoimakkuuden."
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "OMP-säikeet (0 = oletus)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "OpenMP-työntekijäsäikeiden määrä suorituskykyä vaativassa käsittelyssä. "
-#~ "Käytä ``0``, jotta OpenShot valitsee automaattisesti."
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "FFmpeg-säikeet (0 = oletus)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr ""
-#~ "FFmpeg-säikeiden määrä dekoodaukseen/koodaukseen. Käytä ``0`` "
-#~ "automaattiseen säikeiden valintaan."

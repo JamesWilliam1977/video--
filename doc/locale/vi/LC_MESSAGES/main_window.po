@@ -437,6 +437,7 @@ msgstr "Căn Giữa Theo Playhead"
 msgid "Center the visible timeline area around the current playhead position."
 msgstr "Căn giữa khu vực dòng thời gian hiển thị quanh vị trí phát hiện tại."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -444,6 +445,10 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Điều khiển phạm vi dòng thời gian hiển thị. Kéo các tay cầm để phóng to/thu "
+"nhỏ, kéo trung tâm để di chuyển, và nhấp đúp để vừa với dòng thời gian. Bạn "
+"cũng có thể sử dụng :kbd:`Ctrl+Scroll Wheel`, hoặc trên dòng thời gian "
+"QWidget giữ :kbd:`Ctrl` và kéo bằng nút chuột giữa để phóng to mượt mà."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -601,13 +606,15 @@ msgstr "Xóa Lịch Sử"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Xóa Video Đã Tối Ưu"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1804,11 +1811,3 @@ msgstr ""
 "guilabel:`Xem->Chế Độ Xem->Chế Độ Đơn Giản` ở đầu màn hình để khôi phục chế "
 "độ xem về mặc định. Hoặc bạn có thể sử dụng menu :guilabel:`Xem->Chế Độ Xem-"
 ">Dock->...` để hiển thị hoặc ẩn các widget dock cụ thể trên cửa sổ chính."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Điều khiển phạm vi dòng thời gian hiển thị. Kéo các tay cầm để phóng to/"
-#~ "thu nhỏ, kéo giữa để di chuyển, và nhấp đúp để vừa khít dòng thời gian."

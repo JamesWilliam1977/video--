@@ -252,12 +252,15 @@ msgid ""
 "make small clip adjustments easier."
 msgstr "提示：如果时间轴编辑显得拥挤，可使用时间轴滑块放大，便于微调剪辑。"
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"您还可以使用 :kbd:`Ctrl+滚轮` 缩放时间线。在 QWidget 时间线上，按住 :kbd:"
+"`Ctrl` 并用中键拖动以实现平滑缩放。"
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

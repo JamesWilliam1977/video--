@@ -370,12 +370,16 @@ msgstr ""
 msgid "Preview"
 msgstr "Pregled"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"Kartica Pregled u prozoru Postavki kontrolira ponašanje audio pregleda u "
+"stvarnom vremenu, uključujući odabir uređaja, uzorkovanje, kanale, "
+"međuspremnik, glasnoću reprodukcije i optimizirano ponašanje pregleda."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -451,43 +455,55 @@ msgstr "75"
 msgid "Preview playback volume percentage"
 msgstr "Postotak glasnoće reprodukcije pregleda"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "Istovremeni poslovi optimizacije"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "2"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
-msgstr ""
+msgstr "Broj video datoteka koje OpenShot može istovremeno optimizirati"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "Optimizirana rezolucija pregleda"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "1280x720"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
 msgstr ""
+"Maksimalna rezolucija korištena pri stvaranju optimiziranih datoteka pregleda"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "Stopa predmemoriranja sličica / sekundi"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "4"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
 msgstr ""
+"Koliko se sličica pregleda po sekundi unaprijed generira tijekom "
+"optimizacije videa"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -851,22 +867,27 @@ msgstr "Grafička Kartica Hardverskog Kodera"
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "Odaberite koji GPU uređaj se koristi za hardversko kodiranje."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "OMP niti"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
+"Broj OpenMP radnih niti koje koristi procesiranje osjetljivo na performanse."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "FFmpeg niti"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "Broj FFmpeg niti koje se koriste za dekodiranje/kodiranje."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1209,37 +1230,3 @@ msgstr ""
 "po-korak vodič <https://github.com/OpenShot/openshot-qt/wiki/Clean-"
 "Installation-of-OpenShot>`_ za više informacija o **čistim instalacijama** "
 "OpenShota."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "Kartica Pregled u prozoru Postavki kontrolira ponašanje audio pregleda u "
-#~ "stvarnom vremenu, uključujući odabir uređaja, uzorkovanje, kanale, "
-#~ "međuspremnik i glasnoću reprodukcije."
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "OMP Niti (0 = Zadano)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "Broj OpenMP radnih niti koje koristi procesiranje osjetljivo na "
-#~ "performanse. Koristite ``0`` da OpenShot automatski odabere."
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "FFmpeg Niti (0 = Zadano)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr ""
-#~ "Broj FFmpeg niti koje se koriste za dekodiranje/kodiranje. Koristite "
-#~ "``0`` za automatski odabir niti."

@@ -317,15 +317,19 @@ msgstr "Dosya Özellikleri"
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "Bir dosyanın kare hızı, boyutu vb. özelliklerini görüntüle..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:104 ../files.rst:125
 msgid "Optimize"
-msgstr ""
+msgstr "Optimize Et"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:105
 msgid ""
 "Create, link, unlink, or delete optimized preview files for the selected "
 "video files."
 msgstr ""
+"Seçili video dosyaları için optimize edilmiş önizleme dosyaları oluşturun, "
+"bağlayın, bağlantısını kaldırın veya silin."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:106 ../files.rst:250
@@ -404,6 +408,7 @@ msgstr ""
 "Yakınlaştırma %100 olmadığında bir :guilabel:`Yakınlaştırmayı Sıfırla` "
 "düğmesi görünür ve %100'e sıfırlar."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:126
 msgid ""
 "Optimized preview files are lower-resolution copies of your source video "
@@ -412,7 +417,13 @@ msgid ""
 "helpful with large formats such as 4K, high frame rate, or high bitrate "
 "footage."
 msgstr ""
+"Optimize edilmiş önizleme dosyaları, orijinal medya değiştirilmeden "
+"düzenleme yanıt hızını artırmak için kullanılan, kaynak video dosyalarınızın "
+"daha düşük çözünürlüklü kopyalarıdır (bazen vekil dosyalar olarak "
+"adlandırılır). Özellikle 4K, yüksek kare hızı veya yüksek bit hızı gibi "
+"büyük formatlarda faydalıdırlar."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:130
 msgid ""
 "For video files, the file context menu includes an :guilabel:`Optimize` "
@@ -421,56 +432,84 @@ msgid ""
 "high-resolution footage. Optimizing also pre-loads thumbnails to further "
 "improve the editing smoothness when zooming into the timeline."
 msgstr ""
+"Video dosyaları için, dosya bağlam menüsünde bir :guilabel:`Optimize Et` alt "
+"menüsü bulunur. Bu özellik, kaynak kliplerinizin daha küçük önizleme "
+"kopyalarını oluşturur veya bağlar; bu, yavaş sistemlerde veya yüksek "
+"çözünürlüklü görüntülerle oynatma ve taramayı iyileştirebilir. Optimize "
+"etmek ayrıca zaman çizelgesine yakınlaştırırken düzenleme akıcılığını "
+"artırmak için küçük resimleri önceden yükler."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:135
 msgid "The :guilabel:`Optimize` submenu contains these actions:"
-msgstr ""
+msgstr ":guilabel:`Optimize Et` alt menüsü şu işlemleri içerir:"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:141
 msgid "Action"
-msgstr ""
+msgstr "İşlem"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:143
 msgid "Optimize Video"
-msgstr ""
+msgstr "Videoyu Optimize Et"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:144
 msgid ""
 "Create an optimized preview file for each selected video file. OpenShot "
 "stores these files in the project's ``optimized`` assets folder."
 msgstr ""
+"Seçili her video dosyası için optimize edilmiş bir önizleme dosyası "
+"oluşturun. OpenShot bu dosyaları projenin ``optimized`` varlıklar klasöründe "
+"saklar."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:145
 msgid "Link to Existing..."
-msgstr ""
+msgstr "Mevcut Olanla Bağla..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:146
 msgid ""
 "Choose a folder containing already-created optimized files and link the best "
 "matching files to the selected source clips. This supports common proxy "
 "naming styles, known proxy suffixes, file ID suffixes, and extension changes."
 msgstr ""
+"Zaten oluşturulmuş optimize dosyalarını içeren bir klasör seçin ve en uygun "
+"dosyaları seçili kaynak kliplere bağlayın. Bu, yaygın vekil adlandırma "
+"stillerini, bilinen vekil eklerini, dosya kimliği eklerini ve uzantı "
+"değişikliklerini destekler."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:147
 msgid "Unlink"
-msgstr ""
+msgstr "Bağlantıyı Kaldır"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid ""
 "Remove the optimized preview link from the selected file without deleting "
 "the optimized file from disk."
 msgstr ""
+"Optimize edilmiş dosyayı diskte silmeden, seçili dosyadan optimize önizleme "
+"bağlantısını kaldırın."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Delete & Unlink"
-msgstr ""
+msgstr "Sil ve Bağlantıyı Kaldır"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid ""
 "Delete the linked optimized file from disk, then remove the link from the "
 "selected file."
 msgstr ""
+"Bağlı optimize dosyasını diskten silin, ardından seçili dosyadan bağlantıyı "
+"kaldırın."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid ""
 "When optimization is in progress, the submenu changes to a single :guilabel:"
@@ -478,7 +517,12 @@ msgid ""
 "only for editing and preview playback. Your final export still uses the "
 "original source files."
 msgstr ""
+"Optimizasyon devam ederken, alt menü seçili dosya(lar) için tek bir :"
+"guilabel:`İptal Et` işlemi olarak değişir. Optimize edilmiş önizleme "
+"dosyaları yalnızca düzenleme ve önizleme oynatımı için kullanılır. Nihai "
+"dışa aktarımınız hala orijinal kaynak dosyaları kullanır."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:155
 msgid ""
 "When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
@@ -491,7 +535,17 @@ msgid ""
 "mp4``, and it can still match files named only by file ID, such as ``F1."
 "mp4``."
 msgstr ""
+":guilabel:`Mevcut Olanla Bağla...` kullandığınızda, OpenShot her seçili "
+"kaynak klibi güvenli bir sırayla mevcut optimize dosyalarla eşleştirmeye "
+"çalışır. Önce farklı bir video uzantısına sahip aynı temel dosya adını arar, "
+"sonra ``_proxy``, ``_preview``, ``_optimized``, ``_lowres`` gibi yaygın "
+"vekil tarzı adları, ``_720p`` veya ``_1080p`` gibi çözünürlük etiketlerini "
+"ve ``_p`` gibi kamera/düzenleyici tarzı varyantları arar. Ayrıca, bilinen "
+"vekil ekinden sonra OpenShot dosya kimliğini ekleyen adları da destekler, "
+"örneğin ``clip001_proxy_F1.mp4``, ve sadece dosya kimliği ile adlandırılmış "
+"dosyaları da eşleştirebilir, örneğin ``F1.mp4``."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:162
 msgid ""
 "Best practice when bringing your own optimized files is to keep the same "
@@ -502,6 +556,13 @@ msgid ""
 "``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
 "proxy naming patterns."
 msgstr ""
+"Kendi optimize dosyalarınızı getirirken en iyi uygulama, kaynak kliple aynı "
+"temel dosya adını korumak ve açık bir vekil tarzı ek eklemektir, örneğin "
+"``clip001_proxy.mp4`` veya ``clip001_proxy.mov``. Dosya adı çakışmalarından "
+"kaçınmanız gerekirse, vekil ekinden sonra OpenShot dosya kimliğini ekleyin, "
+"örneğin ``clip001_proxy_F1.mp4``. ``_final`` veya ``_reviewcopy`` gibi "
+"alakasız eklerden kaçının, çünkü OpenShot bunları güvenli vekil adlandırma "
+"kalıpları olarak kabul etmez."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:171
@@ -839,17 +900,21 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - Panodan yapıştırılan medyalar (önce diske "
 "kaydedilmesi gereken görüntüler, ses veya video)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:265
 msgid ""
 "``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
 "editing"
 msgstr ""
+"``.openshot_qt/optimized/`` - Daha akıcı düzenleme için oluşturulmuş "
+"optimize edilmiş önizleme dosyaları"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:266
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr "``.openshot_qt/protobuf_data`` - Takip ve nesne algılama verileri"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
@@ -858,6 +923,11 @@ msgid ""
 "from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
 "optimized preview files linked to the project."
 msgstr ""
+"**Dosya→Farklı Kaydet** seçeneğini kullandığınızda, OpenShot bu klasörleri "
+"proje dizininize, ``PROJECTNAME_Assets`` adlı tek bir klasör içinde "
+"kopyalar. Örneğin: ``MyProject_Assets/clipboard`` panodan yapıştırdığınız "
+"tüm medyayı, ``MyProject_Assets/optimized`` ise projeye bağlı optimize "
+"edilmiş önizleme dosyalarını içerir."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:272
@@ -940,15 +1010,3 @@ msgstr ""
 "dosya sorunları yaşanabilir. Eksik dosyalar hakkında ayrıntılı rehber için "
 "`The Case of “Missing Files”! <https://github.com/OpenShot/openshot-qt/wiki/"
 "Missing-File-Prompt>`_ sayfasına bakınız."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
-#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
-#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
-#~ "pasted from the clipboard."
-#~ msgstr ""
-#~ "**Dosya→Farklı Kaydet** seçeneğini kullandığınızda, OpenShot bu "
-#~ "klasörleri proje dizininize, ``PROJECTNAME_Assets`` adlı tek bir klasör "
-#~ "içinde kopyalar. Örneğin: ``MyProject_Assets/clipboard`` panodan "
-#~ "yapıştırdığınız tüm medyaları içerir."

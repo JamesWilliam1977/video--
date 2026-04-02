@@ -273,12 +273,16 @@ msgstr ""
 "Tipp: Wenn die Zeitleistenbearbeitung überfüllt wirkt, zoomen Sie mit dem "
 "Zeitleistenschieberegler hinein, um kleine Clip-Anpassungen zu erleichtern."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Sie können die Zeitleiste auch mit :kbd:`Strg+Scrollrad` zoomen. Halten Sie "
+"auf der QWidget-Zeitleiste :kbd:`Strg` gedrückt und ziehen Sie mit der "
+"mittleren Maustaste für ein sanftes Zoomen."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

@@ -274,12 +274,16 @@ msgstr ""
 "Astuce : si l'édition sur la chronologie semble encombrée, zoomez avec le "
 "curseur de la chronologie pour faciliter les petits ajustements de clips."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Vous pouvez également zoomer sur la timeline avec :kbd:`Ctrl+Molette de "
+"défilement`. Sur la timeline QWidget, maintenez :kbd:`Ctrl` et faites "
+"glisser avec le bouton central de la souris pour un zoom fluide."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

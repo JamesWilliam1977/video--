@@ -271,12 +271,16 @@ msgstr ""
 "Sfat: Dacă editarea în cronologie pare aglomerată, mărește zoom-ul cu "
 "glisorul cronologiei pentru a face ajustările mici ale clipurilor mai ușoare."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"De asemenea, puteți mări sau micșora cronologia cu :kbd:`Ctrl+Scroll Wheel`. "
+"Pe cronologia QWidget, țineți apăsat :kbd:`Ctrl` și trageți cu butonul "
+"mijlociu al mouse-ului pentru o mărire lină."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

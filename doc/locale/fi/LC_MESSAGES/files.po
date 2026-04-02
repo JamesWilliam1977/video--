@@ -316,15 +316,19 @@ msgstr "Tiedoston ominaisuudet"
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "Näytä tiedoston ominaisuudet, kuten kuvataajuus, koko jne..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:104 ../files.rst:125
 msgid "Optimize"
-msgstr ""
+msgstr "Optimoi"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:105
 msgid ""
 "Create, link, unlink, or delete optimized preview files for the selected "
 "video files."
 msgstr ""
+"Luo, linkitä, poista linkitys tai poista valittujen videotiedostojen "
+"optimoidut esikatselutiedostot."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:106 ../files.rst:250
@@ -401,6 +405,7 @@ msgstr ""
 "Kun zoomaus ei ole 100 %, näkyy :guilabel:`Nollaa zoomaus` -painike, joka "
 "palauttaa zoomauksen 100 %:iin."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:126
 msgid ""
 "Optimized preview files are lower-resolution copies of your source video "
@@ -409,7 +414,14 @@ msgid ""
 "helpful with large formats such as 4K, high frame rate, or high bitrate "
 "footage."
 msgstr ""
+"Optimoidut esikatselutiedostot ovat alkuperäisten videotiedostojesi "
+"matalamman resoluution kopioita (joita kutsutaan myös proxy-tiedostoiksi), "
+"joita käytetään parantamaan editoinnin reagointikykyä muuttamatta "
+"alkuperäistä materiaalia. Ne ovat erityisen hyödyllisiä suurten formaattien, "
+"kuten 4K:n, korkean kuvataajuuden tai korkean bittinopeuden materiaalin "
+"kanssa."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:130
 msgid ""
 "For video files, the file context menu includes an :guilabel:`Optimize` "
@@ -418,56 +430,83 @@ msgid ""
 "high-resolution footage. Optimizing also pre-loads thumbnails to further "
 "improve the editing smoothness when zooming into the timeline."
 msgstr ""
+"Videotiedostoille tiedoston kontekstivalikossa on :guilabel:`Optimoi`-"
+"alivalikko. Tämä toiminto luo tai linkittää pienempiä esikatselukopioita "
+"lähdeleikkeistäsi, mikä voi parantaa toistoa ja selausta hitaammilla "
+"järjestelmillä tai korkean resoluution materiaalin kanssa. Optimointi myös "
+"esilataa pikkukuvat parantaakseen editoinnin sujuvuutta aikajanalla "
+"zoomatessa."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:135
 msgid "The :guilabel:`Optimize` submenu contains these actions:"
-msgstr ""
+msgstr ":guilabel:`Optimoi`-alivalikko sisältää nämä toiminnot:"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:141
 msgid "Action"
-msgstr ""
+msgstr "Toiminto"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:143
 msgid "Optimize Video"
-msgstr ""
+msgstr "Optimoi video"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:144
 msgid ""
 "Create an optimized preview file for each selected video file. OpenShot "
 "stores these files in the project's ``optimized`` assets folder."
 msgstr ""
+"Luo optimoitu esikatselutiedosto jokaiselle valitulle videotiedostolle. "
+"OpenShot tallentaa nämä tiedostot projektin ``optimized``-resurssikansioon."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:145
 msgid "Link to Existing..."
-msgstr ""
+msgstr "Linkitä olemassa olevaan..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:146
 msgid ""
 "Choose a folder containing already-created optimized files and link the best "
 "matching files to the selected source clips. This supports common proxy "
 "naming styles, known proxy suffixes, file ID suffixes, and extension changes."
 msgstr ""
+"Valitse kansio, joka sisältää jo luotuja optimoituja tiedostoja, ja linkitä "
+"parhaiten vastaavat tiedostot valittuihin lähdeleikkeisiin. Tämä tukee "
+"yleisiä proxy-nimityyliä, tunnettuja proxy-päätteitä, tiedostotunnisteita ja "
+"tiedostopäätteen muutoksia."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:147
 msgid "Unlink"
-msgstr ""
+msgstr "Poista linkitys"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid ""
 "Remove the optimized preview link from the selected file without deleting "
 "the optimized file from disk."
 msgstr ""
+"Poista optimoidun esikatselulinkin valitusta tiedostosta poistamatta "
+"optimoitua tiedostoa levyltä."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Delete & Unlink"
-msgstr ""
+msgstr "Poista ja poista linkitys"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid ""
 "Delete the linked optimized file from disk, then remove the link from the "
 "selected file."
 msgstr ""
+"Poista linkitetty optimoitu tiedosto levyltä ja poista sitten linkitys "
+"valitusta tiedostosta."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid ""
 "When optimization is in progress, the submenu changes to a single :guilabel:"
@@ -475,7 +514,12 @@ msgid ""
 "only for editing and preview playback. Your final export still uses the "
 "original source files."
 msgstr ""
+"Kun optimointi on käynnissä, alivalikko muuttuu yksittäiseksi :guilabel:"
+"`Peruuta`-toiminnoksi valituille tiedostoille. Optimoituja "
+"esikatselutiedostoja käytetään vain editointiin ja esikatseluun. Lopullinen "
+"vienti käyttää edelleen alkuperäisiä lähdetiedostoja."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:155
 msgid ""
 "When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
@@ -488,7 +532,18 @@ msgid ""
 "mp4``, and it can still match files named only by file ID, such as ``F1."
 "mp4``."
 msgstr ""
+"Kun käytät :guilabel:`Linkitä olemassa olevaan...`, OpenShot yrittää "
+"yhdistää jokaisen valitun lähdeleikkeen olemassa olevaan optimoituun "
+"tiedostoon turvallisessa järjestyksessä. Se etsii ensin saman perusnimisen "
+"tiedoston eri videoformaatilla, sitten yleisiä proxy-tyylisiä nimiä kuten "
+"``_proxy``, ``_preview``, ``_optimized``, ``_lowres``, resoluutiotunnisteita "
+"kuten ``_720p`` tai ``_1080p``, sekä kamera-/editointityylisiä muunnelmia "
+"kuten ``_p``. Se tukee myös nimiä, jotka lisäävät OpenShot-tiedostotunnuksen "
+"tunnetun proxy-päätteen jälkeen, kuten ``clip001_proxy_F1.mp4``, ja se voi "
+"yhdistää myös tiedostoja, jotka on nimetty pelkän tiedostotunnuksen mukaan, "
+"kuten ``F1.mp4``."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:162
 msgid ""
 "Best practice when bringing your own optimized files is to keep the same "
@@ -499,6 +554,13 @@ msgid ""
 "``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
 "proxy naming patterns."
 msgstr ""
+"Paras käytäntö omien optimoitujen tiedostojen tuomisessa on säilyttää sama "
+"perusnimi kuin lähdeleikkeellä ja lisätä selkeä proxy-tyylinen pääte, "
+"esimerkiksi ``clip001_proxy.mp4`` tai ``clip001_proxy.mov``. Jos haluat "
+"välttää tiedostonimien päällekkäisyyksiä, lisää OpenShot-tiedostotunnus "
+"proxy-päätteen jälkeen, esimerkiksi ``clip001_proxy_F1.mp4``. Vältä "
+"epäolennaisia päätteitä kuten ``_final`` tai ``_reviewcopy``, koska OpenShot "
+"ei käsittele niitä turvallisina proxy-nimityskäytäntöinä."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:171
@@ -835,17 +897,21 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - Leikepöydältä liitetyistä tiedoista luotu "
 "media (kuvat, ääni tai video, jotka on ensin tallennettava levylle)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:265
 msgid ""
 "``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
 "editing"
 msgstr ""
+"``.openshot_qt/optimized/`` - Optimoidut esikatselutiedostot sujuvampaa "
+"editointia varten"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:266
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr "``.openshot_qt/protobuf_data`` - Seuranta- ja kohdetunnistustiedot"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
@@ -854,6 +920,11 @@ msgid ""
 "from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
 "optimized preview files linked to the project."
 msgstr ""
+"Kun valitset **Tiedosto→Tallenna nimellä**, OpenShot kopioi nämä kansiot "
+"projektihakemistoosi yhteen kansioon nimeltä ``PROJECTNAME_Assets``. "
+"Esimerkiksi ``MyProject_Assets/clipboard`` sisältää kaikki leikepöydältä "
+"liittämäsi mediatiedostot ja ``MyProject_Assets/optimized`` sisältää kaikki "
+"projektiin linkitetyt optimoidut esikatselutiedostot."
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:272
@@ -935,15 +1006,3 @@ msgstr ""
 "tiedostojen ongelmia. Yksityiskohtaisen oppaan puuttuvista tiedostoista "
 "löydät osoitteesta `The Case of “Missing Files”! <https://github.com/"
 "OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
-#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
-#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
-#~ "pasted from the clipboard."
-#~ msgstr ""
-#~ "Kun valitset **Tiedosto→Tallenna nimellä**, OpenShot kopioi nämä kansiot "
-#~ "projektihakemistoosi yhteen kansioon nimeltä ``PROJECTNAME_Assets``. "
-#~ "Esimerkiksi: ``MyProject_Assets/clipboard`` sisältää kaiken leikepöydältä "
-#~ "liittämäsi median."

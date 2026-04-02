@@ -325,11 +325,15 @@ msgstr ""
 "Имейте в виду, что перечисленные методы разрезания также поддерживают :ref:"
 "`keyboard_shortcut_ref`, что позволяет сэкономить ещё больше времени."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:96
 msgid ""
 "If multiple selected clips and/or transitions share the same left edge or "
 "right edge, you can drag that shared edge once to trim them together."
 msgstr ""
+"Если несколько выбранных клипов и/или переходов имеют одинаковый левый или "
+"правый край, вы можете перетащить этот общий край один раз, чтобы обрезать "
+"их вместе."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:100
@@ -1065,11 +1069,15 @@ msgstr ""
 "укорачивание — ускоряет. Все ключевые кадры клипа и его эффектов "
 "масштабируются, сохраняя относительные позиции."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:262
 msgid ""
 "If you select multiple clips and/or transitions that share the same left "
 "edge or right edge, you can retime that shared edge together in one drag."
 msgstr ""
+"Если вы выберете несколько клипов и/или переходов с одинаковым левым или "
+"правым краем, вы можете изменить время этого общего края одним "
+"перетаскиванием."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:267

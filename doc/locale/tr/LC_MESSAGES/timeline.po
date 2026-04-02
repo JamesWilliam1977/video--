@@ -266,12 +266,16 @@ msgstr ""
 "İpucu: Zaman çizgisi düzenlemesi kalabalık geliyorsa, küçük klip ayarlarını "
 "kolaylaştırmak için zaman çizgisi kaydırıcısıyla yakınlaştırın."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Zaman çizelgesini ayrıca :kbd:`Ctrl+Kaydırma Tekerleği` ile "
+"yakınlaştırabilirsiniz. QWidget zaman çizelgesinde, pürüzsüz yakınlaştırma "
+"için :kbd:`Ctrl` tuşunu basılı tutup orta fare düğmesiyle sürükleyin."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

@@ -443,6 +443,7 @@ msgstr ""
 "Centrar el área visible de la línea de tiempo alrededor de la posición "
 "actual del cabezal de reproducción."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -450,6 +451,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Controla el rango visible de la línea de tiempo. Arrastra los controles para "
+"acercar/alejar, arrastra el centro para desplazar y haz doble clic para "
+"ajustar la línea de tiempo. También puedes usar :kbd:`Ctrl+Rueda de "
+"desplazamiento`, o en la línea de tiempo QWidget mantén presionado :kbd:"
+"`Ctrl` y arrastra con el botón central del ratón para un zoom suave."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -608,13 +614,15 @@ msgstr "Borrar historial"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Eliminar videos optimizados"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1825,12 +1833,3 @@ msgstr ""
 "para restaurar la vista a su estado predeterminado. O puedes usar el menú :"
 "guilabel:`Vista->Vistas->Paneles->...` para mostrar u ocultar paneles "
 "específicos en la ventana principal."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Controle el rango visible de la línea de tiempo. Arrastre los controles "
-#~ "para acercar/alejar, arrastre el centro para desplazar y haga doble clic "
-#~ "para ajustar la línea de tiempo."

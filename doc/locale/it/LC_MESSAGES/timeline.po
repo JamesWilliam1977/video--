@@ -271,12 +271,16 @@ msgstr ""
 "con il cursore della timeline per facilitare le piccole regolazioni delle "
 "clip."
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"Puoi anche ingrandire la timeline con :kbd:`Ctrl+Rotella del mouse`. Nella "
+"timeline QWidget, tieni premuto :kbd:`Ctrl` e trascina con il pulsante "
+"centrale del mouse per uno zoom fluido."
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

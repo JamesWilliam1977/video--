@@ -369,12 +369,16 @@ msgstr "Sử dụng dòng thời gian web cũ (tự động chọn WebEngine/Web
 msgid "Preview"
 msgstr "Xem trước"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"Tab Xem trước trong cửa sổ Tùy chọn điều khiển hành vi âm thanh xem trước "
+"thời gian thực, bao gồm lựa chọn thiết bị, tần số mẫu, kênh, bộ đệm, âm "
+"lượng phát lại và hành vi xem trước tối ưu."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -448,43 +452,54 @@ msgstr "75"
 msgid "Preview playback volume percentage"
 msgstr "Phần trăm âm lượng phát xem trước"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "Công việc Tối ưu Đồng thời"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "2"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
-msgstr ""
+msgstr "Số lượng tệp video mà OpenShot có thể tối ưu cùng lúc"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "Độ phân giải Xem trước Tối ưu"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "1280x720"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
-msgstr ""
+msgstr "Độ phân giải tối đa được sử dụng khi tạo các tệp xem trước tối ưu"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "Tốc độ Tải trước Hình thu nhỏ / giây"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "4"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
 msgstr ""
+"Số khung hình xem trước hình thu nhỏ được tạo trước mỗi giây trong khi tối "
+"ưu video"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -840,22 +855,27 @@ msgstr "Card Đồ Họa Mã Hóa Phần Cứng"
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "Chọn thiết bị GPU được sử dụng cho mã hóa phần cứng."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "Luồng OMP"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
+"Số luồng công nhân OpenMP được sử dụng cho xử lý nhạy cảm với hiệu suất."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "Luồng FFmpeg"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "Số luồng FFmpeg được sử dụng để giải mã/mã hóa."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1194,36 +1214,3 @@ msgstr ""
 "bước <https://github.com/OpenShot/openshot-qt/wiki/Clean-Installation-of-"
 "OpenShot>`_ của chúng tôi để biết thêm thông tin về **cài đặt sạch** của "
 "OpenShot."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "Tab Xem Trước trong cửa sổ Tùy Chọn điều khiển hành vi âm thanh xem trước "
-#~ "thời gian thực, bao gồm chọn thiết bị, tần số mẫu, kênh, bộ đệm và âm "
-#~ "lượng phát."
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "Luồng OMP (0 = Mặc định)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "Số luồng công nhân OpenMP dùng cho xử lý nhạy cảm hiệu suất. Dùng ``0`` "
-#~ "để OpenShot tự chọn."
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "Luồng FFmpeg (0 = Mặc định)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr ""
-#~ "Số luồng FFmpeg dùng cho giải mã/mã hóa. Dùng ``0`` để tự động chọn luồng."

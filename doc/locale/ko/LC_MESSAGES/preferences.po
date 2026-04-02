@@ -361,12 +361,15 @@ msgstr "기존 웹 타임라인 사용 (WebEngine/WebKit 자동 선택)"
 msgid "Preview"
 msgstr "미리보기"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"환경 설정 창의 미리보기 탭은 장치 선택, 샘플 속도, 채널, 버퍼링, 재생 볼륨 "
+"및 최적화된 미리보기 동작을 포함한 실시간 미리보기 오디오 동작을 제어합니다."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -440,43 +443,52 @@ msgstr "75"
 msgid "Preview playback volume percentage"
 msgstr "미리보기 재생 볼륨 백분율"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "동시 최적화 작업"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "2"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
-msgstr ""
+msgstr "OpenShot이 동시에 최적화할 수 있는 비디오 파일 수"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "최적화된 미리보기 해상도"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "1280x720"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
-msgstr ""
+msgstr "최적화된 미리보기 파일을 생성할 때 사용되는 최대 해상도"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "초당 썸네일 미리 로드 속도"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "4"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
-msgstr ""
+msgstr "비디오 최적화 중 초당 미리 생성되는 썸네일 미리보기 프레임 수"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -822,22 +834,26 @@ msgstr "하드웨어 인코더 그래픽 카드"
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "하드웨어 인코딩에 사용할 GPU 장치를 선택하세요."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "OMP 스레드"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
-msgstr ""
+msgstr "성능에 민감한 처리에 사용되는 OpenMP 작업자 스레드 수."
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "FFmpeg 스레드"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "디코딩/인코딩에 사용되는 FFmpeg 스레드 수."
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1170,36 +1186,3 @@ msgstr ""
 "OpenShot의 ** 클린 설치** 에 대한 자세한 내용은 ` 단계별 가이드 <https://"
 "github.com/OpenShot/openshot-qt/wiki/Clean-Installation-of-OpenShot>`_ 를 참"
 "조하세요."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "환경설정 창의 미리보기 탭은 장치 선택, 샘플링 속도, 채널, 버퍼링, 재생 볼"
-#~ "륨 등 실시간 미리보기 오디오 동작을 제어합니다."
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "OMP 스레드 (0 = 기본값)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "성능에 민감한 처리에 사용되는 OpenMP 작업자 스레드 수입니다. ``0`` 으로 설"
-#~ "정하면 OpenShot이 자동으로 선택합니다."
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "FFmpeg 스레드 (0 = 기본값)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr ""
-#~ "디코딩/인코딩에 사용되는 FFmpeg 스레드 수입니다. 자동 스레드 선택을 위해 "
-#~ "``0`` 을 사용하세요."

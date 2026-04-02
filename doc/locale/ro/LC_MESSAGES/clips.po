@@ -331,11 +331,15 @@ msgstr ""
 "Ține cont că metodele de tăiere de mai sus au și :ref:"
 "`keyboard_shortcut_ref`, pentru a economisi și mai mult timp."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:96
 msgid ""
 "If multiple selected clips and/or transitions share the same left edge or "
 "right edge, you can drag that shared edge once to trim them together."
 msgstr ""
+"Dacă mai multe clipuri și/sau tranziții selectate au aceeași margine stângă "
+"sau dreaptă, puteți trage acea margine comună o singură dată pentru a le "
+"tăia împreună."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:100
@@ -1080,11 +1084,15 @@ msgstr ""
 "ce scurtarea o accelerează. Toate cadrele cheie ale clipului și efectelor "
 "sale sunt scalate astfel încât pozițiile relative să rămână intacte."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:262
 msgid ""
 "If you select multiple clips and/or transitions that share the same left "
 "edge or right edge, you can retime that shared edge together in one drag."
 msgstr ""
+"Dacă selectați mai multe clipuri și/sau tranziții care au aceeași margine "
+"stângă sau dreaptă, puteți regla timpul acelei margini comune împreună într-"
+"o singură tragere."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:267

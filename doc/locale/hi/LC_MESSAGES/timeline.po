@@ -261,12 +261,16 @@ msgstr ""
 "टिप: यदि टाइमलाइन संपादन भीड़भाड़ महसूस हो, तो छोटे क्लिप समायोजन को आसान बनाने के "
 "लिए टाइमलाइन स्लाइडर से ज़ूम इन करें।"
 
+# Translated with gpt-4.1-mini
 #: ../timeline.rst:94
 msgid ""
 "You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
 "timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
 "zooming."
 msgstr ""
+"आप :kbd:`Ctrl+Scroll Wheel` के साथ टाइमलाइन को ज़ूम भी कर सकते हैं। QWidget "
+"टाइमलाइन पर, :kbd:`Ctrl` दबाए रखें और मध्यम माउस बटन के साथ खींचें ताकि स्मूथ ज़ूमिंग हो "
+"सके।"
 
 # Translated with gpt-4.1-mini
 #: ../timeline.rst:99

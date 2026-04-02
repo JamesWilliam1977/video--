@@ -315,11 +315,15 @@ msgstr ""
 "위의 자르기 방법들은 모두 :ref:`keyboard_shortcut_ref` 단축키를 지원하므로 시"
 "간을 더욱 절약할 수 있습니다."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:96
 msgid ""
 "If multiple selected clips and/or transitions share the same left edge or "
 "right edge, you can drag that shared edge once to trim them together."
 msgstr ""
+"여러 개의 선택된 클립 및/또는 전환이 동일한 왼쪽 가장자리 또는 오른쪽 가장자"
+"리를 공유하는 경우, 해당 공유 가장자리를 한 번 드래그하여 함께 자를 수 있습니"
+"다."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:100
@@ -1025,11 +1029,15 @@ msgstr ""
 "세요. 클립을 길게 하면 재생 속도가 느려지고, 짧게 하면 속도가 빨라집니다. 클"
 "립과 그 효과에 있는 모든 키프레임은 상대 위치가 유지되도록 비례 조정됩니다."
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:262
 msgid ""
 "If you select multiple clips and/or transitions that share the same left "
 "edge or right edge, you can retime that shared edge together in one drag."
 msgstr ""
+"여러 개의 클립 및/또는 전환을 선택하고 이들이 동일한 왼쪽 가장자리 또는 오른"
+"쪽 가장자리를 공유하는 경우, 해당 공유 가장자리를 한 번의 드래그로 함께 재조"
+"정할 수 있습니다."
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:267

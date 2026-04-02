@@ -442,6 +442,7 @@ msgid "Center the visible timeline area around the current playhead position."
 msgstr ""
 "Centreer het zichtbare tijdlijngebied rond de huidige afspeelkoppositie."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -449,6 +450,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Beheer het zichtbare tijdlijnbereik. Sleep de handgrepen om in/uit te "
+"zoomen, sleep het midden om te pannen, en dubbelklik om de tijdlijn passend "
+"te maken. Je kunt ook :kbd:`Ctrl+Scroll Wheel` gebruiken, of op de QWidget-"
+"tijdlijn :kbd:`Ctrl` ingedrukt houden en met de middelste muisknop slepen "
+"voor vloeiend zoomen."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -608,13 +614,15 @@ msgstr "Wis Geschiedenis"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Geoptimaliseerde video's verwijderen"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1822,12 +1830,3 @@ msgstr ""
 "gebruiken om de weergave terug te zetten naar de standaardinstelling. Of u "
 "kunt het menu :guilabel:`Beeld->Weergaven->Docks->...` gebruiken om "
 "specifieke dock-widgets in het hoofdvenster te tonen of te verbergen."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Beheer het zichtbare tijdlijnbereik. Sleep handgrepen om in/uit te "
-#~ "zoomen, sleep het midden om te pannen, en dubbelklik om de tijdlijn "
-#~ "passend te maken."

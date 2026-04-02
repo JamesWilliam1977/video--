@@ -364,12 +364,16 @@ msgstr "পুরানো ওয়েব টাইমলাইন ব্যব
 msgid "Preview"
 msgstr "প্রিভিউ"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:123
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
 "behavior, including device selection, sample rate, channels, buffering, "
 "playback volume, and optimized preview behavior."
 msgstr ""
+"পছন্দসমূহ উইন্ডোর প্রিভিউ ট্যাবটি রিয়েল-টাইম প্রিভিউ অডিও আচরণ নিয়ন্ত্রণ করে, যার "
+"মধ্যে ডিভাইস নির্বাচন, স্যাম্পল রেট, চ্যানেল, বাফারিং, প্লেব্যাক ভলিউম এবং "
+"অপ্টিমাইজড প্রিভিউ আচরণ অন্তর্ভুক্ত।"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:132
@@ -443,43 +447,54 @@ msgstr "৭৫"
 msgid "Preview playback volume percentage"
 msgstr "প্রিভিউ প্লেব্যাক ভলিউম শতাংশ"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Concurrent Optimize Jobs"
-msgstr ""
+msgstr "একযোগে অপ্টিমাইজ কাজ"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "2"
-msgstr ""
+msgstr "২"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:137
 msgid "Number of video files OpenShot can optimize at the same time"
-msgstr ""
+msgstr "একসাথে OpenShot কতগুলি ভিডিও ফাইল অপ্টিমাইজ করতে পারে তার সংখ্যা"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Optimized Preview Resolution"
-msgstr ""
+msgstr "অপ্টিমাইজড প্রিভিউ রেজোলিউশন"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "1280x720"
-msgstr ""
+msgstr "১২৮০x৭২০"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:138
 msgid "Maximum resolution used when creating optimized preview files"
-msgstr ""
+msgstr "অপ্টিমাইজড প্রিভিউ ফাইল তৈরি করার সময় ব্যবহৃত সর্বোচ্চ রেজোলিউশন"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "Thumbnail Preload Rate / second"
-msgstr ""
+msgstr "থাম্বনেইল প্রিলোড হার / সেকেন্ড"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid "4"
-msgstr ""
+msgstr "৪"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:139
 msgid ""
 "How many thumbnail preview frames per second are pre-generated while "
 "optimizing video"
 msgstr ""
+"ভিডিও অপ্টিমাইজ করার সময় প্রতি সেকেন্ডে কতগুলি থাম্বনেইল প্রিভিউ ফ্রেম প্রি-জেনারেট "
+"করা হয়"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:143
@@ -830,22 +845,27 @@ msgstr "হার্ডওয়্যার এনকোডার গ্রা�
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "হার্ডওয়্যার এনকোডিংয়ের জন্য কোন GPU ডিভাইস ব্যবহৃত হবে তা নির্বাচন করুন।"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:240
 msgid "OMP Threads"
-msgstr ""
+msgstr "OMP থ্রেড"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:241
 msgid ""
 "Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
+"পারফরম্যান্স-সংবেদনশীল প্রক্রিয়াকরণের জন্য ব্যবহৃত OpenMP ওয়ার্কার থ্রেডের সংখ্যা।"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:242
 msgid "FFmpeg Threads"
-msgstr ""
+msgstr "FFmpeg থ্রেড"
 
+# Translated with gpt-4.1-mini
 #: ../preferences.rst:243
 msgid "Number of FFmpeg threads used for decoding/encoding."
-msgstr ""
+msgstr "ডিকোডিং/এনকোডিংয়ের জন্য ব্যবহৃত FFmpeg থ্রেডের সংখ্যা।"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:244
@@ -1181,37 +1201,3 @@ msgstr ""
 "এবং সেটিংস ফাইল তৈরি করবে। OpenShot এর **clean installs** সম্পর্কে আরও তথ্যের "
 "জন্য আমাদের `ধাপে ধাপে গাইড <https://github.com/OpenShot/openshot-qt/wiki/"
 "Clean-Installation-of-OpenShot>`_ দেখুন।"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "The Preview tab of the Preferences window controls real-time preview "
-#~ "audio behavior, including device selection, sample rate, channels, "
-#~ "buffering, and playback volume."
-#~ msgstr ""
-#~ "প্রেফারেন্স উইন্ডোর প্রিভিউ ট্যাবটি রিয়েল-টাইম প্রিভিউ অডিও আচরণ নিয়ন্ত্রণ করে, "
-#~ "যার মধ্যে রয়েছে ডিভাইস নির্বাচন, স্যাম্পল রেট, চ্যানেল, বাফারিং এবং প্লেব্যাক "
-#~ "ভলিউম।"
-
-# Translated with gpt-4.1-mini
-#~ msgid "OMP Threads (0 = Default)"
-#~ msgstr "OMP থ্রেড (০ = ডিফল্ট)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of OpenMP worker threads used by performance-sensitive processing. "
-#~ "Use ``0`` to let OpenShot choose automatically."
-#~ msgstr ""
-#~ "পারফরম্যান্স-সংবেদনশীল প্রসেসিংয়ের জন্য ব্যবহৃত OpenMP ওয়ার্কার থ্রেডের সংখ্যা। "
-#~ "OpenShot স্বয়ংক্রিয়ভাবে নির্বাচন করতে ``0`` ব্যবহার করুন।"
-
-# Translated with gpt-4.1-mini
-#~ msgid "FFmpeg Threads (0 = Default)"
-#~ msgstr "FFmpeg থ্রেড (০ = ডিফল্ট)"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Number of FFmpeg threads used for decoding/encoding. Use ``0`` for "
-#~ "automatic thread selection."
-#~ msgstr ""
-#~ "ডিকোডিং/এনকোডিংয়ের জন্য ব্যবহৃত FFmpeg থ্রেডের সংখ্যা। স্বয়ংক্রিয় থ্রেড নির্বাচন "
-#~ "করতে ``0`` ব্যবহার করুন।"

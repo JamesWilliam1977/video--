@@ -311,15 +311,19 @@ msgstr "ফাইলের বৈশিষ্ট্য"
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "একটি ফাইলের বৈশিষ্ট্য দেখুন, যেমন ফ্রেম রেট, আকার, ইত্যাদি..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:104 ../files.rst:125
 msgid "Optimize"
-msgstr ""
+msgstr "অপ্টিমাইজ করুন"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:105
 msgid ""
 "Create, link, unlink, or delete optimized preview files for the selected "
 "video files."
 msgstr ""
+"নির্বাচিত ভিডিও ফাইলগুলির জন্য অপ্টিমাইজড প্রিভিউ ফাইল তৈরি, লিঙ্ক, আনলিঙ্ক বা মুছে "
+"ফেলুন।"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:106 ../files.rst:250
@@ -395,6 +399,7 @@ msgstr ""
 "জুম ১০০% না হলে একটি :guilabel:`Reset Zoom` বোতাম প্রদর্শিত হয়, যা ১০০% এ রিসেট "
 "করে।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:126
 msgid ""
 "Optimized preview files are lower-resolution copies of your source video "
@@ -403,7 +408,12 @@ msgid ""
 "helpful with large formats such as 4K, high frame rate, or high bitrate "
 "footage."
 msgstr ""
+"অপ্টিমাইজড প্রিভিউ ফাইলগুলি আপনার সোর্স ভিডিও ফাইলের কম রেজোলিউশনের কপি (যাকে "
+"কখনও কখনও প্রক্সি ফাইল বলা হয়), যা মূল মিডিয়া পরিবর্তন না করে সম্পাদনার "
+"প্রতিক্রিয়াশীলতা উন্নত করতে ব্যবহৃত হয়। এগুলি বিশেষত বড় ফরম্যাট যেমন 4K, উচ্চ ফ্রেম "
+"রেট, বা উচ্চ বিটরেট ফুটেজের জন্য সহায়ক।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:130
 msgid ""
 "For video files, the file context menu includes an :guilabel:`Optimize` "
@@ -412,56 +422,82 @@ msgid ""
 "high-resolution footage. Optimizing also pre-loads thumbnails to further "
 "improve the editing smoothness when zooming into the timeline."
 msgstr ""
+"ভিডিও ফাইলগুলির জন্য, ফাইল কনটেক্সট মেনুতে একটি :guilabel:`Optimize` সাবমেনু "
+"থাকে। এই ফিচারটি আপনার সোর্স ক্লিপের ছোট প্রিভিউ কপি তৈরি বা লিঙ্ক করে, যা ধীর "
+"সিস্টেম বা উচ্চ রেজোলিউশনের ফুটেজে প্লেব্যাক এবং স্ক্রাবিং উন্নত করতে পারে। "
+"অপ্টিমাইজেশন থাম্বনেইলগুলি প্রি-লোড করে টাইমলাইন জুম করার সময় সম্পাদনার মসৃণতা আরও "
+"বাড়ায়।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:135
 msgid "The :guilabel:`Optimize` submenu contains these actions:"
-msgstr ""
+msgstr ":guilabel:`Optimize` সাবমেনুটি এই ক্রিয়াগুলি অন্তর্ভুক্ত করে:"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:141
 msgid "Action"
-msgstr ""
+msgstr "ক্রিয়া"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:143
 msgid "Optimize Video"
-msgstr ""
+msgstr "ভিডিও অপ্টিমাইজ করুন"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:144
 msgid ""
 "Create an optimized preview file for each selected video file. OpenShot "
 "stores these files in the project's ``optimized`` assets folder."
 msgstr ""
+"প্রতিটি নির্বাচিত ভিডিও ফাইলের জন্য একটি অপ্টিমাইজড প্রিভিউ ফাইল তৈরি করুন। "
+"OpenShot এই ফাইলগুলি প্রকল্পের ``optimized`` অ্যাসেট ফোল্ডারে সংরক্ষণ করে।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:145
 msgid "Link to Existing..."
-msgstr ""
+msgstr "বিদ্যমানের সাথে লিঙ্ক করুন..."
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:146
 msgid ""
 "Choose a folder containing already-created optimized files and link the best "
 "matching files to the selected source clips. This supports common proxy "
 "naming styles, known proxy suffixes, file ID suffixes, and extension changes."
 msgstr ""
+"আগে থেকে তৈরি করা অপ্টিমাইজড ফাইল ধারণকারী একটি ফোল্ডার নির্বাচন করুন এবং "
+"নির্বাচিত সোর্স ক্লিপগুলির সাথে সেরা মিল থাকা ফাইলগুলি লিঙ্ক করুন। এটি সাধারণ প্রক্সি "
+"নামকরণ শৈলী, পরিচিত প্রক্সি সাফিক্স, ফাইল আইডি সাফিক্স এবং এক্সটেনশন পরিবর্তন "
+"সমর্থন করে।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:147
 msgid "Unlink"
-msgstr ""
+msgstr "লিঙ্ক সরান"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:148
 msgid ""
 "Remove the optimized preview link from the selected file without deleting "
 "the optimized file from disk."
 msgstr ""
+"ডিস্ক থেকে অপ্টিমাইজড ফাইল মুছে না ফেলে নির্বাচিত ফাইল থেকে অপ্টিমাইজড প্রিভিউ "
+"লিঙ্ক সরান।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:149
 msgid "Delete & Unlink"
-msgstr ""
+msgstr "মুছে ফেলুন ও লিঙ্ক সরান"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:150
 msgid ""
 "Delete the linked optimized file from disk, then remove the link from the "
 "selected file."
 msgstr ""
+"ডিস্ক থেকে লিঙ্ক করা অপ্টিমাইজড ফাইল মুছে ফেলুন, তারপর নির্বাচিত ফাইল থেকে লিঙ্ক "
+"সরান।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:152
 msgid ""
 "When optimization is in progress, the submenu changes to a single :guilabel:"
@@ -469,7 +505,12 @@ msgid ""
 "only for editing and preview playback. Your final export still uses the "
 "original source files."
 msgstr ""
+"অপ্টিমাইজেশন চলাকালীন, সাবমেনুটি নির্বাচিত ফাইল(গুলি) এর জন্য একটি একক :guilabel:"
+"`Cancel` ক্রিয়ায় পরিবর্তিত হয়। অপ্টিমাইজড প্রিভিউ ফাইলগুলি শুধুমাত্র সম্পাদনা এবং "
+"প্রিভিউ প্লেব্যাকের জন্য ব্যবহৃত হয়। আপনার চূড়ান্ত এক্সপোর্ট এখনও মূল সোর্স ফাইল ব্যবহার "
+"করে।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:155
 msgid ""
 "When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
@@ -482,7 +523,16 @@ msgid ""
 "mp4``, and it can still match files named only by file ID, such as ``F1."
 "mp4``."
 msgstr ""
+":guilabel:`Link to Existing...` ব্যবহার করার সময়, OpenShot প্রতিটি নির্বাচিত "
+"সোর্স ক্লিপকে একটি বিদ্যমান অপ্টিমাইজড ফাইলের সাথে নিরাপদ ক্রমে মিলানোর চেষ্টা "
+"করে। এটি প্রথমে একই বেস ফাইলনাম খোঁজে ভিন্ন ভিডিও এক্সটেনশন সহ, তারপর সাধারণ "
+"প্রক্সি-স্টাইল নাম যেমন ``_proxy``, ``_preview``, ``_optimized``, ``_lowres``, "
+"রেজোলিউশন ট্যাগ যেমন ``_720p`` বা ``_1080p``, এবং ক্যামেরা/এডিটর-স্টাইল "
+"ভেরিয়েন্ট যেমন ``_p``। এটি পরিচিত প্রক্সি সাফিক্সের পরে OpenShot ফাইল আইডি যোগ "
+"করা নামও সমর্থন করে, যেমন ``clip001_proxy_F1.mp4``, এবং শুধুমাত্র ফাইল আইডি "
+"দ্বারা নামকৃত ফাইলও মিলাতে পারে, যেমন ``F1.mp4``।"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:162
 msgid ""
 "Best practice when bringing your own optimized files is to keep the same "
@@ -493,6 +543,12 @@ msgid ""
 "``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
 "proxy naming patterns."
 msgstr ""
+"নিজের অপ্টিমাইজড ফাইল আনার সময় সেরা অভ্যাস হল সোর্স ক্লিপের মতো একই বেস ফাইলনাম "
+"রাখা এবং একটি স্পষ্ট প্রক্সি-স্টাইল সাফিক্স যোগ করা, যেমন ``clip001_proxy.mp4`` বা "
+"``clip001_proxy.mov``। যদি ফাইলনাম সংঘর্ষ এড়াতে হয়, প্রক্সি সাফিক্সের পরে "
+"OpenShot ফাইল আইডি যোগ করুন, যেমন ``clip001_proxy_F1.mp4``। ``_final`` বা "
+"``_reviewcopy`` এর মতো অপ্রাসঙ্গিক সাফিক্স এড়িয়ে চলুন, কারণ OpenShot সেগুলিকে "
+"নিরাপদ প্রক্সি নামকরণ প্যাটার্ন হিসেবে বিবেচনা করে না।"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:171
@@ -819,17 +875,20 @@ msgstr ""
 "``.openshot_qt/clipboard/`` - ক্লিপবোর্ড থেকে পেস্ট করা মিডিয়া (ছবি, অডিও, বা "
 "ভিডিও যা প্রথমে ডিস্কে সংরক্ষণ করতে হয়)"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:265
 msgid ""
 "``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
 "editing"
 msgstr ""
+"``.openshot_qt/optimized/`` - মসৃণ সম্পাদনার জন্য তৈরি অপ্টিমাইজড প্রিভিউ ফাইল"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:266
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr "``.openshot_qt/protobuf_data`` - ট্র্যাকিং এবং অবজেক্ট সনাক্তকরণ ডেটা"
 
+# Translated with gpt-4.1-mini
 #: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
@@ -838,6 +897,11 @@ msgid ""
 "from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
 "optimized preview files linked to the project."
 msgstr ""
+"আপনি যখন **File→Save As** নির্বাচন করবেন, OpenShot এই ফোল্ডারগুলো আপনার প্রকল্প "
+"ডিরেক্টরিতে একটি একক ফোল্ডার ``PROJECTNAME_Assets`` এর ভিতরে কপি করবে। "
+"উদাহরণস্বরূপ: ``MyProject_Assets/clipboard`` তে ক্লিপবোর্ড থেকে পেস্ট করা মিডিয়া "
+"থাকবে, এবং ``MyProject_Assets/optimized`` তে প্রকল্পের সাথে লিঙ্ক করা অপ্টিমাইজড "
+"প্রিভিউ ফাইল থাকবে।"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:272
@@ -917,15 +981,3 @@ msgstr ""
 "অত্যন্ত গুরুত্বপূর্ণ, কারণ এতে missing file সমস্যা হতে পারে। missing file(s) সম্পর্কিত "
 "বিস্তারিত নির্দেশনার জন্য দেখুন `The Case of “Missing Files”! <https://github."
 "com/OpenShot/openshot-qt/wiki/Missing-File-Prompt>`_।"
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "When you choose **File→Save As**, OpenShot copies these folders into your "
-#~ "project directory, inside a single folder named ``PROJECTNAME_Assets``. "
-#~ "For example: ``MyProject_Assets/clipboard`` will contain any media you "
-#~ "pasted from the clipboard."
-#~ msgstr ""
-#~ "যখন আপনি **File→Save As** নির্বাচন করেন, OpenShot এই ফোল্ডারগুলো আপনার প্রকল্প "
-#~ "ডিরেক্টরিতে একটি একক ফোল্ডার ``PROJECTNAME_Assets`` এর মধ্যে কপি করে। "
-#~ "উদাহরণস্বরূপ: ``MyProject_Assets/clipboard`` তে ক্লিপবোর্ড থেকে পেস্ট করা "
-#~ "যেকোনো মিডিয়া থাকবে।"

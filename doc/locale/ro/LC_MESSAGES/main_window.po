@@ -442,6 +442,7 @@ msgstr ""
 "Centrează zona vizibilă a liniei de timp în jurul poziției curente a capului "
 "de redare."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -449,6 +450,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Controlează intervalul vizibil al cronologiei. Trage mânerele pentru a mări/"
+"micșora, trage centrul pentru a deplasa și dă dublu clic pentru a ajusta "
+"cronologia. De asemenea, poți folosi :kbd:`Ctrl+Scroll Wheel` sau pe "
+"cronologia QWidget ține apăsat :kbd:`Ctrl` și trage cu butonul mijlociu al "
+"mouse-ului pentru o mărire lină."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -607,13 +613,15 @@ msgstr "Șterge Istoricul"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Șterge videoclipurile optimizate"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1820,12 +1828,3 @@ msgstr ""
 "ecranului pentru a restaura vizualizarea la setarea implicită. Sau puteți "
 "folosi meniul :guilabel:`Vizualizare->Vizualizări->Panouri->...` pentru a "
 "afișa sau ascunde anumite widget-uri de panou în fereastra principală."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Controlează intervalul vizibil al liniei de timp. Trage mânerele pentru a "
-#~ "mări/micșora, trage centrul pentru a panoramare și dă dublu clic pentru a "
-#~ "ajusta linia de timp."

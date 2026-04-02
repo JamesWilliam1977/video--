@@ -442,6 +442,7 @@ msgstr ""
 "Центрируйте видимую область временной шкалы вокруг текущей позиции "
 "воспроизведения."
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
@@ -449,6 +450,11 @@ msgid ""
 "Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
 "mouse button for smooth zooming."
 msgstr ""
+"Управляйте видимым диапазоном временной шкалы. Перетаскивайте ручки для "
+"увеличения/уменьшения масштаба, перетаскивайте центр для панорамирования, и "
+"дважды щелкните, чтобы подогнать временную шкалу. Также можно использовать :"
+"kbd:`Ctrl+Колесо прокрутки`, или на временной шкале QWidget удерживать :kbd:"
+"`Ctrl` и перетаскивать средней кнопкой мыши для плавного масштабирования."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -606,13 +612,15 @@ msgstr "Очистить историю"
 msgid ":kbd:`Ctrl+Shift+H`"
 msgstr ":kbd:`Ctrl+Shift+H`"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid "Delete Optimized Videos"
-msgstr ""
+msgstr "Удалить оптимизированные видео"
 
+# Translated with gpt-4.1-mini
 #: ../main_window.rst:153
 msgid ":kbd:`Ctrl+Shift+O`"
-msgstr ""
+msgstr ":kbd:`Ctrl+Shift+O`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:154
@@ -1815,12 +1823,3 @@ msgstr ""
 "`Вид->Виды->Простой вид` в верхней части экрана, чтобы восстановить вид по "
 "умолчанию. Или используйте меню :guilabel:`Вид->Виды->Доки->...` для показа "
 "или скрытия конкретных доков в главном окне."
-
-# Translated with gpt-4.1-mini
-#~ msgid ""
-#~ "Control the visible timeline range. Drag handles to zoom in/out, drag "
-#~ "center to pan, and double-click to fit timeline."
-#~ msgstr ""
-#~ "Управляйте видимым диапазоном временной шкалы. Перетаскивайте маркеры для "
-#~ "увеличения/уменьшения, перетаскивайте центр для панорамирования, двойной "
-#~ "щелчок подгоняет временную шкалу."

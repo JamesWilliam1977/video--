@@ -314,11 +314,14 @@ msgstr ""
 "ध्यान रखें कि ऊपर दिए गए कटिंग तरीकों के लिए :ref:`keyboard_shortcut_ref` भी उपलब्ध "
 "हैं, जो और अधिक समय बचाते हैं।"
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:96
 msgid ""
 "If multiple selected clips and/or transitions share the same left edge or "
 "right edge, you can drag that shared edge once to trim them together."
 msgstr ""
+"यदि कई चयनित क्लिप और/या ट्रांज़िशन एक ही बाएँ किनारे या दाएँ किनारे को साझा करते हैं, "
+"तो आप उस साझा किनारे को एक बार खींचकर उन्हें एक साथ ट्रिम कर सकते हैं।"
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:100
@@ -1015,11 +1018,14 @@ msgstr ""
 "धीमा होता है, जबकि छोटा करने से क्लिप तेज हो जाता है। क्लिप और उसके प्रभावों पर सभी "
 "कीफ्रेम्स का आकार इस तरह से बदला जाता है कि उनकी सापेक्ष स्थिति बनी रहती है।"
 
+# Translated with gpt-4.1-mini
 #: ../clips.rst:262
 msgid ""
 "If you select multiple clips and/or transitions that share the same left "
 "edge or right edge, you can retime that shared edge together in one drag."
 msgstr ""
+"यदि आप कई क्लिप और/या ट्रांज़िशन चुनते हैं जो एक ही बाएँ किनारे या दाएँ किनारे को साझा "
+"करते हैं, तो आप उस साझा किनारे को एक बार खींचकर एक साथ पुनः समय निर्धारित कर सकते हैं।"
 
 # Translated with gpt-4.1-mini
 #: ../clips.rst:267
