@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenShot Video Editor (version: 3.5.0-dev)\n"
+"Project-Id-Version: OpenShot Video Editor (version: 3.5.1)\n"
 "Report-Msgid-Bugs-To: Jonathan Thomas <Jonathan.Oomph@gmail.com>\n"
-"POT-Creation-Date: 2026-04-02 17:17:14.217008\n"
+"POT-Creation-Date: 2026-04-02 18:41:27.594672\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Jonathan Thomas <Jonathan.Oomph@gmail.com>\n"
 "Language-Team: https://translations.launchpad.net/+groups/launchpad-translators\n"
@@ -22,6 +22,7 @@ msgstr ""
 
 #: /home/jonathan/apps/openshot-qt/src/windows/animated_title.py:64
 #: /home/jonathan/apps/openshot-qt/src/windows/export.py:93
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3711
 #: /home/jonathan/apps/openshot-qt/src/windows/export_clips.py:170
 #: /home/jonathan/apps/openshot-qt/src/windows/file_properties.py:80
 #: /home/jonathan/apps/openshot-qt/src/windows/process_effect.py:236
@@ -1107,6 +1108,7 @@ msgstr ""
 
 #: /home/jonathan/apps/openshot-qt/src/windows/views/files_listview.py:210
 #: /home/jonathan/apps/openshot-qt/src/windows/views/files_treeview.py:203
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3692
 msgid "Cancel Job"
 msgstr ""
 
@@ -1165,6 +1167,7 @@ msgid "Speed Ramp (%)"
 msgstr ""
 
 #: /home/jonathan/apps/openshot-qt/src/windows/views/optimized_preview_menu.py:75
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3699
 msgid "Optimize Video"
 msgstr ""
 
@@ -1606,7 +1609,7 @@ msgstr ""
 #: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3339
 #: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3358
 #: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3369
-#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:4398
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:4402
 #: /home/jonathan/apps/openshot-qt/src/windows/ui/main-window.ui:434
 msgid "Filter"
 msgstr ""
@@ -1626,21 +1629,37 @@ msgstr ""
 msgid "Update Available: <b>%s</b>"
 msgstr ""
 
-#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3718
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3684
+msgid "Generate..."
+msgstr ""
+
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3703
+msgid "Link to Existing..."
+msgstr ""
+
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3707
+msgid "Unlink"
+msgstr ""
+
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3715
+msgid "Delete && Unlink"
+msgstr ""
+
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3722
 #: /home/jonathan/apps/openshot-qt/src/windows/cutting.py:118 Settings Category
 #: for Preview /home/jonathan/apps/openshot-qt/src/windows/ui/animation.ui:341
 msgid "Preview"
 msgstr ""
 
-#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3726
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:3730
 msgid "Optimize"
 msgstr ""
 
-#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:4355
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:4359
 msgid "Error starting local HTTP server"
 msgstr ""
 
-#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:4356
+#: /home/jonathan/apps/openshot-qt/src/windows/main_window.py:4360
 msgid "Failed multiple attempts to start server:"
 msgstr ""
 
@@ -5027,3 +5046,4 @@ msgstr ""
 #: /home/jonathan/apps/openshot-qt/src/windows/ui/title-editor.ui:14
 msgid "Titles"
 msgstr ""
+

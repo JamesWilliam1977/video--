@@ -3679,7 +3679,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.tabEmojis.layout().addWidget(self.emojiListView)
 
     def _init_generation_actions(self):
-        self.actionGenerate = QAction("Generate...", self)
+        _ = get_app()._tr
+
+        self.actionGenerate = QAction(_("Generate..."), self)
         self.actionGenerate.setObjectName("actionGenerate")
         sparkle_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-generate-sparkle.svg")
         self.actionGenerate.setIcon(QIcon(sparkle_icon_path))
@@ -3687,28 +3689,30 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.actionGenerate.setShortcutContext(Qt.ApplicationShortcut)
         self.actionGenerate.triggered.connect(self.actionGenerate_trigger)
 
-        self.actionCancelGenerationJob = QAction("Cancel Job", self)
+        self.actionCancelGenerationJob = QAction(_("Cancel Job"), self)
         self.actionCancelGenerationJob.setObjectName("actionCancelGenerationJob")
         self.actionCancelGenerationJob.triggered.connect(self.actionCancelGenerationJob_trigger)
 
     def _init_proxy_actions(self):
-        self.actionOptimizedPreviewCreate = QAction("Optimize Video", self)
+        _ = get_app()._tr
+
+        self.actionOptimizedPreviewCreate = QAction(_("Optimize Video"), self)
         self.actionOptimizedPreviewCreate.setObjectName("actionOptimizedPreviewCreate")
         self.actionOptimizedPreviewCreate.triggered.connect(self.actionOptimizedPreviewCreate_trigger)
 
-        self.actionOptimizedPreviewUseExisting = QAction("Link to Existing...", self)
+        self.actionOptimizedPreviewUseExisting = QAction(_("Link to Existing..."), self)
         self.actionOptimizedPreviewUseExisting.setObjectName("actionOptimizedPreviewUseExisting")
         self.actionOptimizedPreviewUseExisting.triggered.connect(self.actionOptimizedPreviewUseExisting_trigger)
 
-        self.actionOptimizedPreviewRemove = QAction("Unlink", self)
+        self.actionOptimizedPreviewRemove = QAction(_("Unlink"), self)
         self.actionOptimizedPreviewRemove.setObjectName("actionOptimizedPreviewRemove")
         self.actionOptimizedPreviewRemove.triggered.connect(self.actionOptimizedPreviewRemove_trigger)
 
-        self.actionOptimizedPreviewCancel = QAction("Cancel", self)
+        self.actionOptimizedPreviewCancel = QAction(_("Cancel"), self)
         self.actionOptimizedPreviewCancel.setObjectName("actionOptimizedPreviewCancel")
         self.actionOptimizedPreviewCancel.triggered.connect(self.actionOptimizedPreviewCancel_trigger)
 
-        self.actionOptimizedPreviewDeleteAndUnlink = QAction("Delete && Unlink", self)
+        self.actionOptimizedPreviewDeleteAndUnlink = QAction(_("Delete && Unlink"), self)
         self.actionOptimizedPreviewDeleteAndUnlink.setObjectName("actionOptimizedPreviewDeleteAndUnlink")
         self.actionOptimizedPreviewDeleteAndUnlink.triggered.connect(self.actionOptimizedPreviewDeleteAndUnlink_trigger)
 
