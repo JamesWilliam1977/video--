@@ -72,6 +72,18 @@ class POEntry:
         self.references: List[str] = []
 
 
+def get_doc_locale_from_path(path: str) -> Optional[str]:
+    """Extract the doc locale code from a PO file path."""
+    parts = os.path.normpath(path).split(os.sep)
+    try:
+        locale_index = parts.index('locale')
+    except ValueError:
+        return None
+    if locale_index + 1 >= len(parts):
+        return None
+    return parts[locale_index + 1]
+
+
 class Color:
     """Color for message output"""
     _red = '\u001b[31m'
@@ -283,7 +295,7 @@ def parse_po_file(path: str) -> List[POEntry]:
                 continue
 
             if line.startswith('msgid '):
-                if entry.msgid or entry.msgstrs or entry.msgid_plural or entry.references:
+                if entry.msgid or entry.msgstrs or entry.msgid_plural:
                     entry = flush_po_entry(entries, entry)
                 entry.msgid = po_unquote(line[len('msgid '):])
                 active_field = ('msgid', None)
@@ -322,7 +334,27 @@ def parse_po_file(path: str) -> List[POEntry]:
 def validate_doc_entry(path: str, entry: POEntry) -> List[str]:
     """Check doc translation entries for placeholder and substitution preservation."""
     if entry.msgid == "":
-        return []
+        header = entry.msgstrs.get(0, '')
+        header_fields: Dict[str, str] = {}
+        for line in header.splitlines():
+            if ':' not in line:
+                continue
+            key, value = line.split(':', 1)
+            header_fields[key.strip()] = value.strip()
+
+        expected_language = get_doc_locale_from_path(path)
+        actual_language = header_fields.get('Language', '')
+        if not expected_language:
+            return []
+
+        errors = []
+        if not actual_language:
+            errors.append(f"{path}: PO header is missing a Language value")
+        elif actual_language != expected_language:
+            errors.append(
+                f"{path}: PO header Language '{actual_language}' does not match locale '{expected_language}'"
+            )
+        return errors
 
     source_strings = [entry.msgid]
     if entry.msgid_plural:
