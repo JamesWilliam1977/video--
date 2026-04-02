@@ -964,6 +964,88 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
             self.add_to_recent_files(file_path)
             self.has_unsaved_changes = False
 
+    @staticmethod
+    def _paths_match(path_a, path_b):
+        """Return True when both paths resolve to the same local filesystem path."""
+        if not path_a or not path_b:
+            return False
+        return os.path.normcase(os.path.abspath(path_a)) == os.path.normcase(os.path.abspath(path_b))
+
+    def _should_move_runtime_assets(self, source_root, default_name):
+        """Return True when a source root is the active runtime temp directory."""
+        default_root = info.get_default_path(default_name)
+        return self._paths_match(source_root, default_root)
+
+    def _sync_asset_entry(self, source_path, target_path, move=False, replace_existing=False):
+        """Copy or move a file/folder into the target asset tree."""
+        if not os.path.exists(source_path):
+            return
+
+        if os.path.isdir(source_path):
+            if os.path.exists(target_path) and not os.path.isdir(target_path):
+                os.remove(target_path)
+
+            if replace_existing and os.path.isdir(target_path):
+                shutil.rmtree(target_path, True)
+
+            if not os.path.exists(target_path):
+                parent_path = os.path.dirname(target_path)
+                if parent_path:
+                    os.makedirs(parent_path, exist_ok=True)
+                if move:
+                    shutil.move(source_path, target_path)
+                else:
+                    shutil.copytree(source_path, target_path)
+                return
+
+            for child_name in os.listdir(source_path):
+                self._sync_asset_entry(
+                    os.path.join(source_path, child_name),
+                    os.path.join(target_path, child_name),
+                    move=move,
+                    replace_existing=replace_existing,
+                )
+
+            if move and os.path.isdir(source_path) and not os.listdir(source_path):
+                os.rmdir(source_path)
+            return
+
+        if os.path.exists(target_path):
+            if replace_existing:
+                if os.path.isdir(target_path):
+                    shutil.rmtree(target_path, True)
+                else:
+                    os.remove(target_path)
+            elif move:
+                os.remove(source_path)
+                return
+            else:
+                return
+
+        parent_path = os.path.dirname(target_path)
+        if parent_path:
+            os.makedirs(parent_path, exist_ok=True)
+        if move:
+            shutil.move(source_path, target_path)
+        else:
+            shutil.copy2(source_path, target_path)
+
+    def _sync_asset_root(self, source_root, target_root, move=False, replace_existing=False):
+        """Copy or move all entries from a source asset root into a target root."""
+        if not source_root or not os.path.exists(source_root):
+            return
+        if self._paths_match(source_root, target_root):
+            return
+
+        os.makedirs(target_root, exist_ok=True)
+        for entry_name in os.listdir(source_root):
+            self._sync_asset_entry(
+                os.path.join(source_root, entry_name),
+                os.path.join(target_root, entry_name),
+                move=move,
+                replace_existing=replace_existing,
+            )
+
     def move_temp_paths_to_project_folder(self, file_path, previous_path=None):
         """ Move all temp files (such as Thumbnails, Titles, and Blender animations) to the project asset folder. """
         try:
@@ -1010,79 +1092,42 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
             }
             reader_paths = {}
 
-            # Copy all thumbnail files (if not found in target asset folder)
-            if os.path.abspath(info.THUMBNAIL_PATH) != os.path.abspath(target_thumb_path):
-                for root, _, files in os.walk(info.THUMBNAIL_PATH):
-                    rel_root = os.path.relpath(root, info.THUMBNAIL_PATH)
-                    destination_root = target_thumb_path if rel_root == "." else os.path.join(target_thumb_path, rel_root)
-                    if not os.path.exists(destination_root):
-                        os.makedirs(destination_root, exist_ok=True)
-                    for thumb_path in files:
-                        working_thumb_path = os.path.join(root, thumb_path)
-                        target_thumb_filepath = os.path.join(destination_root, thumb_path)
-                        if not os.path.exists(target_thumb_filepath):
-                            shutil.copy2(working_thumb_path, target_thumb_filepath)
-
-            # Copy all title files (if not found in target asset folder)
-            if os.path.abspath(info.TITLE_PATH) != os.path.abspath(target_title_path):
-                for title_path in os.listdir(info.TITLE_PATH):
-                    working_title_path = os.path.join(info.TITLE_PATH, title_path)
-                    target_title_filepath = os.path.join(target_title_path, title_path)
-                    if not os.path.exists(target_title_filepath):
-                        shutil.copy2(working_title_path, target_title_filepath)
-
-            # Copy all blender folders (if not found in target asset folder)
-            if os.path.abspath(info.BLENDER_PATH) != os.path.abspath(target_blender_path):
-                for blender_path in os.listdir(info.BLENDER_PATH):
-                    working_blender_path = os.path.join(info.BLENDER_PATH, blender_path)
-                    target_blender_filepath = os.path.join(target_blender_path, blender_path)
-                    if os.path.isdir(working_blender_path) and not os.path.exists(target_blender_filepath):
-                        shutil.copytree(working_blender_path, target_blender_filepath)
-
-            # Copy all clipboard files (if not found in target asset folder)
-            if os.path.exists(info.CLIPBOARD_PATH) and (
-                os.path.abspath(info.CLIPBOARD_PATH) != os.path.abspath(target_clipboard_path)
-            ):
-                for clipboard_path in os.listdir(info.CLIPBOARD_PATH):
-                    working_clipboard_path = os.path.join(info.CLIPBOARD_PATH, clipboard_path)
-                    target_clipboard_filepath = os.path.join(target_clipboard_path, clipboard_path)
-                    if not os.path.exists(target_clipboard_filepath):
-                        shutil.copy2(working_clipboard_path, target_clipboard_filepath)
-
-            # Copy all ComfyUI output files/folders (fully) to assets folder
-            if os.path.exists(info.COMFYUI_OUTPUT_PATH) and (
-                os.path.abspath(info.COMFYUI_OUTPUT_PATH) != os.path.abspath(target_comfy_output_path)
-            ):
-                for output_name in os.listdir(info.COMFYUI_OUTPUT_PATH):
-                    working_output_path = os.path.join(info.COMFYUI_OUTPUT_PATH, output_name)
-                    target_output_path = os.path.join(target_comfy_output_path, output_name)
-                    if os.path.isdir(working_output_path):
-                        if os.path.exists(target_output_path):
-                            shutil.rmtree(target_output_path, True)
-                        shutil.copytree(working_output_path, target_output_path)
-                    else:
-                        shutil.copy2(working_output_path, target_output_path)
-
-            # Copy all protobuf files (if not found in target asset folder)
-            if os.path.abspath(info.PROTOBUF_DATA_PATH) != os.path.abspath(target_protobuf_path):
-                for protobuf_path in os.listdir(info.PROTOBUF_DATA_PATH):
-                    working_protobuf_path = os.path.join(info.PROTOBUF_DATA_PATH, protobuf_path)
-                    target_protobuf_filepath = os.path.join(target_protobuf_path, protobuf_path)
-                    if not os.path.exists(target_protobuf_filepath):
-                        shutil.copy2(working_protobuf_path, target_protobuf_filepath)
-
-            # Copy all proxy files (if not found in target asset folder)
-            if os.path.exists(info.PROXY_PATH) and (
-                os.path.abspath(info.PROXY_PATH) != os.path.abspath(target_proxy_path)
-            ):
-                for proxy_name in os.listdir(info.PROXY_PATH):
-                    working_proxy_path = os.path.join(info.PROXY_PATH, proxy_name)
-                    target_proxy_filepath = os.path.join(target_proxy_path, proxy_name)
-                    if os.path.isdir(working_proxy_path):
-                        if not os.path.exists(target_proxy_filepath):
-                            shutil.copytree(working_proxy_path, target_proxy_filepath)
-                    elif not os.path.exists(target_proxy_filepath):
-                        shutil.copy2(working_proxy_path, target_proxy_filepath)
+            self._sync_asset_root(
+                info.THUMBNAIL_PATH,
+                target_thumb_path,
+                move=self._should_move_runtime_assets(info.THUMBNAIL_PATH, "THUMBNAIL_PATH"),
+            )
+            self._sync_asset_root(
+                info.TITLE_PATH,
+                target_title_path,
+                move=self._should_move_runtime_assets(info.TITLE_PATH, "TITLE_PATH"),
+            )
+            self._sync_asset_root(
+                info.BLENDER_PATH,
+                target_blender_path,
+                move=self._should_move_runtime_assets(info.BLENDER_PATH, "BLENDER_PATH"),
+            )
+            self._sync_asset_root(
+                info.CLIPBOARD_PATH,
+                target_clipboard_path,
+                move=self._should_move_runtime_assets(info.CLIPBOARD_PATH, "CLIPBOARD_PATH"),
+            )
+            self._sync_asset_root(
+                info.COMFYUI_OUTPUT_PATH,
+                target_comfy_output_path,
+                move=self._should_move_runtime_assets(info.COMFYUI_OUTPUT_PATH, "COMFYUI_OUTPUT_PATH"),
+                replace_existing=True,
+            )
+            self._sync_asset_root(
+                info.PROTOBUF_DATA_PATH,
+                target_protobuf_path,
+                move=self._should_move_runtime_assets(info.PROTOBUF_DATA_PATH, "PROTOBUF_DATA_PATH"),
+            )
+            self._sync_asset_root(
+                info.PROXY_PATH,
+                target_proxy_path,
+                move=self._should_move_runtime_assets(info.PROXY_PATH, "PROXY_PATH"),
+            )
 
             # Copy any necessary assets for File records
             for file in self._data["files"]:
@@ -1095,15 +1140,17 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
                 # Assets which need to be copied
                 new_asset_path = None
                 if info.BLENDER_PATH in path:
-                    # Copy directory of blender files
-                    old_dir, asset_name = os.path.split(path)
-                    if os.path.isdir(old_dir) and old_dir not in copied_assets["blender"]:
-                        # Copy dir into new folder
-                        old_dir_name = os.path.basename(old_dir)
-                        if os.path.abspath(old_dir) != os.path.abspath(target_blender_path):
-                            copied_assets["blender"].add(old_dir)
-                            log.info("Copied dir %s to %s", old_dir_name, target_blender_path)
-                    new_asset_path = os.path.join(target_blender_path, old_dir_name, asset_name)
+                    path_abs = os.path.abspath(path)
+                    blender_root_abs = os.path.abspath(info.BLENDER_PATH)
+                    if path_abs.startswith(blender_root_abs + os.sep):
+                        relative_blender_path = os.path.relpath(path_abs, blender_root_abs)
+                        blender_root_name = relative_blender_path.split(os.sep, 1)[0]
+                        if blender_root_name and blender_root_name not in copied_assets["blender"]:
+                            source_blender_dir = os.path.join(info.BLENDER_PATH, blender_root_name)
+                            if os.path.abspath(source_blender_dir) != os.path.abspath(target_blender_path):
+                                copied_assets["blender"].add(blender_root_name)
+                                log.info("Copied dir %s to %s", blender_root_name, target_blender_path)
+                        new_asset_path = os.path.join(target_blender_path, relative_blender_path)
 
                 if info.TITLE_PATH in path:
                     # Copy title files into assets folder

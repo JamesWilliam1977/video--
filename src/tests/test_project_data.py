@@ -653,3 +653,204 @@ class ProjectDataTests(unittest.TestCase):
                 ProjectDataStore.move_temp_paths_to_project_folder(store, project_file)
 
             self.assertTrue(os.path.exists(os.path.join(target_assets, "thumbnail", "F1", "8.png")))
+
+    def test_move_temp_paths_to_project_folder_moves_runtime_proxy_and_cleans_source(self):
+        store = make_store()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            proxy_root = os.path.join(tmpdir, "runtime-optimized")
+            os.mkdir(proxy_root)
+            proxy_file = os.path.join(proxy_root, "F1.mp4")
+            with open(proxy_file, "wb") as handle:
+                handle.write(b"proxy")
+
+            project_path = os.path.join(tmpdir, "example.osp")
+            asset_path = os.path.join(tmpdir, "example_assets")
+            target_proxy_path = os.path.join(asset_path, "optimized")
+
+            store._data = {
+                "files": [
+                    {
+                        "id": "F1",
+                        "path": os.path.join(tmpdir, "source.mp4"),
+                        "proxy_reader": {
+                            "id": "F1",
+                            "path": proxy_file,
+                        },
+                    }
+                ],
+                "clips": [],
+            }
+
+            default_paths = {
+                "PROXY_PATH": proxy_root,
+                "THUMBNAIL_PATH": os.path.join(tmpdir, "thumbs"),
+                "TITLE_PATH": os.path.join(tmpdir, "titles"),
+                "BLENDER_PATH": os.path.join(tmpdir, "blender"),
+                "PROTOBUF_DATA_PATH": os.path.join(tmpdir, "protobuf"),
+                "CLIPBOARD_PATH": os.path.join(tmpdir, "clipboard"),
+                "COMFYUI_OUTPUT_PATH": os.path.join(tmpdir, "comfy"),
+            }
+
+            with ExitStack() as stack:
+                stack.enter_context(patch("classes.project_data.get_assets_path", lambda path, create_paths=True: asset_path))
+                stack.enter_context(patch("classes.project_data.info.PROXY_PATH", proxy_root))
+                stack.enter_context(patch("classes.project_data.info.THUMBNAIL_PATH", default_paths["THUMBNAIL_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.TITLE_PATH", default_paths["TITLE_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.BLENDER_PATH", default_paths["BLENDER_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.PROTOBUF_DATA_PATH", default_paths["PROTOBUF_DATA_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.CLIPBOARD_PATH", default_paths["CLIPBOARD_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.COMFYUI_OUTPUT_PATH", default_paths["COMFYUI_OUTPUT_PATH"]))
+                stack.enter_context(
+                    patch(
+                        "classes.project_data.info.get_default_path",
+                        side_effect=lambda name: default_paths.get(name),
+                    )
+                )
+                for name, folder in default_paths.items():
+                    if name != "PROXY_PATH":
+                        os.mkdir(folder)
+                ProjectDataStore.move_temp_paths_to_project_folder(store, project_path)
+
+            self.assertTrue(os.path.exists(os.path.join(target_proxy_path, "F1.mp4")))
+            self.assertFalse(os.path.exists(proxy_file))
+            self.assertEqual(
+                store._data["files"][0]["proxy_reader"]["path"],
+                os.path.join(target_proxy_path, "F1.mp4"),
+            )
+
+    def test_move_temp_paths_to_project_folder_removes_runtime_duplicates_when_target_exists(self):
+        store = make_store()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            title_root = os.path.join(tmpdir, "runtime-title")
+            os.mkdir(title_root)
+            source_title = os.path.join(title_root, "title.svg")
+            with open(source_title, "w", encoding="utf-8") as handle:
+                handle.write("<svg />")
+
+            project_path = os.path.join(tmpdir, "example.osp")
+            asset_path = os.path.join(tmpdir, "example_assets")
+            target_title_path = os.path.join(asset_path, "title")
+            os.makedirs(target_title_path, exist_ok=True)
+            existing_title = os.path.join(target_title_path, "title.svg")
+            with open(existing_title, "w", encoding="utf-8") as handle:
+                handle.write("<svg />")
+
+            store._data = {
+                "files": [{"id": "F1", "path": source_title}],
+                "clips": [{"id": "C1", "file_id": "F1", "reader": {"path": source_title}, "effects": []}],
+            }
+
+            default_paths = {
+                "THUMBNAIL_PATH": os.path.join(tmpdir, "thumbs"),
+                "TITLE_PATH": title_root,
+                "BLENDER_PATH": os.path.join(tmpdir, "blender"),
+                "PROTOBUF_DATA_PATH": os.path.join(tmpdir, "protobuf"),
+                "CLIPBOARD_PATH": os.path.join(tmpdir, "clipboard"),
+                "COMFYUI_OUTPUT_PATH": os.path.join(tmpdir, "comfy"),
+                "PROXY_PATH": os.path.join(tmpdir, "optimized"),
+            }
+
+            with ExitStack() as stack:
+                stack.enter_context(patch("classes.project_data.get_assets_path", lambda path, create_paths=True: asset_path))
+                stack.enter_context(patch("classes.project_data.info.THUMBNAIL_PATH", default_paths["THUMBNAIL_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.TITLE_PATH", default_paths["TITLE_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.BLENDER_PATH", default_paths["BLENDER_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.PROTOBUF_DATA_PATH", default_paths["PROTOBUF_DATA_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.CLIPBOARD_PATH", default_paths["CLIPBOARD_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.COMFYUI_OUTPUT_PATH", default_paths["COMFYUI_OUTPUT_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.PROXY_PATH", default_paths["PROXY_PATH"]))
+                stack.enter_context(
+                    patch(
+                        "classes.project_data.info.get_default_path",
+                        side_effect=lambda name: default_paths.get(name),
+                    )
+                )
+                for name, folder in default_paths.items():
+                    if name != "TITLE_PATH":
+                        os.mkdir(folder)
+                ProjectDataStore.move_temp_paths_to_project_folder(store, project_path)
+
+            self.assertFalse(os.path.exists(source_title))
+            self.assertTrue(os.path.exists(existing_title))
+            self.assertEqual(store._data["files"][0]["path"], existing_title)
+            self.assertEqual(store._data["clips"][0]["reader"]["path"], existing_title)
+
+    def test_move_temp_paths_to_project_folder_updates_blender_and_protobuf_paths_together(self):
+        store = make_store()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            blender_root = os.path.join(tmpdir, "runtime-blender")
+            protobuf_root = os.path.join(tmpdir, "runtime-protobuf")
+            thumb_root = os.path.join(tmpdir, "thumbs")
+            title_root = os.path.join(tmpdir, "titles")
+            clipboard_root = os.path.join(tmpdir, "clipboard")
+            comfy_root = os.path.join(tmpdir, "comfy")
+            proxy_root = os.path.join(tmpdir, "optimized")
+            for folder in [blender_root, protobuf_root, thumb_root, title_root, clipboard_root, comfy_root, proxy_root]:
+                os.mkdir(folder)
+
+            blender_job_root = os.path.join(blender_root, "0NHHRJD8L4")
+            os.mkdir(blender_job_root)
+            blender_asset = os.path.join(blender_job_root, "TitleFileName%04d.png")
+            with open(blender_asset, "w", encoding="utf-8") as handle:
+                handle.write("frame-seq")
+
+            protobuf_asset = os.path.join(protobuf_root, "B5ONPQNB8X.data")
+            with open(protobuf_asset, "w", encoding="utf-8") as handle:
+                handle.write("tracker-data")
+
+            project_path = os.path.join(tmpdir, "example.osp")
+            asset_path = os.path.join(tmpdir, "example_assets")
+
+            store._data = {
+                "files": [
+                    {"id": "F1", "path": blender_asset},
+                ],
+                "clips": [
+                    {
+                        "id": "C1",
+                        "file_id": "F1",
+                        "reader": {"path": blender_asset},
+                        "effects": [
+                            {"id": "E1", "protobuf_data_path": protobuf_asset},
+                        ],
+                    },
+                ],
+            }
+
+            default_paths = {
+                "THUMBNAIL_PATH": thumb_root,
+                "TITLE_PATH": title_root,
+                "BLENDER_PATH": blender_root,
+                "PROTOBUF_DATA_PATH": protobuf_root,
+                "CLIPBOARD_PATH": clipboard_root,
+                "COMFYUI_OUTPUT_PATH": comfy_root,
+                "PROXY_PATH": proxy_root,
+            }
+
+            with ExitStack() as stack:
+                stack.enter_context(patch("classes.project_data.get_assets_path", lambda path, create_paths=True: asset_path))
+                stack.enter_context(patch("classes.project_data.info.THUMBNAIL_PATH", default_paths["THUMBNAIL_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.TITLE_PATH", default_paths["TITLE_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.BLENDER_PATH", default_paths["BLENDER_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.PROTOBUF_DATA_PATH", default_paths["PROTOBUF_DATA_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.CLIPBOARD_PATH", default_paths["CLIPBOARD_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.COMFYUI_OUTPUT_PATH", default_paths["COMFYUI_OUTPUT_PATH"]))
+                stack.enter_context(patch("classes.project_data.info.PROXY_PATH", default_paths["PROXY_PATH"]))
+                stack.enter_context(
+                    patch(
+                        "classes.project_data.info.get_default_path",
+                        side_effect=lambda name: default_paths.get(name),
+                    )
+                )
+                ProjectDataStore.move_temp_paths_to_project_folder(store, project_path)
+
+            expected_blender = os.path.join(asset_path, "blender", "0NHHRJD8L4", "TitleFileName%04d.png")
+            expected_protobuf = os.path.join(asset_path, "protobuf_data", "B5ONPQNB8X.data")
+            self.assertEqual(store._data["files"][0]["path"], expected_blender)
+            self.assertEqual(store._data["clips"][0]["reader"]["path"], expected_blender)
+            self.assertEqual(
+                store._data["clips"][0]["effects"][0]["protobuf_data_path"],
+                expected_protobuf,
+            )
+            self.assertTrue(os.path.exists(expected_blender))
+            self.assertTrue(os.path.exists(expected_protobuf))
