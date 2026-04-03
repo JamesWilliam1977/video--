@@ -101,6 +101,8 @@ file menu.
      - Change the current project profile to match the selected file. If the file's profile does not match a known profile, it will give you the option to create a custom profile.
    * - File Properties
      - View the properties of a file, such as frame rate, size, etc...
+   * - Optimize
+     - Create, link, unlink, or delete optimized preview files for the selected video files.
    * - Remove from Project
      - Remove a file from the project
    * - Edit Title
@@ -118,6 +120,49 @@ selected file from :guilabel:`Project Files`. Simply double check a file to open
 - Press :kbd:`Space` to toggle play/pause.
 - Use the mouse scroll wheel to zoom in/out.
 - A :guilabel:`Reset Zoom` button appears when zoom is not 100%, and resets to 100%.
+
+Optimize
+--------
+Optimized preview files are lower-resolution copies of your source video files (sometimes referred to as proxy files),
+used to improve editing responsiveness without changing the original media. They are especially helpful with large
+formats such as 4K, high frame rate, or high bitrate footage.
+
+For video files, the file context menu includes an :guilabel:`Optimize` submenu. This feature creates or links
+smaller preview copies of your source clips, which can improve playback and scrubbing on slower systems or with
+high-resolution footage. Optimizing also pre-loads thumbnails to further improve the editing smoothness when
+zooming into the timeline.
+
+The :guilabel:`Optimize` submenu contains these actions:
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Action
+     - Description
+   * - Optimize Video
+     - Create an optimized preview file for each selected video file. OpenShot stores these files in the project's ``optimized`` assets folder.
+   * - Link to Existing...
+     - Choose a folder containing already-created optimized files and link the best matching files to the selected source clips. This supports common proxy naming styles, known proxy suffixes, file ID suffixes, and extension changes.
+   * - Unlink
+     - Remove the optimized preview link from the selected file without deleting the optimized file from disk.
+   * - Delete & Unlink
+     - Delete the linked optimized file from disk, then remove the link from the selected file.
+
+When optimization is in progress, the submenu changes to a single :guilabel:`Cancel` action for the selected file(s).
+Optimized preview files are used only for editing and preview playback. Your final export still uses the original source files.
+
+When you use :guilabel:`Link to Existing...`, OpenShot tries to match each selected source clip to an existing optimized
+file in a safe order. It first looks for the same base filename with a different video extension, then for common
+proxy-style names such as ``_proxy``, ``_preview``, ``_optimized``, ``_lowres``, resolution tags such as ``_720p``
+or ``_1080p``, and camera/editor-style variants such as ``_p``. It also supports names that add the OpenShot file ID
+after a known proxy suffix, such as ``clip001_proxy_F1.mp4``, and it can still match files named only by file ID,
+such as ``F1.mp4``.
+
+Best practice when bringing your own optimized files is to keep the same base filename as the source clip and add a
+clear proxy-style suffix, for example ``clip001_proxy.mp4`` or ``clip001_proxy.mov``. If you need to avoid filename
+collisions, append the OpenShot file ID after the proxy suffix, for example ``clip001_proxy_F1.mp4``. Avoid unrelated
+suffixes such as ``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe proxy naming patterns.
 
 .. _split_clip_ref:
 
@@ -217,10 +262,12 @@ OpenShot creates and uses a few **temporary working folders** while you edit. Th
 * ``.openshot_qt/title/`` - SVG title files created by the Title dialog
 * ``.openshot_qt/thumbnail/`` - Thumbnails generated for Project Files and Timeline
 * ``.openshot_qt/clipboard/`` - Media created from clipboard pastes (images, audio, or video that must be saved to disk first)
+* ``.openshot_qt/optimized/`` - Optimized preview files created for smoother editing
 * ``.openshot_qt/protobuf_data`` - Tracking and object detection data
 
 When you choose **File→Save As**, OpenShot copies these folders into your project directory, inside a single folder named
-``PROJECTNAME_Assets``. For example: ``MyProject_Assets/clipboard`` will contain any media you pasted from the clipboard.
+``PROJECTNAME_Assets``. For example: ``MyProject_Assets/clipboard`` will contain any media you pasted from the clipboard,
+and ``MyProject_Assets/optimized`` will contain any optimized preview files linked to the project.
 
 As part of this process, all paths inside your ``*.osp`` project file are updated to be **relative** to your project folder.
 

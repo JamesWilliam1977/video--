@@ -37,8 +37,10 @@ import openshot  # Python module for libopenshot (required video editing module 
 
 from classes import info, ui_util, time_parts, qt_types, updates
 from classes.app import get_app
+from classes.clip_utils import is_single_image_media
 from classes.logger import log
 from classes.metrics import *
+from classes.proxy_service import dialog_preview_reader_data
 from windows.preview_thread import PreviewParent
 from windows.video_widget import VideoWidget
 
@@ -241,31 +243,41 @@ class SelectRegion(QDialog):
         self.end_frame = 1
         self.end_image = None
         self.current_frame = 1
+        self.file = file
+        self.reader_data = dialog_preview_reader_data(file) if file else {}
+        self.file_path = str(self.reader_data.get("path") or "")
+        is_single_image = bool(is_single_image_media(self.reader_data) or is_single_image_media(getattr(file, "data", {})))
 
         # Create region clip with Reader
         if clip:
-            self.clip = openshot.Clip(clip.Reader())
+            if self.file_path:
+                self.clip = openshot.Clip(self.file_path)
+                if not is_single_image:
+                    self.clip.SetJson(json.dumps({"reader": self.reader_data}))
+            else:
+                self.clip = openshot.Clip(clip.Reader())
             self.clip.Open()
             # Set region clip start and end
             self.clip.Start(clip.Start())
             self.clip.End(clip.End())
         else:
-            source_path = ""
-            if file:
+            source_path = self.file_path
+            if not source_path and file:
                 if hasattr(file, "absolute_path"):
                     source_path = file.absolute_path()
                 else:
                     source_path = str(getattr(file, "data", {}).get("path", ""))
             self.clip = openshot.Clip(source_path)
+            if self.reader_data and not is_single_image:
+                self.clip.SetJson(json.dumps({"reader": self.reader_data}))
             self.clip.Open()
         self.clip.Id(get_app().project.generate_id())
 
-        # Keep track of file object
-        self.file = file
-        if file and hasattr(file, "absolute_path"):
-            self.file_path = file.absolute_path()
-        else:
-            self.file_path = str(getattr(file, "data", {}).get("path", ""))
+        if not self.file_path:
+            if file and hasattr(file, "absolute_path"):
+                self.file_path = file.absolute_path()
+            else:
+                self.file_path = str(getattr(file, "data", {}).get("path", ""))
 
         c_info = self.clip.Reader().info
         self.fps = c_info.fps.ToInt()
@@ -299,7 +311,8 @@ class SelectRegion(QDialog):
             self.lblInstructions.setText(_("Draw a rectangle to select a region of the video frame."))
 
         # Add Video Widget
-        self.videoPreview = VideoWidget()
+        self.videoPreview = VideoWidget(watch_project=False)
+        self.videoPreview.win = self
         self.videoPreview.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         self.videoPreview.region_selection_mode = self.selection_mode
         self.videoPreview.regionAnnotationChanged.connect(self._on_video_annotation_changed)
@@ -316,7 +329,8 @@ class SelectRegion(QDialog):
         self.viewport_rect = self.videoPreview.centeredViewport(self.width, self.height)
 
         # Create an instance of a libopenshot Timeline object
-        self.r = openshot.Timeline(self.viewport_rect.width(), self.viewport_rect.height(),
+        self.r = openshot.Timeline(max(2, int(self.width or self.viewport_rect.width() or 2)),
+                                   max(2, int(self.height or self.viewport_rect.height() or 2)),
                                    openshot.Fraction(self.fps_num, self.fps_den),
                                    self.sample_rate, self.channels, self.channel_layout)
         self.r.info.channel_layout = self.channel_layout
@@ -355,6 +369,7 @@ class SelectRegion(QDialog):
         self.sliderVideo.setMaximum(self.video_length)
         self.sliderVideo.setSingleStep(1)
         self.sliderVideo.setPageStep(24)
+        self.videoPreview.delayed_resize_timer.timeout.connect(self._apply_dynamic_preview_max_size)
 
         # Display start frame (and then the previous frame)
         QTimer.singleShot(500, functools.partial(self.sliderVideo.setValue, 2))
@@ -394,6 +409,56 @@ class SelectRegion(QDialog):
             event.accept()
             return
         return super(SelectRegion, self).keyPressEvent(event)
+
+    def _target_preview_max_size(self):
+        viewport_rect = self.videoPreview.centeredViewport(self.videoPreview.width(), self.videoPreview.height())
+        device_pixel_ratio = self.devicePixelRatioF()
+        requested = QSize(
+            max(2, int(round(viewport_rect.width() * device_pixel_ratio))),
+            max(2, int(round(viewport_rect.height() * device_pixel_ratio))),
+        )
+
+        source_width = int(getattr(self, "width", 0) or 0)
+        source_height = int(getattr(self, "height", 0) or 0)
+        file_data = getattr(getattr(self, "file", None), "data", {})
+        if is_single_image_media(getattr(self, "reader_data", {})) or is_single_image_media(file_data):
+            project = getattr(get_app(), "project", None)
+            if project:
+                source_width = max(source_width, int(project.get("width") or 0))
+                source_height = max(source_height, int(project.get("height") or 0))
+        if source_width > 0 and source_height > 0:
+            source_size = QSize(source_width, source_height)
+            if requested.width() > source_width or requested.height() > source_height:
+                capped = QSize(source_size)
+            else:
+                capped = QSize(requested)
+        else:
+            capped = requested
+
+        if capped.height() > 0:
+            ratio = float(capped.width()) / float(capped.height())
+            even_width = max(2, int(round(capped.width() / 2.0) * 2))
+            even_height = max(2, int(round(round(even_width / ratio) / 2.0) * 2))
+            capped = QSize(even_width, even_height)
+
+        return capped
+
+    def _apply_dynamic_preview_max_size(self):
+        if not getattr(self, "initialized", False) or not getattr(self, "r", None):
+            return
+
+        new_size = self._target_preview_max_size()
+        previous_width = int(getattr(self.r, "preview_width", 0) or 0)
+        previous_height = int(getattr(self.r, "preview_height", 0) or 0)
+
+        if previous_width == new_size.width() and previous_height == new_size.height():
+            return
+
+        self.PauseSignal.emit()
+        self.r.SetMaxSize(new_size.width(), new_size.height())
+        self.r.ClearAllCache(True)
+        self.viewport_rect = self.videoPreview.centeredViewport(self.width, self.height)
+        self.refreshFrameSignal.emit()
 
     def _icon_path(self, name):
         icon_name = str(name or "").strip()

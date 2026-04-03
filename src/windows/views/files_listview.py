@@ -39,8 +39,9 @@ from classes.logger import log
 from classes.query import File
 from classes.qt_types import font_metrics_horizontal_advance
 from .ai_tools_menu import add_ai_tools_menu
-from .files_thumbnail_overlay import paint_media_overlay
+from .files_thumbnail_overlay import paint_media_overlay, paint_proxy_badge
 from .menu import StyledContextMenu
+from .optimized_preview_menu import add_optimized_preview_menu
 
 
 def _is_generation_placeholder(file_id):
@@ -84,34 +85,47 @@ class FilesListProgressDelegate(QStyledItemDelegate):
 
         file_id = source_index.sibling(source_index.row(), 5).data(Qt.DisplayRole)
         queue = getattr(self.view.win, "generation_queue", None)
-        if not file_id or not queue:
-            return
-        badge = queue.get_file_badge(file_id)
-        if not badge and _is_generation_placeholder(file_id):
-            job = queue.get_job(_job_id_from_placeholder(file_id))
-            if job and job.get("status") in ("queued", "running", "canceling"):
-                label = "Queued" if job.get("status") == "queued" else "Generating"
-                badge = {
-                    "status": job.get("status"),
-                    "progress": int(job.get("progress", 0)),
-                    "label": label,
-                    "job_id": job.get("id"),
-                }
+        generation_badge = None
+        if file_id and queue:
+            generation_badge = queue.get_file_badge(file_id)
+            if not generation_badge and _is_generation_placeholder(file_id):
+                job = queue.get_job(_job_id_from_placeholder(file_id))
+                if job and job.get("status") in ("queued", "running", "canceling"):
+                    label = "Queued" if job.get("status") == "queued" else "Generating"
+                    generation_badge = {
+                        "status": job.get("status"),
+                        "progress": int(job.get("progress", 0)),
+                        "label": label,
+                        "job_id": job.get("id"),
+                    }
+
+        proxy_badge = None
+        proxy_service = getattr(self.view.win, "proxy_service", None)
+        if file_id and proxy_service and not _is_generation_placeholder(file_id):
+            proxy_badge = proxy_service.get_file_badge(file_id)
+            file_obj = File.get(id=file_id)
+            if file_obj:
+                paint_proxy_badge(painter, deco_rect, proxy_service.get_proxy_state(file_obj))
+
+        self._paint_progress_bar(painter, deco_rect, generation_badge, QColor("#53A0ED"), 0)
+        self._paint_progress_bar(painter, deco_rect, proxy_badge, QColor("#3AA1FF"), 1)
+
+    def _paint_progress_bar(self, painter, deco_rect, badge, fill_color, stack_index):
         if not badge:
             return
 
         progress = int(badge.get("progress", 0))
         status = str(badge.get("status", "")).strip().lower()
         if status in ("queued", "running", "canceling"):
-            # Keep active jobs visible even before numeric progress starts.
             progress = max(progress, 2)
         if progress <= 0:
             return
 
         bar_height = 3
         bar_margin = 2
+        bottom_offset = (bar_height + 1) * int(stack_index)
         full_rect = deco_rect.adjusted(1, 0, -1, 0)
-        full_rect.setTop(deco_rect.bottom() - bar_height - bar_margin + 1)
+        full_rect.setTop(deco_rect.bottom() - bar_height - bar_margin - bottom_offset + 1)
         full_rect.setHeight(bar_height)
         if full_rect.width() <= 2:
             return
@@ -123,7 +137,7 @@ class FilesListProgressDelegate(QStyledItemDelegate):
         painter.setPen(Qt.NoPen)
         painter.setBrush(QColor("#283241"))
         painter.drawRect(full_rect)
-        painter.setBrush(QColor("#53A0ED"))
+        painter.setBrush(fill_color)
         painter.drawRect(fill_rect)
         if status == "queued":
             label = "Queued"
@@ -228,6 +242,7 @@ class FilesListView(QListView):
                 menu.addSeparator()
 
             menu.addAction(self.win.actionPreview_File)
+            add_optimized_preview_menu(self.win, menu)
             menu.addSeparator()
             menu.addAction(self.win.actionSplitFile)
             menu.addAction(self.win.actionExportFiles)

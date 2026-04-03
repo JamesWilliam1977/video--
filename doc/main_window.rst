@@ -150,6 +150,7 @@ Learning a few of these shortcuts can save you a bunch of time!
    Choose Profile                        :kbd:`Ctrl+Alt+P`
    Clear All Cache                       :kbd:`Ctrl+Shift+ESC`
    Clear History                         :kbd:`Ctrl+Shift+H`
+   Delete Optimized Videos               :kbd:`Ctrl+Shift+O`
    Clear Waveform Display Data           :kbd:`Ctrl+Shift+W`
    Copy                                  :kbd:`Ctrl+C`
    Cut                                   :kbd:`Ctrl+X`

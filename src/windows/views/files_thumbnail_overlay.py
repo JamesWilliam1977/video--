@@ -13,6 +13,8 @@ from classes import info
 
 
 _VIDEO_OVERLAY_ICON = "tool-media-play.svg"
+_OPTIMIZE_PREVIEW_READY_ICON = "tool-optimize-preview.svg"
+_OPTIMIZE_PREVIEW_MISSING_ICON = "tool-optimize-preview-missing.svg"
 
 
 def _overlay_icon_path(media_type):
@@ -44,4 +46,35 @@ def paint_media_overlay(painter, deco_rect, media_type):
     renderer = QSvgRenderer(icon_path)
     renderer.render(painter, glyph_rect)
 
+    painter.restore()
+
+
+def paint_proxy_badge(painter, deco_rect, proxy_state):
+    """Paint a bottom-right lightning badge for proxy-ready/missing files."""
+    proxy_state = str(proxy_state or "").strip().lower()
+    if proxy_state not in ("ready", "missing"):
+        return
+    if not deco_rect or not deco_rect.isValid():
+        return
+
+    icon_name = _OPTIMIZE_PREVIEW_MISSING_ICON if proxy_state == "missing" else _OPTIMIZE_PREVIEW_READY_ICON
+    icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", icon_name)
+    if not os.path.exists(icon_path):
+        return
+
+    badge_size = max(14.0, min(deco_rect.width(), deco_rect.height()) * 0.24)
+    margin_x = 1.5
+    margin_y = 4.0
+    glyph_rect = QRectF(
+        deco_rect.right() - badge_size - margin_x,
+        deco_rect.bottom() - badge_size - margin_y,
+        badge_size,
+        badge_size,
+    )
+
+    painter.save()
+    painter.setRenderHint(QPainter.Antialiasing, True)
+    painter.setOpacity(0.95)
+    renderer = QSvgRenderer(icon_path)
+    renderer.render(painter, glyph_rect)
     painter.restore()

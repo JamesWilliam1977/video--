@@ -52,6 +52,38 @@ class AddToTimeline(QDialog):
 
     ui_path = os.path.join(info.PATH, 'windows', 'ui', 'add-to-timeline.ui')
 
+    def _select_added_items(self, win, added_clip_ids):
+        """Select only the newly added clips, matching timeline drag/drop behavior."""
+        if not win or not added_clip_ids:
+            return
+
+        timeline_view = getattr(win, "timeline", None)
+        for idx, clip_id in enumerate(added_clip_ids):
+            if not clip_id:
+                continue
+            if timeline_view and hasattr(timeline_view, "AddSelectionJS"):
+                timeline_view.AddSelectionJS(str(clip_id), "clip", idx == 0)
+            else:
+                win.addSelection(str(clip_id), "clip", clear_existing=(idx == 0))
+
+        files_model = getattr(win, "files_model", None)
+        if files_model:
+            selection_model = getattr(files_model, "selection_model", None)
+            if selection_model:
+                selection_model.clearSelection()
+            list_selection_model = getattr(files_model, "list_selection_model", None)
+            if list_selection_model:
+                list_selection_model.clearSelection()
+
+        if timeline_view and hasattr(timeline_view, "setFocus"):
+            timeline_view.setFocus()
+        if timeline_view and hasattr(timeline_view, "geometry"):
+            timeline_geometry = getattr(timeline_view, "geometry", None)
+            if hasattr(timeline_geometry, "mark_dirty"):
+                timeline_geometry.mark_dirty()
+        if timeline_view and hasattr(timeline_view, "update"):
+            timeline_view.update()
+
     def btnMoveUpClicked(self, checked):
         """Callback for move up button click"""
         log.info("btnMoveUpClicked")
@@ -404,16 +436,8 @@ class AddToTimeline(QDialog):
             except Exception:
                 log.warning("Failed to extend timeline after Add to Timeline", exc_info=1)
 
-        # Auto-select newly added clips
-        for idx, clip_id in enumerate(added_clip_ids):
-            if clip_id:
-                win.addSelection(str(clip_id), "clip", clear_existing=(idx == 0))
-        if added_clip_ids:
-            timeline_geometry = getattr(win.timeline, "geometry", None)
-            if hasattr(timeline_geometry, "mark_dirty"):
-                timeline_geometry.mark_dirty()
-            if hasattr(win.timeline, "update"):
-                win.timeline.update()
+        # Auto-select newly added clips, like timeline drag/drop does.
+        self._select_added_items(win, added_clip_ids)
 
         # Accept dialog
         super(AddToTimeline, self).accept()

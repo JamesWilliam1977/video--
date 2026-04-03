@@ -37,6 +37,12 @@ def get_assets_path(file_path=None, create_paths=True):
     if not file_path:
         return info.USER_PATH
 
+    file_abs = os.path.abspath(str(file_path))
+    backup_abs = os.path.abspath(info.BACKUP_FILE)
+    recovery_abs = os.path.abspath(info.RECOVERY_PATH) + os.sep
+    if file_abs == backup_abs or file_abs.startswith(recovery_abs):
+        return info.USER_PATH
+
     try:
         # Generate asset folder name filename + "_assets"
         file_path = file_path
@@ -95,6 +101,12 @@ def get_assets_path(file_path=None, create_paths=True):
             if not os.path.exists(asset_comfy_output_folder):
                 os.mkdir(asset_comfy_output_folder)
                 log.info("New ComfyUI output folder: {}".format(asset_comfy_output_folder))
+
+            # Create asset optimized-preview folder
+            asset_proxy_folder = os.path.join(asset_path, "optimized")
+            if not os.path.exists(asset_proxy_folder):
+                os.mkdir(asset_proxy_folder)
+                log.info("New optimized folder: {}".format(asset_proxy_folder))
 
         return asset_path
 

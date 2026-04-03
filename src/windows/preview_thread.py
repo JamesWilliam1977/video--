@@ -486,9 +486,8 @@ class PlayerWorker(QObject):
         if self.parent.initialized:
             pending = self._take_pending_seek()
             if pending is not None:
-                seek_frame, _start_preroll = pending
-                # Always commit pending preview seek before entering playback.
-                self._apply_seek(seek_frame, True)
+                seek_frame, start_preroll = pending
+                self._apply_seek(seek_frame, start_preroll)
             self.player.Play()
 
     def Pause(self):

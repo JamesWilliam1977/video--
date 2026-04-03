@@ -205,6 +205,55 @@ class MainWindowTests(unittest.TestCase):
             self.assertEqual(saved.calls, [(project_path,)])
             self.assertEqual(failed.calls, [])
 
+    def test_optimized_preview_actions_use_cached_menu_targets_when_selection_is_empty(self):
+        proxy_calls = []
+        file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "media_type": "video"})
+        fake_window = types.SimpleNamespace(
+            selected_files=lambda: [],
+            _optimized_preview_target_file_ids=["F1"],
+            proxy_service=types.SimpleNamespace(
+                remove_for_files=lambda files: proxy_calls.append(("remove", [getattr(f, "id", None) for f in files])),
+                create_for_files=lambda files: proxy_calls.append(("create", [getattr(f, "id", None) for f in files])),
+                use_existing_for_files=lambda files: proxy_calls.append(("locate", [getattr(f, "id", None) for f in files])),
+                cancel_for_files=lambda files: proxy_calls.append(("cancel", [getattr(f, "id", None) for f in files])),
+                delete_and_unlink_for_files=lambda files: proxy_calls.append(("delete", [getattr(f, "id", None) for f in files])),
+            ),
+        )
+        fake_window._optimized_preview_files_for_action = lambda: self.main_window_module.MainWindow._optimized_preview_files_for_action(fake_window)
+
+        with patch.object(self.main_window_module.File, "get", return_value=file_obj):
+            files = self.main_window_module.MainWindow._optimized_preview_files_for_action(fake_window)
+            self.assertEqual([f.id for f in files], ["F1"])
+
+            self.main_window_module.MainWindow.actionOptimizedPreviewRemove_trigger(fake_window)
+            self.main_window_module.MainWindow.actionOptimizedPreviewCreate_trigger(fake_window)
+            self.main_window_module.MainWindow.actionOptimizedPreviewDeleteAndUnlink_trigger(fake_window)
+
+        self.assertEqual(proxy_calls, [("remove", ["F1"]), ("create", ["F1"]), ("delete", ["F1"])])
+
+    def test_optimized_preview_cancel_targets_current_file_only(self):
+        proxy_calls = []
+        file_obj = types.SimpleNamespace(id="F1", data={"id": "F1", "media_type": "video"})
+        fake_window = types.SimpleNamespace(
+            current_file_id=lambda: "F1",
+            selected_files=lambda: [
+                types.SimpleNamespace(id="F1", data={"id": "F1", "media_type": "video"}),
+                types.SimpleNamespace(id="F2", data={"id": "F2", "media_type": "video"}),
+                types.SimpleNamespace(id="F3", data={"id": "F3", "media_type": "video"}),
+            ],
+            _optimized_preview_target_file_ids=["F1", "F2", "F3"],
+            proxy_service=types.SimpleNamespace(
+                cancel_for_files=lambda files: proxy_calls.append(("cancel", [getattr(f, "id", None) for f in files])),
+            ),
+        )
+        fake_window._optimized_preview_files_for_action = lambda: self.main_window_module.MainWindow._optimized_preview_files_for_action(fake_window)
+        fake_window._optimized_preview_file_for_cancel_action = lambda: self.main_window_module.MainWindow._optimized_preview_file_for_cancel_action(fake_window)
+
+        with patch.object(self.main_window_module.File, "get", return_value=file_obj):
+            self.main_window_module.MainWindow.actionOptimizedPreviewCancel_trigger(fake_window)
+
+        self.assertEqual(proxy_calls, [("cancel", ["F1"])])
+
     def test_open_project_missing_file_removes_recent_project_and_seeks_start(self):
         status_messages = []
         removed = []
@@ -378,6 +427,69 @@ class MainWindowTests(unittest.TestCase):
         self.assertIn("destroy_lock", calls)
         self.assertEqual(tracker, [False])
         self.assertTrue(fake_window.shutting_down)
+
+    def test_clear_optimized_files_cancel_does_nothing(self):
+        proxy_calls = []
+        fake_window = types.SimpleNamespace(
+            proxy_service=types.SimpleNamespace(
+                delete_internal_project_proxy_files=lambda: proxy_calls.append("delete"),
+            ),
+        )
+
+        with patch.object(
+            self.main_window_module.QMessageBox,
+            "question",
+            return_value=self.main_window_module.QMessageBox.No,
+        ):
+            self.main_window_module.MainWindow.actionClearOptimizedFiles_trigger(fake_window)
+
+        self.assertEqual(proxy_calls, [])
+
+    def test_clear_optimized_files_yes_deletes_project_optimized_files(self):
+        proxy_calls = []
+        fake_window = types.SimpleNamespace(
+            proxy_service=types.SimpleNamespace(
+                delete_internal_project_proxy_files=lambda: proxy_calls.append("delete"),
+            ),
+        )
+
+        with patch.object(
+            self.main_window_module.QMessageBox,
+            "question",
+            return_value=self.main_window_module.QMessageBox.Yes,
+        ):
+            self.main_window_module.MainWindow.actionClearOptimizedFiles_trigger(fake_window)
+
+        self.assertEqual(proxy_calls, ["delete"])
+
+    def test_refresh_clear_menu_action_states_enables_action_only_when_internal_optimized_files_exist(self):
+        enabled_calls = []
+        fake_window = types.SimpleNamespace(
+            proxy_service=types.SimpleNamespace(
+                has_internal_project_proxy_files=lambda: True,
+            ),
+            actionClearOptimizedFiles=types.SimpleNamespace(
+                setEnabled=lambda value: enabled_calls.append(value),
+            ),
+        )
+
+        self.main_window_module.MainWindow._refresh_clear_menu_action_states(fake_window)
+
+        self.assertEqual(enabled_calls, [True])
+
+        enabled_calls = []
+        fake_window = types.SimpleNamespace(
+            proxy_service=types.SimpleNamespace(
+                has_internal_project_proxy_files=lambda: False,
+            ),
+            actionClearOptimizedFiles=types.SimpleNamespace(
+                setEnabled=lambda value: enabled_calls.append(value),
+            ),
+        )
+
+        self.main_window_module.MainWindow._refresh_clear_menu_action_states(fake_window)
+
+        self.assertEqual(enabled_calls, [False])
 
     def test_close_event_no_skips_save_but_shuts_down(self):
         calls = []

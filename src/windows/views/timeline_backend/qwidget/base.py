@@ -216,6 +216,7 @@ class TimelineWidgetBase(QWidget):
         self._ctrl_zoom_anchor_y = None
         self._ctrl_zoom_step_pixels = 40.0
         self._ctrl_zooming = False
+        self._zoom_playhead_anchor = None
 
         # Internal flag to defer repaint scheduling from changed()
         self._suspend_changed_update = 0
@@ -803,9 +804,9 @@ class TimelineWidgetBase(QWidget):
         if getattr(win, "_trim_refresh_pending", False):
             # Keep thumbnail/fallback caches during trim commit to avoid a blank flicker
             # while new thumbnails are still being generated.
-            self.clip_painter.clip_cache.clear()
+            self.clip_painter.clear_render_cache(drop_preview=False)
         else:
-            self.clip_painter.clear_cache()
+            self.clip_painter.clear_render_cache()
         self.transition_painter.clear_cache()
         self.geometry.mark_dirty()
 
@@ -1458,8 +1459,7 @@ class TimelineWidgetBase(QWidget):
         if pixels_per_second <= 0.0:
             return seconds
 
-        h_offset, _ = self._viewport_offsets()
-        left_px = self.track_name_width + seconds * pixels_per_second - h_offset
+        left_px = self.track_name_width + seconds * pixels_per_second
         width_px = max(0.0, duration) * pixels_per_second
 
         original_bbox = getattr(self, "drag_bbox", QRectF())
@@ -1875,7 +1875,7 @@ class TimelineWidgetBase(QWidget):
             delta = event.pixelDelta().y() if not event.pixelDelta().isNull() else event.angleDelta().y()
             if delta:
                 steps = delta / 120.0
-                self.is_auto_center = True
+                self._capture_playhead_zoom_anchor()
                 if self._apply_zoom_steps(steps, emit=False):
                     self._pending_zoom_emit = self.zoom_factor
                     self._zoom_emit_timer.start()
@@ -1927,7 +1927,7 @@ class TimelineWidgetBase(QWidget):
         self._ctrl_zoom_anchor_y = pos_y
         if abs(delta_pixels) > 1e-6:
             steps = delta_pixels / float(self._ctrl_zoom_step_pixels or 1.0)
-            self.is_auto_center = True
+            self._capture_playhead_zoom_anchor()
             if self._apply_zoom_steps(steps, emit=False):
                 self._pending_zoom_emit = self.zoom_factor
                 self._zoom_emit_timer.start()
@@ -2057,6 +2057,23 @@ class TimelineWidgetBase(QWidget):
     def _clamp_zoom_factor(self, zoom_factor):
         return max(0.05, min(zoom_factor, 200.0))
 
+    def _capture_playhead_zoom_anchor(self):
+        """Preserve the playhead's current viewport X ratio for the next zoom."""
+        project_duration = float(self._current_project_duration() or 0.0)
+        width_norm = float(self.scrollbar_position[1] - self.scrollbar_position[0])
+        if project_duration <= 0.0 or width_norm <= 0.0:
+            self._zoom_playhead_anchor = None
+            return
+
+        anchor_seconds = 0.0
+        if self.fps_float:
+            anchor_seconds = max(0.0, (self.current_frame - 1) / self.fps_float)
+
+        anchor_norm = anchor_seconds / project_duration
+        left_norm = float(self.scrollbar_position[0] or 0.0)
+        ratio = (anchor_norm - left_norm) / width_norm
+        self._zoom_playhead_anchor = (anchor_seconds, ratio)
+
     def _apply_zoom_steps(self, steps, emit):
         """Apply a relative zoom change expressed as wheel steps."""
         if not steps:
@@ -2097,6 +2114,8 @@ class TimelineWidgetBase(QWidget):
 
         span = self._external_zoom_span
         self._external_zoom_span = None
+        playhead_anchor = getattr(self, "_zoom_playhead_anchor", None)
+        self._zoom_playhead_anchor = None
 
         if span and project_duration > 0.0:
             width_norm = max(0.0, min(span[1] - span[0], 1.0))
@@ -2110,7 +2129,16 @@ class TimelineWidgetBase(QWidget):
                 view_w=view_w,
             )
         else:
-            if self.is_auto_center:
+            if playhead_anchor and project_duration > 0.0:
+                anchor_seconds, anchor_ratio = playhead_anchor
+                anchor_norm = max(0.0, min(anchor_seconds / project_duration, 1.0))
+                left_norm = anchor_norm - (float(anchor_ratio) * width_norm)
+                left_norm = max(0.0, min(left_norm, 1.0 - width_norm))
+                right_norm = left_norm + width_norm
+                self.scrollbar_position[0] = left_norm
+                self.scrollbar_position[1] = right_norm
+                self.h_scroll_offset = left_norm * timeline_w
+            elif self.is_auto_center:
                 anchor_seconds = 0.0
                 if self.fps_float:
                     anchor_seconds = max(0.0, (self.current_frame - 1) / self.fps_float)
@@ -2280,7 +2308,7 @@ class TimelineWidgetBase(QWidget):
             timeline.addSelection(item_id_str, item_type, clear_existing)
         self.win.addSelection(item_id_str, item_type, clear_existing)
         # Selection changes affect cached clip renders and keyframe visibility.
-        self.clip_painter.clear_cache()
+        self.clip_painter.clear_render_cache()
         self.geometry.mark_dirty()
         self._keyframes_dirty = True
         self.update()
@@ -2293,7 +2321,7 @@ class TimelineWidgetBase(QWidget):
         if not item_id_str:
             return
         self.win.removeSelection(item_id_str, item_type)
-        self.clip_painter.clear_cache()
+        self.clip_painter.clear_render_cache()
         self.geometry.mark_dirty()
         self._keyframes_dirty = True
         self.update()
@@ -2347,7 +2375,7 @@ class TimelineWidgetBase(QWidget):
         self._active_keyframe_marker = None
         if hasattr(self, "_clear_panel_selection"):
             self._clear_panel_selection(None)
-        self.clip_painter.clear_cache()
+        self.clip_painter.clear_render_cache()
         self.geometry.mark_dirty()
         self._keyframes_dirty = True
         self.update()
