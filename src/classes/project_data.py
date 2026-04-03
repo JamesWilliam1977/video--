@@ -98,7 +98,6 @@ class ProjectDataStore(JsonDataStore, UpdateInterface):
             log.info("Migrated optimized assets folder to %s", optimized_path)
 
         legacy_prefix = os.path.abspath(legacy_proxy_path) + os.sep
-        optimized_prefix = os.path.abspath(optimized_path) + os.sep
         updated = 0
         for file_data in self._data.get("files", []):
             if not isinstance(file_data, dict):

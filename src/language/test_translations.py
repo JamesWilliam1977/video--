@@ -28,11 +28,12 @@
 
 import argparse
 import ast
+import shutil
 import os
 import re
 import fnmatch
-import subprocess
 import sys
+from subprocess import run
 from PyQt5.QtCore import QTranslator, QCoreApplication  # type: ignore
 from collections import Counter
 from typing import Any, Dict, List, Optional, Tuple
@@ -410,9 +411,23 @@ def validate_doc_entry(path: str, entry: POEntry) -> List[str]:
 def process_doc_po(path: str) -> int:
     """Run syntax and token-preservation checks on a doc PO file."""
     errors: List[str] = []
+    msgfmt_path = shutil.which('msgfmt')
+    trusted_path = os.path.abspath(path)
+    trusted_roots = (os.path.abspath(LANG_PATH), os.path.abspath(DOC_LOCALE_PATH))
 
-    msgfmt = subprocess.run(
-        ['msgfmt', '--check', '--check-format', '--output-file=/dev/null', path],
+    if not msgfmt_path:
+        errors.append(f"{path}: msgfmt executable not found")
+        return len(errors)
+
+    if not any(
+        os.path.commonpath([trusted_path, root]) == root
+        for root in trusted_roots
+    ):
+        errors.append(f"{path}: path is outside trusted locale roots")
+        return len(errors)
+
+    msgfmt = run(
+        [msgfmt_path, '--check', '--check-format', '--output-file=/dev/null', trusted_path],
         capture_output=True,
         text=True,
         check=False,

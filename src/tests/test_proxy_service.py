@@ -25,7 +25,6 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-import copy
 import json
 import os
 import sys
@@ -359,7 +358,7 @@ class ProxyServiceTests(unittest.TestCase):
                      "has_audio": False,
                  }
              ),
-             GetFrame=lambda frame: "frame-{}".format(frame),
+             GetFrame="frame-{}".format,
              GetCache=lambda: reader_cache,
          )
          clip_obj = types.SimpleNamespace(
@@ -412,8 +411,8 @@ class ProxyServiceTests(unittest.TestCase):
               patch("classes.proxy_service.openshot.FFmpegWriter", return_value=writer_obj), \
               patch("classes.proxy_service.openshot.Fraction", side_effect=lambda num, den: (num, den)), \
               patch("classes.proxy_service.GenerateThumbnailFromFrame", side_effect=lambda frame, path, width, height, mask, overlay, rotate=0.0: thumbnail_calls.append((frame, path, width, height, rotate))), \
-              patch.object(self.service, "_proxy_root", return_value="/tmp/proxies"), \
-              patch.object(self.service, "_reader_json_for_path", return_value={"id": "F1", "path": "/tmp/proxies/source_proxy.mp4"}):
+              patch.object(self.service, "_proxy_root", return_value="/project/optimized"), \
+              patch.object(self.service, "_reader_json_for_path", return_value={"id": "F1", "path": "/project/optimized/source_proxy.mp4"}):
              result = self.service._build_proxy_reader("F1", {"path": "/media/source.mp4", "media_type": "video"})
 
          self.assertTrue(clip_obj.opened)
@@ -431,7 +430,7 @@ class ProxyServiceTests(unittest.TestCase):
          self.assertEqual(reader_cache.max_bytes, [self.service.OPTIMIZE_CACHE_MAX_BYTES])
          self.assertGreaterEqual(clip_cache.clears, 2)
          self.assertGreaterEqual(reader_cache.clears, 2)
-         self.assertEqual(result["path"], "/tmp/proxies/source_proxy.mp4")
+         self.assertEqual(result["path"], "/project/optimized/source_proxy.mp4")
 
      def test_thumbnail_prewarm_frames_uses_coarse_4fps_grid(self):
          with patch.object(self.service, "_thumbnail_prewarm_rate", return_value=4):
@@ -470,7 +469,7 @@ class ProxyServiceTests(unittest.TestCase):
          submitted = []
 
          with patch.object(self.service, "has_missing_proxy", return_value=False), \
-              patch.object(self.service, "_proxy_root", return_value="/tmp/optimized"), \
+              patch.object(self.service, "_proxy_root", return_value="/project/optimized"), \
               patch("classes.proxy_service.os.makedirs"), \
               patch.object(self.service._executor, "submit", side_effect=lambda *args: submitted.append(args) or Mock(add_done_callback=lambda callback: None)):
              self.service.create_for_files([ready_file, new_file])
@@ -487,13 +486,13 @@ class ProxyServiceTests(unittest.TestCase):
          submitted = []
 
          with patch.object(self.service, "has_missing_proxy", return_value=False), \
-              patch.object(self.service, "_existing_proxy_output_path", return_value="/tmp/optimized/source_proxy.mp4"), \
-              patch.object(self.service, "_reader_json_for_path", return_value={"id": "F1", "path": "/tmp/optimized/source_proxy.mp4"}), \
+              patch.object(self.service, "_existing_proxy_output_path", return_value="/project/optimized/source_proxy.mp4"), \
+              patch.object(self.service, "_reader_json_for_path", return_value={"id": "F1", "path": "/project/optimized/source_proxy.mp4"}), \
               patch.object(self.service, "_save_proxy_reader", return_value=None) as save_proxy_reader, \
               patch.object(self.service._executor, "submit", side_effect=lambda *args: submitted.append(args)):
              self.service.create_for_files([file_obj])
 
-         save_proxy_reader.assert_called_once_with("F1", {"id": "F1", "path": "/tmp/optimized/source_proxy.mp4"})
+         save_proxy_reader.assert_called_once_with("F1", {"id": "F1", "path": "/project/optimized/source_proxy.mp4"})
          self.assertEqual(submitted, [])
          self.assertEqual(self.win.status_messages[-1][0], "Optimize Preview: linked 1 item(s)")
 
@@ -505,14 +504,14 @@ class ProxyServiceTests(unittest.TestCase):
          submitted = []
 
          with patch.object(self.service, "has_missing_proxy", return_value=False), \
-              patch.object(self.service, "_existing_proxy_output_path", return_value="/tmp/optimized/source_proxy.mp4"), \
+              patch.object(self.service, "_existing_proxy_output_path", return_value="/project/optimized/source_proxy.mp4"), \
               patch.object(self.service, "_reader_json_for_path", side_effect=RuntimeError("invalid proxy")), \
               patch("classes.proxy_service.os.remove") as remove_file, \
-              patch.object(self.service, "_reserve_proxy_output_path", return_value="/tmp/optimized/source_proxy.mp4"), \
+              patch.object(self.service, "_reserve_proxy_output_path", return_value="/project/optimized/source_proxy.mp4"), \
               patch.object(self.service._executor, "submit", side_effect=lambda *args: submitted.append(args) or Mock(add_done_callback=lambda callback: None)):
              self.service.create_for_files([file_obj])
 
-         remove_file.assert_called_once_with("/tmp/optimized/source_proxy.mp4")
+         remove_file.assert_called_once_with("/project/optimized/source_proxy.mp4")
          self.assertEqual(len(submitted), 1)
          self.assertEqual(submitted[0][1], "F1")
 
@@ -526,7 +525,7 @@ class ProxyServiceTests(unittest.TestCase):
      def test_get_proxy_state_returns_ready_and_missing(self):
          file_obj = types.SimpleNamespace(
              id="F1",
-             data={"id": "F1", "proxy_reader": {"path": "/tmp/proxies/F1.mp4"}},
+             data={"id": "F1", "proxy_reader": {"path": "/project/optimized/F1.mp4"}},
          )
 
          with patch("classes.proxy_service.os.path.exists", return_value=True):
@@ -537,7 +536,7 @@ class ProxyServiceTests(unittest.TestCase):
 
          missing_marked = types.SimpleNamespace(
              id="F2",
-             data={"id": "F2", "proxy_reader": {"path": "/tmp/proxies/F2.mp4", "missing": True}},
+             data={"id": "F2", "proxy_reader": {"path": "/project/optimized/F2.mp4", "missing": True}},
          )
 
          with patch("classes.proxy_service.os.path.exists", return_value=True):
@@ -735,12 +734,12 @@ class ProxyServiceTests(unittest.TestCase):
          )
          delete_calls = []
          removed_paths = []
-         self.app.updates = types.SimpleNamespace(delete=lambda key: delete_calls.append(key), transaction_id=None)
+         self.app.updates = types.SimpleNamespace(delete=delete_calls.append, transaction_id=None)
 
          with patch("classes.proxy_service.File.get", side_effect=[fresh_one, refreshed_one, fresh_two, refreshed_two]), \
               patch("classes.proxy_service.absolute_media_path", side_effect=lambda path: path), \
               patch("classes.proxy_service.os.path.exists", return_value=True), \
-              patch("classes.proxy_service.os.remove", side_effect=lambda path: removed_paths.append(path)), \
+              patch("classes.proxy_service.os.remove", side_effect=removed_paths.append), \
               patch.object(self.service, "apply_runtime_updates_for_files", return_value=True), \
               patch.object(self.service, "_emit_job_change", return_value=None):
              deleted = self.service.delete_and_unlink_for_files([file_one, file_two])
@@ -769,7 +768,7 @@ class ProxyServiceTests(unittest.TestCase):
              data={"id": "F1", "proxy_reader": {"path": "/optimized/F1.mp4"}},
          )
          delete_calls = []
-         self.app.updates = types.SimpleNamespace(delete=lambda key: delete_calls.append(key), transaction_id=None)
+         self.app.updates = types.SimpleNamespace(delete=delete_calls.append, transaction_id=None)
 
          with patch("classes.proxy_service.File.get", side_effect=[fresh_file, refreshed_file]), \
               patch.object(self.service, "apply_runtime_updates_for_files", return_value=True), \

@@ -778,7 +778,7 @@ class FilesModel(QObject, updates.UpdateInterface):
         finally:
             self._syncing_selection = False
 
-    def __init__(self, generation_queue=None, proxy_service=None, *args):
+    def __init__(self, *args, generation_queue=None, proxy_service=None):
         self.generation_queue = generation_queue
         self.proxy_service = proxy_service
 
@@ -1047,7 +1047,7 @@ class FilesModel(QObject, updates.UpdateInterface):
         row = id_index.row()
         file_obj = File.get(id=file_id)
         if file_obj:
-            path, filename = os.path.split(file_obj.data["path"])
+            _, filename = os.path.split(file_obj.data["path"])
             name = file_obj.data.get("name", filename)
             self.model.item(row, 0).setToolTip(self._tooltip_for_file(file_obj, name))
         left = self.model.index(row, 0)

@@ -1895,7 +1895,7 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertTrue(helper.transition_entries[0].selected)
 
     def test_qwidget_ctrl_mouse_zoom_starts_on_ctrl_middle_press(self):
-        helper, event_cls, _wheel_event_cls = self.make_qwidget_ctrl_zoom_helper()
+        helper, _event_cls, _wheel_event_cls = self.make_qwidget_ctrl_zoom_helper()
         pos = QPointF(20.0, 120.0)
 
         started = self.qwidget_base_module.TimelineWidgetBase._start_ctrl_mouse_zoom(helper, pos)
@@ -2559,7 +2559,7 @@ class TimelineHelperTests(unittest.TestCase):
             id="F1",
             data={
                 "id": "F1",
-                "path": "/tmp/example.wav",
+                "path": "/project/example.wav",
                 "has_audio": True,
                 "ui": {"audio_data": [1.0, 1.0, 1.0, 1.0, 1.0]},
             },
@@ -3190,10 +3190,11 @@ class TimelineHelperTests(unittest.TestCase):
 
     def test_existing_thumb_path_reuses_rounded_cached_thumbnail(self):
         painter = self.make_clip_painter()
-        rounded_path = os.path.join("/tmp/thumbs", "F1", "19.png")
+        thumbnail_root = "/project_assets/thumbs"
+        rounded_path = os.path.join(thumbnail_root, "F1", "19.png")
 
         with ExitStack() as stack:
-            stack.enter_context(patch.object(info, "THUMBNAIL_PATH", "/tmp/thumbs"))
+            stack.enter_context(patch.object(info, "THUMBNAIL_PATH", thumbnail_root))
             stack.enter_context(
                 patch.object(
                     self.clip_paint_module.os.path,
