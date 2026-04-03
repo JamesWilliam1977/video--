@@ -48,7 +48,7 @@ from PyQt5.QtGui import QIcon, QCursor, QKeySequence, QTextCursor
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QDockWidget,
     QMessageBox, QDialog, QFileDialog, QInputDialog,
-    QAction, QActionGroup, QSizePolicy, QMenu,
+    QAction, QActionGroup, QSizePolicy,
     QStatusBar, QToolBar, QToolButton,
     QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar, QAbstractButton,
     QPlainTextEdit, QSpinBox, QDoubleSpinBox
@@ -76,7 +76,7 @@ from themes.manager import ThemeName
 from windows.models.effects_model import EffectsModel
 from windows.models.emoji_model import EmojisModel
 from windows.models.files_model import FilesModel
-from windows.views.optimized_preview_menu import optimized_preview_icon, populate_optimized_preview_menu
+from windows.views.optimized_preview_menu import populate_optimized_preview_menu
 from windows.models.transition_model import TransitionsModel
 from windows.preview_thread import PreviewParent
 from windows.video_widget import VideoWidget
@@ -2170,7 +2170,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.proxy_service.delete_and_unlink_for_files(files)
 
     def _refresh_optimized_preview_action_states(self):
-        populate_optimized_preview_menu(self, self.optimizedPreviewMenu)
+        if getattr(self, "optimizedPreviewMenu", None):
+            populate_optimized_preview_menu(self, self.optimizedPreviewMenu)
 
     def actionRemove_from_Project_trigger(self):
         log.debug("actionRemove_from_Project_trigger")
@@ -3716,20 +3717,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.actionOptimizedPreviewDeleteAndUnlink.setObjectName("actionOptimizedPreviewDeleteAndUnlink")
         self.actionOptimizedPreviewDeleteAndUnlink.triggered.connect(self.actionOptimizedPreviewDeleteAndUnlink_trigger)
 
-        _ = get_app()._tr
-        preview_menu = getattr(self, "menuPreview", None)
-        if preview_menu is None:
-            preview_menu = QMenu(_("Preview"), self)
-            preview_menu.setObjectName("menuPreview")
-            if hasattr(self, "menuHelp") and self.menuHelp:
-                self.menubar.insertMenu(self.menuHelp.menuAction(), preview_menu)
-            else:
-                self.menubar.addMenu(preview_menu)
-            self.menuPreview = preview_menu
-
-        self.optimizedPreviewMenu = preview_menu.addMenu(_("Optimize"))
-        self.optimizedPreviewMenu.setIcon(optimized_preview_icon("ready"))
-        self.optimizedPreviewMenu.aboutToShow.connect(self._refresh_optimized_preview_action_states)
+        self.optimizedPreviewMenu = None
         if getattr(self, "menuClear", None):
             self.menuClear.aboutToShow.connect(self._refresh_clear_menu_action_states)
 
