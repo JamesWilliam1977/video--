@@ -92,7 +92,11 @@ Sphinx will load PO files from `doc/locale/` via `locale_dirs` in `doc/conf.py`.
   # list of language codes to skip for PDF (these all have issues)
   skip_langs=("ar" "hi" "ja" "ko" )
 
-  # Build PDFs (skip list) and copy into html folders
+  # Build English PDF and copy into the root html folder
+  make latexpdf BUILDDIR="_build/pdf/en"
+  cp -f "_build/pdf/en/latex/OpenShotVideoEditor.pdf" "_build/html/OpenShotVideoEditor.pdf"
+
+  # Build translated PDFs (skip list) and copy into html folders
   for lang in $langs; do
     if [[ " ${skip_langs[*]} " == *" $lang "* ]]; then
       echo "Skipping PDF for $lang"
