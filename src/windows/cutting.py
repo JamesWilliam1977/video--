@@ -353,8 +353,8 @@ class Cutting(QDialog):
         if old_preview_parent:
             try:
                 old_preview_parent.Stop(wait_for_thread=True)
-            except Exception:
-                pass
+            except Exception as exc:
+                log.warning("Failed to stop previous cutting preview thread cleanly: %s", exc)
 
         self._build_preview_timeline(reader_data, max_size)
 

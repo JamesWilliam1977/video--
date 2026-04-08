@@ -1841,6 +1841,12 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             # Force thumbnail image to be refreshed (for a particular frame #)
             GetThumbPath(clip.data.get("file_id"), thumbnail_frame, clear_cache=True)
 
+            if ViewClass == TimelineWidget:
+                if hasattr(self, "clip_painter"):
+                    self.clip_painter.invalidate_clip_thumbnails(clip.id)
+                self.update()
+                continue
+
             # Pass to javascript timeline (and render)
             self.run_js(JS_SCOPE_SELECTOR + ".updateThumbnail('" + clip_id + "');")
 

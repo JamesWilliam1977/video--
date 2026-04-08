@@ -48,7 +48,7 @@ from PyQt5.QtGui import QIcon, QCursor, QKeySequence, QTextCursor
 from PyQt5.QtWidgets import (
     QMainWindow, QWidget, QDockWidget,
     QMessageBox, QDialog, QFileDialog, QInputDialog,
-    QAction, QActionGroup, QSizePolicy, QMenu,
+    QAction, QActionGroup, QSizePolicy,
     QStatusBar, QToolBar, QToolButton,
     QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar, QAbstractButton,
     QPlainTextEdit, QSpinBox, QDoubleSpinBox
@@ -76,7 +76,7 @@ from themes.manager import ThemeName
 from windows.models.effects_model import EffectsModel
 from windows.models.emoji_model import EmojisModel
 from windows.models.files_model import FilesModel
-from windows.views.optimized_preview_menu import optimized_preview_icon, populate_optimized_preview_menu
+from windows.views.optimized_preview_menu import populate_optimized_preview_menu
 from windows.models.transition_model import TransitionsModel
 from windows.preview_thread import PreviewParent
 from windows.video_widget import VideoWidget
@@ -2170,7 +2170,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.proxy_service.delete_and_unlink_for_files(files)
 
     def _refresh_optimized_preview_action_states(self):
-        populate_optimized_preview_menu(self, self.optimizedPreviewMenu)
+        if getattr(self, "optimizedPreviewMenu", None):
+            populate_optimized_preview_menu(self, self.optimizedPreviewMenu)
 
     def actionRemove_from_Project_trigger(self):
         log.debug("actionRemove_from_Project_trigger")
@@ -3679,7 +3680,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.tabEmojis.layout().addWidget(self.emojiListView)
 
     def _init_generation_actions(self):
-        self.actionGenerate = QAction("Generate...", self)
+        _ = get_app()._tr
+
+        self.actionGenerate = QAction(_("Generate..."), self)
         self.actionGenerate.setObjectName("actionGenerate")
         sparkle_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-generate-sparkle.svg")
         self.actionGenerate.setIcon(QIcon(sparkle_icon_path))
@@ -3687,45 +3690,34 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.actionGenerate.setShortcutContext(Qt.ApplicationShortcut)
         self.actionGenerate.triggered.connect(self.actionGenerate_trigger)
 
-        self.actionCancelGenerationJob = QAction("Cancel Job", self)
+        self.actionCancelGenerationJob = QAction(_("Cancel Job"), self)
         self.actionCancelGenerationJob.setObjectName("actionCancelGenerationJob")
         self.actionCancelGenerationJob.triggered.connect(self.actionCancelGenerationJob_trigger)
 
     def _init_proxy_actions(self):
-        self.actionOptimizedPreviewCreate = QAction("Optimize Video", self)
+        _ = get_app()._tr
+
+        self.actionOptimizedPreviewCreate = QAction(_("Optimize Video"), self)
         self.actionOptimizedPreviewCreate.setObjectName("actionOptimizedPreviewCreate")
         self.actionOptimizedPreviewCreate.triggered.connect(self.actionOptimizedPreviewCreate_trigger)
 
-        self.actionOptimizedPreviewUseExisting = QAction("Link to Existing...", self)
+        self.actionOptimizedPreviewUseExisting = QAction(_("Link to Existing..."), self)
         self.actionOptimizedPreviewUseExisting.setObjectName("actionOptimizedPreviewUseExisting")
         self.actionOptimizedPreviewUseExisting.triggered.connect(self.actionOptimizedPreviewUseExisting_trigger)
 
-        self.actionOptimizedPreviewRemove = QAction("Unlink", self)
+        self.actionOptimizedPreviewRemove = QAction(_("Unlink"), self)
         self.actionOptimizedPreviewRemove.setObjectName("actionOptimizedPreviewRemove")
         self.actionOptimizedPreviewRemove.triggered.connect(self.actionOptimizedPreviewRemove_trigger)
 
-        self.actionOptimizedPreviewCancel = QAction("Cancel", self)
+        self.actionOptimizedPreviewCancel = QAction(_("Cancel"), self)
         self.actionOptimizedPreviewCancel.setObjectName("actionOptimizedPreviewCancel")
         self.actionOptimizedPreviewCancel.triggered.connect(self.actionOptimizedPreviewCancel_trigger)
 
-        self.actionOptimizedPreviewDeleteAndUnlink = QAction("Delete && Unlink", self)
+        self.actionOptimizedPreviewDeleteAndUnlink = QAction(_("Delete && Unlink"), self)
         self.actionOptimizedPreviewDeleteAndUnlink.setObjectName("actionOptimizedPreviewDeleteAndUnlink")
         self.actionOptimizedPreviewDeleteAndUnlink.triggered.connect(self.actionOptimizedPreviewDeleteAndUnlink_trigger)
 
-        _ = get_app()._tr
-        preview_menu = getattr(self, "menuPreview", None)
-        if preview_menu is None:
-            preview_menu = QMenu(_("Preview"), self)
-            preview_menu.setObjectName("menuPreview")
-            if hasattr(self, "menuHelp") and self.menuHelp:
-                self.menubar.insertMenu(self.menuHelp.menuAction(), preview_menu)
-            else:
-                self.menubar.addMenu(preview_menu)
-            self.menuPreview = preview_menu
-
-        self.optimizedPreviewMenu = preview_menu.addMenu(_("Optimize"))
-        self.optimizedPreviewMenu.setIcon(optimized_preview_icon("ready"))
-        self.optimizedPreviewMenu.aboutToShow.connect(self._refresh_optimized_preview_action_states)
+        self.optimizedPreviewMenu = None
         if getattr(self, "menuClear", None):
             self.menuClear.aboutToShow.connect(self._refresh_clear_menu_action_states)
 

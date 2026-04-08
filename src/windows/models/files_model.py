@@ -38,7 +38,7 @@ from PyQt5.QtCore import (
     QSortFilterProxyModel, QItemSelectionModel, QItemSelection, QPersistentModelIndex, QModelIndex
 )
 from PyQt5.QtGui import (
-    QIcon, QStandardItem, QStandardItemModel
+    QIcon, QPixmap, QStandardItem, QStandardItemModel
 )
 from PyQt5.QtWidgets import QAbstractItemView
 from classes import updates
@@ -165,6 +165,16 @@ class FilesModel(QObject, updates.UpdateInterface):
     PLACEHOLDER_PREFIX = "__genjob__:"
     PROJECT_FILE_THUMB_ATTEMPTS = 3
 
+    @staticmethod
+    def _icon_from_thumbnail_source(thumb_source):
+        """Create an icon from freshly loaded thumbnail bytes when possible."""
+        thumb_source = str(thumb_source or "")
+        if thumb_source:
+            pixmap = QPixmap()
+            if pixmap.load(thumb_source) and not pixmap.isNull():
+                return QIcon(pixmap)
+        return QIcon(thumb_source)
+
     def _thumbnail_source_for_file(self, file, clear_cache=False):
         """Return the thumbnail/artwork source path and display name for a file."""
         path, filename = os.path.split(file.data["path"])
@@ -190,7 +200,7 @@ class FilesModel(QObject, updates.UpdateInterface):
 
     def _project_file_icon_for_file(self, file):
         thumb_source, name, media_type = self._thumbnail_source_for_file(file)
-        return QIcon(thumb_source), name, media_type
+        return self._icon_from_thumbnail_source(thumb_source), name, media_type
 
     def _tooltip_for_file(self, file, name):
         tooltip = str(name or "")
@@ -644,7 +654,7 @@ class FilesModel(QObject, updates.UpdateInterface):
                 return
 
             thumb_source, _, _ = self._thumbnail_source_for_file(file, clear_cache=True)
-            thumb_icon = QIcon(thumb_source)
+            thumb_icon = self._icon_from_thumbnail_source(thumb_source)
 
             # Update thumb for file
             thumb_index = id_index.sibling(id_index.row(), 0)
@@ -778,7 +788,7 @@ class FilesModel(QObject, updates.UpdateInterface):
         finally:
             self._syncing_selection = False
 
-    def __init__(self, generation_queue=None, proxy_service=None, *args):
+    def __init__(self, *args, generation_queue=None, proxy_service=None):
         self.generation_queue = generation_queue
         self.proxy_service = proxy_service
 
@@ -1047,7 +1057,7 @@ class FilesModel(QObject, updates.UpdateInterface):
         row = id_index.row()
         file_obj = File.get(id=file_id)
         if file_obj:
-            path, filename = os.path.split(file_obj.data["path"])
+            _, filename = os.path.split(file_obj.data["path"])
             name = file_obj.data.get("name", filename)
             self.model.item(row, 0).setToolTip(self._tooltip_for_file(file_obj, name))
         left = self.model.index(row, 0)

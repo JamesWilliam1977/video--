@@ -42,7 +42,7 @@ if PATH not in sys.path:
     sys.path.append(PATH)
 
 from PyQt5.QtCore import QCoreApplication, QPointF, QRectF, Qt
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QApplication
 from classes import info
 from classes.updates import UpdateAction
@@ -458,9 +458,14 @@ class TimelineHelperTests(unittest.TestCase):
         class TimerStub:
             def __init__(self):
                 self.started = 0
+                self.active = False
 
-            def start(self):
+            def start(self, *_args):
                 self.started += 1
+                self.active = True
+
+            def isActive(self):
+                return self.active
 
         class DeltaStub:
             def __init__(self, y=0.0, is_null=False):
@@ -524,7 +529,11 @@ class TimelineHelperTests(unittest.TestCase):
                 self._ctrl_zoom_step_pixels = 40.0
                 self._ctrl_zooming = False
                 self._zoom_playhead_anchor = None
+                self._pending_hscroll_delta = 0.0
+                self._pending_vscroll_delta = 0.0
                 self._pending_zoom_emit = None
+                self._hscroll_timer = TimerStub()
+                self._vscroll_timer = TimerStub()
                 self._zoom_emit_timer = TimerStub()
                 self.zoom_factor = 15.0
                 self.is_auto_center = False
@@ -534,6 +543,12 @@ class TimelineHelperTests(unittest.TestCase):
                 self.mouse_dragging = False
                 self.viewport_reset_calls = 0
                 self.update_calls = 0
+                self.scrollbar_position = [0.20, 0.60, 400.0, 100.0]
+                self.v_scrollbar_position = [0.0, 0.0, 0.0, 0.0]
+                self.h_scroll_offset = 80.0
+                self.scrollbar_updates = 0
+                self.timeline_scrolled = []
+                self.geometry = types.SimpleNamespace(mark_dirty=self._mark_dirty)
 
             def _reset_ctrl_mouse_zoom(self):
                 return qwidget_base_module.TimelineWidgetBase._reset_ctrl_mouse_zoom(self)
@@ -558,6 +573,12 @@ class TimelineHelperTests(unittest.TestCase):
 
             def _schedule_viewport_thumbnail_reset(self):
                 self.viewport_reset_calls += 1
+
+            def _update_scrollbar_handles(self):
+                self.scrollbar_updates += 1
+
+            def _mark_dirty(self):
+                self.geometry_marked_dirty = getattr(self, "geometry_marked_dirty", 0) + 1
 
             def update(self):
                 self.update_calls += 1
@@ -1804,6 +1825,15 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertIs(helper.cursor_value, helper.cursors["razor"])
         self.assertFalse(helper.unset_cursor_called)
 
+    def test_qwidget_razor_cursor_hotspot_matches_web_alignment(self):
+        helper = types.SimpleNamespace()
+
+        cursor = self.qwidget_base_module.TimelineWidgetBase._load_razor_cursor(helper)
+
+        self.assertIsInstance(cursor, QCursor)
+        self.assertEqual(cursor.hotSpot().x(), 0)
+        self.assertEqual(cursor.hotSpot().y(), 2)
+
     def test_qwidget_cursor_keeps_hand_cursor_for_items_when_razor_disabled(self):
         helper = self.make_qwidget_cursor_helper()
         helper.geometry.items = [(QRectF(0.0, 0.0, 100.0, 20.0), object(), False, "clip")]
@@ -1895,7 +1925,7 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertTrue(helper.transition_entries[0].selected)
 
     def test_qwidget_ctrl_mouse_zoom_starts_on_ctrl_middle_press(self):
-        helper, event_cls, _wheel_event_cls = self.make_qwidget_ctrl_zoom_helper()
+        helper, _event_cls, _wheel_event_cls = self.make_qwidget_ctrl_zoom_helper()
         pos = QPointF(20.0, 120.0)
 
         started = self.qwidget_base_module.TimelineWidgetBase._start_ctrl_mouse_zoom(helper, pos)
@@ -1966,6 +1996,38 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertFalse(helper.is_auto_center)
         self.assertEqual(helper._pending_zoom_emit, 12.0)
         self.assertEqual(helper._zoom_emit_timer.started, 1)
+
+    def test_qwidget_shift_wheel_scrolls_horizontally(self):
+        helper, _event_cls, wheel_event_cls = self.make_qwidget_ctrl_zoom_helper()
+        event = wheel_event_cls(-120.0, modifiers=Qt.ShiftModifier)
+        app = types.SimpleNamespace(
+            window=types.SimpleNamespace(
+                TimelineScrolled=types.SimpleNamespace(
+                    emit=lambda positions: helper.timeline_scrolled.append(list(positions))
+                )
+            )
+        )
+
+        with patch.object(self.qwidget_base_module, "get_app", return_value=app):
+            self.qwidget_base_module.TimelineWidgetBase.wheelEvent(helper, event)
+            helper._hscroll_timer.active = False
+            self.qwidget_base_module.TimelineWidgetBase._flush_pending_horizontal_scroll(helper)
+
+        self.assertTrue(event.accepted)
+        self.assertFalse(event.ignored)
+        self.assertEqual(helper._hscroll_timer.started, 1)
+        self.assertAlmostEqual(helper.scrollbar_position[0], 0.24)
+        self.assertAlmostEqual(helper.scrollbar_position[1], 0.64)
+        self.assertAlmostEqual(helper.h_scroll_offset, 96.0)
+        self.assertFalse(helper.is_auto_center)
+        self.assertEqual(helper.geometry_marked_dirty, 1)
+        self.assertEqual(helper.scrollbar_updates, 1)
+        self.assertEqual(helper.viewport_reset_calls, 1)
+        self.assertEqual(helper.update_calls, 1)
+        self.assertEqual(len(helper.timeline_scrolled), 1)
+        self.assertAlmostEqual(helper.timeline_scrolled[0][0], 0.24)
+        self.assertAlmostEqual(helper.timeline_scrolled[0][1], 0.64)
+        self.assertEqual(helper.timeline_scrolled[0][2:], [400.0, 100.0])
 
     def test_qwidget_set_zoom_factor_keeps_playhead_at_existing_viewport_ratio(self):
         helper = types.SimpleNamespace()
@@ -2559,7 +2621,7 @@ class TimelineHelperTests(unittest.TestCase):
             id="F1",
             data={
                 "id": "F1",
-                "path": "/tmp/example.wav",
+                "path": "/project/example.wav",
                 "has_audio": True,
                 "ui": {"audio_data": [1.0, 1.0, 1.0, 1.0, 1.0]},
             },
@@ -3190,10 +3252,11 @@ class TimelineHelperTests(unittest.TestCase):
 
     def test_existing_thumb_path_reuses_rounded_cached_thumbnail(self):
         painter = self.make_clip_painter()
-        rounded_path = os.path.join("/tmp/thumbs", "F1", "19.png")
+        thumbnail_root = "/project_assets/thumbs"
+        rounded_path = os.path.join(thumbnail_root, "F1", "19.png")
 
         with ExitStack() as stack:
-            stack.enter_context(patch.object(info, "THUMBNAIL_PATH", "/tmp/thumbs"))
+            stack.enter_context(patch.object(info, "THUMBNAIL_PATH", thumbnail_root))
             stack.enter_context(
                 patch.object(
                     self.clip_paint_module.os.path,
@@ -3232,6 +3295,81 @@ class TimelineHelperTests(unittest.TestCase):
             self.qwidget_base_module.TimelineWidgetBase.changed(helper, None)
 
         self.assertIn(("C1", 1), helper.clip_painter.thumb_cache)
+
+    def test_reset_drag_preview_invalidates_preview_clip_cache(self):
+        invalidated = []
+
+        def invalidate_clip_thumbnails(clip_id):
+            invalidated.append(clip_id)
+
+        helper = types.SimpleNamespace(
+            clip_painter=types.SimpleNamespace(
+                invalidate_clip_thumbnails=invalidate_clip_thumbnails
+            ),
+            _drag_preview_items=[
+                {"type": "clip", "source_id": "F1"},
+                {"type": "clip", "model": types.SimpleNamespace(id="preview-clip-F2")},
+                {"type": "transition", "source_id": "T1"},
+            ],
+            _drag_payload={"type": "clip", "ids": ["F1"]},
+            item_ids=["preview-1"],
+            new_item=True,
+            item_type="clip",
+            drag_bbox=self.clip_paint_module.QRectF(1.0, 2.0, 3.0, 4.0),
+            _set_drag_preview_thumbnail_suspension=lambda enabled: None,
+            update=lambda: None,
+        )
+        helper._invalidate_drag_preview_cache = lambda: self.qwidget_base_module.TimelineWidgetBase._invalidate_drag_preview_cache(helper)
+
+        self.qwidget_base_module.TimelineWidgetBase._reset_drag_preview(helper)
+
+        self.assertEqual(invalidated, ["preview-clip-F1", "preview-clip-F2"])
+        self.assertEqual(helper._drag_preview_items, [])
+        self.assertEqual(helper._drag_payload, None)
+        self.assertEqual(helper.item_ids, [])
+        self.assertFalse(helper.new_item)
+        self.assertIsNone(helper.item_type)
+        self.assertTrue(helper.drag_bbox.isNull())
+
+    def test_thumbnail_updated_invalidates_only_qwidget_clip_cache(self):
+        invalidated = []
+        thumb_requests = []
+        updates = []
+        run_js_calls = []
+
+        def invalidate_clip_thumbnails(clip_id):
+            invalidated.append(clip_id)
+
+        def run_js(code):
+            run_js_calls.append(code)
+
+        clip = types.SimpleNamespace(id="C1", data={"file_id": "F1"})
+        helper = types.SimpleNamespace(
+            clip_painter=types.SimpleNamespace(
+                invalidate_clip_thumbnails=invalidate_clip_thumbnails
+            ),
+            update=lambda: updates.append(True),
+            run_js=run_js,
+        )
+
+        with ExitStack() as stack:
+            stack.enter_context(patch.object(self.timeline_module, "ViewClass", self.timeline_module.TimelineWidget))
+            stack.enter_context(patch.object(self.timeline_module.Clip, "filter", return_value=[clip]))
+            stack.enter_context(
+                patch.object(
+                    self.timeline_module,
+                    "GetThumbPath",
+                    side_effect=lambda file_id, frame, clear_cache=False: thumb_requests.append(
+                        (file_id, frame, clear_cache)
+                    ),
+                )
+            )
+            self.timeline_module.TimelineView.Thumbnail_Updated(helper, "C1", 1)
+
+        self.assertEqual(thumb_requests, [("F1", 1, True)])
+        self.assertEqual(invalidated, ["C1"])
+        self.assertEqual(updates, [True])
+        self.assertEqual(run_js_calls, [])
 
     def test_compute_clip_resize_timing_left_edge_allows_growth_past_timeline_zero(self):
         helper = self.make_qwidget_clip_helper()

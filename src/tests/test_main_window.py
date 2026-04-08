@@ -469,7 +469,7 @@ class MainWindowTests(unittest.TestCase):
                 has_internal_project_proxy_files=lambda: True,
             ),
             actionClearOptimizedFiles=types.SimpleNamespace(
-                setEnabled=lambda value: enabled_calls.append(value),
+                setEnabled=enabled_calls.append,
             ),
         )
 
@@ -483,7 +483,7 @@ class MainWindowTests(unittest.TestCase):
                 has_internal_project_proxy_files=lambda: False,
             ),
             actionClearOptimizedFiles=types.SimpleNamespace(
-                setEnabled=lambda value: enabled_calls.append(value),
+                setEnabled=enabled_calls.append,
             ),
         )
 

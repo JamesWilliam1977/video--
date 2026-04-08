@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,9 +34,9 @@ msgid ""
 msgstr ""
 "전환 효과는 두 클립 이미지 사이를 점진적으로 페이드(또는 와이프)하는 데 사용"
 "됩니다. OpenShot에서는 전환 효과가 타임라인의 파란색 둥근 사각형으로 표시됩니"
-"다. 두 클립이 겹칠 때 자동으로 생성되며, ** 전환 효과** 패널에서 타임라인으로 "
-"드래그하여 수동으로 추가할 수도 있습니다. 전환 효과는 클립 위에 겹쳐서 배치해"
-"야 하며, 일반적으로 클립의 시작 또는 끝에 위치합니다."
+"다. 두 클립이 겹칠 때 자동으로 생성되며, ** 전환 효과** 패널에서 타임라인으"
+"로 드래그하여 수동으로 추가할 수도 있습니다. 전환 효과는 클립 위에 겹쳐서 배"
+"치해야 하며, 일반적으로 클립의 시작 또는 끝에 위치합니다."
 
 # Translated with gpt-4.1-mini
 #: ../transitions.rst:31
@@ -44,8 +45,8 @@ msgid ""
 "fade in/out the audio volume of a clip, you must adjust the ``volume`` clip "
 "property. See :ref:`clip_properties_ref`"
 msgstr ""
-"참고: 전환 효과는 ** 오디오** 에 영향을 주지 않으므로, 클립의 오디오 볼륨을 페"
-"이드 인/아웃하려면 ``volume`` 클립 속성을 조정해야 합니다. :ref:"
+"참고: 전환 효과는 ** 오디오** 에 영향을 주지 않으므로, 클립의 오디오 볼륨을 "
+"페이드 인/아웃하려면 ``volume`` 클립 속성을 조정해야 합니다. :ref:"
 "`clip_properties_ref` 를 참조하세요."
 
 # Translated with gpt-4.1-mini
@@ -135,8 +136,8 @@ msgstr ""
 "전환 효과는 겹쳐진 클립 이미지(즉, 전환 효과 아래의 클립)의 알파/투명도를 조"
 "절하며, 불투명에서 투명으로 또는 투명에서 불투명으로 페이드할 수 있습니다(오"
 "디오에는 영향을 주지 않음). 마우스 오른쪽 버튼을 클릭하고 :guilabel:` 전환 효"
-"과 반전` 을 선택하여 페이드 방향을 변경할 수 있습니다. 또한 ** 밝기** 곡선을 수"
-"동으로 조정하여 원하는 방식으로 시각적 페이드를 애니메이션할 수 있습니다."
+"과 반전` 을 선택하여 페이드 방향을 변경할 수 있습니다. 또한 ** 밝기** 곡선을 "
+"수동으로 조정하여 원하는 방식으로 시각적 페이드를 애니메이션할 수 있습니다."
 
 # Translated with gpt-4.1-mini
 #: ../transitions.rst:56
@@ -269,9 +270,9 @@ msgid ""
 msgstr ""
 "아래는 편집할 수 있고 대부분 시간에 따라 애니메이션화할 수 있는 전환 효과 속"
 "성 목록입니다. 전환 효과 속성을 보려면 마우스 오른쪽 버튼을 클릭하고 :"
-"guilabel:` 속성` 을 선택하세요. 속성 편집기가 나타나며 여기서 속성을 변경할 수 "
-"있습니다. 참고: 재생 헤드(즉, 빨간 재생선)의 위치를 주의 깊게 확인하세요. 애"
-"니메이션 생성에 도움이 되도록 현재 재생 위치에 키프레임이 자동으로 생성됩니"
+"guilabel:` 속성` 을 선택하세요. 속성 편집기가 나타나며 여기서 속성을 변경할 "
+"수 있습니다. 참고: 재생 헤드(즉, 빨간 재생선)의 위치를 주의 깊게 확인하세요. "
+"애니메이션 생성에 도움이 되도록 현재 재생 위치에 키프레임이 자동으로 생성됩니"
 "다."
 
 # Translated with gpt-4.1-mini
@@ -446,9 +447,9 @@ msgid ""
 "by: End - Start. To modify duration, you must edit the :guilabel:`Start` and/"
 "or :guilabel:`End` transition properties."
 msgstr ""
-":guilabel:` 길이` 속성은 전환의 길이를 초 단위로 나타내는 실수 값입니다. 읽기 "
-"전용 속성입니다. 계산식은 끝 - 시작입니다. 길이를 변경하려면 :guilabel:` 시작"
-"` 및/또는 :guilabel:` 끝` 전환 속성을 편집해야 합니다."
+":guilabel:` 길이` 속성은 전환의 길이를 초 단위로 나타내는 실수 값입니다. 읽"
+"기 전용 속성입니다. 계산식은 끝 - 시작입니다. 길이를 변경하려면 :guilabel:` "
+"시작` 및/또는 :guilabel:` 끝` 전환 속성을 편집해야 합니다."
 
 # Translated with gpt-4.1-mini
 #: ../transitions.rst:124
@@ -513,7 +514,8 @@ msgstr ""
 msgid ""
 "**Usage Example:** Referencing specific transitions within custom scripts or "
 "automation tasks."
-msgstr "** 사용 예:** 사용자 스크립트나 자동화 작업에서 특정 전환을 참조합니다."
+msgstr ""
+"** 사용 예:** 사용자 스크립트나 자동화 작업에서 특정 전환을 참조합니다."
 
 # Translated with gpt-4.1-mini
 #: ../transitions.rst:141
@@ -521,8 +523,8 @@ msgid ""
 "**Tip:** While typically managed behind the scenes, understanding transition "
 "IDs can aid in advanced project customization."
 msgstr ""
-"** 팁:** 일반적으로 내부에서 관리되지만, 전환 ID를 이해하면 고급 프로젝트 맞춤"
-"화에 도움이 됩니다."
+"** 팁:** 일반적으로 내부에서 관리되지만, 전환 ID를 이해하면 고급 프로젝트 맞"
+"춤화에 도움이 됩니다."
 
 # Translated with gpt-4.1-mini
 #: ../transitions.rst:145
@@ -531,8 +533,8 @@ msgid ""
 "the transition is placed. Transitions on higher tracks are rendered above "
 "those on lower tracks."
 msgstr ""
-":guilabel:` 트랙` 속성은 전환이 위치한 레이어를 나타내는 정수입니다. 높은 트랙"
-"에 있는 전환이 낮은 트랙 위에 렌더링됩니다."
+":guilabel:` 트랙` 속성은 전환이 위치한 레이어를 나타내는 정수입니다. 높은 트"
+"랙에 있는 전환이 낮은 트랙 위에 렌더링됩니다."
 
 # Translated with gpt-4.1-mini
 #: ../transitions.rst:148
@@ -548,5 +550,5 @@ msgid ""
 "**Tip:** Use higher tracks for elements that need to appear above others, "
 "like text overlays or graphics."
 msgstr ""
-"** 팁:** 텍스트 오버레이나 그래픽처럼 다른 요소 위에 나타나야 하는 요소에는 높"
-"은 트랙을 사용하세요."
+"** 팁:** 텍스트 오버레이나 그래픽처럼 다른 요소 위에 나타나야 하는 요소에는 "
+"높은 트랙을 사용하세요."

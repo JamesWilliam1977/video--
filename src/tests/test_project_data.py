@@ -190,7 +190,7 @@ class ProjectDataTests(unittest.TestCase):
             "effects": [],
             "markers": [],
             "layers": [],
-            "files": [{"id": "F1", "path": "/tmp/source.mp4"}],
+            "files": [{"id": "F1", "path": "/project/source.mp4"}],
             "history": {"undo": [], "redo": []},
             "version": {"openshot-qt": "3.4.0", "libopenshot": "0.5.0"},
         }
@@ -334,7 +334,7 @@ class ProjectDataTests(unittest.TestCase):
             "layers": [],
             "files": [{
                 "id": "F1",
-                "path": "/tmp/source.mp4",
+                "path": "/project/source.mp4",
                 "proxy_reader": {"path": ""},
             }],
             "history": {"undo": [], "redo": []},
@@ -703,7 +703,7 @@ class ProjectDataTests(unittest.TestCase):
                 stack.enter_context(
                     patch(
                         "classes.project_data.info.get_default_path",
-                        side_effect=lambda name: default_paths.get(name),
+                        side_effect=default_paths.get,
                     )
                 )
                 for name, folder in default_paths.items():
@@ -762,7 +762,7 @@ class ProjectDataTests(unittest.TestCase):
                 stack.enter_context(
                     patch(
                         "classes.project_data.info.get_default_path",
-                        side_effect=lambda name: default_paths.get(name),
+                        side_effect=default_paths.get,
                     )
                 )
                 for name, folder in default_paths.items():
@@ -839,7 +839,7 @@ class ProjectDataTests(unittest.TestCase):
                 stack.enter_context(
                     patch(
                         "classes.project_data.info.get_default_path",
-                        side_effect=lambda name: default_paths.get(name),
+                        side_effect=default_paths.get,
                     )
                 )
                 ProjectDataStore.move_temp_paths_to_project_folder(store, project_path)

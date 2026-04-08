@@ -367,6 +367,19 @@ class Preferences(QDialog):
                                 "name": _(theme_name), "value": theme_name
                             })
 
+                    if param["setting"] == "ui-scale":
+                        current_scale = float(param["value"])
+                        has_current_value = any(
+                            abs(float(item.get("value", 0.0)) - current_scale) < 0.001
+                            for item in value_list
+                        )
+                        if not has_current_value:
+                            value_list.append({
+                                "name": _("%d%% (Custom)") % int(round(current_scale * 100)),
+                                "value": current_scale,
+                            })
+                            value_list.sort(key=lambda item: float(item.get("value", 0.0)))
+
                     # Overwrite value list (for language dropdown)
                     if param["setting"] == "default-language":
                         value_list = []
@@ -457,7 +470,10 @@ class Preferences(QDialog):
                             widget.addItem(_(k), v)
 
                         # select dropdown (if default)
-                        if v == param["value"]:
+                        if (
+                            param["setting"] == "ui-scale"
+                            and abs(float(v) - float(param["value"])) < 0.001
+                        ) or v == param["value"]:
                             widget.setCurrentIndex(box_index)
                         box_index = box_index + 1
 
@@ -646,6 +662,24 @@ class Preferences(QDialog):
         """Apply current cache preference values to the active session."""
         get_app().window.InitCacheSettings()
 
+    def _set_ui_scale_to_default(self):
+        """Force the UI scale preference back to 100%."""
+        default_scale = 1.0
+        self.s.set("ui-scale", default_scale)
+
+        widget = self.setting_widgets.get("ui-scale")
+        if not widget or not isinstance(widget, QComboBox):
+            return
+
+        for index in range(widget.count()):
+            value = widget.itemData(index)
+            try:
+                if abs(float(value) - default_scale) < 0.001:
+                    widget.setCurrentIndex(index)
+                    break
+            except (TypeError, ValueError):
+                continue
+
     def bool_value_changed(self, widget, param, state):
         # Save setting
         if state == Qt.Checked:
@@ -670,6 +704,9 @@ class Preferences(QDialog):
             else:
                 # Stop autosave timer
                 get_app().window.auto_save_timer.stop()
+
+        elif param["setting"] == "legacy-based-timeline" and state == Qt.Checked:
+            self._set_ui_scale_to_default()
 
         # Check for restart
         self.check_for_restart(param)

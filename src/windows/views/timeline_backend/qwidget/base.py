@@ -202,6 +202,10 @@ class TimelineWidgetBase(QWidget):
         self.keyframe_panel_padding = 6.0
 
         # Wheel scrolling helpers
+        self._pending_hscroll_delta = 0.0
+        self._hscroll_timer = QTimer(self)
+        self._hscroll_timer.setSingleShot(True)
+        self._hscroll_timer.timeout.connect(self._flush_pending_horizontal_scroll)
         self._pending_vscroll_delta = 0.0
         self._vscroll_timer = QTimer(self)
         self._vscroll_timer.setSingleShot(True)
@@ -731,7 +735,9 @@ class TimelineWidgetBase(QWidget):
         pixmap = QPixmap(asset_path)
         if pixmap.isNull():
             return QCursor(Qt.CrossCursor)
-        hot_x = min(max(pixmap.width() // 2, 0), max(0, pixmap.width() - 1))
+        # Match the web timeline hotspot, which uses the asset's top-left
+        # corner as the active cursor position.
+        hot_x = 0
         hot_y = min(2, max(0, pixmap.height() - 1))
         return QCursor(pixmap, hot_x, hot_y)
 
@@ -1666,7 +1672,24 @@ class TimelineWidgetBase(QWidget):
         # set, so mark it dirty so the next repaint reflects the new state.
         self.geometry.mark_dirty()
 
+    def _invalidate_drag_preview_cache(self):
+        """Drop cached thumbnail/render state for transient drag preview clips."""
+        clip_painter = getattr(self, "clip_painter", None)
+        if not clip_painter:
+            return
+        for entry in self._drag_preview_items or []:
+            if not isinstance(entry, dict) or entry.get("type") != "clip":
+                continue
+            model = entry.get("model")
+            clip_id = str(getattr(model, "id", "") or "")
+            if not clip_id:
+                source_id = entry.get("source_id")
+                clip_id = f"preview-clip-{source_id}" if source_id is not None else ""
+            if clip_id:
+                clip_painter.invalidate_clip_thumbnails(clip_id)
+
     def _reset_drag_preview(self):
+        self._invalidate_drag_preview_cache()
         self._set_drag_preview_thumbnail_suspension(False)
         self._drag_preview_items = []
         self._drag_payload = None
@@ -1732,6 +1755,7 @@ class TimelineWidgetBase(QWidget):
         self._select_added_items(preview_type)
 
         self._update_project_duration()
+        self._invalidate_drag_preview_cache()
         self._drag_preview_items = []
         self._drag_payload = None
         self._set_drag_preview_thumbnail_suspension(False)
@@ -1882,6 +1906,19 @@ class TimelineWidgetBase(QWidget):
             event.accept()
             return
 
+        if event.modifiers() & Qt.ShiftModifier:
+            if self.scrollbar_position[3] > 0 and self.scrollbar_position[2] > self.scrollbar_position[3]:
+                delta = -event.angleDelta().y() / 120.0
+                if delta:
+                    self._pending_hscroll_delta += delta
+                    if not self._hscroll_timer.isActive():
+                        # Process accumulated wheel events once the event queue is flushed
+                        self._hscroll_timer.start(0)
+                event.accept()
+            else:
+                event.ignore()
+            return
+
         # Vertical scrolling
         if self.v_scrollbar_position[3] > 0 and self.v_scrollbar_position[2] > self.v_scrollbar_position[3]:
             delta = -event.angleDelta().y() / 120.0
@@ -1970,6 +2007,37 @@ class TimelineWidgetBase(QWidget):
         self.v_scrollbar_position[1] = new_top + view_ratio
         self.geometry.mark_dirty()
         self._update_scrollbar_handles()
+        self.update()
+
+    def _flush_pending_horizontal_scroll(self):
+        """Apply any pending horizontal scroll updates triggered by the wheel."""
+        delta = self._pending_hscroll_delta
+        self._pending_hscroll_delta = 0.0
+
+        if not delta:
+            return
+
+        if not (
+            self.scrollbar_position[3] > 0
+            and self.scrollbar_position[2] > self.scrollbar_position[3]
+        ):
+            return
+
+        view_ratio = self.scrollbar_position[1] - self.scrollbar_position[0]
+        if not view_ratio:
+            return
+
+        new_left = self.scrollbar_position[0] + delta * view_ratio * 0.1
+        new_left = max(0.0, min(new_left, 1.0 - view_ratio))
+        self.scrollbar_position[0] = new_left
+        self.scrollbar_position[1] = new_left + view_ratio
+        timeline_w = self.scrollbar_position[2] or self.scrollbar_position[3] or 0.0
+        self.h_scroll_offset = new_left * timeline_w
+        self.is_auto_center = False
+        self.geometry.mark_dirty()
+        self._update_scrollbar_handles()
+        get_app().window.TimelineScrolled.emit(list(self.scrollbar_position))
+        self._schedule_viewport_thumbnail_reset()
         self.update()
 
     def _update_scrollbar_handles(self):

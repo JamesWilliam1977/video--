@@ -52,6 +52,9 @@ The General tab of the Preferences window allows you to modify the settings that
    * - Default Theme
      - Cosmic Dusk
      - Choose your theme for OpenShot
+   * - User Interface Scale
+     - 100%
+     - Choose a preset UI scaling factor for larger or smaller interface elements
    * - Default Profile
      - HD 720p 30 fps
      - Select the default profile for new projects and exports

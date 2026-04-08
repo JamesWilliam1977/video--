@@ -19,6 +19,45 @@
     "restart": false
   },
   {
+    "value": 1.0,
+    "title": "User Interface Scale",
+    "category": "General",
+    "setting": "ui-scale",
+    "type": "dropdown",
+    "restart": true,
+    "dependency": "!legacy-based-timeline",
+    "values": [
+      {
+        "value": 0.75,
+        "name": "75%"
+      },
+      {
+        "value": 1.0,
+        "name": "100%"
+      },
+      {
+        "value": 1.25,
+        "name": "125%"
+      },
+      {
+        "value": 1.5,
+        "name": "150%"
+      },
+      {
+        "value": 2.0,
+        "name": "200%"
+      },
+      {
+        "value": 2.5,
+        "name": "250%"
+      },
+      {
+        "value": 3.0,
+        "name": "300%"
+      }
+    ]
+  },
+  {
     "value": "HD 720p 30 fps",
     "title": "Default Profile",
     "category": "General",
@@ -47,17 +86,6 @@
     "type": "hidden",
     "category": "General",
     "setting": "emoji_group_filter"
-  },
-  {
-    "max": 3.0,
-    "title": "User Interface Scale (Experimental)",
-    "category": "General",
-    "min": 0.5,
-    "step": 0.1,
-    "setting": "ui-scale",
-    "value": 1.0,
-    "type": "hidden",
-    "restart": true
   },
   {
     "value": "entire",

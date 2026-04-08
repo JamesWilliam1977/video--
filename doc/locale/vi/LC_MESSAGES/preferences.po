@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-04-05 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -64,23 +65,23 @@ msgstr ""
 "cho toàn bộ OpenShot."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:107 ../preferences.rst:130
-#: ../preferences.rst:152 ../preferences.rst:199 ../preferences.rst:229
-#: ../preferences.rst:285 ../preferences.rst:315
+#: ../preferences.rst:46 ../preferences.rst:110 ../preferences.rst:133
+#: ../preferences.rst:158 ../preferences.rst:205 ../preferences.rst:235
+#: ../preferences.rst:291 ../preferences.rst:321
 msgid "Setting"
 msgstr "Thiết lập"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:47 ../preferences.rst:50 ../preferences.rst:107
-#: ../preferences.rst:130 ../preferences.rst:132 ../preferences.rst:152
-#: ../preferences.rst:316
+#: ../preferences.rst:47 ../preferences.rst:50 ../preferences.rst:110
+#: ../preferences.rst:133 ../preferences.rst:135 ../preferences.rst:158
+#: ../preferences.rst:322
 msgid "Default"
 msgstr "Mặc định"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:48 ../preferences.rst:107 ../preferences.rst:130
-#: ../preferences.rst:199 ../preferences.rst:230 ../preferences.rst:285
-#: ../preferences.rst:296 ../preferences.rst:317
+#: ../preferences.rst:48 ../preferences.rst:110 ../preferences.rst:133
+#: ../preferences.rst:205 ../preferences.rst:236 ../preferences.rst:291
+#: ../preferences.rst:302 ../preferences.rst:323
 msgid "Description"
 msgstr "Mô tả"
 
@@ -112,59 +113,77 @@ msgstr "Chọn giao diện cho OpenShot, bao gồm Sáng, Tối hoặc Không"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:55
+msgid "User Interface Scale"
+msgstr "Tỷ lệ giao diện người dùng"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:56
+msgid "100%"
+msgstr "100%"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:57
+msgid ""
+"Choose a preset UI scaling factor for larger or smaller interface elements"
+msgstr ""
+"Chọn hệ số tỷ lệ giao diện đã đặt trước để phóng to hoặc thu nhỏ các phần tử "
+"giao diện"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:58
 #, fuzzy
 msgid "Default Profile"
 msgstr "Hồ sơ Video Mặc định"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:56
+#: ../preferences.rst:59
 #, fuzzy
 msgid "HD 720p 30 fps"
 msgstr "HD 720P 30 fps"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:57
+#: ../preferences.rst:60
 #, fuzzy
 msgid "Select the default profile for new projects and exports"
 msgstr "Chọn hồ sơ cho mặc định Xem trước và Xuất"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:58
+#: ../preferences.rst:61
 msgid "Blender Command (path)"
 msgstr "Lệnh Blender (đường dẫn)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:59
+#: ../preferences.rst:62
 msgid "blender"
 msgstr "blender"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:60
+#: ../preferences.rst:63
 msgid "The path to the binary for Blender (version 5.0+)"
 msgstr "Đường dẫn đến tệp thực thi của Blender (phiên bản 5.0 trở lên)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:61
+#: ../preferences.rst:64
 msgid "Advanced Title Editor (path)"
 msgstr "Trình chỉnh sửa Tiêu đề Nâng cao (đường dẫn)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:62
+#: ../preferences.rst:65
 msgid "inkscape"
 msgstr "inkscape"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:63
+#: ../preferences.rst:66
 msgid "The path to the binary for Inkscape"
 msgstr "Đường dẫn đến tệp thực thi của Inkscape"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:66
+#: ../preferences.rst:69
 msgid "Themes"
 msgstr "Giao diện"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:67
+#: ../preferences.rst:70
 msgid ""
 "OpenShot comes with 3 standard themes, which change the look and feel of the "
 "program."
@@ -173,7 +192,7 @@ msgstr ""
 "của chương trình."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:69
+#: ../preferences.rst:72
 #, fuzzy
 msgid ""
 "**Cosmic Dusk:** [Default Theme] A bluish theme with a more modern UI "
@@ -189,7 +208,7 @@ msgstr ""
 "sửa video."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:70
+#: ../preferences.rst:73
 msgid ""
 "**Humanity Dark:** A dark theme with dark gray tones, providing a modern and "
 "sleek look. This theme is designed for users who prefer working in low-light "
@@ -204,7 +223,7 @@ msgstr ""
 "phiên chỉnh sửa kéo dài."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:71
+#: ../preferences.rst:74
 msgid ""
 "**Retro:** A light theme that offers a classic and clean appearance. This "
 "theme uses light gray and white tones, making it ideal for users who prefer "
@@ -217,12 +236,12 @@ msgstr ""
 "mắt, đặc biệt trong môi trường có ánh sáng tốt."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:76
+#: ../preferences.rst:79
 msgid "Restoring Defaults"
 msgstr "Khôi phục Mặc định"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:77
+#: ../preferences.rst:80
 msgid ""
 "In OpenShot, each preferences category (or tab) in the Preferences window "
 "has a **Restore Defaults** button that allows you to easily reset the values "
@@ -237,7 +256,7 @@ msgstr ""
 "khác."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:81
+#: ../preferences.rst:84
 msgid ""
 "**Where to Find the Restore Defaults Button:** Each category or tab in the "
 "Preferences window has a **Restore Defaults** button located in the bottom "
@@ -251,7 +270,7 @@ msgstr ""
 "nút sẽ hiển thị **Khôi phục Mặc định: Bàn phím**."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:86
+#: ../preferences.rst:89
 msgid ""
 "**How It Works:** Only the settings in the currently selected category will "
 "be restored to their default values. This selective restoration makes it "
@@ -262,7 +281,7 @@ msgstr ""
 "lại một số tùy chọn mà không ảnh hưởng đến các phần khác."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:90
+#: ../preferences.rst:93
 msgid ""
 "**Tip for Beginners:** - If you're not sure about a change you've made in a "
 "particular category, don’t hesitate to use the **Restore Defaults** button. "
@@ -275,12 +294,12 @@ msgstr ""
 "danh mục đó mà không ảnh hưởng đến toàn bộ cấu hình của bạn."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:96
+#: ../preferences.rst:99
 msgid "Timeline"
 msgstr "Dòng Thời Gian"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:100
+#: ../preferences.rst:103
 msgid ""
 "The Timeline tab controls default timeline behavior, clip/transition "
 "insertion defaults, and whether to use the new timeline backend or the "
@@ -291,173 +310,222 @@ msgstr ""
 "dòng thời gian dựa trên web cũ."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:109
+#: ../preferences.rst:112
 msgid "Thumbnail Style"
 msgstr "Kiểu Ảnh Thu Nhỏ"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:109
+#: ../preferences.rst:112
 msgid "Entire Clip"
 msgstr "Toàn Bộ Clip"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:109
+#: ../preferences.rst:112
 msgid "Thumbnail density for the new timeline backend"
 msgstr "Mật độ ảnh thu nhỏ cho backend dòng thời gian mới"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:110
+#: ../preferences.rst:113
 msgid "Image Length (seconds)"
 msgstr "Độ dài Hình ảnh (giây)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:110 ../preferences.rst:111
+#: ../preferences.rst:113 ../preferences.rst:114
 msgid "10.00"
 msgstr "10.00"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:110
+#: ../preferences.rst:113
 msgid "Default duration for still images added to the timeline"
 msgstr "Thời lượng mặc định cho hình ảnh tĩnh được thêm vào dòng thời gian"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:111
+#: ../preferences.rst:114
 #, fuzzy
 msgid "Transition Length (seconds)"
 msgstr "Độ dài Hình ảnh (giây)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:111
+#: ../preferences.rst:114
 msgid "Default duration for newly added transitions"
 msgstr "Thời lượng mặc định cho các chuyển tiếp mới được thêm"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:112
+#: ../preferences.rst:115
 msgid "Auto-Transition (overlap clips)"
 msgstr "Chuyển tiếp Tự động (chồng clip)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:112 ../preferences.rst:154 ../preferences.rst:328
-#: ../preferences.rst:334
+#: ../preferences.rst:115 ../preferences.rst:160 ../preferences.rst:334
+#: ../preferences.rst:340
 msgid "Enabled"
 msgstr "Đã bật"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:112
+#: ../preferences.rst:115
 msgid "Automatically create transitions when clips overlap"
 msgstr "Tự động tạo chuyển tiếp khi các clip chồng lên nhau"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:113
+#: ../preferences.rst:116
 msgid "Enable Legacy Timeline (web-based)"
 msgstr "Bật Dòng Thời Gian Cũ (dựa trên web)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:113 ../preferences.rst:325 ../preferences.rst:331
+#: ../preferences.rst:116 ../preferences.rst:331 ../preferences.rst:337
 #, fuzzy
 msgid "Disabled"
 msgstr "Đã bật"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:113
+#: ../preferences.rst:116
 msgid "Use the legacy web timeline (WebEngine/WebKit auto-select)"
 msgstr "Sử dụng dòng thời gian web cũ (tự động chọn WebEngine/WebKit)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:119
+#: ../preferences.rst:122
 msgid "Preview"
 msgstr "Xem trước"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:123
+#: ../preferences.rst:126
 msgid ""
 "The Preview tab of the Preferences window controls real-time preview audio "
-"behavior, including device selection, sample rate, channels, buffering, and "
-"playback volume."
+"behavior, including device selection, sample rate, channels, buffering, "
+"playback volume, and optimized preview behavior."
 msgstr ""
-"Tab Xem Trước trong cửa sổ Tùy Chọn điều khiển hành vi âm thanh xem trước "
-"thời gian thực, bao gồm chọn thiết bị, tần số mẫu, kênh, bộ đệm và âm lượng "
-"phát."
+"Tab Xem trước trong cửa sổ Tùy chọn điều khiển hành vi âm thanh xem trước "
+"thời gian thực, bao gồm lựa chọn thiết bị, tần số mẫu, kênh, bộ đệm, âm "
+"lượng phát lại và hành vi xem trước tối ưu."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:132
+#: ../preferences.rst:135
 msgid "Playback Audio Device"
 msgstr "Thiết bị Âm thanh Phát lại"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:132
+#: ../preferences.rst:135
 msgid "Audio output device used during preview playback"
 msgstr "Thiết bị xuất âm thanh sử dụng trong khi phát xem trước"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:133
+#: ../preferences.rst:136
 msgid "Default Audio Sample Rate"
 msgstr "Tần số Mẫu Âm thanh Mặc định"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:133
+#: ../preferences.rst:136
 #, fuzzy
 msgid "48000"
 msgstr "44100"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:133
+#: ../preferences.rst:136
 #, fuzzy
 msgid "Default preview sample rate"
 msgstr "Tần số Mẫu Âm thanh Mặc định"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:134
+#: ../preferences.rst:137
 msgid "Default Audio Channels"
 msgstr "Kênh Âm thanh Mặc định"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:134
+#: ../preferences.rst:137
 msgid "Stereo (2 Channel)"
 msgstr "Âm thanh nổi (2 kênh)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:134
+#: ../preferences.rst:137
 msgid "Default preview channel layout"
 msgstr "Bố cục kênh xem trước mặc định"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:135
+#: ../preferences.rst:138
 msgid "Playback Audio Buffer Size"
 msgstr "Kích thước Bộ đệm Âm thanh Phát lại"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:135
+#: ../preferences.rst:138
 msgid "512"
 msgstr "512"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:135
+#: ../preferences.rst:138
 msgid "Audio samples buffered before playback begins (128 to 4096)"
 msgstr "Số mẫu âm thanh được đệm trước khi bắt đầu phát (128 đến 4096)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:136
+#: ../preferences.rst:139
 msgid "Volume"
 msgstr "Âm lượng"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:136
+#: ../preferences.rst:139
 msgid "75"
 msgstr "75"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:136
+#: ../preferences.rst:139
 msgid "Preview playback volume percentage"
 msgstr "Phần trăm âm lượng phát xem trước"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:140
+msgid "Concurrent Optimize Jobs"
+msgstr "Công việc Tối ưu Đồng thời"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
+msgid "2"
+msgstr "2"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
+msgid "Number of video files OpenShot can optimize at the same time"
+msgstr "Số lượng tệp video mà OpenShot có thể tối ưu cùng lúc"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "Optimized Preview Resolution"
+msgstr "Độ phân giải Xem trước Tối ưu"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "1280x720"
+msgstr "1280x720"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "Maximum resolution used when creating optimized preview files"
+msgstr "Độ phân giải tối đa được sử dụng khi tạo các tệp xem trước tối ưu"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid "Thumbnail Preload Rate / second"
+msgstr "Tốc độ Tải trước Hình thu nhỏ / giây"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid "4"
+msgstr "4"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid ""
+"How many thumbnail preview frames per second are pre-generated while "
+"optimizing video"
+msgstr ""
+"Số khung hình xem trước hình thu nhỏ được tạo trước mỗi giây trong khi tối "
+"ưu video"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:146
 msgid "Autosave"
 msgstr "Tự động lưu"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:144
+#: ../preferences.rst:150
 msgid ""
 "Autosave is a feature in OpenShot which automatically saves the current "
 "changes to your project after a specific number of minutes, helping to "
@@ -469,47 +537,47 @@ msgstr ""
 "mất dữ liệu trong trường hợp sự cố, treo máy hoặc lỗi người dùng."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:154
+#: ../preferences.rst:160
 msgid "Enable Autosave"
 msgstr "Bật Tự động lưu"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:155
+#: ../preferences.rst:161
 msgid "Autosave Interval (minutes)"
 msgstr "Khoảng thời gian Tự động lưu (phút)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:155
+#: ../preferences.rst:161
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:156
+#: ../preferences.rst:162
 msgid "History Limit (# of undo/redo)"
 msgstr "Giới hạn Lịch sử (số lần hoàn tác/làm lại)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:156
+#: ../preferences.rst:162
 msgid "15"
 msgstr "15"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:157
+#: ../preferences.rst:163
 msgid "Recovery Limit (# of project copies)"
 msgstr "Giới hạn Phục hồi (số bản sao dự án)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:157
+#: ../preferences.rst:163
 msgid "30"
 msgstr "30"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:161
+#: ../preferences.rst:167
 msgid "Recovery"
 msgstr "Phục hồi"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:163
+#: ../preferences.rst:169
 msgid ""
 "**Before each save**, a compressed ``*.zip`` copy of the current project is "
 "saved in the recovery folder, to further reduce the risk of data loss. The "
@@ -522,7 +590,7 @@ msgstr ""
 "openshot_qt\\recovery``."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:167
+#: ../preferences.rst:173
 msgid ""
 "To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:"
 "`File->Recovery` menu on the main window after opening your project. If "
@@ -545,7 +613,7 @@ msgstr ""
 "osp\" thành tên tệp dự án gốc để khôi phục."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:175
+#: ../preferences.rst:181
 msgid ""
 "To **manually** recover a corrupt or broken ``*.osp`` project file, please "
 "find the most recent copy in the recovery folder, and copy/paste the file "
@@ -565,12 +633,12 @@ msgstr ""
 "phiên bản bạn muốn phục hồi."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:185
+#: ../preferences.rst:191
 msgid "Cache"
 msgstr "Bộ nhớ đệm"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:189
+#: ../preferences.rst:195
 msgid ""
 "Cache settings can be adjusted to make real-time playback faster or less CPU "
 "intensive. The cache is used to store image and audio data for each frame of "
@@ -590,12 +658,12 @@ msgstr ""
 "thanh mượt mà. Xem :ref:`playback_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:201
+#: ../preferences.rst:207
 msgid "Cache Mode"
 msgstr "Chế độ Bộ nhớ đệm"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:201
+#: ../preferences.rst:207
 msgid ""
 "Choose between Memory or Disk caching (memory caching is preferred). Disk "
 "caching writes image data to the hard disk for later retrieving, and works "
@@ -606,12 +674,12 @@ msgstr ""
 "sau, và hoạt động tốt nhất với SSD."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:202
+#: ../preferences.rst:208
 msgid "Cache Limit (MB)"
 msgstr "Giới hạn Bộ nhớ đệm (MB)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:202
+#: ../preferences.rst:208
 msgid ""
 "How many MB are set aside for cache related data. Larger numbers are not "
 "always better, since it takes more CPU to generate more frames to fill the "
@@ -622,22 +690,22 @@ msgstr ""
 "để lấp đầy bộ nhớ đệm."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:203
+#: ../preferences.rst:209
 msgid "Image Format (Disk Only)"
 msgstr "Định dạng Hình ảnh (Chỉ Ổ đĩa)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:203
+#: ../preferences.rst:209
 msgid "Image format to store disk cache image data"
 msgstr "Định dạng hình ảnh để lưu dữ liệu hình ảnh bộ nhớ đệm trên ổ đĩa"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:204
+#: ../preferences.rst:210
 msgid "Scale Factor (Disk Only)"
 msgstr "Hệ số Tỷ lệ (Chỉ Ổ đĩa)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:204
+#: ../preferences.rst:210
 msgid ""
 "Percentage (0.1 to 1.0) to reduce the size of disk based image files stored "
 "in the disk cache. Smaller numbers make writing and reading cached image "
@@ -648,12 +716,12 @@ msgstr ""
 "hình ảnh bộ nhớ đệm nhanh hơn."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:205
+#: ../preferences.rst:211
 msgid "Image Quality (Disk Only)"
 msgstr "Chất lượng Hình ảnh (Chỉ Ổ đĩa)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:205
+#: ../preferences.rst:211
 msgid ""
 "Quality of the image files used in disk cache. The higher compression can "
 "cause more slowness, but results in smaller file sizes."
@@ -662,12 +730,12 @@ msgstr ""
 "hơn có thể gây chậm hơn, nhưng cho kết quả kích thước tệp nhỏ hơn."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:206
+#: ../preferences.rst:212
 msgid "Cache Pre-roll: Min Frames:"
 msgstr "Bộ đệm Khởi động trước: Số khung hình tối thiểu:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:206
+#: ../preferences.rst:212
 msgid ""
 "Minimum # of frames that must be cached before playback begins. The larger "
 "the #, the larger the wait before playback begins."
@@ -676,12 +744,12 @@ msgstr ""
 "đầu. Số càng lớn, thời gian chờ trước khi phát càng lâu."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:207
+#: ../preferences.rst:213
 msgid "Cache Pre-roll: Max Frames:"
 msgstr "Bộ đệm Khởi động trước: Số khung hình tối đa:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:207
+#: ../preferences.rst:213
 msgid ""
 "Maximum # of frames that can be cached during playback (in front of the "
 "playhead). The larger the #, the more CPU is required to cache ahead - vs "
@@ -692,12 +760,12 @@ msgstr ""
 "trước - so với việc hiển thị các khung đã được lưu trong bộ nhớ đệm."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:208
+#: ../preferences.rst:214
 msgid "Cache Ahead (Percent):"
 msgstr "Bộ nhớ đệm trước (Phần trăm):"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:208
+#: ../preferences.rst:214
 msgid ""
 "Between 0.0 and 1.0. This represents how much % we cache ahead of the "
 "playhead. For example, 0.5 would cache 50% behind and 50% ahead of the "
@@ -708,12 +776,12 @@ msgstr ""
 "sau và 80% phía trước đầu phát."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:209
+#: ../preferences.rst:215
 msgid "Cache Max Frames:"
 msgstr "Số khung hình bộ nhớ đệm tối đa:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:209
+#: ../preferences.rst:215
 #, fuzzy
 msgid ""
 "This is an override on the total allowed frames that can be cached by our "
@@ -737,7 +805,7 @@ msgstr ""
 "cho OpenShot."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:212
+#: ../preferences.rst:218
 msgid ""
 "OpenShot's default cache settings now target a balanced preview experience: "
 "roughly **50% behind / 50% ahead** of the playhead, **768 MB** cache memory, "
@@ -751,12 +819,12 @@ msgstr ""
 "hệ thống chậm hơn."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:218
+#: ../preferences.rst:224
 msgid "Performance"
 msgstr "Hiệu suất"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:221
+#: ../preferences.rst:227
 msgid ""
 "Please keep in mind that GPU hardware acceleration is experimental at the "
 "moment. OpenShot supports both decoding and encoding acceleration. For more "
@@ -772,12 +840,12 @@ msgstr ""
 "hơn, tăng tốc phần cứng có thể không luôn nhanh hơn mã hóa bằng CPU."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:231
+#: ../preferences.rst:237
 msgid "Hardware Decoder Mode"
 msgstr "Chế Độ Giải Mã Phần Cứng"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:232
+#: ../preferences.rst:238
 msgid ""
 "Select the hardware decoding backend to use. Use :guilabel:`Test` to verify "
 "the selected decoder mode."
@@ -786,59 +854,54 @@ msgstr ""
 "chế độ giải mã đã chọn."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:233
+#: ../preferences.rst:239
 msgid "Hardware Decoder Graphics Card"
 msgstr "Card Đồ Họa Giải Mã Phần Cứng"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:234
+#: ../preferences.rst:240
 msgid "Choose which GPU device is used for hardware decoding."
 msgstr "Chọn thiết bị GPU được sử dụng cho giải mã phần cứng."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:235
+#: ../preferences.rst:241
 msgid "Hardware Encoder Graphics Card"
 msgstr "Card Đồ Họa Mã Hóa Phần Cứng"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:236
+#: ../preferences.rst:242
 msgid "Choose which GPU device is used for hardware encoding."
 msgstr "Chọn thiết bị GPU được sử dụng cho mã hóa phần cứng."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:237
-msgid "OMP Threads (0 = Default)"
-msgstr "Luồng OMP (0 = Mặc định)"
+#: ../preferences.rst:243
+msgid "OMP Threads"
+msgstr "Luồng OMP"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:238
+#: ../preferences.rst:244
 msgid ""
-"Number of OpenMP worker threads used by performance-sensitive processing. "
-"Use ``0`` to let OpenShot choose automatically."
+"Number of OpenMP worker threads used by performance-sensitive processing."
 msgstr ""
-"Số luồng công nhân OpenMP dùng cho xử lý nhạy cảm hiệu suất. Dùng ``0`` để "
-"OpenShot tự chọn."
+"Số luồng công nhân OpenMP được sử dụng cho xử lý nhạy cảm với hiệu suất."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:239
-msgid "FFmpeg Threads (0 = Default)"
-msgstr "Luồng FFmpeg (0 = Mặc định)"
+#: ../preferences.rst:245
+msgid "FFmpeg Threads"
+msgstr "Luồng FFmpeg"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:240
-msgid ""
-"Number of FFmpeg threads used for decoding/encoding. Use ``0`` for automatic "
-"thread selection."
-msgstr ""
-"Số luồng FFmpeg dùng cho giải mã/mã hóa. Dùng ``0`` để tự động chọn luồng."
+#: ../preferences.rst:246
+msgid "Number of FFmpeg threads used for decoding/encoding."
+msgstr "Số luồng FFmpeg được sử dụng để giải mã/mã hóa."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:241
+#: ../preferences.rst:247
 msgid "Hardware Decoder Max Width (0 = Default)"
 msgstr "Chiều Rộng Tối Đa Giải Mã Phần Cứng (0 = Mặc định)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:242
+#: ../preferences.rst:248
 msgid ""
 "Optional maximum width for hardware decoding. Use ``0`` for no explicit "
 "limit."
@@ -847,12 +910,12 @@ msgstr ""
 "hạn rõ ràng."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:243
+#: ../preferences.rst:249
 msgid "Hardware Decoder Max Height (0 = Default)"
 msgstr "Chiều Cao Tối Đa Giải Mã Phần Cứng (0 = Mặc định)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:244
+#: ../preferences.rst:250
 msgid ""
 "Optional maximum height for hardware decoding. Use ``0`` for no explicit "
 "limit."
@@ -861,22 +924,22 @@ msgstr ""
 "hạn rõ ràng."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:245
+#: ../preferences.rst:251
 msgid "Use Blender GPU rendering for Animated Titles"
 msgstr "Sử dụng kết xuất GPU Blender cho Tiêu đề Động"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:246
+#: ../preferences.rst:252
 msgid "Enable GPU rendering for Blender-based animated titles."
 msgstr "Bật kết xuất GPU cho tiêu đề động dựa trên Blender."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:251
+#: ../preferences.rst:257
 msgid "Keyboard"
 msgstr "Bàn phím"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:254
+#: ../preferences.rst:260
 msgid ""
 "This section allows you to view and customize hotkeys for various actions in "
 "the application. Here, you can assign and manage multiple shortcuts for the "
@@ -887,7 +950,7 @@ msgstr ""
 "hành động và khôi phục phím tắt mặc định nếu cần."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:257
+#: ../preferences.rst:263
 msgid ""
 "**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to "
 "the same action by separating them with a pipe (``|``) delimiter. This "
@@ -899,7 +962,7 @@ msgstr ""
 "hoạt này cho phép bạn cấu hình nhiều phím tắt cho mỗi hành động theo nhu cầu."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:260
+#: ../preferences.rst:266
 msgid ""
 "**Immediate Application**: No restart is required after adjusting keyboard "
 "shortcuts. Changes are applied immediately, so you can start using your "
@@ -910,7 +973,7 @@ msgstr ""
 "mới ngay lập tức."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:263
+#: ../preferences.rst:269
 msgid ""
 "**Restore Default Shortcuts**: If needed, you can reset all keyboard "
 "shortcuts to their default settings by clicking on the :guilabel:`Restore "
@@ -922,7 +985,7 @@ msgstr ""
 "phím` ở góc dưới bên trái của màn hình Tùy chọn."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:266
+#: ../preferences.rst:272
 msgid ""
 "**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are "
 "any duplicate shortcuts, they will be highlighted in **red** and will not "
@@ -933,7 +996,7 @@ msgstr ""
 "được giải quyết."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:270
+#: ../preferences.rst:276
 msgid ""
 "For more detailed information on how to use and customize keyboard "
 "shortcuts, see :ref:`keyboard_shortcut_ref`."
@@ -942,12 +1005,12 @@ msgstr ""
 "ref:`keyboard_shortcut_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:273
+#: ../preferences.rst:279
 msgid "Location"
 msgstr "Vị trí"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:277
+#: ../preferences.rst:283
 msgid ""
 "Default file path locations for saving/opening projects, importing files, "
 "and exporting videos can be configured here. This can save you time by "
@@ -960,47 +1023,47 @@ msgstr ""
 "bên dưới)."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:287
+#: ../preferences.rst:293
 msgid "File Import"
 msgstr "Nhập Tệp"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:287
+#: ../preferences.rst:293
 msgid "Default folder to choose when importing a file"
 msgstr "Thư mục mặc định để chọn khi nhập tệp"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:288
+#: ../preferences.rst:294
 msgid "Save or Open Project"
 msgstr "Lưu hoặc Mở Dự Án"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:288
+#: ../preferences.rst:294
 msgid "Default folder to choose when saving or opening a project file"
 msgstr "Thư mục mặc định để chọn khi lưu hoặc mở tệp dự án"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:289
+#: ../preferences.rst:295
 msgid "Video Export"
 msgstr "Xuất Video"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:289
+#: ../preferences.rst:295
 msgid "Default folder to choose when exporting a video"
 msgstr "Thư mục mặc định để chọn khi xuất video"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:296
+#: ../preferences.rst:302
 msgid "Values"
 msgstr "Giá trị"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:298
+#: ../preferences.rst:304
 msgid "**Recent Folder**"
 msgstr "**Thư Mục Gần Đây**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:298
+#: ../preferences.rst:304
 msgid ""
 "The last folder used for this same operation. Project folders, Import "
 "folders, and Export folders are tracked separately."
@@ -1009,12 +1072,12 @@ msgstr ""
 "nhập và thư mục xuất được theo dõi riêng biệt."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:299
+#: ../preferences.rst:305
 msgid "**Project Folder**"
 msgstr "**Thư Mục Dự Án**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:299
+#: ../preferences.rst:305
 msgid ""
 "The current project folder (or the user's home folder, if the project is not "
 "yet saved)"
@@ -1023,87 +1086,87 @@ msgstr ""
 "được lưu)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:305
+#: ../preferences.rst:311
 msgid "Advanced"
 msgstr "Nâng Cao"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:309
+#: ../preferences.rst:315
 msgid "The Advanced tab includes ComfyUI integration and debugging options."
 msgstr "Tab Nâng Cao bao gồm tích hợp ComfyUI và các tùy chọn gỡ lỗi."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:318
+#: ../preferences.rst:324
 msgid "Comfy UI URL"
 msgstr "URL Comfy UI"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:319
+#: ../preferences.rst:325
 msgid "``http://127.0.0.1:8188``"
 msgstr "``http://127.0.0.1:8188``"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:320
+#: ../preferences.rst:326
 msgid "URL of your local or remote ComfyUI server"
 msgstr "URL của máy chủ ComfyUI cục bộ hoặc từ xa của bạn"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:321
+#: ../preferences.rst:327
 msgid "Debug Mode (Port)"
 msgstr "Chế Độ Gỡ Lỗi (Cổng)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:322
+#: ../preferences.rst:328
 msgid "5556"
 msgstr "5556"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:323
+#: ../preferences.rst:329
 msgid "Port used by debug logging features"
 msgstr "Cổng được sử dụng bởi các tính năng ghi nhật ký gỡ lỗi"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:324
+#: ../preferences.rst:330
 msgid "Debug Mode (Verbose)"
 msgstr "Chế Độ Gỡ Lỗi (Chi Tiết)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:326
+#: ../preferences.rst:332
 msgid "Enable verbose debugging output"
 msgstr "Bật xuất gỡ lỗi chi tiết"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:327
+#: ../preferences.rst:333
 msgid "Send Anonymous Metrics and Errors"
 msgstr "Gửi Số Liệu và Lỗi Ẩn Danh"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:329
+#: ../preferences.rst:335
 msgid "Send anonymous telemetry and error reports"
 msgstr "Gửi báo cáo lỗi và dữ liệu thu thập ẩn danh"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:330
+#: ../preferences.rst:336
 msgid "Show Playback Performance (FPS)"
 msgstr "Hiển Thị Hiệu Suất Phát (FPS)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:332
+#: ../preferences.rst:338
 msgid "Display live FPS in preview playback"
 msgstr "Hiển thị FPS trực tiếp khi phát xem trước"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:333
+#: ../preferences.rst:339
 msgid "Show Export Dialog when Finished"
 msgstr "Hiển thị hộp thoại Xuất khi hoàn thành"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:335
+#: ../preferences.rst:341
 msgid "Display the Export Video window when export completes"
 msgstr "Hiển thị cửa sổ Xuất Video khi xuất hoàn tất"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:337
+#: ../preferences.rst:343
 msgid ""
 "The ComfyUI **Check** button updates an inline status icon: green checkmark "
 "for success, red icon for failure. If OpenShot cannot reach this server, AI "
@@ -1117,12 +1180,12 @@ msgstr ""
 "việc."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:344
+#: ../preferences.rst:350
 msgid "Reset (Default Values)"
 msgstr "Đặt Lại (Giá Trị Mặc Định)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:346
+#: ../preferences.rst:352
 msgid ""
 "To reset **all** preferences to their default values, please delete the "
 "``openshot.settings`` file and re-launch OpenShot. The settings file can be "
@@ -1138,7 +1201,7 @@ msgstr ""
 "tệp ``openshot.settings`` bị thiếu với các giá trị mặc định."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:351
+#: ../preferences.rst:357
 msgid ""
 "Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch "
 "OpenShot. However, please make a **backup** of any customized folders: "
@@ -1153,7 +1216,7 @@ msgstr ""
 "của bạn (các tệp ``*.osp``)."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:356
+#: ../preferences.rst:362
 msgid ""
 "Deleting the ``.openshot_qt/`` folder is the quickest method to restore "
 "OpenShot preferences and settings to their Default values (i.e. also called "

@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-04-02 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -49,7 +50,7 @@ msgstr "Tên"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:35 ../main_window.rst:80 ../main_window.rst:103
-#: ../main_window.rst:237 ../main_window.rst:308
+#: ../main_window.rst:238 ../main_window.rst:309
 msgid "Description"
 msgstr "Mô Tả"
 
@@ -90,7 +91,7 @@ msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:39 ../main_window.rst:315
+#: ../main_window.rst:39 ../main_window.rst:316
 msgid "Project Files"
 msgstr "Tệp Dự Án"
 
@@ -440,10 +441,14 @@ msgstr "Căn giữa khu vực dòng thời gian hiển thị quanh vị trí ph�
 #: ../main_window.rst:121
 msgid ""
 "Control the visible timeline range. Drag handles to zoom in/out, drag center "
-"to pan, and double-click to fit timeline."
+"to pan, and double-click to fit timeline. You can also use :kbd:`Ctrl+Scroll "
+"Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle "
+"mouse button for smooth zooming."
 msgstr ""
 "Điều khiển phạm vi dòng thời gian hiển thị. Kéo các tay cầm để phóng to/thu "
-"nhỏ, kéo giữa để di chuyển, và nhấp đúp để vừa khít dòng thời gian."
+"nhỏ, kéo trung tâm để di chuyển, và nhấp đúp để vừa với dòng thời gian. Bạn "
+"cũng có thể sử dụng :kbd:`Ctrl+Scroll Wheel`, hoặc trên dòng thời gian "
+"QWidget giữ :kbd:`Ctrl` và kéo bằng nút chuột giữa để phóng to mượt mà."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:123
@@ -532,7 +537,7 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:292
+#: ../main_window.rst:146 ../main_window.rst:293
 msgid "Advanced View"
 msgstr "Chế Độ Nâng Cao"
 
@@ -603,796 +608,806 @@ msgstr ":kbd:`Ctrl+Shift+H`"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:153
+msgid "Delete Optimized Videos"
+msgstr "Xóa Video Đã Tối Ưu"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:153
+msgid ":kbd:`Ctrl+Shift+O`"
+msgstr ":kbd:`Ctrl+Shift+O`"
+
+# Translated with gpt-4.1-mini
+#: ../main_window.rst:154
 msgid "Clear Waveform Display Data"
 msgstr "Xóa Dữ Liệu Hiển Thị Sóng Âm"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:153
+#: ../main_window.rst:154
 msgid ":kbd:`Ctrl+Shift+W`"
 msgstr ":kbd:`Ctrl+Shift+W`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:154
+#: ../main_window.rst:155
 msgid "Copy"
 msgstr "Sao Chép"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:154
+#: ../main_window.rst:155
 msgid ":kbd:`Ctrl+C`"
 msgstr ":kbd:`Ctrl+C`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:155
+#: ../main_window.rst:156
 msgid "Cut"
 msgstr "Cắt"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:155
+#: ../main_window.rst:156
 msgid ":kbd:`Ctrl+X`"
 msgstr ":kbd:`Ctrl+X`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:156
+#: ../main_window.rst:157
 msgid "Delete Item"
 msgstr "Xóa Mục"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:156
+#: ../main_window.rst:157
 msgid ":kbd:`Delete`"
 msgstr ":kbd:`Delete`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:156
+#: ../main_window.rst:157
 msgid ":kbd:`Backspace`"
 msgstr ":kbd:`Backspace`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:157
+#: ../main_window.rst:158
 msgid "Delete Item (Ripple)"
 msgstr "Xóa Mục (Gợn Sóng)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:157
+#: ../main_window.rst:158
 msgid ":kbd:`Shift+Delete`"
 msgstr ":kbd:`Shift+Delete`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:158
+#: ../main_window.rst:159
 msgid "Details View"
 msgstr "Chế Độ Xem Chi Tiết"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:158
+#: ../main_window.rst:159
 msgid ":kbd:`Ctrl+Page Up`"
 msgstr ":kbd:`Ctrl+Page Up`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:159
+#: ../main_window.rst:160
 msgid "Donate"
 msgstr "Ủng Hộ"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:159
+#: ../main_window.rst:160
 msgid ":kbd:`F7`"
 msgstr ":kbd:`F7`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:160
+#: ../main_window.rst:161
 msgid "Duplicate"
 msgstr "Nhân Bản"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:160
+#: ../main_window.rst:161
 msgid ":kbd:`Ctrl+Shift+/`"
 msgstr ":kbd:`Ctrl+Shift+/`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:161
+#: ../main_window.rst:162
 msgid "Edit Title"
 msgstr "Chỉnh Sửa Tiêu Đề"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:161
+#: ../main_window.rst:162
 msgid ":kbd:`Alt+T`"
 msgstr ":kbd:`Alt+T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:162
+#: ../main_window.rst:163
 msgid "Export Selected Files"
 msgstr "Xuất Các Tệp Đã Chọn"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:162
+#: ../main_window.rst:163
 msgid ":kbd:`Ctrl+Shift+E`"
 msgstr ":kbd:`Ctrl+Shift+E`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:163
+#: ../main_window.rst:164
 msgid "Export Video / Media"
 msgstr "Xuất Video / Media"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:163
+#: ../main_window.rst:164
 msgid ":kbd:`Ctrl+E`"
 msgstr ":kbd:`Ctrl+E`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:163
+#: ../main_window.rst:164
 msgid ":kbd:`Ctrl+M`"
 msgstr ":kbd:`Ctrl+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:164
+#: ../main_window.rst:165
 msgid "Fast Forward"
 msgstr "Tua Nhanh"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:164
+#: ../main_window.rst:165
 msgid ":kbd:`L`"
 msgstr ":kbd:`L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:165
+#: ../main_window.rst:166
 msgid "File Properties"
 msgstr "Thuộc Tính Tệp"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:165
+#: ../main_window.rst:166
 msgid ":kbd:`Alt+I`"
 msgstr ":kbd:`Alt+I`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:165
+#: ../main_window.rst:166
 msgid ":kbd:`Ctrl+Double Click`"
 msgstr ":kbd:`Ctrl+Double Click`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:166
+#: ../main_window.rst:167
 msgid "Freeze View"
 msgstr "Đóng Băng Chế Độ Xem"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:166
+#: ../main_window.rst:167
 msgid ":kbd:`Ctrl+F`"
 msgstr ":kbd:`Ctrl+F`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:167
+#: ../main_window.rst:168
 msgid "Fullscreen"
 msgstr "Toàn Màn Hình"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:167
+#: ../main_window.rst:168
 msgid ":kbd:`F11`"
 msgstr ":kbd:`F11`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:168
+#: ../main_window.rst:169
 msgid "Import Files..."
 msgstr "Nhập Tệp..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:168
+#: ../main_window.rst:169
 msgid ":kbd:`Ctrl+I`"
 msgstr ":kbd:`Ctrl+I`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:169
+#: ../main_window.rst:170
 msgid "Insert Keyframe"
 msgstr "Chèn Keyframe"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:169
+#: ../main_window.rst:170
 msgid ":kbd:`Alt+Shift+K`"
 msgstr ":kbd:`Alt+Shift+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:170
+#: ../main_window.rst:171
 msgid "Join our Community..."
 msgstr "Tham gia Cộng đồng của chúng tôi..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:170
+#: ../main_window.rst:171
 msgid ":kbd:`F5`"
 msgstr ":kbd:`F5`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:171
+#: ../main_window.rst:172
 msgid "Jump To End"
 msgstr "Chuyển đến Cuối"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:171
+#: ../main_window.rst:172
 msgid ":kbd:`End`"
 msgstr ":kbd:`End`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:172
+#: ../main_window.rst:173
 msgid "Jump To Start"
 msgstr "Chuyển đến Đầu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:172
+#: ../main_window.rst:173
 msgid ":kbd:`Home`"
 msgstr ":kbd:`Home`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:173
+#: ../main_window.rst:174
 msgid "Launch Tutorial"
 msgstr "Bắt đầu Hướng dẫn"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:173
+#: ../main_window.rst:174
 msgid ":kbd:`F2`"
 msgstr ":kbd:`F2`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:174
+#: ../main_window.rst:175
 msgid "New Project"
 msgstr "Dự án Mới"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:174
+#: ../main_window.rst:175
 msgid ":kbd:`Ctrl+N`"
 msgstr ":kbd:`Ctrl+N`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:176
 msgid "Next Frame"
 msgstr "Khung Tiếp theo"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:176
 msgid ":kbd:`Right`"
 msgstr ":kbd:`Phải`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:175
+#: ../main_window.rst:176
 msgid ":kbd:`.`"
 msgstr ":kbd:`.`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:176
+#: ../main_window.rst:177
 msgid "Next Marker"
 msgstr "Đánh Dấu Tiếp Theo"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:176
+#: ../main_window.rst:177
 msgid ":kbd:`Shift+M`"
 msgstr ":kbd:`Shift+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:176
+#: ../main_window.rst:177
 msgid ":kbd:`Alt+Right`"
 msgstr ":kbd:`Alt+Phải`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:177
+#: ../main_window.rst:178
 msgid "Nudge left (1 Frame)"
 msgstr "Dịch sang trái (1 Khung)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:177
+#: ../main_window.rst:178
 msgid ":kbd:`Ctrl+Left`"
 msgstr ":kbd:`Ctrl+Trái`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:178
+#: ../main_window.rst:179
 msgid "Nudge left (5 Frames)"
 msgstr "Dịch sang trái (5 Khung)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:178
+#: ../main_window.rst:179
 msgid ":kbd:`Shift+Ctrl+Left`"
 msgstr ":kbd:`Shift+Ctrl+Trái`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:179
+#: ../main_window.rst:180
 msgid "Nudge right (1 Frame)"
 msgstr "Dịch sang phải (1 Khung)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:179
+#: ../main_window.rst:180
 msgid ":kbd:`Ctrl+Right`"
 msgstr ":kbd:`Ctrl+Phải`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:180
+#: ../main_window.rst:181
 msgid "Nudge right (5 Frames)"
 msgstr "Dịch sang phải (5 Khung)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:180
+#: ../main_window.rst:181
 msgid ":kbd:`Shift+Ctrl+Right`"
 msgstr ":kbd:`Shift+Ctrl+Phải`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:181
+#: ../main_window.rst:182
 msgid "Open Help Contents"
 msgstr "Mở Nội dung Trợ giúp"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:181
+#: ../main_window.rst:182
 msgid ":kbd:`F1`"
 msgstr ":kbd:`F1`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:182
+#: ../main_window.rst:183
 msgid "Open Project..."
 msgstr "Mở Dự án..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:182
+#: ../main_window.rst:183
 msgid ":kbd:`Ctrl+O`"
 msgstr ":kbd:`Ctrl+O`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:183
+#: ../main_window.rst:184
 msgid "Paste"
 msgstr "Dán"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:183
+#: ../main_window.rst:184
 msgid ":kbd:`Ctrl+V`"
 msgstr ":kbd:`Ctrl+V`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:185
 msgid "Play/Pause Toggle"
 msgstr "Chuyển đổi Phát/Tạm dừng"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:185
 msgid ":kbd:`Space`"
 msgstr ":kbd:`Dấu cách`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:185
 msgid ":kbd:`Up`"
 msgstr ":kbd:`Lên`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:184
+#: ../main_window.rst:185
 msgid ":kbd:`Down`"
 msgstr ":kbd:`Xuống`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:185
+#: ../main_window.rst:186
 msgid "Preferences"
 msgstr "Tùy chọn"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:185
+#: ../main_window.rst:186
 msgid ":kbd:`Ctrl+P`"
 msgstr ":kbd:`Ctrl+P`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:186
+#: ../main_window.rst:187
 msgid "Preview File"
 msgstr "Xem trước Tệp"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:186
+#: ../main_window.rst:187
 msgid ":kbd:`Alt+P`"
 msgstr ":kbd:`Alt+P`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:186 ../main_window.rst:223
+#: ../main_window.rst:187 ../main_window.rst:224
 msgid ":kbd:`Double Click`"
 msgstr ":kbd:`Nhấp đúp`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:187
+#: ../main_window.rst:188
 msgid "Previous Frame"
 msgstr "Khung Trước"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:187
+#: ../main_window.rst:188
 msgid ":kbd:`Left`"
 msgstr ":kbd:`Trái`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:187
+#: ../main_window.rst:188
 msgid ":kbd:`,`"
 msgstr ":kbd:`,`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:188
+#: ../main_window.rst:189
 msgid "Previous Marker"
 msgstr "Đánh Dấu Trước"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:188
+#: ../main_window.rst:189
 msgid ":kbd:`Ctrl+Shift+M`"
 msgstr ":kbd:`Ctrl+Shift+M`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:188
+#: ../main_window.rst:189
 msgid ":kbd:`Alt+Left`"
 msgstr ":kbd:`Alt+Trái`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:189 ../main_window.rst:317
+#: ../main_window.rst:190 ../main_window.rst:318
 msgid "Properties"
 msgstr "Thuộc tính"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:189
+#: ../main_window.rst:190
 msgid ":kbd:`U`"
 msgstr ":kbd:`U`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:190
+#: ../main_window.rst:191
 msgid "Quit"
 msgstr "Thoát"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:190
+#: ../main_window.rst:191
 msgid ":kbd:`Ctrl+Q`"
 msgstr ":kbd:`Ctrl+Q`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:192
 msgid "Razor Toggle"
 msgstr "Chuyển đổi Dao cạo"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:192
 msgid ":kbd:`C`"
 msgstr ":kbd:`C`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:192
 msgid ":kbd:`B`"
 msgstr ":kbd:`B`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:191
+#: ../main_window.rst:192
 msgid ":kbd:`R`"
 msgstr ":kbd:`R`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:192
+#: ../main_window.rst:193
 msgid "Redo"
 msgstr "Làm lại"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:192
+#: ../main_window.rst:193
 msgid ":kbd:`Ctrl+Shift+Z`"
 msgstr ":kbd:`Ctrl+Shift+Z`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:193
+#: ../main_window.rst:194
 msgid "Report a Bug..."
 msgstr "Báo lỗi..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:193
+#: ../main_window.rst:194
 msgid ":kbd:`F3`"
 msgstr ":kbd:`F3`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:194
+#: ../main_window.rst:195
 msgid "Rewind"
 msgstr "Tua lại"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:194
+#: ../main_window.rst:195
 msgid ":kbd:`J`"
 msgstr ":kbd:`J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:195 ../main_window.rst:196
+#: ../main_window.rst:196 ../main_window.rst:197
 msgid "Save Current Frame"
 msgstr "Lưu Khung Hiện tại"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:195 ../main_window.rst:196
+#: ../main_window.rst:196 ../main_window.rst:197
 msgid ":kbd:`Ctrl+Shift+Y`"
 msgstr ":kbd:`Ctrl+Shift+Y`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:197
+#: ../main_window.rst:198
 msgid "Save Project"
 msgstr "Lưu Dự án"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:197
+#: ../main_window.rst:198
 msgid ":kbd:`Ctrl+S`"
 msgstr ":kbd:`Ctrl+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:198
+#: ../main_window.rst:199
 msgid "Save Project As..."
 msgstr "Lưu Dự án thành..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:198
+#: ../main_window.rst:199
 msgid ":kbd:`Ctrl+Shift+S`"
 msgstr ":kbd:`Ctrl+Shift+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:199
+#: ../main_window.rst:200
 msgid "Select All"
 msgstr "Chọn Tất cả"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:199
+#: ../main_window.rst:200
 msgid ":kbd:`Ctrl+A`"
 msgstr ":kbd:`Ctrl+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:200
+#: ../main_window.rst:201
 msgid "Select Item (Ripple)"
 msgstr "Chọn Mục (Gợn sóng)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:200
+#: ../main_window.rst:201
 msgid ":kbd:`Alt+A`"
 msgstr ":kbd:`Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:200
+#: ../main_window.rst:201
 msgid ":kbd:`Alt+Click`"
 msgstr ":kbd:`Alt+Nhấp`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:201
+#: ../main_window.rst:202
 msgid "Select None"
 msgstr "Bỏ chọn Tất cả"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:201
+#: ../main_window.rst:202
 msgid ":kbd:`Ctrl+Shift+A`"
 msgstr ":kbd:`Ctrl+Shift+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:202
+#: ../main_window.rst:203
 msgid "Show All Docks"
 msgstr "Hiển thị Tất cả Dock"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:202
+#: ../main_window.rst:203
 msgid ":kbd:`Ctrl+Shift+D`"
 msgstr ":kbd:`Ctrl+Shift+D`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:203 ../main_window.rst:285
+#: ../main_window.rst:204 ../main_window.rst:286
 msgid "Simple View"
 msgstr "Chế độ xem Đơn giản"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:203
+#: ../main_window.rst:204
 msgid ":kbd:`Alt+Shift+0`"
 msgstr ":kbd:`Alt+Shift+0`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:204
+#: ../main_window.rst:205
 msgid "Slice All: Keep Both Sides"
 msgstr "Cắt Tất cả: Giữ cả Hai Bên"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:204
+#: ../main_window.rst:205
 msgid ":kbd:`Ctrl+Shift+K`"
 msgstr ":kbd:`Ctrl+Shift+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:205
+#: ../main_window.rst:206
 msgid "Slice All: Keep Left Side"
 msgstr "Cắt Tất cả: Giữ Bên Trái"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:205
+#: ../main_window.rst:206
 msgid ":kbd:`Ctrl+Shift+J`"
 msgstr ":kbd:`Ctrl+Shift+J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:206
+#: ../main_window.rst:207
 msgid "Slice All: Keep Right Side"
 msgstr "Cắt Tất cả: Giữ Bên Phải"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:206
+#: ../main_window.rst:207
 msgid ":kbd:`Ctrl+Shift+L`"
 msgstr ":kbd:`Ctrl+Shift+L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:207
+#: ../main_window.rst:208
 msgid "Slice Selected: Keep Both Sides"
 msgstr "Cắt Đã chọn: Giữ cả Hai Bên"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:207
+#: ../main_window.rst:208
 msgid ":kbd:`Ctrl+K`"
 msgstr ":kbd:`Ctrl+K`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:208
+#: ../main_window.rst:209
 msgid "Slice Selected: Keep Left Side"
 msgstr "Cắt Đã chọn: Giữ Bên Trái"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:208
+#: ../main_window.rst:209
 msgid ":kbd:`Ctrl+J`"
 msgstr ":kbd:`Ctrl+J`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:209
+#: ../main_window.rst:210
 msgid "Slice Selected: Keep Right Side"
 msgstr "Cắt Đã chọn: Giữ Bên Phải"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:209
+#: ../main_window.rst:210
 msgid ":kbd:`Ctrl+L`"
 msgstr ":kbd:`Ctrl+L`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:210
+#: ../main_window.rst:211
 msgid "Slice Selected: Keep Left (Ripple)"
 msgstr "Cắt Đã chọn: Giữ Bên Trái (Gợn sóng)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:210
+#: ../main_window.rst:211
 msgid ":kbd:`W`"
 msgstr ":kbd:`W`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:211
+#: ../main_window.rst:212
 msgid "Slice Selected: Keep Right (Ripple)"
 msgstr "Cắt Đã chọn: Giữ Bên Phải (Gợn sóng)"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:211
+#: ../main_window.rst:212
 msgid ":kbd:`Q`"
 msgstr ":kbd:`Q`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:212
+#: ../main_window.rst:213
 msgid "Snapping Toggle"
 msgstr "Chuyển đổi Bắt điểm"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:212
+#: ../main_window.rst:213
 msgid ":kbd:`S`"
 msgstr ":kbd:`S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:213
+#: ../main_window.rst:214
 msgid "Split File"
 msgstr "Chia Tệp"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:213
+#: ../main_window.rst:214
 msgid ":kbd:`Alt+S`"
 msgstr ":kbd:`Alt+S`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:213
+#: ../main_window.rst:214
 msgid ":kbd:`Shift+Double Click`"
 msgstr ":kbd:`Shift+Nhấp đúp`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:214
+#: ../main_window.rst:215
 msgid "Thumbnail View"
 msgstr "Chế độ xem Thu nhỏ"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:214
+#: ../main_window.rst:215
 msgid ":kbd:`Ctrl+Page Down`"
 msgstr ":kbd:`Ctrl+Page Down`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:215
+#: ../main_window.rst:216
 msgid "Timing Toggle"
 msgstr "Chuyển đổi Thời gian"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:215
+#: ../main_window.rst:216
 msgid ":kbd:`T`"
 msgstr ":kbd:`T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:216 ../main_window.rst:257
+#: ../main_window.rst:217 ../main_window.rst:258
 msgid "Title"
 msgstr "Tiêu đề"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:216
+#: ../main_window.rst:217
 msgid ":kbd:`Ctrl+T`"
 msgstr ":kbd:`Ctrl+T`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:217
+#: ../main_window.rst:218
 msgid "Translate this Application..."
 msgstr "Dịch Ứng dụng này..."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:217
+#: ../main_window.rst:218
 msgid ":kbd:`F6`"
 msgstr ":kbd:`F6`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:218
+#: ../main_window.rst:219
 msgid "Un-Freeze View"
 msgstr "Bỏ Đóng Băng Giao Diện"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:218
+#: ../main_window.rst:219
 msgid ":kbd:`Ctrl+Shift+F`"
 msgstr ":kbd:`Ctrl+Shift+F`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:219
+#: ../main_window.rst:220
 msgid "Undo"
 msgstr "Hoàn tác"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:219
+#: ../main_window.rst:220
 msgid ":kbd:`Ctrl+Z`"
 msgstr ":kbd:`Ctrl+Z`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:220
+#: ../main_window.rst:221
 msgid "View Toolbar"
 msgstr "Hiển thị Thanh công cụ"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:220
+#: ../main_window.rst:221
 msgid ":kbd:`Ctrl+Shift+B`"
 msgstr ":kbd:`Ctrl+Shift+B`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:221
+#: ../main_window.rst:222
 msgid "Zoom In"
 msgstr "Phóng to"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:221
+#: ../main_window.rst:222
 msgid ":kbd:`=`"
 msgstr ":kbd:`=`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:221
+#: ../main_window.rst:222
 msgid ":kbd:`Ctrl+=`"
 msgstr ":kbd:`Ctrl+=`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:222
+#: ../main_window.rst:223
 msgid "Zoom Out"
 msgstr "Thu nhỏ"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:222
+#: ../main_window.rst:223
 msgid ":kbd:`-`"
 msgstr ":kbd:`-`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:222
+#: ../main_window.rst:223
 msgid ":kbd:`Ctrl+-`"
 msgstr ":kbd:`Ctrl+-`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:223
+#: ../main_window.rst:224
 msgid "Zoom to Timeline"
 msgstr "Phóng to Dòng thời gian"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:223
+#: ../main_window.rst:224
 msgid ":kbd:`\\\\`"
 msgstr ":kbd:`\\\\`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:223
+#: ../main_window.rst:224
 msgid ":kbd:`Shift+\\\\`"
 msgstr ":kbd:`Shift+\\\\`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:227
+#: ../main_window.rst:228
 msgid "Menu"
 msgstr "Menu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:228
+#: ../main_window.rst:229
 msgid ""
 "The following menu options are available on the main window on OpenShot. "
 "Most of these options can be accessed by the keyboard shortcuts mentioned "
@@ -1405,32 +1420,32 @@ msgstr ""
 "sắp xếp lại."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:236
+#: ../main_window.rst:237
 msgid "Menu Name"
 msgstr "Tên Menu"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:238
+#: ../main_window.rst:239
 msgid "File"
 msgstr "Tệp"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:240
+#: ../main_window.rst:241
 msgid ":guilabel:`New Project` Create a blank new project."
 msgstr ":guilabel:`Dự án Mới` Tạo một dự án mới trống."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:241
+#: ../main_window.rst:242
 msgid ":guilabel:`Open Project` Open an existing project."
 msgstr ":guilabel:`Mở Dự án` Mở một dự án hiện có."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:242
+#: ../main_window.rst:243
 msgid ":guilabel:`Recent Projects` Access recently opened projects."
 msgstr ":guilabel:`Dự án Gần đây` Truy cập các dự án đã mở gần đây."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:243
+#: ../main_window.rst:244
 msgid ""
 ":guilabel:`Recovery` Restore a previously saved version of your current "
 "project."
@@ -1438,17 +1453,17 @@ msgstr ""
 ":guilabel:`Phục hồi` Khôi phục phiên bản đã lưu trước đó của dự án hiện tại."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:244
+#: ../main_window.rst:245
 msgid ":guilabel:`Save Project` Save the current project."
 msgstr ":guilabel:`Lưu Dự án` Lưu dự án hiện tại."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:245
+#: ../main_window.rst:246
 msgid ":guilabel:`Import Files` Import media files into the project."
 msgstr ":guilabel:`Nhập Tệp` Nhập các tệp phương tiện vào dự án."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:246
+#: ../main_window.rst:247
 msgid ""
 ":guilabel:`Choose Profile` Select a project profile (*i.e. 1080p @ 30fps, "
 "720p @ 24fps, ...*)."
@@ -1457,7 +1472,7 @@ msgstr ""
 "24fps, ...*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:247
+#: ../main_window.rst:248
 msgid ""
 ":guilabel:`Save Current Frame` Save the current preview video frame as an "
 "image (sometimes represented with a camera icon)."
@@ -1466,7 +1481,7 @@ msgstr ""
 "hình ảnh (đôi khi được biểu thị bằng biểu tượng máy ảnh)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:248
+#: ../main_window.rst:249
 msgid ""
 ":guilabel:`Import Project` Import another project into the current project "
 "(*Adobe and Final Cut Pro formats partially supported*)."
@@ -1475,7 +1490,7 @@ msgstr ""
 "phần định dạng Adobe và Final Cut Pro*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:249
+#: ../main_window.rst:250
 msgid ""
 ":guilabel:`Export Project` Export the current project to a specified format "
 "(*EDL, Adobe, and Final Cut Pro formats partially supported*)."
@@ -1484,27 +1499,27 @@ msgstr ""
 "trợ một phần định dạng EDL, Adobe và Final Cut Pro*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:250
+#: ../main_window.rst:251
 msgid ":guilabel:`Quit` Exit the application."
 msgstr ":guilabel:`Thoát` Thoát ứng dụng."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:251
+#: ../main_window.rst:252
 msgid "Edit"
 msgstr "Chỉnh sửa"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:253
+#: ../main_window.rst:254
 msgid ":guilabel:`Undo` Undo the last action."
 msgstr ":guilabel:`Hoàn tác` Hoàn tác hành động cuối cùng."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:254
+#: ../main_window.rst:255
 msgid ":guilabel:`Redo` Redo the last undone action."
 msgstr ":guilabel:`Làm lại` Làm lại hành động vừa hoàn tác."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:255
+#: ../main_window.rst:256
 msgid ""
 ":guilabel:`Clear` Clear the current history or waveform cached data. This "
 "makes the `.osp project` file a much smaller file size."
@@ -1513,13 +1528,13 @@ msgstr ""
 "này làm cho tệp dự án `.osp` có kích thước nhỏ hơn nhiều."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:256
+#: ../main_window.rst:257
 msgid ""
 ":guilabel:`Preferences` Open the preferences dialog to customize settings."
 msgstr ":guilabel:`Tùy chọn` Mở hộp thoại tùy chọn để tùy chỉnh cài đặt."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:259
+#: ../main_window.rst:260
 msgid ""
 ":guilabel:`Title` Add a SVG vector title to the project. See :ref:"
 "`text_and_titles_ref`."
@@ -1528,7 +1543,7 @@ msgstr ""
 "`text_and_titles_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:260
+#: ../main_window.rst:261
 msgid ""
 ":guilabel:`Animated Title` Add an animated title to the project. See :ref:"
 "`animated_titles_ref`."
@@ -1537,22 +1552,22 @@ msgstr ""
 "`animated_titles_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:261
+#: ../main_window.rst:262
 msgid "View"
 msgstr "Xem"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:263
+#: ../main_window.rst:264
 msgid ":guilabel:`Toolbar` Show or hide the main window toolbar."
 msgstr ":guilabel:`Thanh công cụ` Hiển thị hoặc ẩn thanh công cụ cửa sổ chính."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:264
+#: ../main_window.rst:265
 msgid ":guilabel:`Fullscreen` Toggle fullscreen mode."
 msgstr ":guilabel:`Toàn màn hình` Chuyển đổi chế độ toàn màn hình."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:265
+#: ../main_window.rst:266
 msgid ""
 ":guilabel:`Views` Switch or reset the main window layout (*Simple, Advanced, "
 "Freeze, Show All*)."
@@ -1561,7 +1576,7 @@ msgstr ""
 "giản, Nâng cao, Đóng băng, Hiển thị tất cả*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:266
+#: ../main_window.rst:267
 msgid ""
 ":guilabel:`Docks` Show or hide various dockable panels (*Captions, Effects, "
 "Emojis, Project Files, Properties, Transitions, Video Preview*)."
@@ -1571,42 +1586,42 @@ msgstr ""
 "trước video*)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:267
+#: ../main_window.rst:268
 msgid "Help"
 msgstr "Trợ giúp"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:269
+#: ../main_window.rst:270
 msgid ":guilabel:`Contents` Open the user guide online."
 msgstr ":guilabel:`Nội dung` Mở hướng dẫn sử dụng trực tuyến."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:270
+#: ../main_window.rst:271
 msgid ":guilabel:`Tutorial` Access the built-in tutorial for new users."
 msgstr ":guilabel:`Hướng dẫn` Truy cập hướng dẫn tích hợp cho người dùng mới."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:271
+#: ../main_window.rst:272
 msgid ":guilabel:`Report a Bug` Report a bug or issue."
 msgstr ":guilabel:`Báo lỗi` Báo cáo lỗi hoặc sự cố."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:272
+#: ../main_window.rst:273
 msgid ":guilabel:`Ask a Question` Ask a question about the software."
 msgstr ":guilabel:`Hỏi` Đặt câu hỏi về phần mềm."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:273
+#: ../main_window.rst:274
 msgid ":guilabel:`Translate` Contribute to translations of the software."
 msgstr ":guilabel:`Dịch` Đóng góp vào bản dịch phần mềm."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:274
+#: ../main_window.rst:275
 msgid ":guilabel:`Donate` Make a donation to support the project."
 msgstr ":guilabel:`Ủng hộ` Quyên góp để hỗ trợ dự án."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:275
+#: ../main_window.rst:276
 msgid ""
 ":guilabel:`About` View information about the software (version, "
 "contributors, translators, changelog, and supporters)."
@@ -1615,12 +1630,12 @@ msgstr ""
 "người dịch, nhật ký thay đổi và người ủng hộ)."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:278
+#: ../main_window.rst:279
 msgid "Views"
 msgstr "Giao diện"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:280
+#: ../main_window.rst:281
 msgid ""
 "The OpenShot main window is composed of multiple **docks**. These **docks** "
 "are arranged and snapped together into a grouping that we call a **View**. "
@@ -1632,7 +1647,7 @@ msgstr ""
 "diện chính: :guilabel:`Giao diện Đơn giản` và :guilabel:`Giao diện Nâng cao`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:286
+#: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
 "for first-time users. It contains :guilabel:`Project Files` on the top "
@@ -1649,7 +1664,7 @@ msgstr ""
 "menu :guilabel:`Xem->Chế Độ Xem->Chế Độ Đơn Giản` ở đầu màn hình."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:293
+#: ../main_window.rst:294
 msgid ""
 "This is an advanced view, which adds more docks to the screen at once, "
 "improving access to many features that are not visible in Simple View. Once "
@@ -1664,12 +1679,12 @@ msgstr ""
 "có một chế độ xem tùy chỉnh hoàn toàn."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:298
+#: ../main_window.rst:299
 msgid "Docks"
 msgstr "Dock"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:299
+#: ../main_window.rst:300
 msgid ""
 "Each widget on the OpenShot main window is contained in a **dock**. These "
 "docks can be dragged and snapped around the main window, and even grouped "
@@ -1684,17 +1699,17 @@ msgstr ""
 "tùy chỉnh của bạn."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:307
+#: ../main_window.rst:308
 msgid "Dock Name"
 msgstr "Tên Dock"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:309
+#: ../main_window.rst:310
 msgid "Captions"
 msgstr "Phụ đề"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:310
+#: ../main_window.rst:311
 msgid ""
 "Manage and add captions or subtitles to your video project. Allows you to "
 "create, edit, and manage caption data. See :ref:`caption_effect_ref` effect."
@@ -1704,12 +1719,12 @@ msgstr ""
 "`caption_effect_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:311
+#: ../main_window.rst:312
 msgid "Effects"
 msgstr "Hiệu ứng"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:312
+#: ../main_window.rst:313
 msgid ""
 "Browse and apply video and audio effects to your video clips. Includes "
 "filters, color adjustments, and special effects. See :ref:`effects_ref`."
@@ -1718,12 +1733,12 @@ msgstr ""
 "gồm bộ lọc, điều chỉnh màu sắc và hiệu ứng đặc biệt. Xem :ref:`effects_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:313
+#: ../main_window.rst:314
 msgid "Emojis"
 msgstr "Biểu tượng cảm xúc"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:314
+#: ../main_window.rst:315
 msgid ""
 "Add emoji graphics to your video project. Choose from a variety of emojis to "
 "enhance your video content."
@@ -1732,7 +1747,7 @@ msgstr ""
 "tượng cảm xúc để tăng cường nội dung video."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:316
+#: ../main_window.rst:317
 msgid ""
 "View and manage all the media files imported into your project. Organize, "
 "filter, and tag video, audio, and image files. See :ref:`files_ref`."
@@ -1742,7 +1757,7 @@ msgstr ""
 "`files_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:318
+#: ../main_window.rst:319
 msgid ""
 "View and edit the properties of a selected effect, transition, or clip. "
 "Adjust settings such as duration, size, position, etc... See :ref:"
@@ -1753,12 +1768,12 @@ msgstr ""
 "`clip_properties_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:319
+#: ../main_window.rst:320
 msgid "Transitions"
 msgstr "Chuyển cảnh"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:320
+#: ../main_window.rst:321
 msgid ""
 "Browse and apply transitions between video clips. Choose from a variety of "
 "transition wipes to create smooth changes between scenes. See :ref:"
@@ -1769,12 +1784,12 @@ msgstr ""
 "`transitions_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:321
+#: ../main_window.rst:322
 msgid "Video Preview"
 msgstr "Xem Trước Video"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:322
+#: ../main_window.rst:323
 msgid ""
 "Preview the current state of your video project. Allows you to play back and "
 "review your edits in real-time. See :ref:`playback_ref`."
@@ -1783,7 +1798,7 @@ msgstr ""
 "xét các chỉnh sửa theo thời gian thực. Xem :ref:`playback_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:324
+#: ../main_window.rst:325
 msgid ""
 "If you have accidentally closed or moved a dock and can no longer find it, "
 "there are a couple easy solutions. First, you can use the :guilabel:`View-"

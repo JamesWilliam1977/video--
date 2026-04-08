@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-04-02 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -271,33 +272,44 @@ msgstr ""
 "tijdlijnschuifregelaar om kleine clipaanpassingen makkelijker te maken."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:95
+#: ../timeline.rst:94
+msgid ""
+"You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
+"timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
+"zooming."
+msgstr ""
+"U kunt ook in- en uitzoomen op de tijdlijn met :kbd:`Ctrl+Scroll Wheel`. "
+"Houd op de QWidget-tijdlijn :kbd:`Ctrl` ingedrukt en sleep met de middelste "
+"muisknop voor vloeiend zoomen."
+
+# Translated with gpt-4.1-mini
+#: ../timeline.rst:99
 msgid "Tracks, Locking, and Inserting"
 msgstr "Sporen, vergrendelen en invoegen"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:97
+#: ../timeline.rst:101
 msgid "Tracks help organize your edit. A common setup is:"
 msgstr ""
 "Sporen helpen je bewerking te organiseren. Een veelvoorkomende indeling is:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:99
+#: ../timeline.rst:103
 msgid "Top tracks: titles, overlays, logos, picture-in-picture"
 msgstr "Bovenste sporen: titels, overlays, logo's, beeld-in-beeld"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:100
+#: ../timeline.rst:104
 msgid "Middle tracks: main video content"
 msgstr "Middelste sporen: hoofdvideo-inhoud"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:101
+#: ../timeline.rst:105
 msgid "Lower tracks: music and sound effects"
 msgstr "Onderste sporen: muziek en geluidseffecten"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:103
+#: ../timeline.rst:107
 msgid ""
 "You can lock tracks to protect them from accidental edits and use insert/"
 "ripple editing when you need later clips to move automatically."
@@ -307,7 +319,7 @@ msgstr ""
 "verschuiven."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:106
+#: ../timeline.rst:110
 msgid ""
 "For track layout basics, see :ref:`tracks_ref`. For detailed clip editing "
 "behavior, see :ref:`clips_cutting_slicing_ref`."
@@ -316,12 +328,12 @@ msgstr ""
 "gedetailleerd clipbewerkingsgedrag, zie :ref:`clips_cutting_slicing_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:110
+#: ../timeline.rst:114
 msgid "Keyframes in the Timeline"
 msgstr "Keyframes in de tijdlijn"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:112
+#: ../timeline.rst:116
 msgid ""
 "Keyframes let you change values over time, such as position, scale, "
 "rotation, opacity, and effect settings."
@@ -330,7 +342,7 @@ msgstr ""
 "schaal, rotatie, doorzichtigheid en effectinstellingen."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:115
+#: ../timeline.rst:119
 msgid ""
 "In the timeline keyframe panel, each row represents one animated property. "
 "You can:"
@@ -339,38 +351,38 @@ msgstr ""
 "geanimeerde eigenschap. Je kunt:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:117
+#: ../timeline.rst:121
 msgid "Add a keyframe row for a property"
 msgstr "Een keyframerij toevoegen voor een eigenschap"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:118
+#: ../timeline.rst:122
 msgid "Insert new keyframes along the row"
 msgstr "Nieuwe keyframes invoegen langs de rij"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:119
+#: ../timeline.rst:123
 msgid "Move keyframes to change timing"
 msgstr "Keyframes verplaatsen om de timing te wijzigen"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:120
+#: ../timeline.rst:124
 msgid "Change interpolation to control motion style"
 msgstr "Interpolatie wijzigen om de bewegingsstijl te bepalen"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:122
+#: ../timeline.rst:126
 msgid "For keyframe concepts and animation examples, see :ref:`animation_ref`."
 msgstr ""
 "Voor keyframeconcepten en animatievoorbeelden, zie :ref:`animation_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:125
+#: ../timeline.rst:129
 msgid "Next Steps"
 msgstr "Volgende stappen"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:127
+#: ../timeline.rst:131
 msgid ""
 "After you are comfortable with timeline basics, these sections are the best "
 "next reads:"
@@ -379,21 +391,21 @@ msgstr ""
 "volgende leesstukken:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:129
+#: ../timeline.rst:133
 msgid ":ref:`clips_ref` for trimming, slicing, and clip properties"
 msgstr ":ref:`clips_ref` voor bijsnijden, snijden en clip-eigenschappen"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:130
+#: ../timeline.rst:134
 msgid ":ref:`effects_ref` for video/audio effects"
 msgstr ":ref:`effects_ref` voor video-/audio-effecten"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:131
+#: ../timeline.rst:135
 msgid ":ref:`animation_ref` for keyframe animation workflows"
 msgstr ":ref:`animation_ref` voor keyframe-animatieworkflows"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:132
+#: ../timeline.rst:136
 msgid ":doc:`export` for creating your final video file"
 msgstr ":doc:`export` voor het maken van uw definitieve videobestand"

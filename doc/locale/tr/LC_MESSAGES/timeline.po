@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-04-02 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -266,33 +267,44 @@ msgstr ""
 "kolaylaştırmak için zaman çizgisi kaydırıcısıyla yakınlaştırın."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:95
+#: ../timeline.rst:94
+msgid ""
+"You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
+"timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
+"zooming."
+msgstr ""
+"Zaman çizelgesini ayrıca :kbd:`Ctrl+Kaydırma Tekerleği` ile "
+"yakınlaştırabilirsiniz. QWidget zaman çizelgesinde, pürüzsüz yakınlaştırma "
+"için :kbd:`Ctrl` tuşunu basılı tutup orta fare düğmesiyle sürükleyin."
+
+# Translated with gpt-4.1-mini
+#: ../timeline.rst:99
 msgid "Tracks, Locking, and Inserting"
 msgstr "Parçalar, Kilitleme ve Ekleme"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:97
+#: ../timeline.rst:101
 msgid "Tracks help organize your edit. A common setup is:"
 msgstr ""
 "Parçalar düzenlemenizi organize etmeye yardımcı olur. Yaygın bir düzen şudur:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:99
+#: ../timeline.rst:103
 msgid "Top tracks: titles, overlays, logos, picture-in-picture"
 msgstr "Üst parçalar: başlıklar, bindirmeler, logolar, resim içinde resim"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:100
+#: ../timeline.rst:104
 msgid "Middle tracks: main video content"
 msgstr "Orta parçalar: ana video içeriği"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:101
+#: ../timeline.rst:105
 msgid "Lower tracks: music and sound effects"
 msgstr "Alt parçalar: müzik ve ses efektleri"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:103
+#: ../timeline.rst:107
 msgid ""
 "You can lock tracks to protect them from accidental edits and use insert/"
 "ripple editing when you need later clips to move automatically."
@@ -302,7 +314,7 @@ msgstr ""
 "kullanabilirsiniz."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:106
+#: ../timeline.rst:110
 msgid ""
 "For track layout basics, see :ref:`tracks_ref`. For detailed clip editing "
 "behavior, see :ref:`clips_cutting_slicing_ref`."
@@ -311,12 +323,12 @@ msgstr ""
 "düzenleme davranışı için :ref:`clips_cutting_slicing_ref` bölümüne bakın."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:110
+#: ../timeline.rst:114
 msgid "Keyframes in the Timeline"
 msgstr "Zaman Çizgisindeki Anahtar Kareler"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:112
+#: ../timeline.rst:116
 msgid ""
 "Keyframes let you change values over time, such as position, scale, "
 "rotation, opacity, and effect settings."
@@ -325,7 +337,7 @@ msgstr ""
 "değerleri zaman içinde değiştirmenizi sağlar."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:115
+#: ../timeline.rst:119
 msgid ""
 "In the timeline keyframe panel, each row represents one animated property. "
 "You can:"
@@ -334,39 +346,39 @@ msgstr ""
 "temsil eder. Şunları yapabilirsiniz:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:117
+#: ../timeline.rst:121
 msgid "Add a keyframe row for a property"
 msgstr "Bir özellik için anahtar kare satırı ekleyin"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:118
+#: ../timeline.rst:122
 msgid "Insert new keyframes along the row"
 msgstr "Satır boyunca yeni anahtar kareler ekleyin"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:119
+#: ../timeline.rst:123
 msgid "Move keyframes to change timing"
 msgstr "Zamanlamayı değiştirmek için anahtar kareleri taşıyın"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:120
+#: ../timeline.rst:124
 msgid "Change interpolation to control motion style"
 msgstr "Hareket stilini kontrol etmek için enterpolasyonu değiştirin"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:122
+#: ../timeline.rst:126
 msgid "For keyframe concepts and animation examples, see :ref:`animation_ref`."
 msgstr ""
 "Anahtar kare kavramları ve animasyon örnekleri için :ref:`animation_ref` "
 "bölümüne bakın."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:125
+#: ../timeline.rst:129
 msgid "Next Steps"
 msgstr "Sonraki Adımlar"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:127
+#: ../timeline.rst:131
 msgid ""
 "After you are comfortable with timeline basics, these sections are the best "
 "next reads:"
@@ -375,21 +387,21 @@ msgstr ""
 "okumalarınız olacaktır:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:129
+#: ../timeline.rst:133
 msgid ":ref:`clips_ref` for trimming, slicing, and clip properties"
 msgstr "Kırpma, dilimleme ve klip özellikleri için :ref:`clips_ref`"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:130
+#: ../timeline.rst:134
 msgid ":ref:`effects_ref` for video/audio effects"
 msgstr "Video/ses efektleri için :ref:`effects_ref`"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:131
+#: ../timeline.rst:135
 msgid ":ref:`animation_ref` for keyframe animation workflows"
 msgstr "Anahtar kare animasyon iş akışları için :ref:`animation_ref`"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:132
+#: ../timeline.rst:136
 msgid ":doc:`export` for creating your final video file"
 msgstr ":doc:`export` son video dosyanızı oluşturmak için"

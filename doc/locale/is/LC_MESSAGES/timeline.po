@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 18:08-0500\n"
+"POT-Creation-Date: 2026-04-02 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: is\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -265,33 +266,44 @@ msgstr ""
 "tímalínusleðanum til að auðvelda smávægilegar klippubreytingar."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:95
+#: ../timeline.rst:94
+msgid ""
+"You can also zoom the timeline with :kbd:`Ctrl+Scroll Wheel`. On the QWidget "
+"timeline, hold :kbd:`Ctrl` and drag with the middle mouse button for smooth "
+"zooming."
+msgstr ""
+"Þú getur einnig stækkað tímalínuna með :kbd:`Ctrl+Scroll Wheel`. Á QWidget "
+"tímalínunni, haltu niðri :kbd:`Ctrl` og dragðu með miðju músarhnappinum til "
+"að fá mjúka stækkun."
+
+# Translated with gpt-4.1-mini
+#: ../timeline.rst:99
 msgid "Tracks, Locking, and Inserting"
 msgstr "Rásir, læsing og innsetning"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:97
+#: ../timeline.rst:101
 msgid "Tracks help organize your edit. A common setup is:"
 msgstr ""
 "Rásir hjálpa til við að skipuleggja klippinguna þína. Algeng uppsetning er:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:99
+#: ../timeline.rst:103
 msgid "Top tracks: titles, overlays, logos, picture-in-picture"
 msgstr "Efri rásir: titlar, yfirlag, merki, mynd í mynd"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:100
+#: ../timeline.rst:104
 msgid "Middle tracks: main video content"
 msgstr "Miðræsir: aðal myndbandsinnihald"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:101
+#: ../timeline.rst:105
 msgid "Lower tracks: music and sound effects"
 msgstr "Neðri rásir: tónlist og hljóðáhrif"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:103
+#: ../timeline.rst:107
 msgid ""
 "You can lock tracks to protect them from accidental edits and use insert/"
 "ripple editing when you need later clips to move automatically."
@@ -301,7 +313,7 @@ msgstr ""
 "sjálfkrafa."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:106
+#: ../timeline.rst:110
 msgid ""
 "For track layout basics, see :ref:`tracks_ref`. For detailed clip editing "
 "behavior, see :ref:`clips_cutting_slicing_ref`."
@@ -310,12 +322,12 @@ msgstr ""
 "klippuklippingarferli, sjá :ref:`clips_cutting_slicing_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:110
+#: ../timeline.rst:114
 msgid "Keyframes in the Timeline"
 msgstr "Lykilrammar í tímalínu"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:112
+#: ../timeline.rst:116
 msgid ""
 "Keyframes let you change values over time, such as position, scale, "
 "rotation, opacity, and effect settings."
@@ -324,7 +336,7 @@ msgstr ""
 "stærð, snúning, gegnsæi og stillingar á áhrifum."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:115
+#: ../timeline.rst:119
 msgid ""
 "In the timeline keyframe panel, each row represents one animated property. "
 "You can:"
@@ -333,38 +345,38 @@ msgstr ""
 "Þú getur:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:117
+#: ../timeline.rst:121
 msgid "Add a keyframe row for a property"
 msgstr "Bætt við röð fyrir lykilramma fyrir eiginleika"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:118
+#: ../timeline.rst:122
 msgid "Insert new keyframes along the row"
 msgstr "Sett inn nýja lykilramma eftir röðinni"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:119
+#: ../timeline.rst:123
 msgid "Move keyframes to change timing"
 msgstr "Fært lykilramma til að breyta tímasetningu"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:120
+#: ../timeline.rst:124
 msgid "Change interpolation to control motion style"
 msgstr "Breyta milligildum til að stjórna hreyfistíl"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:122
+#: ../timeline.rst:126
 msgid "For keyframe concepts and animation examples, see :ref:`animation_ref`."
 msgstr ""
 "Fyrir hugtök lykilramma og dæmi um hreyfimyndir, sjá :ref:`animation_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:125
+#: ../timeline.rst:129
 msgid "Next Steps"
 msgstr "Næstu skref"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:127
+#: ../timeline.rst:131
 msgid ""
 "After you are comfortable with timeline basics, these sections are the best "
 "next reads:"
@@ -373,21 +385,21 @@ msgstr ""
 "næstu lesningarnar:"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:129
+#: ../timeline.rst:133
 msgid ":ref:`clips_ref` for trimming, slicing, and clip properties"
 msgstr ":ref:`clips_ref` fyrir skerðingu, sneiðingu og eiginleika klippa"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:130
+#: ../timeline.rst:134
 msgid ":ref:`effects_ref` for video/audio effects"
 msgstr ":ref:`effects_ref` fyrir myndbands-/hljóðáhrif"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:131
+#: ../timeline.rst:135
 msgid ":ref:`animation_ref` for keyframe animation workflows"
 msgstr ":ref:`animation_ref` fyrir vinnuflæði lykilrammahreyfimynda"
 
 # Translated with gpt-4.1-mini
-#: ../timeline.rst:132
+#: ../timeline.rst:136
 msgid ":doc:`export` for creating your final video file"
 msgstr ":doc:`export` til að búa til loka myndbandsskrána þína"
