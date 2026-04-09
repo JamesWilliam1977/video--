@@ -58,16 +58,27 @@ IMPORT_READER_MAX_SIZE = 128
 
 def inspect_media(path, max_width=0, max_height=0):
     """Inspect media using the shared libopenshot reader-selection logic."""
-    reader = openshot.Clip.CreateReader(path, False)
-    if not reader:
-        raise RuntimeError(f"No reader available for path: {path}")
-    if max_width > 0 and max_height > 0 and hasattr(reader, "SetMaxDecodeSize"):
-        reader.SetMaxDecodeSize(int(max_width), int(max_height))
-    reader.Open()
+    def _inspect_with_reader(inspect_reader):
+        reader = openshot.Clip.CreateReader(path, inspect_reader)
+        if not reader:
+            raise RuntimeError(f"No reader available for path: {path}")
+
+        if max_width > 0 and max_height > 0 and hasattr(reader, "SetMaxDecodeSize"):
+            reader.SetMaxDecodeSize(int(max_width), int(max_height))
+
+        reader.Open()
+        try:
+            return json.loads(reader.Json()), float(reader.info.duration or 0.0)
+        finally:
+            reader.Close()
+
     try:
-        return json.loads(reader.Json()), float(reader.info.duration or 0.0)
-    finally:
-        reader.Close()
+        return _inspect_with_reader(False)
+    except Exception:
+        # Retry with eager inspection so libopenshot can reject an incorrect
+        # lightweight reader choice during construction and fall back to the
+        # next candidate (for example, unknown-but-supported FFmpeg formats).
+        return _inspect_with_reader(True)
 
 
 class SingleColumnProxyModel(QSortFilterProxyModel):
