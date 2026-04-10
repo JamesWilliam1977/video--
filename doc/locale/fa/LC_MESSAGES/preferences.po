@@ -1,20 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-04-05 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:23
@@ -61,145 +64,126 @@ msgstr ""
 "اعمال می‌شود، تغییر دهید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:123
-#: ../preferences.rst:170 ../preferences.rst:246
+#: ../preferences.rst:46 ../preferences.rst:110 ../preferences.rst:133
+#: ../preferences.rst:158 ../preferences.rst:205 ../preferences.rst:235
+#: ../preferences.rst:291 ../preferences.rst:321
 msgid "Setting"
 msgstr "تنظیم"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:48 ../preferences.rst:101
-#: ../preferences.rst:105 ../preferences.rst:123
+#: ../preferences.rst:47 ../preferences.rst:50 ../preferences.rst:110
+#: ../preferences.rst:133 ../preferences.rst:135 ../preferences.rst:158
+#: ../preferences.rst:322
 msgid "Default"
 msgstr "پیش‌فرض"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:170
-#: ../preferences.rst:246 ../preferences.rst:257
+#: ../preferences.rst:48 ../preferences.rst:110 ../preferences.rst:133
+#: ../preferences.rst:205 ../preferences.rst:236 ../preferences.rst:291
+#: ../preferences.rst:302 ../preferences.rst:323
 msgid "Description"
 msgstr "توضیح"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:48
+#: ../preferences.rst:49
 msgid "Language"
 msgstr "زبان"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:48
+#: ../preferences.rst:51
 msgid "Choose your preferred language for OpenShot menus and windows"
 msgstr "زبان مورد نظر خود را برای منوها و پنجره‌های OpenShot انتخاب کنید"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
+#: ../preferences.rst:52
 msgid "Default Theme"
 msgstr "قالب پیش‌فرض"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
-msgid "Humanity:Dark"
-msgstr "Humanity:Dark"
+#: ../preferences.rst:53
+msgid "Cosmic Dusk"
+msgstr "شفق کیهانی"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
-msgid "Choose your theme for OpenShot, either Light, Dark or None"
+#: ../preferences.rst:54
+#, fuzzy
+msgid "Choose your theme for OpenShot"
 msgstr ""
 "قالب مورد نظر خود را برای OpenShot انتخاب کنید: روشن، تاریک یا بدون قالب"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
+#: ../preferences.rst:55
 msgid "User Interface Scale"
 msgstr "مقیاس رابط کاربری"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
-msgid "1.0"
-msgstr "1.0"
+#: ../preferences.rst:56
+msgid "100%"
+msgstr "۱۰۰٪"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
+#: ../preferences.rst:57
 msgid ""
-"Adjust the size of OpenShot's interface (restart required; range 1–3; known "
-"issues on Windows)"
+"Choose a preset UI scaling factor for larger or smaller interface elements"
 msgstr ""
-"اندازه رابط کاربری OpenShot را تنظیم کنید (نیاز به راه‌اندازی مجدد؛ بازه ۱ تا "
-"۳؛ مشکلات شناخته شده در ویندوز)"
+"یک ضریب مقیاس‌بندی رابط کاربری از پیش تنظیم شده برای عناصر بزرگ‌تر یا کوچک‌تر "
+"انتخاب کنید"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "Image Length (seconds)"
-msgstr "طول تصویر (ثانیه)"
+#: ../preferences.rst:58
+#, fuzzy
+msgid "Default Profile"
+msgstr "پروفایل ویدیویی پیش‌فرض"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "10.00"
-msgstr "۱۰.۰۰"
+#: ../preferences.rst:59
+#, fuzzy
+msgid "HD 720p 30 fps"
+msgstr "HD 720P 30 فریم بر ثانیه"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "How long the image displays on the screen when added to the timeline"
-msgstr "مدت زمان نمایش تصویر روی صفحه هنگام اضافه شدن به جدول زمانی"
+#: ../preferences.rst:60
+#, fuzzy
+msgid "Select the default profile for new projects and exports"
+msgstr "پروفایل پیش‌فرض برای پیش‌نمایش و خروجی را انتخاب کنید"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "Volume"
-msgstr "صدا"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "75.00"
-msgstr "۷۵.۰۰"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "The percentage of the volume of the clip when added to the timeline"
-msgstr "درصد حجم صدای کلیپ هنگام اضافه شدن به جدول زمانی"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:53
+#: ../preferences.rst:61
 msgid "Blender Command (path)"
 msgstr "دستور Blender (مسیر)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:53 ../preferences.rst:54
-msgid "*<blank>*"
-msgstr "*<خالی>*"
+#: ../preferences.rst:62
+msgid "blender"
+msgstr "بلندر"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:53
+#: ../preferences.rst:63
 msgid "The path to the binary for Blender (version 5.0+)"
 msgstr "مسیر فایل اجرایی Blender (نسخه ۵.۰ به بالا)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:54
+#: ../preferences.rst:64
 msgid "Advanced Title Editor (path)"
 msgstr "ویرایشگر پیشرفته عنوان (مسیر)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:54
+#: ../preferences.rst:65
+msgid "inkscape"
+msgstr "اینسکیپ"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:66
 msgid "The path to the binary for Inkscape"
 msgstr "مسیر فایل اجرایی Inkscape"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "Show Export Dialog when Finished"
-msgstr "نمایش پنجره صادرات پس از اتمام"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "*<checked>*"
-msgstr "*<انتخاب شده>*"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "Displays the Export Video windows after the export is finished"
-msgstr "پس از اتمام صادرات، پنجره ویدیو صادرات را نمایش می‌دهد"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:59
+#: ../preferences.rst:69
 msgid "Themes"
 msgstr "قالب‌ها"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:60
+#: ../preferences.rst:70
 msgid ""
 "OpenShot comes with 3 standard themes, which change the look and feel of the "
 "program."
@@ -207,7 +191,36 @@ msgstr ""
 "OpenShot با ۳ قالب استاندارد عرضه می‌شود که ظاهر و حس برنامه را تغییر می‌دهند."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:62
+#: ../preferences.rst:72
+#, fuzzy
+msgid ""
+"**Cosmic Dusk:** [Default Theme] A bluish theme with a more modern UI "
+"design, enhancing the visual aesthetics of the editor. This theme features "
+"shades of blue and purple, giving the interface a contemporary and dynamic "
+"feel. It combines modern aesthetics with functionality, offering a fresh and "
+"visually appealing workspace for video editing."
+msgstr ""
+"**Cosmic Dusk:** یک قالب آبی‌رنگ با طراحی رابط کاربری مدرن‌تر که زیبایی بصری "
+"ویرایشگر را افزایش می‌دهد. این قالب شامل سایه‌های آبی و بنفش است و به رابط "
+"کاربری حس معاصر و پویا می‌بخشد. ترکیبی از زیبایی‌شناسی مدرن و کارایی، فضای "
+"کاری تازه و جذابی برای ویرایش ویدیو فراهم می‌کند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:73
+msgid ""
+"**Humanity Dark:** A dark theme with dark gray tones, providing a modern and "
+"sleek look. This theme is designed for users who prefer working in low-light "
+"conditions or who enjoy a more subdued and professional appearance. The dark "
+"gray background reduces glare and eye strain, making it suitable for "
+"extended editing sessions."
+msgstr ""
+"**Humanity Dark:** یک تم تاریک با رنگ‌های خاکستری تیره که ظاهری مدرن و شیک "
+"ارائه می‌دهد. این تم برای کاربرانی طراحی شده است که ترجیح می‌دهند در شرایط نور "
+"کم کار کنند یا ظاهر حرفه‌ای و ملایم‌تری را دوست دارند. پس‌زمینه خاکستری تیره "
+"باعث کاهش خیرگی و خستگی چشم می‌شود و برای جلسات ویرایش طولانی مناسب است."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:74
 msgid ""
 "**Retro:** A light theme that offers a classic and clean appearance. This "
 "theme uses light gray and white tones, making it ideal for users who prefer "
@@ -219,41 +232,12 @@ msgstr ""
 "می‌پسندند، ایده‌آل است. ظاهر سنتی و چشم‌نواز، به‌ویژه در محیط‌های پرنور."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:63
-msgid ""
-"**Humanity Dark:** [Default Theme] A dark theme with dark gray tones, "
-"providing a modern and sleek look. This theme is designed for users who "
-"prefer working in low-light conditions or who enjoy a more subdued and "
-"professional appearance. The dark gray background reduces glare and eye "
-"strain, making it suitable for extended editing sessions."
-msgstr ""
-"**Humanity Dark:** [قالب پیش‌فرض] یک قالب تاریک با رنگ‌های خاکستری تیره که "
-"ظاهری مدرن و شیک ارائه می‌دهد. این قالب برای کاربرانی طراحی شده که ترجیح "
-"می‌دهند در شرایط نور کم کار کنند یا ظاهر حرفه‌ای و ملایم‌تری را می‌پسندند. "
-"پس‌زمینه خاکستری تیره از خیرگی و خستگی چشم می‌کاهد و برای جلسات طولانی ویرایش "
-"مناسب است."
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:64
-msgid ""
-"**Cosmic Dusk:** A bluish theme with a more modern UI design, enhancing the "
-"visual aesthetics of the editor. This theme features shades of blue and "
-"purple, giving the interface a contemporary and dynamic feel. It combines "
-"modern aesthetics with functionality, offering a fresh and visually "
-"appealing workspace for video editing."
-msgstr ""
-"**Cosmic Dusk:** یک قالب آبی‌رنگ با طراحی رابط کاربری مدرن‌تر که زیبایی بصری "
-"ویرایشگر را افزایش می‌دهد. این قالب شامل سایه‌های آبی و بنفش است و به رابط "
-"کاربری حس معاصر و پویا می‌بخشد. ترکیبی از زیبایی‌شناسی مدرن و کارایی، فضای "
-"کاری تازه و جذابی برای ویرایش ویدیو فراهم می‌کند."
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:69
+#: ../preferences.rst:79
 msgid "Restoring Defaults"
 msgstr "بازنشانی به پیش‌فرض‌ها"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:70
+#: ../preferences.rst:80
 msgid ""
 "In OpenShot, each preferences category (or tab) in the Preferences window "
 "has a **Restore Defaults** button that allows you to easily reset the values "
@@ -268,7 +252,7 @@ msgstr ""
 "بازنشانی کنید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:74
+#: ../preferences.rst:84
 msgid ""
 "**Where to Find the Restore Defaults Button:** Each category or tab in the "
 "Preferences window has a **Restore Defaults** button located in the bottom "
@@ -282,7 +266,7 @@ msgstr ""
 "باشید، دکمه به صورت **بازنشانی به پیش‌فرض‌ها: صفحه‌کلید** نمایش داده می‌شود."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:79
+#: ../preferences.rst:89
 msgid ""
 "**How It Works:** Only the settings in the currently selected category will "
 "be restored to their default values. This selective restoration makes it "
@@ -293,7 +277,7 @@ msgstr ""
 "بر سایر موارد بازنشانی کنید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:83
+#: ../preferences.rst:93
 msgid ""
 "**Tip for Beginners:** - If you're not sure about a change you've made in a "
 "particular category, don’t hesitate to use the **Restore Defaults** button. "
@@ -306,93 +290,238 @@ msgstr ""
 "کل تنظیمات شما است."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:89
+#: ../preferences.rst:99
+msgid "Timeline"
+msgstr "خط زمان"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid ""
+"The Timeline tab controls default timeline behavior, clip/transition "
+"insertion defaults, and whether to use the new timeline backend or the "
+"legacy web-based timeline."
+msgstr ""
+"زبانه خط زمان رفتار پیش‌فرض خط زمان، تنظیمات پیش‌فرض درج کلیپ/انتقال و اینکه "
+"آیا از بک‌اند جدید خط زمان یا خط زمان مبتنی بر وب قدیمی استفاده شود را کنترل "
+"می‌کند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112
+msgid "Thumbnail Style"
+msgstr "سبک تصویر بندانگشتی"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112
+msgid "Entire Clip"
+msgstr "کل کلیپ"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112
+msgid "Thumbnail density for the new timeline backend"
+msgstr "چگالی تصویر بندانگشتی برای بک‌اند جدید خط زمان"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113
+msgid "Image Length (seconds)"
+msgstr "طول تصویر (ثانیه)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113 ../preferences.rst:114
+msgid "10.00"
+msgstr "۱۰.۰۰"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113
+msgid "Default duration for still images added to the timeline"
+msgstr "مدت زمان پیش‌فرض برای تصاویر ثابت اضافه شده به خط زمان"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:114
+#, fuzzy
+msgid "Transition Length (seconds)"
+msgstr "طول تصویر (ثانیه)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:114
+msgid "Default duration for newly added transitions"
+msgstr "مدت زمان پیش‌فرض برای انتقال‌های تازه اضافه شده"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115
+msgid "Auto-Transition (overlap clips)"
+msgstr "انتقال خودکار (همپوشانی کلیپ‌ها)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115 ../preferences.rst:160 ../preferences.rst:334
+#: ../preferences.rst:340
+msgid "Enabled"
+msgstr "فعال"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115
+msgid "Automatically create transitions when clips overlap"
+msgstr "ایجاد خودکار انتقال‌ها هنگام همپوشانی کلیپ‌ها"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:116
+msgid "Enable Legacy Timeline (web-based)"
+msgstr "فعال‌کردن خط زمان قدیمی (مبتنی بر وب)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:116 ../preferences.rst:331 ../preferences.rst:337
+#, fuzzy
+msgid "Disabled"
+msgstr "فعال"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:116
+msgid "Use the legacy web timeline (WebEngine/WebKit auto-select)"
+msgstr "استفاده از خط زمان وب قدیمی (انتخاب خودکار WebEngine/WebKit)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:122
 msgid "Preview"
 msgstr "پیش‌نمایش"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:93
+#: ../preferences.rst:126
 msgid ""
-"The Preview tab of the Preferences window allows you to set a **Default "
-"Video Profile** for your project, if you have a preference for a specific "
-"editing profile. More about :ref:`profiles_ref`. Also, you can adjust the "
-"real-time preview audio settings, for example, which audio device and sample "
-"rate to use."
+"The Preview tab of the Preferences window controls real-time preview audio "
+"behavior, including device selection, sample rate, channels, buffering, "
+"playback volume, and optimized preview behavior."
 msgstr ""
-"زبانه پیش‌نمایش در پنجره تنظیمات به شما امکان می‌دهد یک **پروفایل ویدیویی "
-"پیش‌فرض** برای پروژه خود تنظیم کنید، اگر ترجیح خاصی برای یک پروفایل ویرایش "
-"دارید. اطلاعات بیشتر در :ref:`profiles_ref`. همچنین می‌توانید تنظیمات صوتی "
-"پیش‌نمایش زمان واقعی را تنظیم کنید، مثلاً دستگاه صوتی و نرخ نمونه‌برداری را "
-"انتخاب کنید."
+"زبانه پیش‌نمایش در پنجره تنظیمات، رفتار صدای پیش‌نمایش در زمان واقعی را کنترل "
+"می‌کند، از جمله انتخاب دستگاه، نرخ نمونه‌برداری، کانال‌ها، بافرینگ، حجم پخش و "
+"رفتار پیش‌نمایش بهینه‌شده."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "Default Video Profile"
-msgstr "پروفایل ویدیویی پیش‌فرض"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "HD 720P 30 fps"
-msgstr "HD 720P 30 فریم بر ثانیه"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "Select the profile for Preview and Export defaults"
-msgstr "پروفایل پیش‌فرض برای پیش‌نمایش و خروجی را انتخاب کنید"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid "Playback Audio Buffer Size"
-msgstr "اندازه بافر صوتی پخش"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid "512"
-msgstr "۵۱۲"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid ""
-"Adjust how many audio samples must be buffered before audio playback begins. "
-"Allowed range of values is 128 to 4096. NOTE: If you are experiencing a "
-"large drift or delay in audio playback, try setting this value lower."
-msgstr ""
-"تعداد نمونه‌های صوتی که باید قبل از شروع پخش صوتی در بافر ذخیره شوند را تنظیم "
-"کنید. محدوده مجاز مقادیر از ۱۲۸ تا ۴۰۹۶ است. توجه: اگر در پخش صوتی تأخیر یا "
-"انحراف زیادی مشاهده می‌کنید، سعی کنید این مقدار را کمتر تنظیم کنید."
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:105
+#: ../preferences.rst:135
 msgid "Playback Audio Device"
 msgstr "دستگاه صوتی پخش"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:106
+#: ../preferences.rst:135
+msgid "Audio output device used during preview playback"
+msgstr "دستگاه خروجی صدا که در هنگام پخش پیش‌نمایش استفاده می‌شود"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:136
 msgid "Default Audio Sample Rate"
 msgstr "نرخ نمونه‌برداری صوتی پیش‌فرض"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:106
-msgid "44100"
+#: ../preferences.rst:136
+#, fuzzy
+msgid "48000"
 msgstr "۴۴۱۰۰"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:107
+#: ../preferences.rst:136
+#, fuzzy
+msgid "Default preview sample rate"
+msgstr "نرخ نمونه‌برداری صوتی پیش‌فرض"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:137
 msgid "Default Audio Channels"
 msgstr "کانال‌های صوتی پیش‌فرض"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:107
+#: ../preferences.rst:137
 msgid "Stereo (2 Channel)"
 msgstr "استریو (۲ کانال)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:111
+#: ../preferences.rst:137
+msgid "Default preview channel layout"
+msgstr "چیدمان پیش‌فرض کانال پیش‌نمایش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid "Playback Audio Buffer Size"
+msgstr "اندازه بافر صوتی پخش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid "512"
+msgstr "۵۱۲"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid "Audio samples buffered before playback begins (128 to 4096)"
+msgstr "نمونه‌های صوتی بافر شده قبل از شروع پخش (از ۱۲۸ تا ۴۰۹۶)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:139
+msgid "Volume"
+msgstr "صدا"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:139
+msgid "75"
+msgstr "۷۵"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:139
+msgid "Preview playback volume percentage"
+msgstr "درصد حجم پخش پیش‌نمایش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
+msgid "Concurrent Optimize Jobs"
+msgstr "شغل‌های بهینه‌سازی همزمان"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
+msgid "2"
+msgstr "۲"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
+msgid "Number of video files OpenShot can optimize at the same time"
+msgstr "تعداد فایل‌های ویدیویی که OpenShot می‌تواند به طور همزمان بهینه کند"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "Optimized Preview Resolution"
+msgstr "رزولوشن پیش‌نمایش بهینه‌شده"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "1280x720"
+msgstr "۱۲۸۰x۷۲۰"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "Maximum resolution used when creating optimized preview files"
+msgstr "حداکثر رزولوشنی که هنگام ایجاد فایل‌های پیش‌نمایش بهینه استفاده می‌شود"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid "Thumbnail Preload Rate / second"
+msgstr "نرخ پیش‌بارگذاری تصویر بندانگشتی در ثانیه"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid "4"
+msgstr "۴"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid ""
+"How many thumbnail preview frames per second are pre-generated while "
+"optimizing video"
+msgstr ""
+"تعداد فریم‌های پیش‌نمایش تصویر بندانگشتی که در هر ثانیه هنگام بهینه‌سازی ویدیو "
+"پیش‌تولید می‌شوند"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:146
 msgid "Autosave"
 msgstr "ذخیره خودکار"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:115
+#: ../preferences.rst:150
 msgid ""
 "Autosave is a feature in OpenShot which automatically saves the current "
 "changes to your project after a specific number of minutes, helping to "
@@ -404,52 +533,47 @@ msgstr ""
 "رفتن داده‌ها در صورت کرش، فریز یا خطای کاربر کمک می‌کند."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:125
+#: ../preferences.rst:160
 msgid "Enable Autosave"
 msgstr "فعال‌سازی ذخیره خودکار"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:125
-msgid "Enabled"
-msgstr "فعال"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:126
+#: ../preferences.rst:161
 msgid "Autosave Interval (minutes)"
 msgstr "فاصله ذخیره خودکار (دقیقه)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:126
+#: ../preferences.rst:161
 msgid "3"
 msgstr "۳"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:127
+#: ../preferences.rst:162
 msgid "History Limit (# of undo/redo)"
 msgstr "حداکثر تاریخچه (تعداد بازگردانی/انجام مجدد)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:127
+#: ../preferences.rst:162
 msgid "15"
 msgstr "۱۵"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:128
+#: ../preferences.rst:163
 msgid "Recovery Limit (# of project copies)"
 msgstr "حداکثر بازیابی (تعداد نسخه‌های پروژه)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:128
+#: ../preferences.rst:163
 msgid "30"
 msgstr "۳۰"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:132
+#: ../preferences.rst:167
 msgid "Recovery"
 msgstr "بازیابی"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:134
+#: ../preferences.rst:169
 msgid ""
 "**Before each save**, a compressed ``*.zip`` copy of the current project is "
 "saved in the recovery folder, to further reduce the risk of data loss. The "
@@ -462,7 +586,7 @@ msgstr ""
 "openshot_qt\\recovery`` قرار دارد."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:138
+#: ../preferences.rst:173
 msgid ""
 "To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:"
 "`File->Recovery` menu on the main window after opening your project. If "
@@ -485,7 +609,7 @@ msgstr ""
 "تا آن را بازیابی کنید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:146
+#: ../preferences.rst:181
 msgid ""
 "To **manually** recover a corrupt or broken ``*.osp`` project file, please "
 "find the most recent copy in the recovery folder, and copy/paste the file "
@@ -505,12 +629,12 @@ msgstr ""
 "نسخه مورد نظر برای بازیابی استفاده کنید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:156
+#: ../preferences.rst:191
 msgid "Cache"
 msgstr "کش"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:160
+#: ../preferences.rst:195
 msgid ""
 "Cache settings can be adjusted to make real-time playback faster or less CPU "
 "intensive. The cache is used to store image and audio data for each frame of "
@@ -529,12 +653,12 @@ msgstr ""
 "کنند. مراجعه کنید به :ref:`playback_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:172
+#: ../preferences.rst:207
 msgid "Cache Mode"
 msgstr "حالت کش"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:172
+#: ../preferences.rst:207
 msgid ""
 "Choose between Memory or Disk caching (memory caching is preferred). Disk "
 "caching writes image data to the hard disk for later retrieving, and works "
@@ -545,12 +669,12 @@ msgstr ""
 "با SSD دارد."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:173
+#: ../preferences.rst:208
 msgid "Cache Limit (MB)"
 msgstr "حداکثر کش (مگابایت)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:173
+#: ../preferences.rst:208
 msgid ""
 "How many MB are set aside for cache related data. Larger numbers are not "
 "always better, since it takes more CPU to generate more frames to fill the "
@@ -561,22 +685,22 @@ msgstr ""
 "دارد."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:174
+#: ../preferences.rst:209
 msgid "Image Format (Disk Only)"
 msgstr "فرمت تصویر (فقط دیسک)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:174
+#: ../preferences.rst:209
 msgid "Image format to store disk cache image data"
 msgstr "فرمت تصویر برای ذخیره داده‌های کش دیسک"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:175
+#: ../preferences.rst:210
 msgid "Scale Factor (Disk Only)"
 msgstr "ضریب مقیاس (فقط دیسک)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:175
+#: ../preferences.rst:210
 msgid ""
 "Percentage (0.1 to 1.0) to reduce the size of disk based image files stored "
 "in the disk cache. Smaller numbers make writing and reading cached image "
@@ -586,12 +710,12 @@ msgstr ""
 "کش دیسک. اعداد کوچکتر نوشتن و خواندن فایل‌های تصویری کش شده را سریع‌تر می‌کند."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:176
+#: ../preferences.rst:211
 msgid "Image Quality (Disk Only)"
 msgstr "کیفیت تصویر (فقط دیسک)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:176
+#: ../preferences.rst:211
 msgid ""
 "Quality of the image files used in disk cache. The higher compression can "
 "cause more slowness, but results in smaller file sizes."
@@ -600,12 +724,12 @@ msgstr ""
 "کندی بیشتر شود، اما منجر به اندازه فایل‌های کوچکتر می‌شود."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:177
+#: ../preferences.rst:212
 msgid "Cache Pre-roll: Min Frames:"
 msgstr "پیش‌بارگذاری کش: حداقل فریم‌ها:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:177
+#: ../preferences.rst:212
 msgid ""
 "Minimum # of frames that must be cached before playback begins. The larger "
 "the #, the larger the wait before playback begins."
@@ -614,12 +738,12 @@ msgstr ""
 "باشد، مدت انتظار قبل از شروع پخش بیشتر خواهد بود."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:178
+#: ../preferences.rst:213
 msgid "Cache Pre-roll: Max Frames:"
 msgstr "پیش‌بارگذاری کش: حداکثر فریم‌ها:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:178
+#: ../preferences.rst:213
 msgid ""
 "Maximum # of frames that can be cached during playback (in front of the "
 "playhead). The larger the #, the more CPU is required to cache ahead - vs "
@@ -630,12 +754,12 @@ msgstr ""
 "فریم‌های کش شده قبلی."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:179
+#: ../preferences.rst:214
 msgid "Cache Ahead (Percent):"
 msgstr "کش جلو (درصد):"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:179
+#: ../preferences.rst:214
 msgid ""
 "Between 0.0 and 1.0. This represents how much % we cache ahead of the "
 "playhead. For example, 0.5 would cache 50% behind and 50% ahead of the "
@@ -646,15 +770,16 @@ msgstr ""
 "۲۰٪ پشت و ۸۰٪ جلوتر از نشانگر پخش است."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:180
+#: ../preferences.rst:215
 msgid "Cache Max Frames:"
 msgstr "حداکثر فریم‌های کش شده:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:180
+#: ../preferences.rst:215
+#, fuzzy
 msgid ""
 "This is an override on the total allowed frames that can be cached by our "
-"caching thread. It is defaulted to 600 frames, but even if you give a huge "
+"caching thread. It defaults to 900 frames, but even if you give a huge "
 "amount of RAM to OpenShot's cache size, this will override the max # of "
 "frames cached. The reason is... sometimes when the preview window is very "
 "small, and the cache size is set very high, OpenShot might calculate that we "
@@ -673,29 +798,25 @@ msgstr ""
 "اختصاص می‌دهند."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:184
-msgid "Debug"
-msgstr "اشکال‌زدایی"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:188
+#: ../preferences.rst:218
 msgid ""
-"Here you can modify how much data should be logged. Normally, *Debug Mode "
-"(verbose)* is off. The default port is 5556. If you want to help improve "
-"OpenShot you can enable **Send Anonymous Metrics and Errors**."
+"OpenShot's default cache settings now target a balanced preview experience: "
+"roughly **50% behind / 50% ahead** of the playhead, **768 MB** cache memory, "
+"and **900** max frames. In practice, this improves scrubbing and seek "
+"behavior while reducing stale preview frames on slower systems."
 msgstr ""
-"در اینجا می‌توانید میزان داده‌های ثبت شده را تنظیم کنید. معمولاً *حالت "
-"اشکال‌زدایی (جزئی)* خاموش است. پورت پیش‌فرض ۵۵۵۶ است. اگر می‌خواهید به بهبود "
-"OpenShot کمک کنید، می‌توانید گزینه **ارسال معیارها و خطاهای ناشناس** را فعال "
-"کنید."
+"تنظیمات پیش‌فرض کش OpenShot اکنون هدف تجربه پیش‌نمایش متعادل را دنبال می‌کند: "
+"تقریباً **۵۰٪ پشت / ۵۰٪ جلو** از مکان‌نما، **۷۶۸ مگابایت** حافظه کش و حداکثر "
+"**۹۰۰** فریم. در عمل، این باعث بهبود رفتار جستجو و حرکت در خط زمان می‌شود و "
+"فریم‌های پیش‌نمایش قدیمی را در سیستم‌های کند کاهش می‌دهد."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:192
+#: ../preferences.rst:224
 msgid "Performance"
 msgstr "عملکرد"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:195
+#: ../preferences.rst:227
 msgid ""
 "Please keep in mind that GPU hardware acceleration is experimental at the "
 "moment. OpenShot supports both decoding and encoding acceleration. For more "
@@ -711,12 +832,106 @@ msgstr ""
 "گرافیک قدیمی‌تر، شتاب‌دهی سخت‌افزاری همیشه سریع‌تر از رمزگذاری با CPU نیست."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:212
+#: ../preferences.rst:237
+msgid "Hardware Decoder Mode"
+msgstr "حالت رمزگشای سخت‌افزاری"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:238
+msgid ""
+"Select the hardware decoding backend to use. Use :guilabel:`Test` to verify "
+"the selected decoder mode."
+msgstr ""
+"بک‌اند رمزگشای سخت‌افزاری مورد استفاده را انتخاب کنید. برای تأیید حالت رمزگشا "
+"از :guilabel:`Test` استفاده کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:239
+msgid "Hardware Decoder Graphics Card"
+msgstr "کارت گرافیک رمزگشای سخت‌افزاری"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:240
+msgid "Choose which GPU device is used for hardware decoding."
+msgstr "انتخاب کنید کدام دستگاه GPU برای رمزگشایی سخت‌افزاری استفاده شود."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:241
+msgid "Hardware Encoder Graphics Card"
+msgstr "کارت گرافیک رمزگذار سخت‌افزاری"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:242
+msgid "Choose which GPU device is used for hardware encoding."
+msgstr "انتخاب کنید کدام دستگاه GPU برای رمزگذاری سخت‌افزاری استفاده شود."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:243
+msgid "OMP Threads"
+msgstr "رشته‌های OMP"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:244
+msgid ""
+"Number of OpenMP worker threads used by performance-sensitive processing."
+msgstr ""
+"تعداد رشته‌های کاری OpenMP که برای پردازش حساس به عملکرد استفاده می‌شوند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:245
+msgid "FFmpeg Threads"
+msgstr "رشته‌های FFmpeg"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:246
+msgid "Number of FFmpeg threads used for decoding/encoding."
+msgstr "تعداد رشته‌های FFmpeg که برای رمزگشایی/رمزگذاری استفاده می‌شوند."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:247
+msgid "Hardware Decoder Max Width (0 = Default)"
+msgstr "حداکثر عرض رمزگشای سخت‌افزاری (۰ = پیش‌فرض)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:248
+msgid ""
+"Optional maximum width for hardware decoding. Use ``0`` for no explicit "
+"limit."
+msgstr ""
+"حداکثر عرض اختیاری برای رمزگشایی سخت‌افزاری. برای عدم محدودیت صریح، از ``0`` "
+"استفاده کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:249
+msgid "Hardware Decoder Max Height (0 = Default)"
+msgstr "حداکثر ارتفاع رمزگشای سخت‌افزاری (۰ = پیش‌فرض)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:250
+msgid ""
+"Optional maximum height for hardware decoding. Use ``0`` for no explicit "
+"limit."
+msgstr ""
+"حداکثر ارتفاع اختیاری برای رمزگشایی سخت‌افزاری. برای عدم محدودیت صریح، از "
+"``0`` استفاده کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:251
+msgid "Use Blender GPU rendering for Animated Titles"
+msgstr "استفاده از رندر GPU بلندر برای عناوین متحرک"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:252
+msgid "Enable GPU rendering for Blender-based animated titles."
+msgstr "فعال‌کردن رندر GPU برای عناوین متحرک مبتنی بر بلندر."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:257
 msgid "Keyboard"
 msgstr "صفحه‌کلید"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:215
+#: ../preferences.rst:260
 msgid ""
 "This section allows you to view and customize hotkeys for various actions in "
 "the application. Here, you can assign and manage multiple shortcuts for the "
@@ -727,7 +942,7 @@ msgstr ""
 "در صورت نیاز میانبرهای پیش‌فرض را بازیابی کنید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:218
+#: ../preferences.rst:263
 msgid ""
 "**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to "
 "the same action by separating them with a pipe (``|``) delimiter. This "
@@ -739,7 +954,7 @@ msgstr ""
 "اجازه می‌دهد هر تعداد میانبر که نیاز دارید برای هر عملیات تنظیم کنید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:221
+#: ../preferences.rst:266
 msgid ""
 "**Immediate Application**: No restart is required after adjusting keyboard "
 "shortcuts. Changes are applied immediately, so you can start using your "
@@ -750,7 +965,7 @@ msgstr ""
 "کنید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:224
+#: ../preferences.rst:269
 msgid ""
 "**Restore Default Shortcuts**: If needed, you can reset all keyboard "
 "shortcuts to their default settings by clicking on the :guilabel:`Restore "
@@ -762,7 +977,7 @@ msgstr ""
 "قرار دارد، همه کلیدهای میانبر را به تنظیمات پیش‌فرض بازگردانید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:227
+#: ../preferences.rst:272
 msgid ""
 "**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are "
 "any duplicate shortcuts, they will be highlighted in **red** and will not "
@@ -773,7 +988,7 @@ msgstr ""
 "کار نخواهند کرد."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:231
+#: ../preferences.rst:276
 msgid ""
 "For more detailed information on how to use and customize keyboard "
 "shortcuts, see :ref:`keyboard_shortcut_ref`."
@@ -782,12 +997,12 @@ msgstr ""
 "`keyboard_shortcut_ref` مراجعه کنید."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:234
+#: ../preferences.rst:279
 msgid "Location"
 msgstr "مکان"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:238
+#: ../preferences.rst:283
 msgid ""
 "Default file path locations for saving/opening projects, importing files, "
 "and exporting videos can be configured here. This can save you time by "
@@ -800,47 +1015,47 @@ msgstr ""
 "ادامه توضیح داده شده‌اند)."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:248
+#: ../preferences.rst:293
 msgid "File Import"
 msgstr "وارد کردن فایل"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:248
+#: ../preferences.rst:293
 msgid "Default folder to choose when importing a file"
 msgstr "پوشه پیش‌فرض برای انتخاب هنگام وارد کردن فایل"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:249
+#: ../preferences.rst:294
 msgid "Save or Open Project"
 msgstr "ذخیره یا باز کردن پروژه"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:249
+#: ../preferences.rst:294
 msgid "Default folder to choose when saving or opening a project file"
 msgstr "پوشه پیش‌فرض برای انتخاب هنگام ذخیره یا باز کردن فایل پروژه"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:250
+#: ../preferences.rst:295
 msgid "Video Export"
 msgstr "صادر کردن ویدیو"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:250
+#: ../preferences.rst:295
 msgid "Default folder to choose when exporting a video"
 msgstr "پوشه پیش‌فرض برای انتخاب هنگام صادر کردن ویدیو"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:257
+#: ../preferences.rst:302
 msgid "Values"
 msgstr "مقادیر"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:259
+#: ../preferences.rst:304
 msgid "**Recent Folder**"
 msgstr "**پوشه اخیر**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:259
+#: ../preferences.rst:304
 msgid ""
 "The last folder used for this same operation. Project folders, Import "
 "folders, and Export folders are tracked separately."
@@ -849,24 +1064,117 @@ msgstr ""
 "صورت جداگانه پیگیری می‌شوند."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:260
+#: ../preferences.rst:305
 msgid "**Project Folder**"
 msgstr "**پوشه پروژه**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:260
+#: ../preferences.rst:305
 msgid ""
 "The current project folder (or the user's home folder, if the project is not "
 "yet saved)"
 msgstr "پوشه پروژه فعلی (یا پوشه خانه کاربر، اگر پروژه هنوز ذخیره نشده باشد)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:266
+#: ../preferences.rst:311
+msgid "Advanced"
+msgstr "پیشرفته"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:315
+msgid "The Advanced tab includes ComfyUI integration and debugging options."
+msgstr "زبانه پیشرفته شامل ادغام ComfyUI و گزینه‌های اشکال‌زدایی است."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:324
+msgid "Comfy UI URL"
+msgstr "آدرس Comfy UI"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:325
+msgid "``http://127.0.0.1:8188``"
+msgstr "``http://127.0.0.1:8188``"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:326
+msgid "URL of your local or remote ComfyUI server"
+msgstr "آدرس سرور محلی یا راه دور ComfyUI شما"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:327
+msgid "Debug Mode (Port)"
+msgstr "حالت اشکال‌زدایی (پورت)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:328
+msgid "5556"
+msgstr "۵۵۵۶"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:329
+msgid "Port used by debug logging features"
+msgstr "پورت استفاده شده توسط ویژگی‌های ثبت اشکال‌زدایی"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:330
+msgid "Debug Mode (Verbose)"
+msgstr "حالت اشکال‌زدایی (گزارش مفصل)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:332
+msgid "Enable verbose debugging output"
+msgstr "فعال‌کردن خروجی اشکال‌زدایی مفصل"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:333
+msgid "Send Anonymous Metrics and Errors"
+msgstr "ارسال معیارها و خطاهای ناشناس"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:335
+msgid "Send anonymous telemetry and error reports"
+msgstr "ارسال گزارش‌های تله‌متری و خطا به صورت ناشناس"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:336
+msgid "Show Playback Performance (FPS)"
+msgstr "نمایش عملکرد پخش (FPS)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:338
+msgid "Display live FPS in preview playback"
+msgstr "نمایش FPS زنده در پخش پیش‌نمایش"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:339
+msgid "Show Export Dialog when Finished"
+msgstr "نمایش پنجره صادرات پس از اتمام"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:341
+msgid "Display the Export Video window when export completes"
+msgstr "نمایش پنجره صدور ویدیو پس از اتمام صدور"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:343
+msgid ""
+"The ComfyUI **Check** button updates an inline status icon: green checkmark "
+"for success, red icon for failure. If OpenShot cannot reach this server, AI "
+"context menu options are hidden. See :ref:`ai_ref` for setup details, "
+"requirements, and workflow options."
+msgstr ""
+"دکمه **بررسی** ComfyUI یک آیکون وضعیت درون‌خطی را به‌روزرسانی می‌کند: علامت تیک "
+"سبز برای موفقیت، آیکون قرمز برای شکست. اگر OpenShot نتواند به این سرور "
+"دسترسی پیدا کند، گزینه‌های منوی زمینه AI مخفی می‌شوند. برای جزئیات راه‌اندازی، "
+"نیازمندی‌ها و گزینه‌های جریان کاری به :ref:`ai_ref` مراجعه کنید."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:350
 msgid "Reset (Default Values)"
 msgstr "بازنشانی (مقادیر پیش‌فرض)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:268
+#: ../preferences.rst:352
 msgid ""
 "To reset **all** preferences to their default values, please delete the "
 "``openshot.settings`` file and re-launch OpenShot. The settings file can be "
@@ -882,7 +1190,7 @@ msgstr ""
 "``openshot.settings`` گمشده با مقادیر پیش‌فرض ایجاد خواهد شد."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:273
+#: ../preferences.rst:357
 msgid ""
 "Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch "
 "OpenShot. However, please make a **backup** of any customized folders: "
@@ -897,7 +1205,7 @@ msgstr ""
 "پروژه‌های موجود شما (فایل‌های ``*.osp``) است."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:278
+#: ../preferences.rst:362
 msgid ""
 "Deleting the ``.openshot_qt/`` folder is the quickest method to restore "
 "OpenShot preferences and settings to their Default values (i.e. also called "

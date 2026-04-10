@@ -310,6 +310,11 @@ elif sys.platform == "linux":
     for filename in find_files(nss_path, ["*"]):
         external_so_files.append((filename, os.path.basename(filename)))
 
+    # Keep the audio decoding stack self-contained inside the AppImage.
+    sndfile_path = "/lib/x86_64-linux-gnu/libsndfile.so.1"
+    if os.path.exists(sndfile_path):
+        external_so_files.append((sndfile_path, "libsndfile.so.1"))
+
     # Manually add BABL extensions (used in ChromaKey effect) - these are loaded at runtime,
     # and thus cx_freeze is not able to detect them
     babl_ext_path = ARCHLIB + "babl-0.1/"

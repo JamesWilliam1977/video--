@@ -9,12 +9,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
@@ -64,27 +65,27 @@ msgid "Overview"
 msgstr "Aperçu"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:44 ../titles.rst:179
+#: ../titles.rst:44 ../titles.rst:185
 msgid "#"
 msgstr "#"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:44 ../titles.rst:179
+#: ../titles.rst:44 ../titles.rst:185
 msgid "Name"
 msgstr "Nom"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:44 ../titles.rst:63 ../titles.rst:179 ../titles.rst:198
+#: ../titles.rst:44 ../titles.rst:63 ../titles.rst:185 ../titles.rst:204
 msgid "Description"
 msgstr "Description"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:46 ../titles.rst:181
+#: ../titles.rst:46 ../titles.rst:187
 msgid "1"
 msgstr "1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:46 ../titles.rst:181
+#: ../titles.rst:46 ../titles.rst:187
 msgid "Choose a Template"
 msgstr "Choisir un modèle"
 
@@ -94,27 +95,27 @@ msgid "Choose from any available vector title template"
 msgstr "Choisissez parmi tous les modèles de titres vectoriels disponibles"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:47 ../titles.rst:182
+#: ../titles.rst:47 ../titles.rst:188
 msgid "2"
 msgstr "2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:47 ../titles.rst:182
+#: ../titles.rst:47 ../titles.rst:188
 msgid "Preview Title"
 msgstr "Aperçu du titre"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:47 ../titles.rst:182
+#: ../titles.rst:47 ../titles.rst:188
 msgid "Preview your title as you make changes"
 msgstr "Aperçu de votre titre pendant que vous effectuez des modifications"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:48 ../titles.rst:183
+#: ../titles.rst:48 ../titles.rst:189
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:48 ../titles.rst:183
+#: ../titles.rst:48 ../titles.rst:189
 msgid "Title Properties"
 msgstr "Propriétés du titre"
 
@@ -128,7 +129,7 @@ msgstr ""
 "éditeur d'images SVG avancé externe (comme Inkscape)"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:49 ../titles.rst:184
+#: ../titles.rst:49 ../titles.rst:190
 msgid "4"
 msgstr "4"
 
@@ -196,71 +197,82 @@ msgstr ""
 
 # Translated with gpt-4.1-mini
 #: ../titles.rst:70
+msgid "Box"
+msgstr "Boîte"
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:71
+#, fuzzy
+msgid "A simple boxed title layout for centered text."
+msgstr "Une barre simple avec texte centré."
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:72
 msgid "Bubbles 1"
 msgstr "Bulles 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:71
+#: ../titles.rst:73
 msgid "A title with bubble graphics for a playful look."
 msgstr "Un titre avec des graphismes de bulles pour un aspect ludique."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:72
+#: ../titles.rst:74
 msgid "Bubbles 2"
 msgstr "Bulles 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:73
+#: ../titles.rst:75
 msgid "A different bubble design for a fun and creative title."
 msgstr "Un design de bulles différent pour un titre amusant et créatif."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:74
+#: ../titles.rst:76
 msgid "Camera Border"
 msgstr "Bordure de caméra"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:75
+#: ../titles.rst:77
 msgid "A border that mimics a camera viewfinder with centered text."
 msgstr "Une bordure qui imite un viseur de caméra avec texte centré."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:76
+#: ../titles.rst:78
 msgid "Cloud 1"
 msgstr "Nuage 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:77
+#: ../titles.rst:79
 msgid "A title with a playful cloud graphic and text."
 msgstr "Un titre avec un graphisme de nuage ludique et du texte."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:78
+#: ../titles.rst:80
 msgid "Cloud 2"
 msgstr "Nuage 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:79
+#: ../titles.rst:81
 msgid "Another playful cloud design with 3 clouds and text."
 msgstr "Un autre design ludique de nuage avec 3 nuages et du texte."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:80
+#: ../titles.rst:82
 msgid "Creative Commons 1"
 msgstr "Creative Commons 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:81
+#: ../titles.rst:83
 msgid "Contains text and icons for Creative Commons attribution."
 msgstr "Contient du texte et des icônes pour l'attribution Creative Commons."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:82
+#: ../titles.rst:84
 msgid "Creative Commons 2"
 msgstr "Creative Commons 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:83
+#: ../titles.rst:85
 msgid ""
 "Another Creative Commons design with different styling plus website text."
 msgstr ""
@@ -268,135 +280,147 @@ msgstr ""
 "web."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:84
+#: ../titles.rst:86
 msgid "Film Rating 1"
 msgstr "Classification film 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:85
+#: ../titles.rst:87
 msgid "Displays a film rating for all audiences."
 msgstr "Affiche une classification film pour tous publics."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:86
+#: ../titles.rst:88
 msgid "Film Rating 2"
 msgstr "Classification film 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:87
+#: ../titles.rst:89
 msgid "Displays a film rating of \"R\" restricted."
 msgstr "Affiche une classification film \"R\" restreinte."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:88
+#: ../titles.rst:90
 msgid "Film Rating 3"
 msgstr "Classification film 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:89
+#: ../titles.rst:91
 msgid "Displays a film rating of \"G\" for general audiences."
 msgstr "Affiche une classification film \"G\" pour tous publics."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:90
+#: ../titles.rst:92
 msgid "Film Rating 4"
 msgstr "Classification film 4"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:91
+#: ../titles.rst:93
 msgid "Displays a film rating of \"PG-13\", parents strongly cautioned."
 msgstr ""
 "Affiche une classification film \"PG-13\", avertissement parental conseillé."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:92
+#: ../titles.rst:94
+#, fuzzy
+msgid "Flare"
+msgstr "Éblouissement"
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:95
+#, fuzzy
+msgid "A title with a bright flare effect for a cinematic look."
+msgstr "Un titre avec effets de fumée pour un aspect dramatique."
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:96
 msgid "Flames"
 msgstr "Flammes"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:93
+#: ../titles.rst:97
 msgid "A title with flame graphics for a fiery effect."
 msgstr "Un titre avec des graphismes de flammes pour un effet enflammé."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:94
+#: ../titles.rst:98
 msgid "Footer 1"
 msgstr "Pied de page 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:95
+#: ../titles.rst:99
 msgid "A footer bar for lower thirds (left aligned)."
 msgstr ""
 "Une barre de pied de page pour les tiers inférieurs (alignée à gauche)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:96
+#: ../titles.rst:100
 msgid "Footer 2"
 msgstr "Pied de page 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:97
+#: ../titles.rst:101
 msgid "A footer bar for lower thirds (center aligned)."
 msgstr "Une barre de pied de page pour les tiers inférieurs (centrée)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:98
+#: ../titles.rst:102
 msgid "Footer 3"
 msgstr "Pied de page 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:99
+#: ../titles.rst:103
 msgid "A footer bar for lower thirds (right aligned)."
 msgstr ""
 "Une barre de pied de page pour les tiers inférieurs (alignée à droite)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:100
+#: ../titles.rst:104
 msgid "Gold 1"
 msgstr "Or 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:101
+#: ../titles.rst:105
 msgid "A title with a gold color scheme, centered with one line of text."
 msgstr "Un titre avec un schéma de couleur or, centré avec une ligne de texte."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:102
+#: ../titles.rst:106
 msgid "Gold 2"
 msgstr "Or 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:103
+#: ../titles.rst:107
 msgid "Another gold-themed title, centered with two lines of text."
 msgstr "Un autre titre sur le thème de l'or, centré avec deux lignes de texte."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:104
+#: ../titles.rst:108
 msgid "Gold Bottom"
 msgstr "Or Bas"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:105
+#: ../titles.rst:109
 msgid "Gold title positioned at the bottom of the screen."
 msgstr "Titre or positionné en bas de l'écran."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:106
+#: ../titles.rst:110
 msgid "Gold Top"
 msgstr "Or Haut"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:107
+#: ../titles.rst:111
 msgid "Gold title positioned at the top of the screen."
 msgstr "Titre or positionné en haut de l'écran."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:108
+#: ../titles.rst:112
 msgid "Gray Box 1"
 msgstr "Boîte grise 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:109
+#: ../titles.rst:113
 msgid ""
 "A simple gray box for highlighting text (one line of text, top-left aligned)."
 msgstr ""
@@ -404,12 +428,12 @@ msgstr ""
 "alignée en haut à gauche)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:110
+#: ../titles.rst:114
 msgid "Gray Box 2"
 msgstr "Boîte grise 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:111
+#: ../titles.rst:115
 msgid ""
 "A simple gray box for highlighting text (two lins of text, top-left aligned)."
 msgstr ""
@@ -417,12 +441,12 @@ msgstr ""
 "alignée en haut à gauche)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:112
+#: ../titles.rst:116
 msgid "Gray Box 3"
 msgstr "Boîte grise 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:113
+#: ../titles.rst:117
 msgid ""
 "A simple gray box for highlighting text (one line of text, bottom-right "
 "aligned)."
@@ -431,12 +455,12 @@ msgstr ""
 "alignée en bas à droite)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:114
+#: ../titles.rst:118
 msgid "Gray Box 4"
 msgstr "Boîte grise 4"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:115
+#: ../titles.rst:119
 msgid ""
 "A simple gray box for highlighting text (two lines of text, bottom-right "
 "aligned)."
@@ -445,66 +469,76 @@ msgstr ""
 "alignées en bas à droite)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:116
+#: ../titles.rst:120
 msgid "Header 1"
 msgstr "En-tête 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:117
+#: ../titles.rst:121
 msgid "A header bar for titles or section headers (top-left aligned)."
 msgstr ""
 "Une barre d'en-tête pour titres ou sections (alignée en haut à gauche)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:118
+#: ../titles.rst:122
 msgid "Header 2"
 msgstr "En-tête 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:119
+#: ../titles.rst:123
 msgid "A header bar for titles or section headers (center aligned)."
 msgstr "Une barre d'en-tête pour titres ou sections (centrée)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:120
+#: ../titles.rst:124
 msgid "Header 3"
 msgstr "En-tête 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:121
+#: ../titles.rst:125
 msgid "A header bar for titles or section headers (top-right aligned)."
 msgstr ""
 "Une barre d'en-tête pour titres ou sections (alignée en haut à droite)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:122
+#: ../titles.rst:126
+msgid "OpenShot"
+msgstr "OpenShot"
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:127
+msgid "A title featuring OpenShot branding."
+msgstr "Un titre présentant la marque OpenShot."
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:128
 msgid "Oval 1"
 msgstr "Ovale 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:123
+#: ../titles.rst:129
 msgid "An oval shape for highlighting or decorative purposes, text centered."
 msgstr ""
 "Une forme ovale pour mettre en valeur ou à des fins décoratives, texte "
 "centré."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:124
+#: ../titles.rst:130
 msgid "Oval 2"
 msgstr "Ovale 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:125
+#: ../titles.rst:131
 msgid "Another oval design with a different style, text centered."
 msgstr "Un autre design ovale avec un style différent, texte centré."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:126
+#: ../titles.rst:132
 msgid "Oval 3"
 msgstr "Ovale 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:127
+#: ../titles.rst:133
 msgid ""
 "Another oval design with two-lines of text, one at the top, one at the "
 "bottom."
@@ -512,113 +546,113 @@ msgstr ""
 "Un autre design ovale avec deux lignes de texte, une en haut, une en bas."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:128
+#: ../titles.rst:134
 msgid "Oval 4"
 msgstr "Ovale 4"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:129
+#: ../titles.rst:135
 msgid "Yet another oval design, with text centered plus refection."
 msgstr "Encore un autre design ovale, avec texte centré plus réflexion."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:130
+#: ../titles.rst:136
 msgid "Post it"
 msgstr "Post-it"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:131
+#: ../titles.rst:137
 msgid "Mimics a sticky note for annotations or reminders."
 msgstr "Imite un post-it pour annotations ou rappels."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:132
+#: ../titles.rst:138
 msgid "Ribbon 1"
 msgstr "Ruban 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:133
+#: ../titles.rst:139
 msgid "A ribbon graphic with text."
 msgstr "Un graphique en forme de ruban avec texte."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:134
+#: ../titles.rst:140
 msgid "Ribbon 2"
 msgstr "Ruban 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:135
+#: ../titles.rst:141
 msgid "Another ribbon design with text."
 msgstr "Un autre design de ruban avec texte."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:136
+#: ../titles.rst:142
 msgid "Ribbon 3"
 msgstr "Ruban 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:137
+#: ../titles.rst:143
 msgid "A third variation of a ribbon design with text."
 msgstr "Une troisième variation d'un design de ruban avec texte."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:138
+#: ../titles.rst:144
 msgid "Smoke 1"
 msgstr "Fumée 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:139
+#: ../titles.rst:145
 msgid "A title with smoke effects for a dramatic look."
 msgstr "Un titre avec effets de fumée pour un aspect dramatique."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:140
+#: ../titles.rst:146
 msgid "Smoke 2"
 msgstr "Fumée 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:141
+#: ../titles.rst:147
 msgid "Another smoke design with a different style."
 msgstr "Un autre design de fumée avec un style différent."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:142
+#: ../titles.rst:148
 msgid "Smoke 3"
 msgstr "Fumée 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:143
+#: ../titles.rst:149
 msgid "A third variation of smoke effects."
 msgstr "Une troisième variation d'effets de fumée."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:144
+#: ../titles.rst:150
 msgid "Solid Color"
 msgstr "Couleur unie"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:145
+#: ../titles.rst:151
 msgid "A full-screen color background for various uses."
 msgstr "Un fond de couleur plein écran pour divers usages."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:146
+#: ../titles.rst:152
 msgid "Standard 1"
 msgstr "Standard 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:147
+#: ../titles.rst:153
 msgid "A standard title design for general purposes (two lines centered)."
 msgstr ""
 "Un design de titre standard pour usages généraux (deux lignes centrées)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:148
+#: ../titles.rst:154
 msgid "Standard 2"
 msgstr "Standard 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:149
+#: ../titles.rst:155
 msgid ""
 "Another standard title with a different style (one line of text plus "
 "reflection)."
@@ -627,44 +661,44 @@ msgstr ""
 "réflexion)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:150
+#: ../titles.rst:156
 msgid "Standard 3"
 msgstr "Standard 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:151
+#: ../titles.rst:157
 msgid "A third variation of a standard title (three lines of text)."
 msgstr "Une troisième variation d'un titre standard (trois lignes de texte)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:152
+#: ../titles.rst:158
 msgid "Standard 4"
 msgstr "Standard 4"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:153
+#: ../titles.rst:159
 msgid "Yet another standard title design (four lines of text)."
 msgstr "Encore un autre design de titre standard (quatre lignes de texte)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:154
+#: ../titles.rst:160
 msgid "Sunset"
 msgstr "Coucher de soleil"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:155
+#: ../titles.rst:161
 msgid "A title with sunset gradient for a warm, end-of-day theme."
 msgstr ""
 "Un titre avec un dégradé de coucher de soleil pour un thème chaleureux de "
 "fin de journée."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:156
+#: ../titles.rst:162
 msgid "TV Rating"
 msgstr "Classification TV"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:157
+#: ../titles.rst:163
 msgid ""
 "Displays TV ratings badge such as \"G\" and \"PG\" (for the corner of the "
 "screen)."
@@ -673,12 +707,12 @@ msgstr ""
 "l'écran)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:161
+#: ../titles.rst:167
 msgid "Custom Title Templates"
 msgstr "Modèles de titres personnalisés"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:162
+#: ../titles.rst:168
 msgid ""
 "OpenShot can use any vector SVG image file as a custom title template in "
 "the :guilabel:`Title Editor` dialog. Just add an SVG image file to your ``~/."
@@ -697,7 +731,7 @@ msgstr ""
 "titre**."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:166
+#: ../titles.rst:172
 msgid ""
 "Note: These SVG templates are only used by the :guilabel:`Title Editor` "
 "dialog, and not :guilabel:`Animated Title` dialog."
@@ -707,12 +741,12 @@ msgstr ""
 "guilabel:`Titre animé`."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:171
+#: ../titles.rst:177
 msgid "3D Animated Titles"
 msgstr "Titres animés 3D"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:172
+#: ../titles.rst:178
 msgid ""
 "Adding a 3D animated title is just as easy, using our **Animated Title** "
 "dialog. Use the Title menu (located in the main menu of OpenShot) to launch "
@@ -728,32 +762,32 @@ msgstr ""
 "OpenShot. Voir :ref:`blender_install_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:181
+#: ../titles.rst:187
 msgid "Choose from any available 3D title templates"
 msgstr "Choisissez parmi tous les modèles de titres 3D disponibles"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:183
+#: ../titles.rst:189
 msgid "Change the text, colors, and advanced properties"
 msgstr "Modifiez le texte, les couleurs et les propriétés avancées"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:184
+#: ../titles.rst:190
 msgid "Render"
 msgstr "Rendu"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:184
+#: ../titles.rst:190
 msgid "Render the 3D animation, and add it to your project"
 msgstr "Rendez l'animation 3D et ajoutez-la à votre projet"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:188
+#: ../titles.rst:194
 msgid "3D Animated Templates"
 msgstr "Modèles animés 3D"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:190
+#: ../titles.rst:196
 msgid ""
 "OpenShot includes a variety of 3D animated templates that can be used to add "
 "dynamic and engaging elements to your video projects. Below is a table "
@@ -764,27 +798,27 @@ msgstr ""
 "Voici un tableau listant les modèles disponibles et leurs descriptions :"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:197
+#: ../titles.rst:203
 msgid "Template Name"
 msgstr "Nom du modèle"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:199
+#: ../titles.rst:205
 msgid "Blinds (Two Titles)"
 msgstr "Stores (Deux titres)"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:200
+#: ../titles.rst:206
 msgid "An animation featuring a blinds effect."
 msgstr "Une animation avec un effet de stores."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:201
+#: ../titles.rst:207
 msgid "Blur"
 msgstr "Flou"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:202
+#: ../titles.rst:208
 msgid ""
 "A template that blurs text in and out, providing a smooth transition effect."
 msgstr ""
@@ -792,12 +826,12 @@ msgstr ""
 "effet de transition fluide."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:203
+#: ../titles.rst:209
 msgid "Color Tiles"
 msgstr "Carreaux colorés"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:204
+#: ../titles.rst:210
 msgid ""
 "An animation with changing colors, suitable for vibrant and dynamic titles."
 msgstr ""
@@ -805,12 +839,12 @@ msgstr ""
 "dynamiques."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:205
+#: ../titles.rst:211
 msgid "Dissolving Text"
 msgstr "Texte en dissolution"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:206
+#: ../titles.rst:212
 msgid ""
 "A dissolve effect that turns any text into particles which get blown away by "
 "the wind."
@@ -819,113 +853,113 @@ msgstr ""
 "le vent."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:207
+#: ../titles.rst:213
 msgid "World Map"
 msgstr "Carte du monde"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:208
+#: ../titles.rst:214
 msgid "A template featuring a rotating Earth between 2 locations."
 msgstr "Un modèle présentant une Terre tournante entre deux emplacements."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:209
+#: ../titles.rst:215
 msgid "Exploding Text"
 msgstr "Texte Explosif"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:210
+#: ../titles.rst:216
 msgid ""
 "An animation where the title explode into pieces, adding dramatic impact."
 msgstr ""
 "Une animation où le titre explose en morceaux, ajoutant un impact dramatique."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:211
+#: ../titles.rst:217
 msgid "Fly Towards Camera"
 msgstr "Vol vers la caméra"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:212
+#: ../titles.rst:218
 msgid "A fly-by animation with a single title zooming past the screen."
 msgstr "Une animation de survol avec un seul titre zoomant à travers l'écran."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:213
+#: ../titles.rst:219
 msgid "Fly Towards Camera (Two Titles)"
 msgstr "Vol vers la caméra (Deux titres)"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:214
+#: ../titles.rst:220
 msgid "Similar to Fly By 1, but with two titles flying by."
 msgstr "Similaire à Vol 1, mais avec deux titres qui passent."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:215
+#: ../titles.rst:221
 msgid "Glare"
 msgstr "Éblouissement"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:216
+#: ../titles.rst:222
 msgid "An animation with a glare effect, adding a bright, reflective look."
 msgstr ""
 "Une animation avec un effet d'éblouissement, ajoutant un aspect lumineux et "
 "réfléchissant."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:217
+#: ../titles.rst:223
 msgid "Glass Slider"
 msgstr "Curseur en verre"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:218
+#: ../titles.rst:224
 msgid "A sliding glass effect, providing a modern and sleek transition."
 msgstr ""
 "Un effet de glissement en verre, offrant une transition moderne et élégante."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:219
+#: ../titles.rst:225
 msgid "Lens Flare"
 msgstr "Éclat de lentille"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:220
+#: ../titles.rst:226
 msgid "An animation featuring a lens flare, adding a cinematic touch."
 msgstr ""
 "Une animation avec un éclat de lentille, ajoutant une touche "
 "cinématographique."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:221
+#: ../titles.rst:227
 msgid "Magic Wand"
 msgstr "Baguette magique"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:222
+#: ../titles.rst:228
 msgid "A whimsical magic wand effect, ideal for magical or fantasy themes."
 msgstr ""
 "Un effet de baguette magique fantaisiste, idéal pour les thèmes magiques ou "
 "fantastiques."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:223
+#: ../titles.rst:229
 msgid "Neon Curves"
 msgstr "Courbes au néon"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:224
+#: ../titles.rst:230
 msgid "An animation with neon curves, creating a futuristic and vibrant look."
 msgstr ""
 "Une animation avec des courbes au néon, créant un aspect futuriste et "
 "vibrant."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:225
+#: ../titles.rst:231
 msgid "Picture Frames (4 pictures)"
 msgstr "Cadres photo (4 images)"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:226
+#: ../titles.rst:232
 msgid ""
 "A template featuring four picture frames, suitable for showcasing images or "
 "video clips."
@@ -934,33 +968,33 @@ msgstr ""
 "des clips vidéo."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:227
+#: ../titles.rst:233
 msgid "Rotate 360"
 msgstr "Rotation à 360°"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:228
+#: ../titles.rst:234
 msgid "A 360-degree rotation effect, providing a dynamic title animation."
 msgstr ""
 "Un effet de rotation à 360 degrés, offrant une animation de titre dynamique."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:229
+#: ../titles.rst:235
 msgid "Slide Left to Right"
 msgstr "Glissement de gauche à droite"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:230
+#: ../titles.rst:236
 msgid "A sliding effect where titles move from left to right."
 msgstr "Un effet de glissement où les titres se déplacent de gauche à droite."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:231
+#: ../titles.rst:237
 msgid "Snow"
 msgstr "Neige"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:232
+#: ../titles.rst:238
 msgid ""
 "An animation with falling snow particles, perfect for winter or holiday "
 "themes."
@@ -969,36 +1003,36 @@ msgstr ""
 "thèmes hivernaux ou festifs."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:233
+#: ../titles.rst:239
 msgid "Space Movie Intro"
 msgstr "Introduction de film spatial"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:234
+#: ../titles.rst:240
 msgid "A cinematic space-themed intro, ideal for epic or sci-fi projects."
 msgstr ""
 "Une introduction cinématographique sur le thème de l'espace, idéale pour des "
 "projets épiques ou de science-fiction."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:235
+#: ../titles.rst:241
 msgid "Wireframe Text"
 msgstr "Texte en fil de fer"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:236
+#: ../titles.rst:242
 msgid "An animation with wireframe text, adding a technical or digital look."
 msgstr ""
 "Une animation avec du texte en fil de fer, ajoutant un aspect technique ou "
 "numérique."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:237
+#: ../titles.rst:243
 msgid "Zoom to Clapboard"
 msgstr "Zoom sur la claquette"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:238
+#: ../titles.rst:244
 msgid ""
 "A zoom title with a clapboard, perfect for film or video production themes."
 msgstr ""
@@ -1006,12 +1040,12 @@ msgstr ""
 "cinématographique ou vidéo."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:241
+#: ../titles.rst:247
 msgid "Importing Text"
 msgstr "Importer du texte"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:243
+#: ../titles.rst:249
 msgid ""
 "You can generate text & titles in many different programs, such as Blender, "
 "Inkscape, Krita, Gimp, etc... Before you can import text into OpenShot, you "
@@ -1025,8 +1059,7 @@ msgstr ""
 "transparent** et un canal **alpha**."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:247
-#, python-format
+#: ../titles.rst:253
 msgid ""
 "The ``SVG`` format is a great choice for vector graphics (curves, shapes, "
 "text effects and paths), however it is **not** always 100% compatible with "
@@ -1045,7 +1078,7 @@ msgstr ""
 "vidéos et images sur la timeline en dessous."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:252
+#: ../titles.rst:258
 msgid ""
 "For information on importing animated sequences into OpenShot, please see :"
 "ref:`animation_image_seq_ref`."
@@ -1054,12 +1087,12 @@ msgstr ""
 "veuillez consulter :ref:`animation_image_seq_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:255
+#: ../titles.rst:261
 msgid "Installing Inkscape"
 msgstr "Installation d'Inkscape"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:257
+#: ../titles.rst:263
 msgid ""
 "The :guilabel:`Advanced Editor` feature in the :guilabel:`Title Editor` "
 "dialog requires the latest version of Inkscape (https://inkscape.org/"
@@ -1075,12 +1108,12 @@ msgstr ""
 "Préférences."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:264
+#: ../titles.rst:270
 msgid "Installing Blender"
 msgstr "Installation de Blender"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:266
+#: ../titles.rst:272
 msgid ""
 "The :guilabel:`Animated Title` feature in OpenShot requires the latest "
 "version of Blender (https://www.blender.org/download/) be installed and the "
@@ -1098,7 +1131,7 @@ msgstr ""
 "Blender ne sont pas compatibles avec OpenShot Video Editor."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:272
+#: ../titles.rst:278
 msgid ""
 "For a detailed guide on how to install these dependencies, see `Blender & "
 "Inkscape Guide <https://github.com/OpenShot/openshot-qt/wiki/Blender-and-"

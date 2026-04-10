@@ -5,7 +5,7 @@
 
  @section LICENSE
 
- Copyright (c) 2008-2018 OpenShot Studios, LLC
+ Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -28,9 +28,9 @@
 import os
 from time import strftime
 
-VERSION = "3.4.0"
-MINIMUM_LIBOPENSHOT_VERSION = "0.5.0"
-DATE = "20250612000000"
+VERSION = "3.5.1"
+MINIMUM_LIBOPENSHOT_VERSION = "0.7.0"
+DATE = "20260402000000"
 NAME = "openshot-qt"
 PRODUCT_NAME = "OpenShot Video Editor"
 GPL_VERSION = "3"
@@ -69,6 +69,7 @@ USER_COLORS_PATH = os.path.join(USER_PATH, "colors")
 PROTOBUF_DATA_PATH = os.path.join(USER_PATH, "protobuf_data")
 YOLO_PATH = os.path.join(USER_PATH, "yolo")
 CLIPBOARD_PATH = os.path.join(USER_PATH, "clipboard")
+PROXY_PATH = os.path.join(USER_PATH, "optimized")
 # User files
 BACKUP_FILE = os.path.join(BACKUP_PATH, "backup.osp")
 USER_DEFAULT_PROJECT = os.path.join(USER_PATH, "default.osp")

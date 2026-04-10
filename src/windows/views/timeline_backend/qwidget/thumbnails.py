@@ -27,7 +27,7 @@
 
 from collections import deque
 
-from qt_api import QObject, QThread, pyqtSignal, pyqtSlot
+from qt_api import QObject, QThread, QTimer, pyqtSignal, pyqtSlot
 
 from classes.logger import log
 from classes.thumbnail import GetThumbPath
@@ -42,21 +42,28 @@ class _ThumbnailWorker(QObject):
         super().__init__()
         self._queue = deque()
         self._processing = False
+        self._scheduled = False
 
     @pyqtSlot(str, str, int, int)
     def request_thumbnail(self, clip_id, file_id, frame, generation):
         """Queue a thumbnail request."""
-        self._queue.append((clip_id, file_id, frame, generation))
-        if not self._processing:
-            self._process_next()
+        self._queue.append((str(clip_id or ""), str(file_id or ""), int(frame or 0), int(generation or 0)))
+        self._queue = deque(sorted(self._queue, key=lambda job: (job[2], job[0], job[3])))
+        if not self._processing and not self._scheduled:
+            self._scheduled = True
+            QTimer.singleShot(0, self._process_next)
 
     @pyqtSlot()
     def clear_pending(self):
         """Discard any pending thumbnail work."""
         self._queue.clear()
         self._processing = False
+        self._scheduled = False
 
     def _process_next(self):
+        if self._processing:
+            return
+        self._scheduled = False
         while self._queue:
             clip_id, file_id, frame, generation = self._queue.popleft()
             self._processing = True

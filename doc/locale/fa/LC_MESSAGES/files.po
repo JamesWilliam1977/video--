@@ -1,20 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-04-02 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fa\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../files.rst:23
@@ -77,8 +80,8 @@ msgid "Import File Method"
 msgstr "روش وارد کردن فایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:48 ../files.rst:81 ../files.rst:110 ../files.rst:146
-#: ../files.rst:170
+#: ../files.rst:48 ../files.rst:85 ../files.rst:142 ../files.rst:182
+#: ../files.rst:216 ../files.rst:240
 msgid "Description"
 msgstr "توضیحات"
 
@@ -196,47 +199,63 @@ msgstr ""
 "در اینجا اقداماتی که می‌توانید از منوی فایل استفاده کنید آمده است."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:81
+#: ../files.rst:84
 msgid "File Context Option"
 msgstr "گزینه‌های منوی زمینه فایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:83
+#: ../files.rst:86
 msgid "Import Files..."
 msgstr "وارد کردن فایل‌ها..."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:83
+#: ../files.rst:87
 msgid "Import files into your project"
 msgstr "وارد کردن فایل‌ها به پروژه شما"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:84
-msgid "Thumbnail/Detail"
-msgstr "تصویر کوچک/جزئیات"
+#: ../files.rst:88
+msgid "Create with AI / Enhance with AI (Optional)"
+msgstr "ایجاد با هوش مصنوعی / بهبود با هوش مصنوعی (اختیاری)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:84
-msgid "Toggle the view between details and thumbnails"
-msgstr "تغییر نما بین جزئیات و تصاویر کوچک"
+#: ../files.rst:89
+msgid ""
+"AI menu actions for generating or enhancing media files. These options are "
+"shown only when AI is enabled and the selected file type supports the "
+"workflow. See :ref:`ai_ref`."
+msgstr ""
+"عملیات منوی هوش مصنوعی برای تولید یا بهبود فایل‌های رسانه‌ای. این گزینه‌ها فقط "
+"زمانی نمایش داده می‌شوند که هوش مصنوعی فعال باشد و نوع فایل انتخاب‌شده از این "
+"روند پشتیبانی کند. به :ref:`ai_ref` مراجعه کنید."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:85
+#: ../files.rst:90
+msgid "Details View"
+msgstr "نمای جزئیات"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:91
+msgid "Switch the Project Files panel to details view"
+msgstr "تغییر پنل فایل‌های پروژه به نمای جزئیات"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:92 ../files.rst:114
 msgid "Preview File"
 msgstr "پیش‌نمایش فایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:85
+#: ../files.rst:93
 msgid "Preview a media file"
 msgstr "پیش‌نمایش یک فایل رسانه‌ای"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:86 ../files.rst:98
+#: ../files.rst:94 ../files.rst:170
 msgid "Split File"
 msgstr "تقسیم فایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:86
+#: ../files.rst:95
 msgid ""
 "Split a file into many smaller files. The new trimmed files appear in the "
 "Project Files list."
@@ -245,32 +264,22 @@ msgstr ""
 "فایل‌های پروژه ظاهر می‌شوند."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:87
-msgid "Edit Title"
-msgstr "ویرایش عنوان"
+#: ../files.rst:96 ../files.rst:193
+msgid "Export Files"
+msgstr "صادرات فایل‌ها"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:87
-msgid "Edit an existing title SVG file"
-msgstr "ویرایش یک فایل عنوان SVG موجود"
+#: ../files.rst:97
+msgid "Export selected files (and split segments) to a destination folder"
+msgstr "صادرات فایل‌های انتخاب‌شده (و بخش‌های تقسیم‌شده) به پوشه مقصد"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:88
-msgid "Duplicate Title"
-msgstr "تکثیر عنوان"
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:88
-msgid "Make a copy, and then edit the copied title SVG file"
-msgstr "یک نسخه کپی کنید و سپس فایل عنوان SVG کپی شده را ویرایش کنید"
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:89 ../files.rst:135
+#: ../files.rst:98 ../files.rst:205
 msgid "Add to Timeline"
 msgstr "افزودن به جدول زمانی"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:89
+#: ../files.rst:99
 msgid ""
 "Add many files to the timeline in one step, including transitions or "
 "alternating tracks."
@@ -279,12 +288,12 @@ msgstr ""
 "متناوب."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:90
+#: ../files.rst:100
 msgid "Choose Profile"
 msgstr "انتخاب پروفایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:90
+#: ../files.rst:101
 msgid ""
 "Change the current project profile to match the selected file. If the file's "
 "profile does not match a known profile, it will give you the option to "
@@ -295,27 +304,258 @@ msgstr ""
 "سفارشی به شما داده می‌شود."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:91 ../files.rst:172
+#: ../files.rst:102 ../files.rst:242
 msgid "File Properties"
 msgstr "ویژگی‌های فایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:91
+#: ../files.rst:103
 msgid "View the properties of a file, such as frame rate, size, etc..."
 msgstr "مشاهده ویژگی‌های یک فایل، مانند نرخ فریم، اندازه و غیره..."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:92 ../files.rst:180
+#: ../files.rst:104 ../files.rst:125
+msgid "Optimize"
+msgstr "بهینه‌سازی"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:105
+msgid ""
+"Create, link, unlink, or delete optimized preview files for the selected "
+"video files."
+msgstr ""
+"ایجاد، پیوند دادن، جدا کردن یا حذف فایل‌های پیش‌نمایش بهینه‌شده برای فایل‌های "
+"ویدیویی انتخاب‌شده."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:106 ../files.rst:250
 msgid "Remove from Project"
 msgstr "حذف از پروژه"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:92
+#: ../files.rst:107
 msgid "Remove a file from the project"
 msgstr "حذف یک فایل از پروژه"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:99
+#: ../files.rst:108
+msgid "Edit Title"
+msgstr "ویرایش عنوان"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:109
+msgid "Edit an existing title SVG file (shown when an SVG title is selected)"
+msgstr ""
+"ویرایش فایل عنوان SVG موجود (زمانی که یک عنوان SVG انتخاب شده باشد نمایش "
+"داده می‌شود)"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:110
+msgid "Duplicate Title"
+msgstr "تکثیر عنوان"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:111
+#, fuzzy
+msgid ""
+"Make a copy, and then edit the copied title SVG file (shown when an SVG "
+"title is selected)"
+msgstr "یک نسخه کپی کنید و سپس فایل عنوان SVG کپی شده را ویرایش کنید"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:115
+msgid ""
+"The :guilabel:`Preview File` action opens the Preview dialog for the "
+"selected file from :guilabel:`Project Files`. Simply double check a file to "
+"open this dialog."
+msgstr ""
+"عمل :guilabel:`پیش‌نمایش فایل` پنجره پیش‌نمایش را برای فایل انتخاب‌شده از :"
+"guilabel:`فایل‌های پروژه` باز می‌کند. کافی است روی یک فایل دوبار کلیک کنید تا "
+"این پنجره باز شود."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:118
+msgid "Playback starts automatically."
+msgstr "پخش به‌صورت خودکار آغاز می‌شود."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:119
+msgid "Loop is enabled by default."
+msgstr "حلقه به‌طور پیش‌فرض فعال است."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:120
+msgid "Press :kbd:`Space` to toggle play/pause."
+msgstr "برای تغییر پخش/توقف، کلید :kbd:`Space` را فشار دهید."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:121
+msgid "Use the mouse scroll wheel to zoom in/out."
+msgstr "برای بزرگ‌نمایی/کوچک‌نمایی از چرخ اسکرول ماوس استفاده کنید."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:122
+msgid ""
+"A :guilabel:`Reset Zoom` button appears when zoom is not 100%, and resets to "
+"100%."
+msgstr ""
+"وقتی بزرگ‌نمایی ۱۰۰٪ نباشد، دکمه :guilabel:`بازنشانی بزرگ‌نمایی` ظاهر می‌شود و "
+"بزرگ‌نمایی را به ۱۰۰٪ بازمی‌گرداند."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:126
+msgid ""
+"Optimized preview files are lower-resolution copies of your source video "
+"files (sometimes referred to as proxy files), used to improve editing "
+"responsiveness without changing the original media. They are especially "
+"helpful with large formats such as 4K, high frame rate, or high bitrate "
+"footage."
+msgstr ""
+"فایل‌های پیش‌نمایش بهینه‌شده نسخه‌های کم‌رزولوشن از فایل‌های ویدیویی اصلی شما "
+"هستند (که گاهی به آن‌ها فایل‌های پروکسی گفته می‌شود) و برای بهبود پاسخگویی "
+"ویرایش بدون تغییر رسانه اصلی استفاده می‌شوند. این فایل‌ها به‌ویژه برای فرمت‌های "
+"بزرگ مانند 4K، نرخ فریم بالا یا بیت‌ریت بالا مفید هستند."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:130
+msgid ""
+"For video files, the file context menu includes an :guilabel:`Optimize` "
+"submenu. This feature creates or links smaller preview copies of your source "
+"clips, which can improve playback and scrubbing on slower systems or with "
+"high-resolution footage. Optimizing also pre-loads thumbnails to further "
+"improve the editing smoothness when zooming into the timeline."
+msgstr ""
+"برای فایل‌های ویدیویی، منوی زمینه فایل شامل یک زیرمنوی :guilabel:`بهینه‌سازی` "
+"است. این ویژگی نسخه‌های پیش‌نمایش کوچکتر از کلیپ‌های منبع شما را ایجاد یا پیوند "
+"می‌دهد که می‌تواند پخش و جابجایی در سیستم‌های کندتر یا با فیلم‌های با وضوح بالا "
+"را بهبود بخشد. بهینه‌سازی همچنین تصاویر بندانگشتی را پیش‌بارگذاری می‌کند تا "
+"نرمی ویرایش هنگام بزرگ‌نمایی در جدول زمانی بیشتر شود."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:135
+msgid "The :guilabel:`Optimize` submenu contains these actions:"
+msgstr "زیرمنوی :guilabel:`بهینه‌سازی` شامل این اقدامات است:"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:141
+msgid "Action"
+msgstr "عملیات"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:143
+msgid "Optimize Video"
+msgstr "بهینه‌سازی ویدیو"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:144
+msgid ""
+"Create an optimized preview file for each selected video file. OpenShot "
+"stores these files in the project's ``optimized`` assets folder."
+msgstr ""
+"برای هر فایل ویدیویی انتخاب‌شده یک فایل پیش‌نمایش بهینه‌شده ایجاد کنید. "
+"OpenShot این فایل‌ها را در پوشه دارایی‌های ``optimized`` پروژه ذخیره می‌کند."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:145
+msgid "Link to Existing..."
+msgstr "پیوند به فایل‌های موجود..."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:146
+msgid ""
+"Choose a folder containing already-created optimized files and link the best "
+"matching files to the selected source clips. This supports common proxy "
+"naming styles, known proxy suffixes, file ID suffixes, and extension changes."
+msgstr ""
+"یک پوشه حاوی فایل‌های بهینه‌شده از قبل ایجاد شده انتخاب کنید و بهترین فایل‌های "
+"مطابق را به کلیپ‌های منبع انتخاب‌شده پیوند دهید. این ویژگی از سبک‌های نام‌گذاری "
+"رایج پروکسی، پسوندهای شناخته‌شده پروکسی، پسوندهای شناسه فایل و تغییرات پسوند "
+"پشتیبانی می‌کند."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:147
+msgid "Unlink"
+msgstr "جدا کردن پیوند"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:148
+msgid ""
+"Remove the optimized preview link from the selected file without deleting "
+"the optimized file from disk."
+msgstr ""
+"پیوند پیش‌نمایش بهینه‌شده را از فایل انتخاب‌شده حذف کنید بدون اینکه فایل "
+"بهینه‌شده از دیسک حذف شود."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:149
+msgid "Delete & Unlink"
+msgstr "حذف و جدا کردن پیوند"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:150
+msgid ""
+"Delete the linked optimized file from disk, then remove the link from the "
+"selected file."
+msgstr ""
+"فایل بهینه‌شده پیوند داده شده را از دیسک حذف کنید، سپس پیوند را از فایل "
+"انتخاب‌شده بردارید."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:152
+msgid ""
+"When optimization is in progress, the submenu changes to a single :guilabel:"
+"`Cancel` action for the selected file(s). Optimized preview files are used "
+"only for editing and preview playback. Your final export still uses the "
+"original source files."
+msgstr ""
+"وقتی بهینه‌سازی در حال انجام است، زیرمنو به یک عملیات :guilabel:`لغو` برای "
+"فایل(های) انتخاب‌شده تغییر می‌کند. فایل‌های پیش‌نمایش بهینه‌شده فقط برای ویرایش و "
+"پخش پیش‌نمایش استفاده می‌شوند. خروجی نهایی شما همچنان از فایل‌های منبع اصلی "
+"استفاده می‌کند."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:155
+msgid ""
+"When you use :guilabel:`Link to Existing...`, OpenShot tries to match each "
+"selected source clip to an existing optimized file in a safe order. It first "
+"looks for the same base filename with a different video extension, then for "
+"common proxy-style names such as ``_proxy``, ``_preview``, ``_optimized``, "
+"``_lowres``, resolution tags such as ``_720p`` or ``_1080p``, and camera/"
+"editor-style variants such as ``_p``. It also supports names that add the "
+"OpenShot file ID after a known proxy suffix, such as ``clip001_proxy_F1."
+"mp4``, and it can still match files named only by file ID, such as ``F1."
+"mp4``."
+msgstr ""
+"وقتی از :guilabel:`پیوند به فایل‌های موجود...` استفاده می‌کنید، OpenShot سعی "
+"می‌کند هر کلیپ منبع انتخاب‌شده را به ترتیب ایمن با یک فایل بهینه‌شده موجود "
+"مطابقت دهد. ابتدا به دنبال همان نام پایه فایل با پسوند ویدیویی متفاوت "
+"می‌گردد، سپس به دنبال نام‌های رایج سبک پروکسی مانند ``_proxy``, ``_preview``, "
+"``_optimized``, ``_lowres``، برچسب‌های رزولوشن مانند ``_720p`` یا ``_1080p`` "
+"و انواع دوربین/ویرایشگر مانند ``_p`` می‌گردد. همچنین از نام‌هایی که شناسه فایل "
+"OpenShot را پس از پسوند پروکسی شناخته شده اضافه می‌کنند، مانند "
+"``clip001_proxy_F1.mp4`` پشتیبانی می‌کند و می‌تواند فایل‌هایی که فقط با شناسه "
+"فایل نام‌گذاری شده‌اند، مانند ``F1.mp4`` را نیز مطابقت دهد."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:162
+msgid ""
+"Best practice when bringing your own optimized files is to keep the same "
+"base filename as the source clip and add a clear proxy-style suffix, for "
+"example ``clip001_proxy.mp4`` or ``clip001_proxy.mov``. If you need to avoid "
+"filename collisions, append the OpenShot file ID after the proxy suffix, for "
+"example ``clip001_proxy_F1.mp4``. Avoid unrelated suffixes such as "
+"``_final`` or ``_reviewcopy``, because OpenShot does not treat those as safe "
+"proxy naming patterns."
+msgstr ""
+"بهترین روش هنگام آوردن فایل‌های بهینه‌شده خود، حفظ همان نام پایه فایل کلیپ "
+"منبع و افزودن پسوند واضح سبک پروکسی است، برای مثال ``clip001_proxy.mp4`` یا "
+"``clip001_proxy.mov``. اگر نیاز به جلوگیری از برخورد نام فایل‌ها دارید، شناسه "
+"فایل OpenShot را پس از پسوند پروکسی اضافه کنید، برای مثال ``clip001_proxy_F1."
+"mp4``. از پسوندهای نامرتبط مانند ``_final`` یا ``_reviewcopy`` خودداری کنید، "
+"زیرا OpenShot آن‌ها را به عنوان الگوهای نام‌گذاری ایمن پروکسی نمی‌شناسد."
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:171
 msgid ""
 "If you need to cut a large video file into many smaller files before "
 "editing, the **Split File** dialog is built exactly for this purpose. Right "
@@ -332,72 +572,72 @@ msgstr ""
 "فایل جدید در پنجره فایل‌های پروژه ظاهر می‌شود."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:110 ../files.rst:146 ../files.rst:170
+#: ../files.rst:182 ../files.rst:216 ../files.rst:240
 msgid "#"
 msgstr "#"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:110 ../files.rst:146 ../files.rst:170
+#: ../files.rst:182 ../files.rst:216 ../files.rst:240
 msgid "Name"
 msgstr "نام"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:112 ../files.rst:148 ../files.rst:172
+#: ../files.rst:184 ../files.rst:218 ../files.rst:242
 msgid "1"
 msgstr "1"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:112
+#: ../files.rst:184
 msgid "Start of File"
 msgstr "شروع فایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:112
+#: ../files.rst:184
 msgid "Choose the starting frame of your file by clicking this button"
 msgstr "با کلیک روی این دکمه، فریم شروع فایل خود را انتخاب کنید"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:113 ../files.rst:149 ../files.rst:173
+#: ../files.rst:185 ../files.rst:219 ../files.rst:243
 msgid "2"
 msgstr "2"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:113
+#: ../files.rst:185
 msgid "End of File"
 msgstr "پایان فایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:113
+#: ../files.rst:185
 msgid "Choose the ending frame of your file by clicking this button"
 msgstr "با کلیک روی این دکمه، فریم پایانی فایل خود را انتخاب کنید"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:114 ../files.rst:150
+#: ../files.rst:186 ../files.rst:220
 msgid "3"
 msgstr "۳"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:114
+#: ../files.rst:186
 msgid "Name of File"
 msgstr "نام فایل"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:114
+#: ../files.rst:186
 msgid "Enter an optional name"
 msgstr "یک نام اختیاری وارد کنید"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:115 ../files.rst:151
+#: ../files.rst:187 ../files.rst:221
 msgid "4"
 msgstr "۴"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:115
+#: ../files.rst:187
 msgid "Create Button"
 msgstr "دکمه ایجاد"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:115
+#: ../files.rst:187
 msgid ""
 "Create the file (which resets this dialog, so you can repeat these steps for "
 "each segment)"
@@ -406,7 +646,7 @@ msgstr ""
 "برای هر بخش تکرار کنید)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:118
+#: ../files.rst:190
 msgid ""
 "Please refer to the section :ref:`clips_cutting_slicing_ref` for more ways "
 "to cut and slice clips directly in the timeline."
@@ -415,12 +655,7 @@ msgstr ""
 "`clips_cutting_slicing_ref` مراجعه کنید."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:121
-msgid "Export Files"
-msgstr "صادرات فایل‌ها"
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:122
+#: ../files.rst:194
 msgid ""
 "If you want your split file segments available outside of your OpenShot "
 "project, or want to copy all your video assets to one place, you can do this "
@@ -437,7 +672,7 @@ msgstr ""
 "مقصد را انتخاب کرده و روی :guilabel:`Export` کلیک کنید."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:127
+#: ../files.rst:199
 msgid ""
 "NOTE: This will export each file or file segment using its **original video "
 "profile** (width, height, framerate, aspect ratio, etc...). It also supports "
@@ -454,7 +689,7 @@ msgstr ""
 "جداگانه صادر کنید (با استفاده از پروفایل ویدیویی فایل اصلی)."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:136
+#: ../files.rst:206
 msgid ""
 "In certain cases, you might need to add many files to the timeline at the "
 "same time. For example, a photo slideshow, or a large number of short video "
@@ -468,22 +703,22 @@ msgstr ""
 "گزینه افزودن به تایم‌لاین را انتخاب کنید."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:148
+#: ../files.rst:218
 msgid "Selected Files"
 msgstr "فایل‌های انتخاب شده"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:148
+#: ../files.rst:218
 msgid "The list of selected files that need to be added to the timeline"
 msgstr "لیست فایل‌های انتخاب شده که باید به تایم‌لاین اضافه شوند"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:149
+#: ../files.rst:219
 msgid "Order of Files"
 msgstr "ترتیب فایل‌ها"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:149
+#: ../files.rst:219
 msgid ""
 "Use these buttons to reorder the list of files (move up, move down, "
 "randomize, remove)"
@@ -492,12 +727,12 @@ msgstr ""
 "بردن، تصادفی کردن، حذف)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:150
+#: ../files.rst:220
 msgid "Timeline Position"
 msgstr "موقعیت تایم‌لاین"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:150
+#: ../files.rst:220
 msgid ""
 "Choose the starting position and track where these files need to be inserted "
 "on the timeline"
@@ -505,12 +740,12 @@ msgstr ""
 "موقعیت شروع و ترک مورد نظر برای درج این فایل‌ها در تایم‌لاین را انتخاب کنید"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:151
+#: ../files.rst:221
 msgid "Fade Options"
 msgstr "گزینه‌های محو شدن"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:151
+#: ../files.rst:221
 msgid ""
 "Fade in, fade out, both, or none (only affects the image, and not audio)"
 msgstr ""
@@ -518,32 +753,32 @@ msgstr ""
 "قرار می‌دهد، نه صدا)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:152
+#: ../files.rst:222
 msgid "5"
 msgstr "۵"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:152
+#: ../files.rst:222
 msgid "Zoom Options"
 msgstr "گزینه‌های بزرگنمایی"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:152
+#: ../files.rst:222
 msgid "Zoom in, zoom out, or none"
 msgstr "بزرگنمایی، کوچک‌نمایی یا هیچ‌کدام"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:153
+#: ../files.rst:223
 msgid "6"
 msgstr "۶"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:153
+#: ../files.rst:223
 msgid "Transitions"
 msgstr "ترنزیشن‌ها"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:153
+#: ../files.rst:223
 msgid ""
 "Choose a specific transition to use between files, random, or none (only "
 "affects the image, and not the audio)"
@@ -552,12 +787,12 @@ msgstr ""
 "تصویر را تحت تأثیر قرار می‌دهد، نه صدا)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:159
+#: ../files.rst:229
 msgid "Properties"
 msgstr "ویژگی‌ها"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:160
+#: ../files.rst:230
 msgid ""
 "To view the properties of any imported file in your video project, right "
 "click on the file, and choose **File Properties**. This will launch the file "
@@ -572,7 +807,7 @@ msgstr ""
 "تنظیم کنید."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:172
+#: ../files.rst:242
 msgid ""
 "Select an image sequence in the **Project Files** panel, right click and "
 "choose **File Properties**"
@@ -581,18 +816,18 @@ msgstr ""
 "گزینه **ویژگی‌های فایل** را انتخاب کنید"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:173
+#: ../files.rst:243
 msgid "Frame Rate"
 msgstr "نرخ فریم"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:173
+#: ../files.rst:243
 msgid ""
 "For image sequences, you can also adjust the frame rate of the animation"
 msgstr "برای توالی تصاویر، می‌توانید نرخ فریم انیمیشن را نیز تنظیم کنید"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:182
+#: ../files.rst:252
 msgid ""
 "This will remove a file from the project. It will not delete the underlying "
 "physical file though, so removing a file from the project merely makes it "
@@ -603,12 +838,12 @@ msgstr ""
 "ویدیویی در دسترس نباشد."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:187
+#: ../files.rst:257
 msgid "Project Assets Folder"
 msgstr "پوشه دارایی‌های پروژه"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:188
+#: ../files.rst:258
 msgid ""
 "OpenShot creates and uses a few **temporary working folders** while you "
 "edit. These live under ``.openshot_qt/`` in your user profile and hold "
@@ -619,7 +854,7 @@ msgstr ""
 "خاص پروژه که OpenShot برای شما تولید می‌کند را نگه می‌دارند:"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:191
+#: ../files.rst:261
 msgid ""
 "``.openshot_qt/blender/`` - Blender animation renders created by the "
 "Animated Title dialog"
@@ -628,13 +863,13 @@ msgstr ""
 "متحرک ایجاد شده‌اند"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:192
+#: ../files.rst:262
 msgid "``.openshot_qt/title/`` - SVG title files created by the Title dialog"
 msgstr ""
 "``.openshot_qt/title/`` - فایل‌های عنوان SVG که توسط پنجره عنوان ایجاد شده‌اند"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:193
+#: ../files.rst:263
 msgid ""
 "``.openshot_qt/thumbnail/`` - Thumbnails generated for Project Files and "
 "Timeline"
@@ -643,7 +878,7 @@ msgstr ""
 "و تایم‌لاین"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:194
+#: ../files.rst:264
 msgid ""
 "``.openshot_qt/clipboard/`` - Media created from clipboard pastes (images, "
 "audio, or video that must be saved to disk first)"
@@ -652,59 +887,52 @@ msgstr ""
 "شده‌اند (تصاویر، صدا یا ویدیو که ابتدا باید روی دیسک ذخیره شوند)"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:195
+#: ../files.rst:265
+msgid ""
+"``.openshot_qt/optimized/`` - Optimized preview files created for smoother "
+"editing"
+msgstr ""
+"``.openshot_qt/optimized/`` - فایل‌های پیش‌نمایش بهینه‌شده ایجاد شده برای "
+"ویرایش روان‌تر"
+
+# Translated with gpt-4.1-mini
+#: ../files.rst:266
 msgid "``.openshot_qt/protobuf_data`` - Tracking and object detection data"
 msgstr "``.openshot_qt/protobuf_data`` - داده‌های ردیابی و تشخیص اشیاء"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:197
+#: ../files.rst:268
 msgid ""
 "When you choose **File→Save As**, OpenShot copies these folders into your "
 "project directory, inside a single folder named ``PROJECTNAME_Assets``. For "
 "example: ``MyProject_Assets/clipboard`` will contain any media you pasted "
-"from the clipboard."
+"from the clipboard, and ``MyProject_Assets/optimized`` will contain any "
+"optimized preview files linked to the project."
 msgstr ""
-"وقتی گزینه **فایل→ذخیره به عنوان** را انتخاب می‌کنید، OpenShot این پوشه‌ها را "
-"در دایرکتوری پروژه شما، داخل یک پوشه به نام ``PROJECTNAME_Assets`` کپی "
-"می‌کند. به عنوان مثال: ``MyProject_Assets/clipboard`` شامل هر رسانه‌ای است که "
-"از کلیپ‌بورد چسبانده‌اید."
+"وقتی **File→Save As** را انتخاب می‌کنید، OpenShot این پوشه‌ها را در دایرکتوری "
+"پروژه شما، داخل یک پوشه به نام ``PROJECTNAME_Assets`` کپی می‌کند. برای مثال: "
+"``MyProject_Assets/clipboard`` شامل هر رسانه‌ای است که از کلیپ‌بورد چسبانده‌اید "
+"و ``MyProject_Assets/optimized`` شامل هر فایل پیش‌نمایش بهینه‌شده مرتبط با "
+"پروژه خواهد بود."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:200
+#: ../files.rst:272
+#, fuzzy
 msgid ""
 "As part of this process, all paths inside your ``*.osp`` project file are "
-"updated to be **relative** to your project folder. This keeps everything "
-"self-contained and easy to move or back up as one folder."
+"updated to be **relative** to your project folder."
 msgstr ""
 "به عنوان بخشی از این فرآیند، تمام مسیرهای داخل فایل پروژه ``*.osp`` شما به "
 "صورت **نسبی** به پوشه پروژه شما به‌روزرسانی می‌شوند. این کار همه چیز را خودکفا "
 "نگه می‌دارد و انتقال یا پشتیبان‌گیری به صورت یک پوشه را آسان می‌کند."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:204
-msgid "Cleanup behavior"
-msgstr "رفتار پاک‌سازی"
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:205
-msgid ""
-"Starting a **new project** or opening an **existing project** clears the "
-"temporary ``.openshot_qt`` working folders so you begin with a clean slate. "
-"Your saved projects are not affected, and any assets previously copied into "
-"a ``PROJECTNAME_Assets`` folder remain in that project's directory."
-msgstr ""
-"شروع یک **پروژه جدید** یا باز کردن یک **پروژه موجود** پوشه‌های کاری موقت ``."
-"openshot_qt`` را پاک می‌کند تا با یک صفحه خالی شروع کنید. پروژه‌های ذخیره شده "
-"شما تحت تأثیر قرار نمی‌گیرند و هر دارایی که قبلاً در پوشه "
-"``PROJECTNAME_Assets`` کپی شده باشد، در دایرکتوری آن پروژه باقی می‌ماند."
-
-# Translated with gpt-4.1-mini
-#: ../files.rst:210
+#: ../files.rst:275
 msgid "Missing Files"
 msgstr "فایل‌های گمشده"
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:212
+#: ../files.rst:277
 msgid ""
 "When you create and save a project in OpenShot, any files imported into the "
 "software (such as videos, audio, and images) must remain accessible "
@@ -721,7 +949,7 @@ msgstr ""
 "نرم‌افزارهای ویرایش ویدیو نیز صدق می‌کند."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:217
+#: ../files.rst:282
 msgid ""
 "For example, users might move or delete folders, unplug their USB devices, "
 "or move or delete their project files. Any of these examples cause a :"
@@ -737,7 +965,7 @@ msgstr ""
 "را پیدا کنید."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:221
+#: ../files.rst:286
 msgid ""
 "When OpenShot saves a project, all file paths are converted to **relative** "
 "file paths. As long as you keep all assets organized in the same parent "
@@ -752,7 +980,7 @@ msgstr ""
 "منتقل کنید بدون هیچ مشکلی."
 
 # Translated with gpt-4.1-mini
-#: ../files.rst:225
+#: ../files.rst:290
 msgid ""
 "Everyone has their unique way of organizing files, and it's crucial to "
 "remember not to make changes to file paths, rename files, or delete files "

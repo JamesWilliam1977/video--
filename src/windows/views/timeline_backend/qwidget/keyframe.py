@@ -31,12 +31,36 @@ import uuid
 from qt_api import QPointF, QRectF, QTimer, Qt
 from qt_api import QColor
 from classes.app import get_app
+from classes.logger import log
 from classes.query import Clip, Transition, Effect
 from classes.query import Marker
 from ..colors import effect_color_qcolor
 
 
 class KeyframeMixin:
+    def _keyframe_item_position(self, item):
+        """Return the item's timeline position, honoring live preview overrides."""
+        if not item:
+            return 0.0
+
+        data = item.data if isinstance(getattr(item, "data", None), dict) else {}
+        position = data.get("position", 0.0)
+        item_id = getattr(item, "id", None)
+
+        overrides = None
+        if isinstance(item, Clip):
+            overrides = getattr(self, "_pending_clip_overrides", {}).get(item_id)
+        elif isinstance(item, Transition):
+            overrides = getattr(self, "_pending_transition_overrides", {}).get(item_id)
+
+        if isinstance(overrides, dict) and overrides.get("position") is not None:
+            position = overrides.get("position")
+
+        try:
+            return float(position or 0.0)
+        except (TypeError, ValueError):
+            return 0.0
+
     def _lookup_interpolation(self, value):
         try:
             idx = int(value)
@@ -515,6 +539,9 @@ class KeyframeMixin:
         self._update_keyframe_marker_viewports(state)
 
     def _ensure_keyframe_markers(self):
+        if getattr(self, "_suspend_keyframe_rebuild", False):
+            self._update_keyframe_marker_viewports()
+            return
         if self._keyframes_dirty:
             self._refresh_keyframe_markers()
         else:
@@ -944,17 +971,9 @@ class KeyframeMixin:
 
         base_position = 0.0
         if clip:
-            data = clip.data if isinstance(clip.data, dict) else {}
-            try:
-                base_position = float(data.get("position", 0.0) or 0.0)
-            except (TypeError, ValueError):
-                base_position = 0.0
+            base_position = self._keyframe_item_position(clip)
         elif transition:
-            data = transition.data if isinstance(transition.data, dict) else {}
-            try:
-                base_position = float(data.get("position", 0.0) or 0.0)
-            except (TypeError, ValueError):
-                base_position = 0.0
+            base_position = self._keyframe_item_position(transition)
         return base_position
 
     def _marker_absolute_seconds(self, marker):
@@ -1020,10 +1039,7 @@ class KeyframeMixin:
         clip_obj = marker.get("clip") if isinstance(marker, dict) else None
         if isinstance(clip_obj, Clip):
             clip_data = clip_obj.data if isinstance(clip_obj.data, dict) else {}
-            try:
-                clip_position = float(clip_data.get("position", 0.0) or 0.0)
-            except (TypeError, ValueError):
-                clip_position = 0.0
+            clip_position = self._keyframe_item_position(clip_obj)
             try:
                 clip_start = float(clip_data.get("start", 0.0) or 0.0)
             except (TypeError, ValueError):
@@ -1042,10 +1058,7 @@ class KeyframeMixin:
         transition_obj = marker.get("transition") if isinstance(marker, dict) else None
         if isinstance(transition_obj, Transition):
             tran_data = transition_obj.data if isinstance(transition_obj.data, dict) else {}
-            try:
-                tran_position = float(tran_data.get("position", 0.0) or 0.0)
-            except (TypeError, ValueError):
-                tran_position = 0.0
+            tran_position = self._keyframe_item_position(transition_obj)
             try:
                 tran_start = float(tran_data.get("start", 0.0) or 0.0)
             except (TypeError, ValueError):
@@ -1298,6 +1311,64 @@ class KeyframeMixin:
                         changed = True
         return changed
 
+    def _count_keyframes_by_paths(self, data, paths):
+        if not isinstance(data, (dict, list)):
+            return 0
+        count = 0
+        for path in paths or ():
+            try:
+                path_tuple = tuple(path)
+            except TypeError:
+                continue
+            if not path_tuple:
+                continue
+            if self._resolve_data_path(data, path_tuple) is not None:
+                count += 1
+        return count
+
+    def _count_keyframes_in_object(self, obj, target_frame):
+        count = 0
+        if isinstance(obj, dict):
+            points = obj.get("Points")
+            if isinstance(points, list):
+                for point in points:
+                    if not isinstance(point, dict):
+                        continue
+                    co = point.get("co") if isinstance(point.get("co"), dict) else {}
+                    try:
+                        frame = int(round(float(co.get("X"))))
+                    except (TypeError, ValueError):
+                        continue
+                    if frame == target_frame:
+                        count += 1
+            for channel in ("red", "green", "blue"):
+                channel_obj = obj.get(channel)
+                if isinstance(channel_obj, (dict, list)):
+                    count += self._count_keyframes_in_object(channel_obj, target_frame)
+            for key, value in obj.items():
+                if key in ("ui", "red", "green", "blue"):
+                    continue
+                if isinstance(value, (dict, list)):
+                    count += self._count_keyframes_in_object(value, target_frame)
+        elif isinstance(obj, list):
+            for item in obj:
+                if isinstance(item, (dict, list)):
+                    count += self._count_keyframes_in_object(item, target_frame)
+        return count
+
+    def _keyframe_delete_target_label(self, marker_type, *, clip=None, transition=None, effect_id="", object_id=""):
+        marker_type = str(marker_type or "")
+        if marker_type == "transition":
+            target_id = object_id or str(getattr(transition, "id", "") or "")
+            return "transition %s" % target_id if target_id else "transition"
+        clip_id = str(getattr(clip, "id", "") or object_id or "")
+        if marker_type == "effect":
+            effect_label = "effect %s" % effect_id if effect_id else "effect"
+            if clip_id:
+                return "%s on clip %s" % (effect_label, clip_id)
+            return effect_label
+        return "clip %s" % clip_id if clip_id else "clip"
+
     def _panel_selected_keyframe_targets(self):
         targets = {}
         panel_selection = getattr(self, "_panel_selected_keyframes", {}) or {}
@@ -1378,7 +1449,9 @@ class KeyframeMixin:
             data_copy = json.loads(json.dumps(transition.data))
             paths = tuple(marker.get("data_paths") or ())
             changed = False
+            deleted_count = 0
             if paths:
+                deleted_count = self._count_keyframes_by_paths(data_copy, paths)
                 changed = self._remove_keyframes_by_paths(data_copy, paths)
                 if changed:
                     self._remove_keyframes_by_paths(transition.data, paths)
@@ -1388,6 +1461,7 @@ class KeyframeMixin:
                     frame_int = int(frame_val)
                 except (TypeError, ValueError):
                     return False
+                deleted_count = self._count_keyframes_in_object(data_copy, frame_int)
                 changed = self._remove_keyframes_in_object(data_copy, frame_int)
                 if changed:
                     self._remove_keyframes_in_object(transition.data, frame_int)
@@ -1397,6 +1471,15 @@ class KeyframeMixin:
                 data_copy,
                 only_basic_props=False,
                 ignore_refresh=False,
+            )
+            log.debug(
+                "Keyframe delete: removed %d keyframe(s) from %s",
+                max(1, deleted_count),
+                self._keyframe_delete_target_label(
+                    marker_type,
+                    transition=transition,
+                    object_id=str(marker.get("object_id") or ""),
+                ),
             )
             return True
 
@@ -1408,7 +1491,9 @@ class KeyframeMixin:
         data_copy = json.loads(json.dumps(clip.data))
         paths = tuple(marker.get("data_paths") or ())
         changed = False
+        deleted_count = 0
         if paths:
+            deleted_count = self._count_keyframes_by_paths(data_copy, paths)
             changed = self._remove_keyframes_by_paths(data_copy, paths)
             if changed:
                 self._remove_keyframes_by_paths(clip.data, paths)
@@ -1432,10 +1517,12 @@ class KeyframeMixin:
                         break
                 if effect_copy is None:
                     return False
+                deleted_count = self._count_keyframes_in_object(effect_copy, frame_int)
                 changed = self._remove_keyframes_in_object(effect_copy, frame_int)
                 if changed and effect_live is not None:
                     self._remove_keyframes_in_object(effect_live, frame_int)
             else:
+                deleted_count = self._count_keyframes_in_object(data_copy, frame_int)
                 changed = self._remove_keyframes_in_object(data_copy, frame_int)
                 if changed:
                     self._remove_keyframes_in_object(clip.data, frame_int)
@@ -1446,6 +1533,16 @@ class KeyframeMixin:
             only_basic_props=False,
             ignore_reader=True,
             ignore_refresh=False,
+        )
+        log.debug(
+            "Keyframe delete: removed %d keyframe(s) from %s",
+            max(1, deleted_count),
+            self._keyframe_delete_target_label(
+                marker_type,
+                clip=clip,
+                effect_id=str(marker.get("owner_id") or marker.get("effect_id") or ""),
+                object_id=str(marker.get("object_id") or ""),
+            ),
         )
         return True
 
@@ -1469,6 +1566,7 @@ class KeyframeMixin:
                 if not transition or not isinstance(getattr(transition, "data", None), (dict, list)):
                     continue
                 data_copy = json.loads(json.dumps(transition.data))
+                deleted_count = self._count_keyframes_by_paths(data_copy, paths)
                 if not self._remove_keyframes_by_paths(data_copy, paths):
                     continue
                 self._remove_keyframes_by_paths(transition.data, paths)
@@ -1477,6 +1575,11 @@ class KeyframeMixin:
                     only_basic_props=False,
                     ignore_refresh=False,
                 )
+                log.debug(
+                    "Keyframe panel delete: removed %d keyframe(s) from %s",
+                    max(1, deleted_count),
+                    self._keyframe_delete_target_label("transition", transition=transition, object_id=object_id),
+                )
                 changed = True
                 continue
 
@@ -1484,6 +1587,7 @@ class KeyframeMixin:
             if not clip or not isinstance(getattr(clip, "data", None), (dict, list)):
                 continue
             data_copy = json.loads(json.dumps(clip.data))
+            deleted_count = self._count_keyframes_by_paths(data_copy, paths)
             if not self._remove_keyframes_by_paths(data_copy, paths):
                 continue
             self._remove_keyframes_by_paths(clip.data, paths)
@@ -1492,6 +1596,11 @@ class KeyframeMixin:
                 only_basic_props=False,
                 ignore_reader=True,
                 ignore_refresh=False,
+            )
+            log.debug(
+                "Keyframe panel delete: removed %d keyframe(s) from %s",
+                max(1, deleted_count),
+                self._keyframe_delete_target_label("clip", clip=clip, object_id=object_id),
             )
             changed = True
 
@@ -1611,10 +1720,8 @@ class KeyframeMixin:
             drag_paths=drag.get("data_paths"),
         )
         if new_frame != drag.get("current_frame"):
-            self._begin_keyframe_transaction()
-            if drag.get("transaction_started") and new_frame is not None:
-                self._apply_keyframe_delta(drag, ignore_refresh=True)
-        self._seek_to_marker_frame(marker, new_frame)
+            drag["moved"] = True
+        self._seek_to_marker_frame(marker, new_frame, start_preroll=False)
         self._keyframes_dirty = True
         self.update()
 
@@ -1777,7 +1884,7 @@ class KeyframeMixin:
         self._active_keyframe_marker = marker
         self._select_marker_owner(marker, seek=True, clear_existing=clear_existing)
 
-    def _seek_to_marker_frame(self, marker, frame):
+    def _seek_to_marker_frame(self, marker, frame, start_preroll=True):
         if marker is None or frame is None:
             return
         fps = self.fps_float or 1.0
@@ -1793,7 +1900,7 @@ class KeyframeMixin:
             base_position = float(data.get("position", 0.0) or 0.0)
         absolute = round(base_position * fps) + frame - round(clip_start * fps)
         absolute = max(1, int(absolute))
-        self.win.SeekSignal.emit(absolute, True)
+        self.win.SeekSignal.emit(absolute, bool(start_preroll))
 
     def _finishKeyframeDrag(self):
         if self._dragging_panel_keyframes:
@@ -1807,19 +1914,22 @@ class KeyframeMixin:
         moved = drag.get("moved")
         marker = drag.get("marker")
         timeline = getattr(self.win, "timeline", None)
-        if started:
-            if moved:
-                if changed:
-                    self._apply_keyframe_delta(drag)
-                else:
-                    self._apply_keyframe_delta(drag, force=True)
-            if timeline:
-                timeline.FinalizeKeyframeDrag(
-                    drag.get("object_type", "clip"),
-                    drag.get("object_id", ""),
-                )
-            if moved and hasattr(self.win, "show_property_timeout"):
-                QTimer.singleShot(0, self.win.show_property_timeout)
+        if moved:
+            if changed:
+                self._begin_keyframe_transaction()
+                started = drag.get("transaction_started")
+            if started:
+                self._apply_keyframe_delta(drag, force=True)
+                if timeline:
+                    timeline.FinalizeKeyframeDrag(
+                        drag.get("object_type", "clip"),
+                        drag.get("object_id", ""),
+                    )
+                if hasattr(self.win, "show_property_timeout"):
+                    QTimer.singleShot(0, self.win.show_property_timeout)
+            pending_frame = drag.get("pending_frame")
+            if pending_frame is not None:
+                self._seek_to_marker_frame(marker, pending_frame, start_preroll=True)
         else:
             clear_existing = drag.get("clear_existing", True)
             self._handle_keyframe_click(marker, clear_existing=clear_existing)

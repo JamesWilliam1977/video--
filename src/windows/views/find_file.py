@@ -25,10 +25,11 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-import os
 import html
+import os
 from classes import info
 from classes.app import get_app
+from classes.path_utils import native_display_path, wrapped_path_html
 from qt_api import Qt
 from qt_api import QFileDialog, QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 
@@ -36,33 +37,39 @@ from qt_api import QFileDialog, QDialog, QVBoxLayout, QHBoxLayout, QPushButton, 
 known_paths = [info.HOME_PATH]
 
 
-def _relative_display_path(file_path, starting_dir):
-    if starting_dir:
-        try:
-            return os.path.relpath(file_path, starting_dir)
-        except Exception:
-            pass
-    return file_path
+def _display_directory_html(file_path):
+    directory_path = os.path.dirname(file_path)
+    if not directory_path:
+        directory_path = "."
+    return wrapped_path_html(directory_path)
 
 
-def _relative_display_path_html(file_path, starting_dir):
-    rel_path = _relative_display_path(file_path, starting_dir)
-    rel_dir, rel_name = os.path.split(rel_path)
-    if rel_dir:
-        return f"{html.escape(rel_dir)}/{'<b>' + html.escape(rel_name) + '</b>'}"
-    return f"<b>{html.escape(rel_name)}</b>"
+def _deepest_existing_parent(path_value):
+    """Return the deepest existing directory in a missing file path."""
+    candidate = os.path.abspath(path_value or "")
+    if not candidate:
+        return ""
 
+    if os.path.isdir(candidate):
+        return candidate
 
-def _relative_display_dir(file_path, starting_dir):
-    rel_path = _relative_display_path(file_path, starting_dir)
-    rel_dir = os.path.dirname(rel_path)
-    if rel_dir:
-        return f"{rel_dir}/"
-    return "./"
+    candidate = os.path.dirname(candidate)
+    while candidate and not os.path.exists(candidate):
+        parent = os.path.dirname(candidate)
+        if parent == candidate:
+            break
+        candidate = parent
+
+    if candidate and os.path.isdir(candidate):
+        return candidate
+    return ""
 
 
 def _show_missing_file_dialog(file_name, file_path, starting_dir):
     _ = get_app()._tr
+    browse_dir = starting_dir if os.path.isdir(starting_dir) else _deepest_existing_parent(starting_dir)
+    if not browse_dir:
+        browse_dir = info.HOME_PATH
     dialog = QDialog(None)
     dialog.setWindowTitle(_("Locate Missing Files"))
     dialog.setModal(True)
@@ -84,12 +91,13 @@ def _show_missing_file_dialog(file_name, file_path, starting_dir):
     name_label.setContentsMargins(8, 0, 0, 0)
     layout.addWidget(name_label)
 
-    dir_label = QLabel(_relative_display_dir(file_path, starting_dir))
+    dir_label = QLabel(_display_directory_html(file_path))
     dir_label.setObjectName("lblMissingFilePath")
     dir_label.setWordWrap(True)
-    dir_label.setTextFormat(Qt.PlainText)
+    dir_label.setTextFormat(Qt.RichText)
     dir_label.setTextInteractionFlags(Qt.TextSelectableByMouse)
     dir_label.setContentsMargins(8, 0, 0, 0)
+    dir_label.setToolTip(native_display_path(os.path.dirname(file_path) or "."))
     layout.addWidget(dir_label)
     layout.addStretch(1)
 
@@ -109,14 +117,14 @@ def _show_missing_file_dialog(file_name, file_path, starting_dir):
     result = {"action": "file", "path": file_path}
 
     def pick_browse():
-        selected_path = QFileDialog.getOpenFileName(
+        selected_dir = QFileDialog.getExistingDirectory(
             None,
-            _("Locate media file: %s") % file_name,
-            starting_dir,
-        )[0]
-        if selected_path:
+            _("Locate folder containing: %s") % file_name,
+            browse_dir,
+        )
+        if selected_dir:
             result["action"] = "locate"
-            result["path"] = selected_path
+            result["path"] = os.path.join(selected_dir, file_name)
             dialog.accept()
 
     def pick_skip_all():
@@ -164,11 +172,13 @@ def find_missing_file(file_path, prompt_state=None):
 
     # Check if path exists
     while not os.path.exists(file_path):
-        recommended_path = get_app().project.current_filepath or ""
+        recommended_path = _deepest_existing_parent(file_path)
         if not recommended_path:
-            recommended_path = info.HOME_PATH
-        else:
-            recommended_path = os.path.dirname(recommended_path)
+            recommended_path = get_app().project.current_filepath or ""
+            if not recommended_path:
+                recommended_path = info.HOME_PATH
+            else:
+                recommended_path = os.path.dirname(recommended_path)
         action, selected_path = _show_missing_file_dialog(file_name, file_path, recommended_path)
         modified = True
 

@@ -39,7 +39,10 @@ class ClipGeometryMixin:
         w = self.widget
         overrides_map = getattr(w, "_pending_clip_overrides", {})
         entries = []
-        selected_ids = set(getattr(win, "selected_clips", []) or [])
+        selected_ids = {
+            str(item_id)
+            for item_id in (getattr(win, "selected_clips", []) or [])
+        }
         for clip in Clip.filter():
             clip_data = clip.data if isinstance(clip.data, dict) else {}
             override = overrides_map.get(clip.id, {})
@@ -96,7 +99,7 @@ class ClipGeometryMixin:
         max_right = float("-inf")
         max_rights = []
         for left, rect, clip in entries:
-            is_selected = clip.id in selected_ids
+            is_selected = str(getattr(clip, "id", "")) in selected_ids
             clip_entries.append(_GeometryEntry(rect=rect, obj=clip, selected=is_selected))
             clip_starts.append(left)
             max_right = max(max_right, rect.right())

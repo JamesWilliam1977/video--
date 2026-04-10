@@ -1,20 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../titles.rst:23
@@ -60,27 +63,27 @@ msgid "Overview"
 msgstr "개요"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:44 ../titles.rst:179
+#: ../titles.rst:44 ../titles.rst:185
 msgid "#"
 msgstr "#"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:44 ../titles.rst:179
+#: ../titles.rst:44 ../titles.rst:185
 msgid "Name"
 msgstr "이름"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:44 ../titles.rst:63 ../titles.rst:179 ../titles.rst:198
+#: ../titles.rst:44 ../titles.rst:63 ../titles.rst:185 ../titles.rst:204
 msgid "Description"
 msgstr "설명"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:46 ../titles.rst:181
+#: ../titles.rst:46 ../titles.rst:187
 msgid "1"
 msgstr "1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:46 ../titles.rst:181
+#: ../titles.rst:46 ../titles.rst:187
 msgid "Choose a Template"
 msgstr "템플릿 선택"
 
@@ -90,27 +93,27 @@ msgid "Choose from any available vector title template"
 msgstr "사용 가능한 벡터 타이틀 템플릿 중에서 선택하세요"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:47 ../titles.rst:182
+#: ../titles.rst:47 ../titles.rst:188
 msgid "2"
 msgstr "2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:47 ../titles.rst:182
+#: ../titles.rst:47 ../titles.rst:188
 msgid "Preview Title"
 msgstr "타이틀 미리보기"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:47 ../titles.rst:182
+#: ../titles.rst:47 ../titles.rst:188
 msgid "Preview your title as you make changes"
 msgstr "변경 사항을 적용하며 타이틀을 미리 봅니다"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:48 ../titles.rst:183
+#: ../titles.rst:48 ../titles.rst:189
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:48 ../titles.rst:183
+#: ../titles.rst:48 ../titles.rst:189
 msgid "Title Properties"
 msgstr "타이틀 속성"
 
@@ -124,7 +127,7 @@ msgstr ""
 "Inkscape)에서 편집하세요"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:49 ../titles.rst:184
+#: ../titles.rst:49 ../titles.rst:190
 msgid "4"
 msgstr "4"
 
@@ -190,71 +193,82 @@ msgstr "로어 서드용 텍스트가 포함된 또 다른 단순한 바 변형�
 
 # Translated with gpt-4.1-mini
 #: ../titles.rst:70
+msgid "Box"
+msgstr "상자"
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:71
+#, fuzzy
+msgid "A simple boxed title layout for centered text."
+msgstr "텍스트가 중앙에 배치된 단순한 바입니다."
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:72
 msgid "Bubbles 1"
 msgstr "버블 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:71
+#: ../titles.rst:73
 msgid "A title with bubble graphics for a playful look."
 msgstr "장난기 있는 느낌의 버블 그래픽이 포함된 타이틀입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:72
+#: ../titles.rst:74
 msgid "Bubbles 2"
 msgstr "버블 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:73
+#: ../titles.rst:75
 msgid "A different bubble design for a fun and creative title."
 msgstr "재미있고 창의적인 타이틀을 위한 다른 버블 디자인입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:74
+#: ../titles.rst:76
 msgid "Camera Border"
 msgstr "카메라 테두리"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:75
+#: ../titles.rst:77
 msgid "A border that mimics a camera viewfinder with centered text."
 msgstr "중앙에 텍스트가 있는 카메라 뷰파인더를 모방한 테두리입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:76
+#: ../titles.rst:78
 msgid "Cloud 1"
 msgstr "클라우드 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:77
+#: ../titles.rst:79
 msgid "A title with a playful cloud graphic and text."
 msgstr "장난기 있는 구름 그래픽과 텍스트가 포함된 타이틀입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:78
+#: ../titles.rst:80
 msgid "Cloud 2"
 msgstr "클라우드 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:79
+#: ../titles.rst:81
 msgid "Another playful cloud design with 3 clouds and text."
 msgstr "3개의 구름과 텍스트가 포함된 또 다른 장난기 있는 구름 디자인입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:80
+#: ../titles.rst:82
 msgid "Creative Commons 1"
 msgstr "크리에이티브 커먼즈 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:81
+#: ../titles.rst:83
 msgid "Contains text and icons for Creative Commons attribution."
 msgstr "크리에이티브 커먼즈 저작자 표시용 텍스트와 아이콘이 포함되어 있습니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:82
+#: ../titles.rst:84
 msgid "Creative Commons 2"
 msgstr "크리에이티브 커먼즈 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:83
+#: ../titles.rst:85
 msgid ""
 "Another Creative Commons design with different styling plus website text."
 msgstr ""
@@ -262,154 +276,166 @@ msgstr ""
 "다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:84
+#: ../titles.rst:86
 msgid "Film Rating 1"
 msgstr "영화 등급 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:85
+#: ../titles.rst:87
 msgid "Displays a film rating for all audiences."
 msgstr "모든 관객용 영화 등급을 표시합니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:86
+#: ../titles.rst:88
 msgid "Film Rating 2"
 msgstr "영화 등급 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:87
+#: ../titles.rst:89
 msgid "Displays a film rating of \"R\" restricted."
 msgstr "\"R\" 등급(제한 관람)을 표시합니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:88
+#: ../titles.rst:90
 msgid "Film Rating 3"
 msgstr "영화 등급 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:89
+#: ../titles.rst:91
 msgid "Displays a film rating of \"G\" for general audiences."
 msgstr "\"G\" 등급(일반 관람가)을 표시합니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:90
+#: ../titles.rst:92
 msgid "Film Rating 4"
 msgstr "영화 등급 4"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:91
+#: ../titles.rst:93
 msgid "Displays a film rating of \"PG-13\", parents strongly cautioned."
 msgstr "\"PG-13\" 등급(부모 지도 강력 권고)을 표시합니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:92
+#: ../titles.rst:94
+#, fuzzy
+msgid "Flare"
+msgstr "눈부심"
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:95
+#, fuzzy
+msgid "A title with a bright flare effect for a cinematic look."
+msgstr "드라마틱한 효과를 위한 연기 효과가 있는 제목."
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:96
 msgid "Flames"
 msgstr "불꽃"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:93
+#: ../titles.rst:97
 msgid "A title with flame graphics for a fiery effect."
 msgstr "불꽃 그래픽이 포함된 불타는 효과의 타이틀입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:94
+#: ../titles.rst:98
 msgid "Footer 1"
 msgstr "푸터 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:95
+#: ../titles.rst:99
 msgid "A footer bar for lower thirds (left aligned)."
 msgstr "로어 서드용 푸터 바(왼쪽 정렬)입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:96
+#: ../titles.rst:100
 msgid "Footer 2"
 msgstr "푸터 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:97
+#: ../titles.rst:101
 msgid "A footer bar for lower thirds (center aligned)."
 msgstr "로어 서드용 푸터 바(중앙 정렬)입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:98
+#: ../titles.rst:102
 msgid "Footer 3"
 msgstr "푸터 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:99
+#: ../titles.rst:103
 msgid "A footer bar for lower thirds (right aligned)."
 msgstr "로어 서드용 푸터 바(오른쪽 정렬)입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:100
+#: ../titles.rst:104
 msgid "Gold 1"
 msgstr "골드 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:101
+#: ../titles.rst:105
 msgid "A title with a gold color scheme, centered with one line of text."
 msgstr "골드 색상 테마의 타이틀로, 텍스트 한 줄이 중앙에 배치되어 있습니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:102
+#: ../titles.rst:106
 msgid "Gold 2"
 msgstr "골드 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:103
+#: ../titles.rst:107
 msgid "Another gold-themed title, centered with two lines of text."
 msgstr "골드 테마의 또 다른 타이틀로, 텍스트 두 줄이 중앙에 배치되어 있습니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:104
+#: ../titles.rst:108
 msgid "Gold Bottom"
 msgstr "골드 하단"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:105
+#: ../titles.rst:109
 msgid "Gold title positioned at the bottom of the screen."
 msgstr "화면 하단에 위치한 골드 타이틀입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:106
+#: ../titles.rst:110
 msgid "Gold Top"
 msgstr "골드 상단"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:107
+#: ../titles.rst:111
 msgid "Gold title positioned at the top of the screen."
 msgstr "화면 상단에 위치한 골드 타이틀입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:108
+#: ../titles.rst:112
 msgid "Gray Box 1"
 msgstr "회색 박스 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:109
+#: ../titles.rst:113
 msgid ""
 "A simple gray box for highlighting text (one line of text, top-left aligned)."
 msgstr "텍스트 강조용 단순 회색 박스(텍스트 한 줄, 좌상단 정렬)입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:110
+#: ../titles.rst:114
 msgid "Gray Box 2"
 msgstr "회색 박스 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:111
+#: ../titles.rst:115
 msgid ""
 "A simple gray box for highlighting text (two lins of text, top-left aligned)."
 msgstr "텍스트 강조용 단순 회색 박스(텍스트 두 줄, 좌상단 정렬)입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:112
+#: ../titles.rst:116
 msgid "Gray Box 3"
 msgstr "회색 박스 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:113
+#: ../titles.rst:117
 msgid ""
 "A simple gray box for highlighting text (one line of text, bottom-right "
 "aligned)."
@@ -417,12 +443,12 @@ msgstr ""
 "텍스트를 강조하기 위한 간단한 회색 상자(한 줄 텍스트, 오른쪽 하단 정렬)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:114
+#: ../titles.rst:118
 msgid "Gray Box 4"
 msgstr "회색 상자 4"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:115
+#: ../titles.rst:119
 msgid ""
 "A simple gray box for highlighting text (two lines of text, bottom-right "
 "aligned)."
@@ -430,228 +456,238 @@ msgstr ""
 "텍스트를 강조하기 위한 간단한 회색 상자(두 줄 텍스트, 오른쪽 하단 정렬)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:116
+#: ../titles.rst:120
 msgid "Header 1"
 msgstr "헤더 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:117
+#: ../titles.rst:121
 msgid "A header bar for titles or section headers (top-left aligned)."
 msgstr "제목 또는 섹션 헤더용 헤더 바(왼쪽 상단 정렬)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:118
+#: ../titles.rst:122
 msgid "Header 2"
 msgstr "헤더 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:119
+#: ../titles.rst:123
 msgid "A header bar for titles or section headers (center aligned)."
 msgstr "제목 또는 섹션 헤더용 헤더 바(가운데 정렬)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:120
+#: ../titles.rst:124
 msgid "Header 3"
 msgstr "헤더 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:121
+#: ../titles.rst:125
 msgid "A header bar for titles or section headers (top-right aligned)."
 msgstr "제목 또는 섹션 헤더용 헤더 바(오른쪽 상단 정렬)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:122
+#: ../titles.rst:126
+msgid "OpenShot"
+msgstr "OpenShot"
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:127
+msgid "A title featuring OpenShot branding."
+msgstr "OpenShot 브랜드가 포함된 제목입니다."
+
+# Translated with gpt-4.1-mini
+#: ../titles.rst:128
 msgid "Oval 1"
 msgstr "타원 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:123
+#: ../titles.rst:129
 msgid "An oval shape for highlighting or decorative purposes, text centered."
 msgstr "강조 또는 장식용 타원형, 텍스트 중앙 정렬."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:124
+#: ../titles.rst:130
 msgid "Oval 2"
 msgstr "타원 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:125
+#: ../titles.rst:131
 msgid "Another oval design with a different style, text centered."
 msgstr "다른 스타일의 또 다른 타원 디자인, 텍스트 중앙 정렬."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:126
+#: ../titles.rst:132
 msgid "Oval 3"
 msgstr "타원 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:127
+#: ../titles.rst:133
 msgid ""
 "Another oval design with two-lines of text, one at the top, one at the "
 "bottom."
 msgstr "위와 아래에 각각 한 줄씩 텍스트가 있는 또 다른 타원 디자인."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:128
+#: ../titles.rst:134
 msgid "Oval 4"
 msgstr "타원 4"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:129
+#: ../titles.rst:135
 msgid "Yet another oval design, with text centered plus refection."
 msgstr "텍스트 중앙 정렬과 반사가 포함된 또 다른 타원 디자인."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:130
+#: ../titles.rst:136
 msgid "Post it"
 msgstr "포스트잇"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:131
+#: ../titles.rst:137
 msgid "Mimics a sticky note for annotations or reminders."
 msgstr "주석이나 알림용 스티키 노트 모방."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:132
+#: ../titles.rst:138
 msgid "Ribbon 1"
 msgstr "리본 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:133
+#: ../titles.rst:139
 msgid "A ribbon graphic with text."
 msgstr "텍스트가 포함된 리본 그래픽."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:134
+#: ../titles.rst:140
 msgid "Ribbon 2"
 msgstr "리본 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:135
+#: ../titles.rst:141
 msgid "Another ribbon design with text."
 msgstr "텍스트가 포함된 또 다른 리본 디자인."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:136
+#: ../titles.rst:142
 msgid "Ribbon 3"
 msgstr "리본 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:137
+#: ../titles.rst:143
 msgid "A third variation of a ribbon design with text."
 msgstr "텍스트가 포함된 세 번째 리본 디자인 변형."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:138
+#: ../titles.rst:144
 msgid "Smoke 1"
 msgstr "스모크 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:139
+#: ../titles.rst:145
 msgid "A title with smoke effects for a dramatic look."
 msgstr "드라마틱한 효과를 위한 연기 효과가 있는 제목."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:140
+#: ../titles.rst:146
 msgid "Smoke 2"
 msgstr "스모크 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:141
+#: ../titles.rst:147
 msgid "Another smoke design with a different style."
 msgstr "다른 스타일의 또 다른 연기 디자인."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:142
+#: ../titles.rst:148
 msgid "Smoke 3"
 msgstr "스모크 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:143
+#: ../titles.rst:149
 msgid "A third variation of smoke effects."
 msgstr "세 번째 연기 효과 변형."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:144
+#: ../titles.rst:150
 msgid "Solid Color"
 msgstr "단색"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:145
+#: ../titles.rst:151
 msgid "A full-screen color background for various uses."
 msgstr "다양한 용도의 전체 화면 색상 배경."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:146
+#: ../titles.rst:152
 msgid "Standard 1"
 msgstr "표준 1"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:147
+#: ../titles.rst:153
 msgid "A standard title design for general purposes (two lines centered)."
 msgstr "일반 용도의 표준 제목 디자인(두 줄 중앙 정렬)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:148
+#: ../titles.rst:154
 msgid "Standard 2"
 msgstr "표준 2"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:149
+#: ../titles.rst:155
 msgid ""
 "Another standard title with a different style (one line of text plus "
 "reflection)."
 msgstr "다른 스타일의 또 다른 표준 제목(한 줄 텍스트 및 반사 포함)."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:150
+#: ../titles.rst:156
 msgid "Standard 3"
 msgstr "표준 3"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:151
+#: ../titles.rst:157
 msgid "A third variation of a standard title (three lines of text)."
 msgstr "세 줄 텍스트가 있는 표준 제목의 세 번째 변형."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:152
+#: ../titles.rst:158
 msgid "Standard 4"
 msgstr "표준 4"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:153
+#: ../titles.rst:159
 msgid "Yet another standard title design (four lines of text)."
 msgstr "네 줄 텍스트가 있는 또 다른 표준 제목 디자인."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:154
+#: ../titles.rst:160
 msgid "Sunset"
 msgstr "선셋"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:155
+#: ../titles.rst:161
 msgid "A title with sunset gradient for a warm, end-of-day theme."
 msgstr "따뜻한 하루 마감 테마를 위한 선셋 그라데이션 제목."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:156
+#: ../titles.rst:162
 msgid "TV Rating"
 msgstr "TV 등급"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:157
+#: ../titles.rst:163
 msgid ""
 "Displays TV ratings badge such as \"G\" and \"PG\" (for the corner of the "
 "screen)."
 msgstr "화면 모서리에 표시되는 \"G\" 및 \"PG\"와 같은 TV 등급 배지 표시."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:161
+#: ../titles.rst:167
 msgid "Custom Title Templates"
 msgstr "사용자 정의 제목 템플릿"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:162
+#: ../titles.rst:168
 msgid ""
 "OpenShot can use any vector SVG image file as a custom title template in "
 "the :guilabel:`Title Editor` dialog. Just add an SVG image file to your ``~/."
@@ -664,11 +700,11 @@ msgstr ""
 "로 벡터 SVG 이미지 파일을 사용할 수 있습니다. SVG 이미지 파일을 ``~/."
 "openshot_qt/title_templates/`` 폴더에 추가하면 다음에 :guilabel:`Title "
 "Editor` 대화 상자를 열 때 나타납니다. 또한 **Project Files** 패널의 SVG 파일"
-"을 마우스 오른쪽 버튼으로 클릭하여 ** 제목 편집** 또는 ** 제목 복제** 를 선택할 "
-"수 있습니다."
+"을 마우스 오른쪽 버튼으로 클릭하여 ** 제목 편집** 또는 ** 제목 복제** 를 선택"
+"할 수 있습니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:166
+#: ../titles.rst:172
 msgid ""
 "Note: These SVG templates are only used by the :guilabel:`Title Editor` "
 "dialog, and not :guilabel:`Animated Title` dialog."
@@ -677,12 +713,12 @@ msgstr ""
 "guilabel:`Animated Title` 대화 상자에서는 사용되지 않습니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:171
+#: ../titles.rst:177
 msgid "3D Animated Titles"
 msgstr "3D 애니메이션 제목"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:172
+#: ../titles.rst:178
 msgid ""
 "Adding a 3D animated title is just as easy, using our **Animated Title** "
 "dialog. Use the Title menu (located in the main menu of OpenShot) to launch "
@@ -692,37 +728,37 @@ msgid ""
 msgstr ""
 "3D 애니메이션 제목 추가는 **Animated Title** 대화 상자를 사용하여 간단합니"
 "다. OpenShot의 메인 메뉴에 있는 제목 메뉴를 사용하여 Animated Title 편집기를 "
-"실행하세요. 키보드 단축키 **Ctrl+B** 도 사용할 수 있습니다. 참고: 이 기능을 사"
-"용하려면 Blender가 설치되고 구성되어 있어야 합니다. 자세한 내용은 :ref:"
+"실행하세요. 키보드 단축키 **Ctrl+B** 도 사용할 수 있습니다. 참고: 이 기능을 "
+"사용하려면 Blender가 설치되고 구성되어 있어야 합니다. 자세한 내용은 :ref:"
 "`blender_install_ref` 를 참조하세요."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:181
+#: ../titles.rst:187
 msgid "Choose from any available 3D title templates"
 msgstr "사용 가능한 3D 제목 템플릿 중에서 선택"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:183
+#: ../titles.rst:189
 msgid "Change the text, colors, and advanced properties"
 msgstr "텍스트, 색상 및 고급 속성 변경"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:184
+#: ../titles.rst:190
 msgid "Render"
 msgstr "렌더링"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:184
+#: ../titles.rst:190
 msgid "Render the 3D animation, and add it to your project"
 msgstr "3D 애니메이션을 렌더링하고 프로젝트에 추가"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:188
+#: ../titles.rst:194
 msgid "3D Animated Templates"
 msgstr "3D 애니메이션 템플릿"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:190
+#: ../titles.rst:196
 msgid ""
 "OpenShot includes a variety of 3D animated templates that can be used to add "
 "dynamic and engaging elements to your video projects. Below is a table "
@@ -733,152 +769,152 @@ msgstr ""
 "을 나열한 표입니다:"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:197
+#: ../titles.rst:203
 msgid "Template Name"
 msgstr "템플릿 이름"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:199
+#: ../titles.rst:205
 msgid "Blinds (Two Titles)"
 msgstr "블라인드 (두 개의 제목)"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:200
+#: ../titles.rst:206
 msgid "An animation featuring a blinds effect."
 msgstr "블라인드 효과가 있는 애니메이션."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:201
+#: ../titles.rst:207
 msgid "Blur"
 msgstr "블러"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:202
+#: ../titles.rst:208
 msgid ""
 "A template that blurs text in and out, providing a smooth transition effect."
 msgstr "텍스트가 흐려졌다가 선명해지는 부드러운 전환 효과 템플릿."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:203
+#: ../titles.rst:209
 msgid "Color Tiles"
 msgstr "컬러 타일"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:204
+#: ../titles.rst:210
 msgid ""
 "An animation with changing colors, suitable for vibrant and dynamic titles."
 msgstr "색상이 변하는 애니메이션으로, 생동감 있고 역동적인 제목에 적합."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:205
+#: ../titles.rst:211
 msgid "Dissolving Text"
 msgstr "해체되는 텍스트"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:206
+#: ../titles.rst:212
 msgid ""
 "A dissolve effect that turns any text into particles which get blown away by "
 "the wind."
 msgstr "텍스트를 입자로 분해하여 바람에 날려 보내는 해체 효과."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:207
+#: ../titles.rst:213
 msgid "World Map"
 msgstr "세계 지도"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:208
+#: ../titles.rst:214
 msgid "A template featuring a rotating Earth between 2 locations."
 msgstr "두 위치 사이에서 지구가 회전하는 템플릿."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:209
+#: ../titles.rst:215
 msgid "Exploding Text"
 msgstr "폭발하는 텍스트"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:210
+#: ../titles.rst:216
 msgid ""
 "An animation where the title explode into pieces, adding dramatic impact."
 msgstr "제목이 조각으로 폭발하는 애니메이션으로, 극적인 효과를 더합니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:211
+#: ../titles.rst:217
 msgid "Fly Towards Camera"
 msgstr "카메라를 향해 날아가기"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:212
+#: ../titles.rst:218
 msgid "A fly-by animation with a single title zooming past the screen."
 msgstr "단일 제목이 화면을 빠르게 지나가는 플라이바이 애니메이션입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:213
+#: ../titles.rst:219
 msgid "Fly Towards Camera (Two Titles)"
 msgstr "카메라를 향해 날아가기 (두 개의 제목)"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:214
+#: ../titles.rst:220
 msgid "Similar to Fly By 1, but with two titles flying by."
 msgstr "Fly By 1과 비슷하지만 두 개의 제목이 날아갑니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:215
+#: ../titles.rst:221
 msgid "Glare"
 msgstr "눈부심"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:216
+#: ../titles.rst:222
 msgid "An animation with a glare effect, adding a bright, reflective look."
 msgstr "밝고 반사되는 느낌을 주는 눈부심 효과 애니메이션입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:217
+#: ../titles.rst:223
 msgid "Glass Slider"
 msgstr "유리 슬라이더"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:218
+#: ../titles.rst:224
 msgid "A sliding glass effect, providing a modern and sleek transition."
 msgstr "현대적이고 세련된 전환을 제공하는 유리 슬라이딩 효과입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:219
+#: ../titles.rst:225
 msgid "Lens Flare"
 msgstr "렌즈 플레어"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:220
+#: ../titles.rst:226
 msgid "An animation featuring a lens flare, adding a cinematic touch."
 msgstr "영화 같은 느낌을 더하는 렌즈 플레어 애니메이션입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:221
+#: ../titles.rst:227
 msgid "Magic Wand"
 msgstr "마법 지팡이"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:222
+#: ../titles.rst:228
 msgid "A whimsical magic wand effect, ideal for magical or fantasy themes."
 msgstr "마법이나 판타지 테마에 적합한 기발한 마법 지팡이 효과입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:223
+#: ../titles.rst:229
 msgid "Neon Curves"
 msgstr "네온 곡선"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:224
+#: ../titles.rst:230
 msgid "An animation with neon curves, creating a futuristic and vibrant look."
 msgstr "미래적이고 활기찬 느낌을 주는 네온 곡선 애니메이션입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:225
+#: ../titles.rst:231
 msgid "Picture Frames (4 pictures)"
 msgstr "사진 프레임 (4장)"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:226
+#: ../titles.rst:232
 msgid ""
 "A template featuring four picture frames, suitable for showcasing images or "
 "video clips."
@@ -886,77 +922,77 @@ msgstr ""
 "이미지나 비디오 클립을 보여주기에 적합한 네 개의 사진 프레임 템플릿입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:227
+#: ../titles.rst:233
 msgid "Rotate 360"
 msgstr "360도 회전"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:228
+#: ../titles.rst:234
 msgid "A 360-degree rotation effect, providing a dynamic title animation."
 msgstr "역동적인 제목 애니메이션을 위한 360도 회전 효과입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:229
+#: ../titles.rst:235
 msgid "Slide Left to Right"
 msgstr "왼쪽에서 오른쪽으로 슬라이드"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:230
+#: ../titles.rst:236
 msgid "A sliding effect where titles move from left to right."
 msgstr "제목이 왼쪽에서 오른쪽으로 이동하는 슬라이딩 효과입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:231
+#: ../titles.rst:237
 msgid "Snow"
 msgstr "눈"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:232
+#: ../titles.rst:238
 msgid ""
 "An animation with falling snow particles, perfect for winter or holiday "
 "themes."
 msgstr "겨울이나 휴일 테마에 적합한 눈송이 떨어지는 애니메이션입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:233
+#: ../titles.rst:239
 msgid "Space Movie Intro"
 msgstr "우주 영화 인트로"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:234
+#: ../titles.rst:240
 msgid "A cinematic space-themed intro, ideal for epic or sci-fi projects."
 msgstr ""
 "서사적이거나 공상과학 프로젝트에 적합한 영화 같은 우주 테마 인트로입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:235
+#: ../titles.rst:241
 msgid "Wireframe Text"
 msgstr "와이어프레임 텍스트"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:236
+#: ../titles.rst:242
 msgid "An animation with wireframe text, adding a technical or digital look."
 msgstr ""
 "기술적이거나 디지털한 느낌을 주는 와이어프레임 텍스트 애니메이션입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:237
+#: ../titles.rst:243
 msgid "Zoom to Clapboard"
 msgstr "클랩보드로 줌"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:238
+#: ../titles.rst:244
 msgid ""
 "A zoom title with a clapboard, perfect for film or video production themes."
 msgstr "영화나 비디오 제작 테마에 적합한 클랩보드 줌 타이틀입니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:241
+#: ../titles.rst:247
 msgid "Importing Text"
 msgstr "텍스트 가져오기"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:243
+#: ../titles.rst:249
 msgid ""
 "You can generate text & titles in many different programs, such as Blender, "
 "Inkscape, Krita, Gimp, etc... Before you can import text into OpenShot, you "
@@ -965,11 +1001,11 @@ msgid ""
 msgstr ""
 "Blender, Inkscape, Krita, Gimp 등 다양한 프로그램에서 텍스트와 제목을 생성할 "
 "수 있습니다... OpenShot에 텍스트를 가져오기 전에, 이러한 프로그램에서 텍스트"
-"를 ** 투명 배경** 과 ** 알파** 채널이 포함된 호환 가능한 이미지 형식으로 먼저 내"
-"보내야 합니다."
+"를 ** 투명 배경** 과 ** 알파** 채널이 포함된 호환 가능한 이미지 형식으로 먼"
+"저 내보내야 합니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:247
+#: ../titles.rst:253
 msgid ""
 "The ``SVG`` format is a great choice for vector graphics (curves, shapes, "
 "text effects and paths), however it is **not** always 100% compatible with "
@@ -986,7 +1022,7 @@ msgstr ""
 "미지를 가리지 않도록 하는 데 필요합니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:252
+#: ../titles.rst:258
 msgid ""
 "For information on importing animated sequences into OpenShot, please see :"
 "ref:`animation_image_seq_ref`."
@@ -995,12 +1031,12 @@ msgstr ""
 "`animation_image_seq_ref` 를 참조하세요."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:255
+#: ../titles.rst:261
 msgid "Installing Inkscape"
 msgstr "Inkscape 설치"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:257
+#: ../titles.rst:263
 msgid ""
 "The :guilabel:`Advanced Editor` feature in the :guilabel:`Title Editor` "
 "dialog requires the latest version of Inkscape (https://inkscape.org/"
@@ -1010,16 +1046,16 @@ msgid ""
 msgstr ""
 ":guilabel:`Title Editor` 대화 상자의 :guilabel:`Advanced Editor` 기능은 최신 "
 "버전의 Inkscape(https://inkscape.org/release/)가 설치되어 있어야 하며, "
-"OpenShot ** 환경설정** 에서 Inkscape 실행 파일의 올바른 경로로 업데이트되어야 "
-"합니다. 환경설정의 :ref:`preferences_general_ref` 탭을 참조하세요."
+"OpenShot ** 환경설정** 에서 Inkscape 실행 파일의 올바른 경로로 업데이트되어"
+"야 합니다. 환경설정의 :ref:`preferences_general_ref` 탭을 참조하세요."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:264
+#: ../titles.rst:270
 msgid "Installing Blender"
 msgstr "Blender 설치"
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:266
+#: ../titles.rst:272
 msgid ""
 "The :guilabel:`Animated Title` feature in OpenShot requires the latest "
 "version of Blender (https://www.blender.org/download/) be installed and the "
@@ -1035,12 +1071,12 @@ msgstr ""
 "5.0 이상입니다. 이전 버전은 OpenShot Video Editor와 호환되지 않습니다."
 
 # Translated with gpt-4.1-mini
-#: ../titles.rst:272
+#: ../titles.rst:278
 msgid ""
 "For a detailed guide on how to install these dependencies, see `Blender & "
 "Inkscape Guide <https://github.com/OpenShot/openshot-qt/wiki/Blender-and-"
 "Inkscape-Guide>`_."
 msgstr ""
 "이 종속 항목 설치에 대한 자세한 가이드는 `Blender & Inkscape Guide <https://"
-"github.com/OpenShot/openshot-qt/wiki/Blender-and-Inkscape-Guide>`_ 를 참조하세"
-"요."
+"github.com/OpenShot/openshot-qt/wiki/Blender-and-Inkscape-Guide>`_ 를 참조하"
+"세요."

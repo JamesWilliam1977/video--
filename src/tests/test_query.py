@@ -5,7 +5,7 @@
 
  @section LICENSE
 
- Copyright (c) 2008-2018 OpenShot Studios, LLC
+ Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -49,8 +49,27 @@ if PATH not in sys.path:
 from classes.app import OpenShotApp
 from classes.query import Clip, File, Transition
 from classes import info
+from classes.project_data import ProjectDataStore
+from classes.updates import UpdateManager
+from qt_test_app import ensure_app_state as ensure_qt_app_state
 
 info.LOG_LEVEL_CONSOLE = "ERROR"
+
+
+class DummySettings:
+    def __init__(self):
+        self.values = {
+            "default-profile": "HD 720p 30 fps",
+            "default-samplerate": 48000,
+            "default-channels": 2,
+            "legacy-based-timeline": False,
+        }
+
+    def get(self, key):
+        return self.values.get(key)
+
+    def set(self, key, value):
+        self.values[key] = value
 
 
 def ensure_open_shot_app():
@@ -58,9 +77,16 @@ def ensure_open_shot_app():
 
     instance = QGuiApplication.instance()
     if instance:
-        return instance, False
+        return ensure_qt_app_state(
+            instance,
+            DummySettings,
+            project_factory=ProjectDataStore,
+            updates_factory=UpdateManager,
+            extra_attrs={"window": None},
+        ), False
 
-    return OpenShotApp(sys.argv, mode="unittest"), True
+    app = OpenShotApp(sys.argv, mode="unittest")
+    return ensure_qt_app_state(app, DummySettings), True
 
 
 class QueryTests(unittest.TestCase):

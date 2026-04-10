@@ -1,20 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:23
@@ -243,9 +246,10 @@ msgstr ""
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:72
+#, fuzzy
 msgid ""
 "For more info on creating key frames for location, rotation, scale, shear, "
-"and location, see :ref:`clip_transform_ref`."
+"and origin, see :ref:`clip_transform_ref`."
 msgstr ""
 "Untuk info lebih lanjut tentang membuat key frame untuk lokasi, rotasi, "
 "skala, shear, dan lokasi, lihat :ref:`clip_transform_ref`."

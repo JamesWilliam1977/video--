@@ -150,6 +150,7 @@ class UpdateManager:
         self.pending_action = None  # Last action not added to actionHistory list
         self.transaction_id = None  # The current transaction id to be attached to any UpdateActions created
         self.data_version = 0  # Incremented on every dispatch to invalidate caches
+        self._is_processing_history = False  # Prevent re-entrant undo/redo from mutating history mid-iteration
 
     def load_history(self, project):
         """Load history from project"""
@@ -212,6 +213,7 @@ class UpdateManager:
         self.redoHistory.clear()
         self.pending_action = None
         self.last_action = None
+        self._is_processing_history = False
 
         # Notify watchers of new history state
         self.update_watchers()
@@ -286,75 +288,109 @@ class UpdateManager:
     def undo(self):
         """ Undo the last UpdateAction (and notify all listeners and watchers).
             Continue until all identical transaction ids have been found. """
-        # Get all actions with the same transaction id as the last one, in reverse order
-        last_transaction = self.actionHistory[-1].transaction if self.actionHistory else None
-        last_transactions = [a for a in reversed(self.actionHistory) if a.transaction == last_transaction]
-        remove_selection = any(a.type == "insert" for a in last_transactions)
+        if self._is_processing_history:
+            log.warning("Ignoring re-entrant undo() while history processing is active.")
+            return
+        if not self.actionHistory:
+            return
 
-        if remove_selection:
-            # Remove selections for any items about to be deleted
-            for action in last_transactions:
-                if action.type == "insert":
-                    object_id = action.values.get("id", None)
-                    get_app().window.removeSelection(object_id, None)
+        self._is_processing_history = True
+        try:
+            # Get all actions with the same transaction id as the newest one.
+            # This intentionally supports non-contiguous history entries caused by
+            # delayed async operations that complete later.
+            last_transaction = self.actionHistory[-1].transaction
+            transaction_indexes = [
+                i for i, action in enumerate(self.actionHistory)
+                if action.transaction == last_transaction
+            ]
+            last_transactions = [self.actionHistory[i] for i in reversed(transaction_indexes)]
+            remove_selection = any(a.type == "insert" for a in last_transactions)
 
-            # Force property and selection timers to fire
-            get_app().window.show_property_timer.stop()
-            get_app().window.show_property_timer.timeout.emit()
-            get_app().window.selection_timer.stop()
-            get_app().window.selection_timer.timeout.emit()
-            get_app().processEvents()
+            if remove_selection:
+                # Remove selections for any items about to be deleted
+                for action in last_transactions:
+                    if action.type == "insert":
+                        object_id = action.values.get("id", None)
+                        get_app().window.removeSelection(object_id, None)
 
-        # Iterate each action in this transaction
-        for index, last_action in enumerate(last_transactions):
-            self.actionHistory.remove(last_action)
+                # Force property and selection timers to fire
+                get_app().window.show_property_timer.stop()
+                get_app().window.show_property_timer.timeout.emit()
+                get_app().window.selection_timer.stop()
+                get_app().window.selection_timer.timeout.emit()
+                get_app().processEvents()
 
-            # Copy action
-            last_action = last_action.copy()
+            # Iterate each action in this transaction
+            for index, history_index in enumerate(reversed(transaction_indexes)):
+                # Remove by index to support non-contiguous matching transaction IDs.
+                last_action = self.actionHistory.pop(history_index)
 
-            # Add action to redo list
-            self.redoHistory.append(last_action)
-            self.pending_action = None
-            # Get reverse of last action and perform it
-            reverse = self.get_reverse_action(last_action)
+                # Copy action
+                last_action = last_action.copy()
 
-            # Ignore updates to UI on all actions except last one
-            ignore_refresh = (index != len(last_transactions) - 1)
-            get_app().window.IgnoreUpdates.emit(ignore_refresh, True)
+                # Add action to redo list
+                self.redoHistory.append(last_action)
+                self.pending_action = None
+                # Get reverse of last action and perform it
+                reverse = self.get_reverse_action(last_action)
 
-            # Perform next undo action
-            self.dispatch_action(reverse)
+                # Ignore updates to UI on all actions except last one
+                ignore_refresh = (index != len(last_transactions) - 1)
+                get_app().window.IgnoreUpdates.emit(ignore_refresh, True)
 
-            # Verify selections are still valid objects
-            get_app().window.verifySelections()
+                # Perform next undo action
+                self.dispatch_action(reverse)
+
+                # Verify selections are still valid objects
+                get_app().window.verifySelections()
+        finally:
+            self._is_processing_history = False
 
     def redo(self):
         """ Redo the last UpdateAction (and notify all listeners and watchers).
             Continue until all identical transaction ids have been found. """
-        # Get all actions with the same transaction id as the last one, in reverse order
-        last_transaction = self.redoHistory[-1].transaction if self.redoHistory else None
-        last_transactions = [a for a in reversed(self.redoHistory) if a.transaction == last_transaction]
+        if self._is_processing_history:
+            log.warning("Ignoring re-entrant redo() while history processing is active.")
+            return
+        if not self.redoHistory:
+            return
 
-        # Iterate through each action in this transaction
-        for index, next_action in enumerate(last_transactions):
-            self.redoHistory.remove(next_action)
+        self._is_processing_history = True
+        try:
+            # Get all actions with the same transaction id as the newest one.
+            # This intentionally supports non-contiguous history entries caused by
+            # delayed async operations that complete later.
+            last_transaction = self.redoHistory[-1].transaction
+            transaction_indexes = [
+                i for i, action in enumerate(self.redoHistory)
+                if action.transaction == last_transaction
+            ]
+            last_transactions = [self.redoHistory[i] for i in reversed(transaction_indexes)]
 
-            # Copy action
-            next_action = next_action.copy()
+            # Iterate through each action in this transaction
+            for index, history_index in enumerate(reversed(transaction_indexes)):
+                # Remove by index to support non-contiguous matching transaction IDs.
+                next_action = self.redoHistory.pop(history_index)
 
-            # Remove ID from insert (if found)
-            if next_action.type == "insert" and isinstance(next_action.key[-1], dict) and "id" in next_action.key[-1]:
-                next_action.key = next_action.key[:-1]
+                # Copy action
+                next_action = next_action.copy()
 
-            self.actionHistory.append(next_action)
-            self.pending_action = None
+                # Remove ID from insert (if found)
+                if next_action.type == "insert" and isinstance(next_action.key[-1], dict) and "id" in next_action.key[-1]:
+                    next_action.key = next_action.key[:-1]
 
-            # Ignore updates to UI on all actions except last one
-            ignore_refresh = (index != len(last_transactions) - 1)
-            get_app().window.IgnoreUpdates.emit(ignore_refresh, True)
+                self.actionHistory.append(next_action)
+                self.pending_action = None
 
-            # Perform next redo action
-            self.dispatch_action(next_action)
+                # Ignore updates to UI on all actions except last one
+                ignore_refresh = (index != len(last_transactions) - 1)
+                get_app().window.IgnoreUpdates.emit(ignore_refresh, True)
+
+                # Perform next redo action
+                self.dispatch_action(next_action)
+        finally:
+            self._is_processing_history = False
 
     # Carry out an action on all listeners
     def dispatch_action(self, action):
@@ -362,6 +398,14 @@ class UpdateManager:
 
         # Every dispatched action reflects a project mutation; bump the version
         self.data_version += 1
+
+        log.debug(
+            "Dispatch action: type=%s key=%s ignore_history=%s transaction=%s",
+            action.type,
+            action.key,
+            self.ignore_history,
+            action.transaction,
+        )
 
         try:
             # Loop through all listeners

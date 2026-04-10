@@ -1,20 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:23
@@ -239,9 +242,10 @@ msgstr ""
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:72
+#, fuzzy
 msgid ""
 "For more info on creating key frames for location, rotation, scale, shear, "
-"and location, see :ref:`clip_transform_ref`."
+"and origin, see :ref:`clip_transform_ref`."
 msgstr ""
 "위치, 회전, 크기 조정, 전단 및 위치에 대한 키 프레임 생성에 대한 자세한 내용"
 "은 :ref:`clip_transform_ref` 를 참조하세요."
@@ -268,8 +272,8 @@ msgid ""
 "Changing how fast a clip plays is done with the :guilabel:`Time` property "
 "and the :guilabel:`Timing` tool."
 msgstr ""
-"클립 재생 속도 변경은 :guilabel:` 시간` 속성과 :guilabel:` 타이밍` 도구로 수행"
-"됩니다."
+"클립 재생 속도 변경은 :guilabel:` 시간` 속성과 :guilabel:` 타이밍` 도구로 수"
+"행됩니다."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:80
@@ -277,8 +281,8 @@ msgid ""
 "The :guilabel:`Time` menu offers presets such as normal, fast, slow, freeze, "
 "and reverse. See details in :ref:`clip_time_ref`."
 msgstr ""
-":guilabel:` 시간` 메뉴는 일반, 빠름, 느림, 정지, 역방향과 같은 프리셋을 제공합"
-"니다. 자세한 내용은 :ref:`clip_time_ref` 를 참조하세요."
+":guilabel:` 시간` 메뉴는 일반, 빠름, 느림, 정지, 역방향과 같은 프리셋을 제공"
+"합니다. 자세한 내용은 :ref:`clip_time_ref` 를 참조하세요."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:81
@@ -290,9 +294,9 @@ msgid ""
 msgstr ""
 ":guilabel:`타이밍` 도구를 사용하면 클립의 가장자리를 드래그하여 속도를 높이거"
 "나 낮출 수 있습니다. OpenShot은 필요한 시간 키 프레임을 추가하고 다른 키 프레"
-"임을 **비례 조정** 하여 애니메이션이 정렬되도록 합니다. 짧은 클립은 더 빠르게 "
-"재생되고, 긴 클립은 더 느리게 재생됩니다. 자세한 내용은 :ref:`clip_time_ref`"
-" 를 참조하세요."
+"임을 **비례 조정** 하여 애니메이션이 정렬되도록 합니다. 짧은 클립은 더 빠르"
+"게 재생되고, 긴 클립은 더 느리게 재생됩니다. 자세한 내용은 :ref:"
+"`clip_time_ref` 를 참조하세요."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:86
@@ -304,8 +308,8 @@ msgstr "반복"
 msgid ""
 "To play a clip multiple times, use :guilabel:`Right-Click → Time → Repeat`."
 msgstr ""
-"클립을 여러 번 재생하려면 :guilabel:` 마우스 오른쪽 클릭 → 시간 → 반복` 을 사용"
-"하세요."
+"클립을 여러 번 재생하려면 :guilabel:` 마우스 오른쪽 클릭 → 시간 → 반복` 을 사"
+"용하세요."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:89
@@ -316,7 +320,8 @@ msgstr ":guilabel:` 루프` 는 한 방향(정방향 또는 역방향)으로 반
 #: ../animation.rst:90
 msgid ""
 ":guilabel:`Ping-Pong` alternates direction (forward then backward, etc.)."
-msgstr ":guilabel:` 핑퐁` 은 방향을 번갈아 가며 반복합니다 (정방향, 역방향 등)."
+msgstr ""
+":guilabel:` 핑퐁` 은 방향을 번갈아 가며 반복합니다 (정방향, 역방향 등)."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:91
@@ -324,8 +329,8 @@ msgid ""
 ":guilabel:`Custom` can add a short pause between passes, speed up or slow "
 "down each pass, including keyframes."
 msgstr ""
-":guilabel:` 사용자 정의` 는 반복 사이에 짧은 일시 정지를 추가하거나 각 반복의 "
-"속도를 조절할 수 있으며, 키 프레임도 포함됩니다."
+":guilabel:` 사용자 정의` 는 반복 사이에 짧은 일시 정지를 추가하거나 각 반복"
+"의 속도를 조절할 수 있으며, 키 프레임도 포함됩니다."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:93
@@ -333,9 +338,9 @@ msgid ""
 "OpenShot writes the :guilabel:`Time` curve for you, and you can edit those "
 "keyframes just like any other. See more: :ref:`clip_time_repeat_ref`."
 msgstr ""
-"OpenShot이 :guilabel:` 시간` 곡선을 작성해 주며, 해당 키 프레임을 다른 키 프레"
-"임처럼 편집할 수 있습니다. 자세한 내용은 :ref:`clip_time_repeat_ref` 를 참조하"
-"세요."
+"OpenShot이 :guilabel:` 시간` 곡선을 작성해 주며, 해당 키 프레임을 다른 키 프"
+"레임처럼 편집할 수 있습니다. 자세한 내용은 :ref:`clip_time_repeat_ref` 를 참"
+"조하세요."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:97
@@ -409,9 +414,9 @@ msgid ""
 "Properties** in the **Project Files** panel, and adjust the frame rate. Once "
 "you have set the correct frame rate, drag the animation onto the timeline."
 msgstr ""
-"애니메이션의 프레임 속도를 조정하려면, ** 프로젝트 파일** 패널에서 마우스 오른"
-"쪽 버튼을 클릭하고 ** 파일 속성** 을 선택한 후 프레임 속도를 조정하세요. 올바"
-"른 프레임 속도를 설정한 후 애니메이션을 타임라인으로 드래그하세요."
+"애니메이션의 프레임 속도를 조정하려면, ** 프로젝트 파일** 패널에서 마우스 오"
+"른쪽 버튼을 클릭하고 ** 파일 속성** 을 선택한 후 프레임 속도를 조정하세요. 올"
+"바른 프레임 속도를 설정한 후 애니메이션을 타임라인으로 드래그하세요."
 
 # Translated with gpt-4.1-mini
 #: ../animation.rst:133

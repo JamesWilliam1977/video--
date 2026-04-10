@@ -62,9 +62,11 @@ from classes.importers.edl import import_edl
 from classes.importers.final_cut_pro import import_xml
 from classes.logger import log
 from classes.metrics import track_metric_session, track_metric_screen
+from classes.path_utils import comparable_local_path, native_display_path, normalized_local_path
 from classes.query import File, Clip, Transition, Marker, Track, Effect
 from classes.generation_queue import GenerationQueueManager
 from classes.generation_service import GenerationService
+from classes.proxy_service import ProxyService
 from classes.thumbnail import httpThumbnailServerThread, httpThumbnailException
 from classes.time_parts import secondsToTimecode
 from classes.timeline import TimelineSync
@@ -74,6 +76,7 @@ from themes.manager import ThemeName
 from windows.models.effects_model import EffectsModel
 from windows.models.emoji_model import EmojisModel
 from windows.models.files_model import FilesModel
+from windows.views.optimized_preview_menu import populate_optimized_preview_menu
 from windows.models.transition_model import TransitionsModel
 from windows.preview_thread import PreviewParent
 from windows.video_widget import VideoWidget
@@ -136,6 +139,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     SelectionChanged = pyqtSignal()      # Signal after selections have been changed (added/removed)
     SetKeyframeFilter = pyqtSignal(str)     # Signal to only show keyframes for the selected property
     IgnoreUpdates = pyqtSignal(bool, bool)     # Signal to let widgets know to ignore updates (i.e. batch updates)
+    WaitCursorSignal = pyqtSignal(bool)
     ThemeChangedSignal = pyqtSignal(object)     # Signal when theme is changed
     ProjectSaved = pyqtSignal(str)
     ProjectSaveFailed = pyqtSignal(str, str)
@@ -234,6 +238,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if getattr(self, "generation_service", None):
             self.generation_service.shutdown()
             self.generation_service.cleanup_temp_files()
+        if getattr(self, "proxy_service", None):
+            self.proxy_service.shutdown()
 
         # Stop ZMQ polling thread (if any)
         if app.logger_libopenshot:
@@ -528,6 +534,23 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         get_app().updates.reset()
         log.info('History cleared')
 
+    def actionClearOptimizedFiles_trigger(self):
+        """Delete and unlink internal optimized files for the current project"""
+        _ = get_app()._tr
+        ret = QMessageBox.question(
+            self,
+            _("Delete Optimized Videos?"),
+            _("Delete optimized videos from this project's assets folder?"),
+            QMessageBox.No | QMessageBox.Yes,
+        )
+        if ret != QMessageBox.Yes:
+            return
+        self.proxy_service.delete_internal_project_proxy_files()
+
+    def _refresh_clear_menu_action_states(self):
+        has_internal_optimized = bool(getattr(self, "proxy_service", None) and self.proxy_service.has_internal_project_proxy_files())
+        self.actionClearOptimizedFiles.setEnabled(has_internal_optimized)
+
     def save_project(self, file_path):
         """ Save a project to a file path, and refresh the screen """
         with self.lock:
@@ -571,6 +594,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         max_files = s.get("recovery-limit")
         daily_limit = int(max_files * 0.7)
         historical_limit = max_files - daily_limit  # Remaining for previous days
+
+        if not os.path.exists(file_path):
+            return
 
         folder_path, file_name = os.path.split(file_path)
         file_name, file_ext = os.path.splitext(file_name)
@@ -727,6 +753,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 info.get_default_path("TITLE_PATH"),
                 info.get_default_path("CLIPBOARD_PATH"),
                 info.get_default_path("COMFYUI_OUTPUT_PATH"),
+                info.get_default_path("PROXY_PATH"),
                 ]:
             try:
                 if os.path.exists(temp_dir):
@@ -1019,12 +1046,13 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.SpeedSignal.emit(0)
         self.PauseSignal.emit()
 
-        # Set cursor to waiting
-        get_app().setOverrideCursor(QCursor(Qt.WaitCursor))
-
-        # Show dialog
-        from windows.preferences import Preferences
-        win = Preferences()
+        get_app().window.WaitCursorSignal.emit(True)
+        try:
+            # Show dialog
+            from windows.preferences import Preferences
+            win = Preferences()
+        finally:
+            get_app().window.WaitCursorSignal.emit(False)
         # Run the dialog event loop - blocking interaction on this window during this time
         result = win.exec_()
         if result == QDialog.Accepted:
@@ -1035,9 +1063,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Save settings
         s = get_app().get_settings()
         s.save()
-
-        # Restore normal cursor
-        get_app().restoreOverrideCursor()
 
     def actionFilesShowAll_trigger(self, checked=True):
         self.refreshFilesSignal.emit()
@@ -1281,6 +1306,18 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 theme = get_app().theme_manager.get_current_theme()
                 if theme:
                     theme.togglePlayIcon(False)
+
+    def onTrimPreviewMode(self):
+        """Pause active playback before entering timeline trim preview."""
+        player = getattr(getattr(self, "preview_thread", None), "player", None)
+        if not player:
+            return
+        is_actively_playing = (
+            player.Mode() == openshot.PLAYBACK_PLAY and
+            player.Speed() != 0
+        )
+        if is_actively_playing:
+            self.PauseSignal.emit()
 
     def actionSaveFrame_trigger(self, checked=True):
         log.info("actionSaveFrame_trigger")
@@ -2086,6 +2123,66 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
     def _on_generation_job_finished(self, job_id, status):
         self.generation_service.on_generation_job_finished(job_id, status)
+
+    def _optimized_preview_files_for_action(self):
+        files = []
+        for file_obj in (self.selected_files() or []):
+            if not file_obj:
+                continue
+            data = getattr(file_obj, "data", {}) or {}
+            if str(data.get("media_type", "") or "").strip().lower() == "video":
+                files.append(file_obj)
+        if files:
+            return files
+
+        target_ids = [str(file_id or "") for file_id in getattr(self, "_optimized_preview_target_file_ids", []) if str(file_id or "")]
+        if not target_ids:
+            return []
+        return [
+            file_obj for file_obj in (File.get(id=file_id) for file_id in target_ids)
+            if file_obj and str((getattr(file_obj, "data", {}) or {}).get("media_type", "") or "").strip().lower() == "video"
+        ]
+
+    def _optimized_preview_file_for_cancel_action(self):
+        file_id = self.current_file_id()
+        if file_id:
+            file_obj = File.get(id=file_id)
+            data = getattr(file_obj, "data", {}) or {}
+            if file_obj and str(data.get("media_type", "") or "").strip().lower() == "video":
+                return file_obj
+
+        files = self._optimized_preview_files_for_action()
+        return files[0] if files else None
+
+    def actionOptimizedPreviewCreate_trigger(self, checked=True):
+        files = self._optimized_preview_files_for_action()
+        log.debug("actionOptimizedPreviewCreate_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.create_for_files(files)
+
+    def actionOptimizedPreviewUseExisting_trigger(self, checked=True):
+        files = self._optimized_preview_files_for_action()
+        log.debug("actionOptimizedPreviewUseExisting_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.use_existing_for_files(files)
+
+    def actionOptimizedPreviewRemove_trigger(self, checked=True):
+        files = self._optimized_preview_files_for_action()
+        log.debug("actionOptimizedPreviewRemove_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.remove_for_files(files)
+
+    def actionOptimizedPreviewCancel_trigger(self, checked=True):
+        file_obj = self._optimized_preview_file_for_cancel_action()
+        log.debug("actionOptimizedPreviewCancel_trigger file=%s", getattr(file_obj, "id", None))
+        if file_obj:
+            self.proxy_service.cancel_for_files([file_obj])
+
+    def actionOptimizedPreviewDeleteAndUnlink_trigger(self, checked=True):
+        files = self._optimized_preview_files_for_action()
+        log.debug("actionOptimizedPreviewDeleteAndUnlink_trigger files=%s", [getattr(f, "id", None) for f in files])
+        self.proxy_service.delete_and_unlink_for_files(files)
+
+    def _refresh_optimized_preview_action_states(self):
+        if getattr(self, "optimizedPreviewMenu", None):
+            populate_optimized_preview_menu(self, self.optimizedPreviewMenu)
 
     def actionRemove_from_Project_trigger(self):
         log.debug("actionRemove_from_Project_trigger")
@@ -3020,6 +3117,21 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Get list of recent projects
         recent_projects = s.get("recent_projects")
+        normalized_projects = []
+        seen_projects = set()
+
+        for file_path in recent_projects:
+            normalized_path = normalized_local_path(file_path)
+            comparable_path = comparable_local_path(normalized_path)
+            if not normalized_path or comparable_path in seen_projects:
+                continue
+            seen_projects.add(comparable_path)
+            normalized_projects.append(normalized_path)
+
+        if normalized_projects != recent_projects:
+            s.set("recent_projects", normalized_projects)
+            s.save()
+        recent_projects = normalized_projects
 
         # Add Recent Projects menu (after Open File)
         if not self.recent_menu:
@@ -3040,12 +3152,18 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         for file_path in reversed(recent_projects):
             # Add each recent project
-            new_action = self.recent_menu.addAction(file_path)
+            native_path = native_display_path(file_path)
+            new_action = self.recent_menu.addAction(native_path)
+            new_action.setToolTip(native_path)
             new_action.triggered.connect(functools.partial(self.recent_project_clicked, file_path))
 
         # Add 'Clear Recent Projects' menu to bottom of list
         self.recent_menu.addSeparator()
         self.recent_menu.addAction(self.actionClearRecents)
+        try:
+            self.actionClearRecents.triggered.disconnect(self.clear_recents_clicked)
+        except TypeError:
+            pass
         self.actionClearRecents.triggered.connect(self.clear_recents_clicked)
 
         # Build recovery menu as well
@@ -3175,8 +3293,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         """Remove a project from the Recent menu if OpenShot can't find it"""
         s = get_app().get_settings()
         recent_projects = s.get("recent_projects")
-        if file_path in recent_projects:
-            recent_projects.remove(file_path)
+        file_key = comparable_local_path(file_path)
+        recent_projects = [
+            existing_path for existing_path in recent_projects
+            if comparable_local_path(existing_path) != file_key
+        ]
         s.set("recent_projects", recent_projects)
         s.save()
 
@@ -3188,6 +3309,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         """Clear all recent projects"""
         s = get_app().get_settings()
         s.set("recent_projects", [])
+        s.save()
 
         # Reload recent project list
         self.load_recent_menu()
@@ -3513,7 +3635,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         s = get_app().get_settings()
 
         # Setup files tree and list view (both share a model)
-        self.files_model = FilesModel(generation_queue=self.generation_queue)
+        self.files_model = FilesModel(generation_queue=self.generation_queue, proxy_service=self.proxy_service)
         self.filesTreeView = FilesTreeView(self.files_model)
         self.filesListView = FilesListView(self.files_model)
         self.files_model.update_model()
@@ -3576,7 +3698,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.tabEmojis.addWidget(self.emojiListView)
 
     def _init_generation_actions(self):
-        self.actionGenerate = QAction("Generate...", self)
+        _ = get_app()._tr
+
+        self.actionGenerate = QAction(_("Generate..."), self)
         self.actionGenerate.setObjectName("actionGenerate")
         sparkle_icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-generate-sparkle.svg")
         self.actionGenerate.setIcon(QIcon(sparkle_icon_path))
@@ -3584,9 +3708,36 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.actionGenerate.setShortcutContext(Qt.ApplicationShortcut)
         self.actionGenerate.triggered.connect(self.actionGenerate_trigger)
 
-        self.actionCancelGenerationJob = QAction("Cancel Job", self)
+        self.actionCancelGenerationJob = QAction(_("Cancel Job"), self)
         self.actionCancelGenerationJob.setObjectName("actionCancelGenerationJob")
         self.actionCancelGenerationJob.triggered.connect(self.actionCancelGenerationJob_trigger)
+
+    def _init_proxy_actions(self):
+        _ = get_app()._tr
+
+        self.actionOptimizedPreviewCreate = QAction(_("Optimize Video"), self)
+        self.actionOptimizedPreviewCreate.setObjectName("actionOptimizedPreviewCreate")
+        self.actionOptimizedPreviewCreate.triggered.connect(self.actionOptimizedPreviewCreate_trigger)
+
+        self.actionOptimizedPreviewUseExisting = QAction(_("Link to Existing..."), self)
+        self.actionOptimizedPreviewUseExisting.setObjectName("actionOptimizedPreviewUseExisting")
+        self.actionOptimizedPreviewUseExisting.triggered.connect(self.actionOptimizedPreviewUseExisting_trigger)
+
+        self.actionOptimizedPreviewRemove = QAction(_("Unlink"), self)
+        self.actionOptimizedPreviewRemove.setObjectName("actionOptimizedPreviewRemove")
+        self.actionOptimizedPreviewRemove.triggered.connect(self.actionOptimizedPreviewRemove_trigger)
+
+        self.actionOptimizedPreviewCancel = QAction(_("Cancel"), self)
+        self.actionOptimizedPreviewCancel.setObjectName("actionOptimizedPreviewCancel")
+        self.actionOptimizedPreviewCancel.triggered.connect(self.actionOptimizedPreviewCancel_trigger)
+
+        self.actionOptimizedPreviewDeleteAndUnlink = QAction(_("Delete && Unlink"), self)
+        self.actionOptimizedPreviewDeleteAndUnlink.setObjectName("actionOptimizedPreviewDeleteAndUnlink")
+        self.actionOptimizedPreviewDeleteAndUnlink.triggered.connect(self.actionOptimizedPreviewDeleteAndUnlink_trigger)
+
+        self.optimizedPreviewMenu = None
+        if getattr(self, "menuClear", None):
+            self.menuClear.aboutToShow.connect(self._refresh_clear_menu_action_states)
 
     def actionInsertKeyframe(self):
         log.debug("actionInsertKeyframe")
@@ -4007,27 +4158,14 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
     def ignore_updates_callback(self, ignore, show_wait=True):
         """Ignore updates callback - used to stop updating this widget during batch updates"""
-        app = get_app()
-
         if ignore and not self.ignore_updates:
             if show_wait:
-                # Wait for mass updates to finish
-                app.setOverrideCursor(QCursor(Qt.WaitCursor))
-                self._wait_cursor_requests += 1
+                self._acquire_wait_cursor()
             openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
-            app.processEvents()
+            get_app().processEvents()
         elif not ignore and self.ignore_updates:
-            if self._wait_cursor_requests:
-                # Ensure we unwind any wait cursors that we previously applied
-                while self._wait_cursor_requests and app.overrideCursor():
-                    app.restoreOverrideCursor()
-                    self._wait_cursor_requests -= 1
-                if self._wait_cursor_requests:
-                    # Cursor stack unexpectedly empty; reset our counter to keep it accurate
-                    self._wait_cursor_requests = 0
-            elif show_wait and app.overrideCursor():
-                # Fallback for callers expecting an unconditional restore
-                app.restoreOverrideCursor()
+            if show_wait:
+                self._release_wait_cursor()
             openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
 
         if not ignore:
@@ -4039,6 +4177,30 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Keep track of ignore / not ignore
         self.ignore_updates = ignore
+
+    def _acquire_wait_cursor(self):
+        """Push a wait cursor request on the GUI thread."""
+        app = get_app()
+        app.setOverrideCursor(QCursor(Qt.WaitCursor))
+        self._wait_cursor_requests += 1
+
+    def _release_wait_cursor(self):
+        """Release a wait cursor request on the GUI thread."""
+        app = get_app()
+        if self._wait_cursor_requests:
+            if app.overrideCursor():
+                app.restoreOverrideCursor()
+            self._wait_cursor_requests -= 1
+            return
+        if app.overrideCursor():
+            app.restoreOverrideCursor()
+
+    def handle_wait_cursor_signal(self, enabled):
+        """Handle cross-thread wait cursor requests safely on the GUI thread."""
+        if enabled:
+            self._acquire_wait_cursor()
+        else:
+            self._release_wait_cursor()
 
     def style_dock_widgets(self):
         """Check if any dock widget is part of a tabbed group and hide the title text if tabbed."""
@@ -4188,9 +4350,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Create dock toolbars, set initial state of items, etc
         self.setup_toolbars()
         self.generation_service = GenerationService(self)
+        self.proxy_service = ProxyService(self)
         self.generation_queue = GenerationQueueManager(self)
         self.generation_queue.job_finished.connect(self._on_generation_job_finished)
         self._init_generation_actions()
+        self._init_proxy_actions()
         self.refresh_comfy_availability_async()
 
         # Add window as watcher to receive undo/redo status updates
@@ -4311,6 +4475,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Set play/pause callbacks
         self.PauseSignal.connect(self.onPauseCallback)
         self.PlaySignal.connect(self.onPlayCallback)
+        self.TrimPreviewMode.connect(self.onTrimPreviewMode)
 
         # QTimer for Autosave
         minutes = 1000 * 60
@@ -4363,29 +4528,30 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Set scaling mode to lower quality scaling (for faster previews)
         lib_settings.HIGH_QUALITY_SCALING = False
 
-        # Set use omp threads number environment variable
-        if s.get("omp_threads_number"):
-            lib_settings.OMP_THREADS = max(
-                2, int(str(s.get("omp_threads_number"))))
+        # Apply user overrides when present, otherwise use runtime-detected libopenshot defaults.
+        omp_default = lib_settings.DefaultOMPThreads()
+        ff_default = lib_settings.DefaultFFThreads()
+        omp_min, omp_max = 2, max(2, omp_default * 3)
+        ff_min, ff_max = 2, max(2, ff_default * 3)
+
+        omp_source = "libopenshot default"
+        if s.has_user_value("omp_threads_number"):
+            omp_value = int(str(s.get("omp_threads_number")))
+            lib_settings.OMP_THREADS = max(omp_min, min(omp_value, omp_max))
+            omp_source = "user setting"
         else:
-            lib_settings.OMP_THREADS = 12
+            lib_settings.OMP_THREADS = omp_default
+        lib_settings.ApplyOpenMPSettings()
+        log.info("Initialized OMP threads to %s (%s)", lib_settings.OMP_THREADS, omp_source)
 
-        # Set use ffmpeg threads number environment variable
-        if s.get("ff_threads_number"):
-            lib_settings.FF_THREADS = max(
-                1, int(str(s.get("ff_threads_number"))))
+        ff_source = "libopenshot default"
+        if s.has_user_value("ff_threads_number"):
+            ff_value = int(str(s.get("ff_threads_number")))
+            lib_settings.FF_THREADS = max(ff_min, min(ff_value, ff_max))
+            ff_source = "user setting"
         else:
-            lib_settings.FF_THREADS = 8
-
-        # Set use max width decode hw environment variable
-        if s.get("decode_hw_max_width"):
-            lib_settings.DE_LIMIT_WIDTH_MAX = int(
-                str(s.get("decode_hw_max_width")))
-
-        # Set use max height decode hw environment variable
-        if s.get("decode_hw_max_height"):
-            lib_settings.DE_LIMIT_HEIGHT_MAX = int(
-                str(s.get("decode_hw_max_height")))
+            lib_settings.FF_THREADS = ff_default
+        log.info("Initialized FFmpeg threads to %s (%s)", lib_settings.FF_THREADS, ff_source)
 
         # Create lock file
         self.create_lock_file()
@@ -4402,6 +4568,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.ignore_updates = False
         self._wait_cursor_requests = 0
         self.IgnoreUpdates.connect(self.ignore_updates_callback)
+        self.WaitCursorSignal.connect(self.handle_wait_cursor_signal)
 
         # Connect playhead moved signals
         self.SeekSignal.connect(self.handleSeek)

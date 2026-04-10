@@ -100,16 +100,22 @@ def init_tracing():
         last_event_message = event_message
         return event
 
-    # Initialize sentry exception tracing
-    sdk.init(
-        "https://21496af56ab24e94af8ff9771fbc1600@o772439.ingest.sentry.io/5795985",
-        sample_rate=sample_rate,
-        traces_sample_rate=traces_sample_rate,
-        release=f"openshot@{info.VERSION}",
-        environment=environment,
-        debug=False,
-        before_send=before_send
-    )
+    # Sentry is optional. If transport setup fails due to a broken host
+    # environment (for example malformed proxy variables), continue startup
+    # without telemetry instead of crashing the entire application.
+    try:
+        sdk.init(
+            "https://21496af56ab24e94af8ff9771fbc1600@o772439.ingest.sentry.io/5795985",
+            sample_rate=sample_rate,
+            traces_sample_rate=traces_sample_rate,
+            release=f"openshot@{info.VERSION}",
+            environment=environment,
+            debug=False,
+            before_send=before_send
+        )
+    except Exception as ex:
+        log.warning("Sentry initialization failed, disabling error reporting: %s", ex)
+        return
     if _supports_tagging():
         configure_platform_tags(sdk)
     else:

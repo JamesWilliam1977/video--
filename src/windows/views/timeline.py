@@ -174,6 +174,15 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             obj.save()
             if original:
                 get_app().updates.apply_last_action_to_history(original)
+                if (
+                    object_type == "clip"
+                    and self._clip_volume_curve_changed(original, getattr(obj, "data", None))
+                    and self._clip_has_visible_waveform(obj)
+                ):
+                    self.Show_Waveform_Triggered(
+                        [obj.id],
+                        transaction_id=self.keyframe_transaction_id,
+                    )
         get_app().updates.transaction_id = None
         get_app().updates.ignore_history = False
         self.keyframe_transaction_id = None
@@ -214,6 +223,19 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                 if isinstance(item, (dict, list)) and self._payload_contains_waveform(item):
                     return True
         return False
+
+    def _clip_has_visible_waveform(self, clip):
+        """Return True when a clip currently has waveform samples displayed."""
+        if not clip or not isinstance(getattr(clip, "data", None), dict):
+            return False
+        audio_data = clip.data.get("ui", {}).get("audio_data")
+        return isinstance(audio_data, list) and len(audio_data) > 0
+
+    def _clip_volume_curve_changed(self, original_data, current_data):
+        """Return True when a clip's volume keyframe payload changed."""
+        if not isinstance(original_data, dict) or not isinstance(current_data, dict):
+            return False
+        return original_data.get("volume") != current_data.get("volume")
 
     def _assign_new_effect_ids(self, clip_data):
         """Assign new unique IDs to each effect on the provided clip data."""
@@ -634,6 +656,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             "start": transition_details["start"],
             "end": transition_details["end"],
             "reader": reader_data,
+            "fade_audio_hint": True,
             "replace_image": False
         }
         self._set_transition_mask_defaults(transitions_data)
@@ -719,6 +742,23 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         for point in keyframe.get("Points", []):
             if "co" in point and "X" in point["co"] and point["co"]["X"] != 1:
                 point["co"]["X"] = round((point["co"]["X"] - 1) * factor) + 1
+
+    def _anchor_transition_endpoint_keyframes(self, transition_data, total_frames):
+        """Keep static transition endpoint keyframes anchored to the clip edges."""
+        if total_frames <= 0 or not isinstance(transition_data, dict):
+            return
+        last_frame = int(total_frames) + 1
+        for prop in ("brightness", "contrast"):
+            keyframe = transition_data.get(prop)
+            points = keyframe.get("Points") if isinstance(keyframe, dict) else None
+            if not isinstance(points, list) or len(points) < 2:
+                continue
+            first = points[0].get("co") if isinstance(points[0], dict) else None
+            last = points[-1].get("co") if isinstance(points[-1], dict) else None
+            if isinstance(first, dict):
+                first["X"] = 1
+            if isinstance(last, dict):
+                last["X"] = last_frame
 
     def _transition_mask_reader(self, transition_data, fallback_data=None):
         """Return reader metadata for a transition payload."""
@@ -858,8 +898,13 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         tran_left = position
         tran_right = position + duration
         tran_mid = (tran_left + tran_right) / 2.0
+        fps = get_app().project.get("fps")
+        fps_float = float(fps["num"]) / float(fps["den"])
+        edge_tolerance = (0.5 / fps_float) if fps_float > 0 else 0.01
 
-        best_match = None
+        edge_matches = set()
+        overlap_candidates = []
+
         for clip in Clip.filter(layer=layer):
             clip_data = clip.data if isinstance(clip.data, dict) else {}
             try:
@@ -878,14 +923,39 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             if overlap <= 0.0:
                 continue
 
+            if abs(tran_left - clip_left) <= edge_tolerance:
+                edge_matches.add("left")
+            if abs(tran_right - clip_right) <= edge_tolerance:
+                edge_matches.add("right")
+
             clip_mid = (clip_left + clip_right) / 2.0
             side = "left" if tran_mid <= clip_mid else "right"
             edge_dist = abs(tran_mid - (clip_left if side == "left" else clip_right))
-            score = (-overlap, edge_dist)
-            if best_match is None or score < best_match[0]:
-                best_match = (score, side)
+            overlap_candidates.append(((-overlap, edge_dist), side))
 
-        return best_match[1] if best_match else None
+        if len(edge_matches) == 1:
+            return edge_matches.pop()
+        if len(edge_matches) > 1:
+            # In a standard overlap, the transition touches the end of the
+            # outgoing clip and the start of the incoming clip. This overlap
+            # should fade in the second clip, which maps to the left-side
+            # orientation in the current brightness-curve logic.
+            return "left"
+        if not overlap_candidates:
+            return None
+
+        overlap_candidates.sort(key=lambda candidate: candidate[0])
+        best_score, best_side = overlap_candidates[0]
+
+        # Equal left/right scores happen on exact overlaps between two adjacent
+        # clips. Preserve the "fade in the second clip" behavior.
+        if len(overlap_candidates) > 1 and overlap_candidates[1][0] == best_score:
+            tied_sides = {best_side, overlap_candidates[1][1]}
+            if "left" in tied_sides:
+                return "left"
+            return best_side
+
+        return best_side
 
     def _auto_orient_transition_keyframes(self, transition_data):
         """Apply fade-in orientation on left-edge drops (right edge keeps default orientation)."""
@@ -986,6 +1056,8 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                 for prop in ("brightness", "contrast"):
                     if prop in existing_item.data:
                         self._scale_keyframes(existing_item.data[prop], scale)
+            if uses_static_mask and new_frames:
+                self._anchor_transition_endpoint_keyframes(existing_item.data, new_frames)
         elif old_data and self._transition_reader_changed(existing_item.data, old_data):
             self._set_transition_mask_defaults(existing_item.data, old_data)
 
@@ -1741,6 +1813,30 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         get_app().window.actionClearWaveformData.setEnabled(True)
         clip = Clip.get(id=clip_id)
         if clip:
+            existing_ui = clip.data.get("ui", {}) if isinstance(clip.data, dict) else {}
+            incoming_ui = ui_data.get("ui") if isinstance(ui_data, dict) else None
+            incoming_audio = incoming_ui.get("audio_data") if isinstance(incoming_ui, dict) else None
+            preserve_existing_waveform = (
+                incoming_audio is None and isinstance(existing_ui.get("audio_data"), list)
+            )
+
+            # Preserve the current waveform preview while fresh waveform samples
+            # are still being generated in the background.
+            if preserve_existing_waveform:
+                merged_ui = dict(existing_ui)
+                if isinstance(incoming_ui, dict):
+                    merged_ui.update(incoming_ui)
+                merged_ui["audio_data"] = existing_ui.get("audio_data")
+                ui_data = dict(ui_data or {})
+                ui_data["ui"] = merged_ui
+
+            if isinstance(ui_data, dict):
+                clip_ui = ui_data.get("ui")
+                if not isinstance(clip_ui, dict):
+                    clip_ui = {}
+                    ui_data["ui"] = clip_ui
+                if not preserve_existing_waveform and isinstance(clip_ui.get("audio_data"), list):
+                    clip_ui["waveform_token"] = str(tid or self.get_uuid())
             clip.data = ui_data
             clip.save()
             if hasattr(self, "clip_painter"):
@@ -1756,6 +1852,12 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         for clip in clips:
             # Force thumbnail image to be refreshed (for a particular frame #)
             GetThumbPath(clip.data.get("file_id"), thumbnail_frame, clear_cache=True)
+
+            if ViewClass == TimelineWidget:
+                if hasattr(self, "clip_painter"):
+                    self.clip_painter.invalidate_clip_thumbnails(clip.id)
+                self.update()
+                continue
 
             # Pass to javascript timeline (and render)
             self.run_js(JS_SCOPE_SELECTOR + ".updateThumbnail('" + clip_id + "');")
@@ -2144,11 +2246,18 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     default_zoom_object = json.loads(default_zoom.Json())
                     default_loc = openshot.Point(start_animation, 0.0, openshot.BEZIER)
                     default_loc_object = json.loads(default_loc.Json())
+                    default_origin = openshot.Point(start_animation, 0.5, openshot.BEZIER)
+                    default_origin_object = json.loads(default_origin.Json())
                     clip.data["gravity"] = openshot.GRAVITY_CENTER
                     clip.data["scale_x"] = {"Points": [default_zoom_object]}
                     clip.data["scale_y"] = {"Points": [default_zoom_object]}
+                    clip.data["shear_x"] = {"Points": [default_loc_object]}
+                    clip.data["shear_y"] = {"Points": [default_loc_object]}
+                    clip.data["rotation"] = {"Points": [default_loc_object]}
                     clip.data["location_x"] = {"Points": [default_loc_object]}
                     clip.data["location_y"] = {"Points": [default_loc_object]}
+                    clip.data["origin_x"] = {"Points": [default_origin_object]}
+                    clip.data["origin_y"] = {"Points": [default_origin_object]}
 
                 if action in [
                     MenuAnimate.IN_50_100,
@@ -2842,7 +2951,9 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
                 if action == MenuSlice.KEEP_LEFT:
                     # Keep the left side of the transition, adjust the "end"
-                    trans.data["end"] = start_of_tran + (playhead_position - original_position)
+                    new_end = start_of_tran + (playhead_position - original_position)
+                    trans.data["end"] = new_end
+                    trans.data["duration"] = max(0.0, new_end - start_of_tran)
 
                     if ripple:
                         removed_duration = original_duration - (trans.data["end"] - start_of_tran)
@@ -2853,6 +2964,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     new_start = start_of_tran + (playhead_position - original_position)
                     trans.data["position"] = playhead_position
                     trans.data["start"] = new_start
+                    trans.data["duration"] = max(0.0, end_of_tran - new_start)
                     if ripple:
                         removed_duration = original_duration - (end_of_tran - new_start)
                         trans.data["position"] = original_position
@@ -2863,20 +2975,32 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
                 elif action == MenuSlice.KEEP_BOTH:
                     # Update data for the left transition
-                    trans.data["end"] = start_of_tran + (playhead_position - original_position)
+                    new_end = start_of_tran + (playhead_position - original_position)
+                    trans.data["end"] = new_end
+                    trans.data["duration"] = max(0.0, new_end - start_of_tran)
 
                     # Split into two transitions (left and right side)
                     right_tran = Transition.get(id=trans_id)
                     if not right_tran:
                         continue
 
-                    # Create right side transition
+                    # Create right side transition from a deep copy so the new
+                    # transition does not retain references to the original.
+                    right_tran_data = deepcopy(right_tran.data)
+                    right_tran_key = list(right_tran.key)
                     right_tran.id = None
                     right_tran.type = 'insert'
-                    right_tran.data.pop('id')
-                    right_tran.key.pop(1)
+                    right_tran.data = right_tran_data
+                    right_tran.data.pop('id', None)
+                    if len(right_tran_key) > 1:
+                        right_tran_key.pop(1)
+                    right_tran.key = right_tran_key
                     right_tran.data["position"] = playhead_position
                     right_tran.data["start"] = trans.data["end"]
+                    right_tran.data["end"] = end_of_tran
+                    right_start = float(right_tran.data["start"])
+                    right_end = float(right_tran.data.get("end", right_start))
+                    right_tran.data["duration"] = max(0.0, right_end - right_start)
                     right_tran.save()
 
                 # Save changes for the left or right slice
@@ -4009,13 +4133,15 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             # Start or restart timer to redraw audio
             self.redraw_audio_timer.start()
 
-        # Only update scale if different
-        current_scale = float(get_app().project.get("scale") or 15.0)
+        # Only update scale if different. Normalize to avoid startup float noise
+        # such as 14.999999999999998 vs 15.0 from dirtying a fresh project.
+        current_scale = round(float(get_app().project.get("scale") or 15.0), 6)
+        new_scale = round(float(newScale), 6)
 
         # Save current zoom
-        if newScale != current_scale:
+        if abs(new_scale - current_scale) > 1e-6:
             get_app().updates.ignore_history = True
-            get_app().updates.update(["scale"], newScale)
+            get_app().updates.update(["scale"], new_scale)
             get_app().updates.ignore_history = False
 
     def _mime_text_payload(self, mime):
@@ -4381,7 +4507,6 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             "position": snap_to_grid(position.x()),
             "start": 0,
             "end": duration,
-            "resource": file_path,
             "reader": deepcopy(reader_json),
             "replace_image": False
         }
@@ -4394,6 +4519,8 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         self.update_transition_data(transition_data, only_basic_props=False, ignore_refresh=ignore_refresh)
 
         # Track the added transition
+        if not isinstance(getattr(self, "item_ids", None), list):
+            self.item_ids = []
         self.item_ids.append(transition_data.get('id'))
 
         # Init javascript bounding box (for snapping support)
@@ -4689,6 +4816,10 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
     def dragLeaveEvent(self, event):
         """A drag is in-progress and the user moves mouse outside of timeline"""
+        if ViewClass == TimelineWidget:
+            TimelineWidget.dragLeaveEvent(self, event)
+            return
+
         log.debug('dragLeaveEvent - Undo drop')
 
         # Accept event
@@ -4713,7 +4844,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         # Clear new clip
         self.new_item = False
         self.item_type = None
-        self.item_ids = None
+        self.item_ids = []
 
     def redraw_audio_onTimeout(self):
         """Timer is ready to redraw audio (if any)"""

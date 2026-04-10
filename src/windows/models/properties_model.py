@@ -615,6 +615,8 @@ class PropertiesModel(updates.UpdateInterface):
         property_type = property[1]["type"]
         property_key = property[0]
         object_id = property[1]["object_id"]
+        property_choices = property[1].get("choices") or []
+        choice_keyframes_use_constant = bool(property_choices) and interpolation == -1
         objects = {}
         item_data = item.data()
 
@@ -718,6 +720,8 @@ class PropertiesModel(updates.UpdateInterface):
                                 # Update or delete point
                                 if value is not None:
                                     point["co"]["Y"] = int(value) if property_key == "time" else float(value)
+                                    if choice_keyframes_use_constant:
+                                        point["interpolation"] = openshot.CONSTANT
                                     log.debug("updating point: co.X = %d to value: %s",
                                               point["co"]["X"], value)
                                 else:
@@ -769,7 +773,7 @@ class PropertiesModel(updates.UpdateInterface):
                             log.debug("Created new point at X=%d", self.frame_number)
                             clip_data[property_key].setdefault('Points', []).append({
                                 'co': {'X': self.frame_number, 'Y': int(value) if property_key == "time" else value},
-                                'interpolation': 1})
+                                'interpolation': openshot.CONSTANT if choice_keyframes_use_constant else openshot.LINEAR})
 
                 if not clip_updated:
                     # If no keyframe was found, set a basic property
@@ -1109,15 +1113,23 @@ class PropertiesModel(updates.UpdateInterface):
                 all_tracks = get_app().project.get("layers")
                 display_count = len(all_tracks)
                 display_label = None
+                try:
+                    value_int = int(float(value))
+                except (TypeError, ValueError):
+                    value_int = value
                 for track in reversed(sorted(all_tracks, key=itemgetter('number'))):
-                    if track.get("number") == value:
+                    if track.get("number") == value_int:
                         display_label = track.get("label")
                         break
                     display_count -= 1
                 track_name = display_label or _("Track %s") % QLocale().toString(display_count)
                 col.setText(track_name)
             elif type == "int":
-                col.setText("%d" % value)
+                try:
+                    int_value = int(float(value))
+                    col.setText("%d" % int_value)
+                except (TypeError, ValueError):
+                    col.setText("" if value is None else str(value))
             elif type == "reader":
                 col.setText(self._reader_display_name(c, property[1].get("memo")))
             else:

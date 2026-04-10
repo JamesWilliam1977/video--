@@ -79,7 +79,7 @@ try:
                     break
 except Exception as exc:
     logger.warning("Failed to read UI scale from %s: %s", settings_path, exc, exc_info=True)
-scale = max(1.0, min(3.0, scale))
+scale = max(0.5, min(3.0, scale))
 if scale != 1.0:
     os.environ["QT_SCALE_FACTOR"] = str(scale)
 

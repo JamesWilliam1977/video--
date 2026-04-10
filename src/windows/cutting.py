@@ -29,7 +29,7 @@ import os
 import functools
 import json
 
-from qt_api import pyqtSignal, QTimer
+from qt_api import pyqtSignal, QTimer, QSize
 from qt_api import Qt, QEvent
 from qt_api import QIcon
 from qt_api import QDialog, QMessageBox, QSizePolicy, QSlider, QToolButton, QLineEdit
@@ -37,8 +37,10 @@ import openshot  # Python module for libopenshot (required video editing module 
 
 from classes import info, ui_util, time_parts
 from classes.app import get_app
+from classes.clip_utils import is_single_image_media
 from classes.logger import log
 from classes.metrics import track_metric_screen
+from classes.proxy_service import dialog_preview_reader_data
 from windows.preview_thread import PreviewParent
 from windows.video_widget import VideoWidget
 
@@ -90,7 +92,10 @@ class Cutting(QDialog):
 
         # Keep track of file object
         self.file = file
-        self.file_path = file.absolute_path()
+        self.source_reader_data = dialog_preview_reader_data(file, prefer_proxy=False)
+        self.proxy_reader_data = dialog_preview_reader_data(file, prefer_proxy=True)
+        self.reader_data = self.proxy_reader_data
+        self.file_path = str(self.reader_data.get("path") or file.absolute_path() or "")
         self.video_length = int(file.data['video_length'])
         self.fps_num = int(file.data['fps']['num'])
         self.fps_den = int(file.data['fps']['den'])
@@ -130,7 +135,8 @@ class Cutting(QDialog):
         log.info(self.file_path)
 
         # Add Video Widget
-        self.videoPreview = VideoWidget()
+        self.videoPreview = VideoWidget(watch_project=False)
+        self.videoPreview.win = self
         self.videoPreview.setObjectName("videoPreview")
         self.videoPreview.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         self.verticalLayout.insertWidget(0, self.videoPreview)
@@ -138,46 +144,13 @@ class Cutting(QDialog):
         # Set max size of video preview (for speed)
         viewport_rect = self.videoPreview.centeredViewport(self.videoPreview.width(), self.videoPreview.height())
 
-        # Create an instance of a libopenshot Timeline object
-        self.r = openshot.Timeline(
-            viewport_rect.width(),
-            viewport_rect.height(),
-            openshot.Fraction(self.fps_num, self.fps_den),
-            self.sample_rate,
-            self.channels,
-            self.channel_layout)
-        self.r.info.channel_layout = self.channel_layout
-        self.r.SetMaxSize(viewport_rect.width(), viewport_rect.height())
-
         try:
-            # Add clip for current preview file
-            self.clip = openshot.Clip(self.file_path)
-            self.clip.SetJson(json.dumps({"reader": file.data}))
-            self.clip.Start(clip_start)
-            self.clip.End(clip_end)
-
-            # Show waveform for audio files
-            if not self.clip.Reader().info.has_video and self.clip.Reader().info.has_audio:
-                self.clip.Waveform(True)
-
-            # Set has_audio property
-            self.r.info.has_audio = self.clip.Reader().info.has_audio
-
-            # Update video_length property of the Timeline object
-            self.r.info.video_length = self.video_length
-
-            # Display frame #
-            self.clip.display = openshot.FRAME_DISPLAY_CLIP
-            self.r.AddClip(self.clip)
-
+            self._build_preview_timeline(self.reader_data, QSize(viewport_rect.width(), viewport_rect.height()))
         except Exception:
             log.error(
                 'Failed to load media file into preview player: %s',
                 self.file_path)
             return
-
-        # Open reader
-        self.r.Open()
 
         # Start the preview thread
         self.initialized = False
@@ -223,6 +196,7 @@ class Cutting(QDialog):
         self.slider_timer.setInterval(100)
         self.slider_timer.setSingleShot(True)
         self.slider_timer.timeout.connect(self.sliderVideo_timeout)
+        self.videoPreview.delayed_resize_timer.timeout.connect(self._apply_dynamic_preview_max_size)
         self.initialized = True
 
     def _build_preview_repeat_button(self):
@@ -260,6 +234,182 @@ class Cutting(QDialog):
                 event.accept()
                 return
         return super(Cutting, self).keyPressEvent(event)
+
+    def _target_preview_max_size(self):
+        viewport_rect = self.videoPreview.centeredViewport(self.videoPreview.width(), self.videoPreview.height())
+        device_pixel_ratio = self.devicePixelRatioF()
+        requested = QSize(
+            max(2, int(round(viewport_rect.width() * device_pixel_ratio))),
+            max(2, int(round(viewport_rect.height() * device_pixel_ratio))),
+        )
+
+        source_width = int(getattr(self, "width", 0) or 0)
+        source_height = int(getattr(self, "height", 0) or 0)
+        file_data = getattr(getattr(self, "file", None), "data", {})
+        if is_single_image_media(getattr(self, "reader_data", {})) or is_single_image_media(file_data):
+            project = getattr(get_app(), "project", None)
+            if project:
+                source_width = max(source_width, int(project.get("width") or 0))
+                source_height = max(source_height, int(project.get("height") or 0))
+        if source_width > 0 and source_height > 0:
+            source_size = QSize(source_width, source_height)
+            if requested.width() > source_width or requested.height() > source_height:
+                capped = QSize(source_size)
+            else:
+                capped = QSize(requested)
+        else:
+            capped = requested
+
+        if capped.height() > 0:
+            ratio = float(capped.width()) / float(capped.height())
+            even_width = max(2, int(round(capped.width() / 2.0) * 2))
+            even_height = max(2, int(round(round(even_width / ratio) / 2.0) * 2))
+            capped = QSize(even_width, even_height)
+
+        return capped
+
+    def _reader_capacity(self, reader_data):
+        try:
+            return int(reader_data.get("width", 0) or 0), int(reader_data.get("height", 0) or 0)
+        except Exception:
+            return 0, 0
+
+    def _select_reader_data_for_size(self, target_size):
+        _ = target_size
+        proxy_data = getattr(self, "proxy_reader_data", None) or {}
+        source_data = getattr(self, "source_reader_data", None) or {}
+        proxy_path = str(proxy_data.get("path") or "")
+        if proxy_path:
+            return proxy_data
+        return source_data or proxy_data
+
+    def _build_preview_timeline(self, reader_data, max_size):
+        self.reader_data = reader_data
+        self.file_path = str(reader_data.get("path") or self.file.absolute_path() or "")
+        is_single_image = bool(is_single_image_media(reader_data) or is_single_image_media(getattr(self.file, "data", {})))
+        source_path = str(getattr(self.source_reader_data, "get", lambda *_: "")("path") or "")
+        proxy_path = str(getattr(self.proxy_reader_data, "get", lambda *_: "")("path") or "")
+        if self.file_path and self.file_path == proxy_path and proxy_path != source_path:
+            reader_kind = "proxy_reader"
+        else:
+            reader_kind = "source_reader"
+        log.debug(
+            "Preview dialog opening with %s path=%s size=%sx%s",
+            reader_kind,
+            self.file_path,
+            int(reader_data.get("width", 0) or 0),
+            int(reader_data.get("height", 0) or 0),
+        )
+
+        base_width = max(2, int(getattr(self, "width", 0) or max_size.width() or 2))
+        base_height = max(2, int(getattr(self, "height", 0) or max_size.height() or 2))
+        if is_single_image:
+            project = getattr(get_app(), "project", None)
+            if project:
+                base_width = max(base_width, int(project.get("width") or 0))
+                base_height = max(base_height, int(project.get("height") or 0))
+
+        self.r = openshot.Timeline(
+            base_width,
+            base_height,
+            openshot.Fraction(self.fps_num, self.fps_den),
+            self.sample_rate,
+            self.channels,
+            self.channel_layout)
+        self.r.info.channel_layout = self.channel_layout
+        self.r.SetMaxSize(max_size.width(), max_size.height())
+
+        self.clip = openshot.Clip(self.file_path)
+        if not is_single_image:
+            self.clip.SetJson(json.dumps({"reader": self.reader_data}))
+        self.clip.Start(self.file.data.get("start", 0.0))
+        self.clip.End(self.file.data.get("end", self.file.data.get("duration", 0.0)))
+
+        if not self.clip.Reader().info.has_video and self.clip.Reader().info.has_audio:
+            self.clip.Waveform(True)
+
+        self.r.info.has_audio = self.clip.Reader().info.has_audio
+        self.r.info.video_length = self.video_length
+        self.clip.display = openshot.FRAME_DISPLAY_CLIP
+        self.r.AddClip(self.clip)
+        self.r.Open()
+
+    def _reload_preview_reader(self, reader_data, max_size):
+        current_frame = max(1, int(self.sliderVideo.value() or 1))
+        old_preview_parent = getattr(self, "preview_parent", None)
+        old_timeline = getattr(self, "r", None)
+        old_clip = getattr(self, "clip", None)
+        was_playing = False
+        try:
+            was_playing = (
+                getattr(self, "preview_thread", None) is not None
+                and self.preview_thread.player.Mode() == openshot.PLAYBACK_PLAY
+                and self.preview_thread.player.Speed() != 0.0
+            )
+        except Exception:
+            was_playing = False
+
+        self.initialized = False
+        if old_preview_parent:
+            try:
+                old_preview_parent.Stop(wait_for_thread=True)
+            except Exception as exc:
+                log.warning("Failed to stop previous cutting preview thread cleanly: %s", exc)
+
+        self._build_preview_timeline(reader_data, max_size)
+
+        self.preview_parent = PreviewParent()
+        self.preview_parent.Init(self, self.r, self.videoPreview, self.video_length)
+        self.preview_thread = self.preview_parent.worker
+        self.initialized = True
+        self.LoadTimelineAndSeekSignal.emit(current_frame)
+        if was_playing:
+            QTimer.singleShot(0, lambda: self.btnPlay_clicked(force="play"))
+
+        if old_timeline:
+            try:
+                old_timeline.Close()
+                old_timeline.ClearAllCache(True)
+            except Exception:
+                pass
+        if old_clip:
+            try:
+                old_clip.Close()
+            except Exception:
+                pass
+
+    def _apply_dynamic_preview_max_size(self):
+        if not getattr(self, "initialized", False) or not getattr(self, "r", None):
+            return
+
+        new_size = self._target_preview_max_size()
+        desired_reader_data = self._select_reader_data_for_size(new_size)
+        if str(desired_reader_data.get("path") or "") != str(getattr(self, "reader_data", {}).get("path") or ""):
+            self._reload_preview_reader(desired_reader_data, new_size)
+            return
+
+        previous_width = int(getattr(self.r, "preview_width", 0) or 0)
+        previous_height = int(getattr(self.r, "preview_height", 0) or 0)
+
+        if previous_width == new_size.width() and previous_height == new_size.height():
+            return
+
+        was_playing = False
+        try:
+            was_playing = (
+                getattr(self, "preview_thread", None) is not None
+                and self.preview_thread.player.Mode() == openshot.PLAYBACK_PLAY
+                and self.preview_thread.player.Speed() != 0.0
+            )
+        except Exception:
+            was_playing = False
+
+        self.PauseSignal.emit()
+        self.r.SetMaxSize(new_size.width(), new_size.height())
+        self.r.ClearAllCache(True)
+        self.refreshFrameSignal.emit()
+        if was_playing:
+            QTimer.singleShot(0, lambda: self.btnPlay_clicked(force="play"))
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress and obj is self.txtName:
@@ -359,8 +509,11 @@ class Cutting(QDialog):
     def _start_preview_autoplay(self):
         if not self._preview_autoplay_active or not self.is_preview_mode:
             return
+        if not getattr(self, "initialized", False):
+            QTimer.singleShot(120, lambda: Cutting._start_preview_autoplay(self))
+            return
         if not getattr(self, "preview_thread", None):
-            QTimer.singleShot(120, self._start_preview_autoplay)
+            QTimer.singleShot(120, lambda: Cutting._start_preview_autoplay(self))
             return
         if self._preview_autoplay_attempts >= 30:
             self._preview_autoplay_active = False
@@ -369,25 +522,17 @@ class Cutting(QDialog):
         self._preview_autoplay_attempts += 1
         self.btnPlay_clicked(force="play")
 
-        is_playing = False
-        try:
-            is_playing = (
-                self.preview_thread.player.Mode() == openshot.PLAYBACK_PLAY
-                and self.preview_thread.player.Speed() != 0.0
-            )
-        except Exception:
-            is_playing = False
-
-        if is_playing:
-            self._preview_autoplay_active = False
-            return
-
-        QTimer.singleShot(120, self._start_preview_autoplay)
+        QTimer.singleShot(120, lambda: Cutting._start_preview_autoplay(self))
 
     def _preview_ready(self):
         if not self.is_preview_mode:
             return
-        self.SeekSignal.emit(1)
+        if getattr(self, "preview_thread", None):
+            # Startup preview should show frame 1 immediately without waiting for
+            # preroll/cache work before the first autoplay attempt.
+            self.preview_thread.Seek(1, False)
+        else:
+            self.SeekSignal.emit(1)
         if self._preview_autoplay_active:
             QTimer.singleShot(0, self._start_preview_autoplay)
 
@@ -400,14 +545,14 @@ class Cutting(QDialog):
         if mode == play_mode and not self.btnPlay.isChecked():
             self.btnPlay.setChecked(True)
             ui_util.setup_icon(self, self.btnPlay, "actionPlay", "media-playback-pause")
+        if mode == play_mode and self._preview_autoplay_active and self._preview_autoplay_attempts > 0:
+            self._preview_autoplay_active = False
         elif mode in (paused_mode, stop_mode) and self.btnPlay.isChecked():
             self.btnPlay.setChecked(False)
             ui_util.setup_icon(self, self.btnPlay, "actionPlay", "media-playback-start")
 
         if not self.is_preview_mode or not self._preview_autoplay_active:
             return
-        if paused_mode is not None and mode == paused_mode:
-            QTimer.singleShot(0, self._start_preview_autoplay)
 
     def sliderVideo_valueChanged(self, new_frame):
         if self.preview_thread and not self.sliderIgnoreSignal:

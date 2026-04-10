@@ -1,20 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-04-05 17:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../preferences.rst:23
@@ -63,145 +66,125 @@ msgstr ""
 "odnose na cijeli OpenShot."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:123
-#: ../preferences.rst:170 ../preferences.rst:246
+#: ../preferences.rst:46 ../preferences.rst:110 ../preferences.rst:133
+#: ../preferences.rst:158 ../preferences.rst:205 ../preferences.rst:235
+#: ../preferences.rst:291 ../preferences.rst:321
 msgid "Setting"
 msgstr "Postavka"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:48 ../preferences.rst:101
-#: ../preferences.rst:105 ../preferences.rst:123
+#: ../preferences.rst:47 ../preferences.rst:50 ../preferences.rst:110
+#: ../preferences.rst:133 ../preferences.rst:135 ../preferences.rst:158
+#: ../preferences.rst:322
 msgid "Default"
 msgstr "Zadano"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:46 ../preferences.rst:101 ../preferences.rst:170
-#: ../preferences.rst:246 ../preferences.rst:257
+#: ../preferences.rst:48 ../preferences.rst:110 ../preferences.rst:133
+#: ../preferences.rst:205 ../preferences.rst:236 ../preferences.rst:291
+#: ../preferences.rst:302 ../preferences.rst:323
 msgid "Description"
 msgstr "Opis"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:48
+#: ../preferences.rst:49
 msgid "Language"
 msgstr "Jezik"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:48
+#: ../preferences.rst:51
 msgid "Choose your preferred language for OpenShot menus and windows"
 msgstr "Odaberite željeni jezik za OpenShot izbornike i prozore"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
+#: ../preferences.rst:52
 msgid "Default Theme"
 msgstr "Zadana tema"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
-msgid "Humanity:Dark"
-msgstr "Humanity:Dark"
+#: ../preferences.rst:53
+msgid "Cosmic Dusk"
+msgstr "Kozmički Sumrak"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:49
-msgid "Choose your theme for OpenShot, either Light, Dark or None"
+#: ../preferences.rst:54
+#, fuzzy
+msgid "Choose your theme for OpenShot"
 msgstr "Odaberite temu za OpenShot: Svijetla, Tamna ili Nema"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
+#: ../preferences.rst:55
 msgid "User Interface Scale"
 msgstr "Skaliranje korisničkog sučelja"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
-msgid "1.0"
-msgstr "1.0"
+#: ../preferences.rst:56
+msgid "100%"
+msgstr "100%"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:50
+#: ../preferences.rst:57
 msgid ""
-"Adjust the size of OpenShot's interface (restart required; range 1–3; known "
-"issues on Windows)"
+"Choose a preset UI scaling factor for larger or smaller interface elements"
 msgstr ""
-"Prilagodite veličinu OpenShot sučelja (potrebno ponovno pokretanje; raspon 1–"
-"3; poznati problemi na Windowsu)"
+"Odaberite unaprijed postavljeni faktor skaliranja sučelja za veće ili manje "
+"elemente sučelja"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "Image Length (seconds)"
-msgstr "Duljina slike (sekunde)"
+#: ../preferences.rst:58
+#, fuzzy
+msgid "Default Profile"
+msgstr "Zadani video profil"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "10.00"
-msgstr "10.00"
+#: ../preferences.rst:59
+#, fuzzy
+msgid "HD 720p 30 fps"
+msgstr "HD 720P 30 fps"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:51
-msgid "How long the image displays on the screen when added to the timeline"
-msgstr ""
-"Koliko dugo se slika prikazuje na ekranu kada se doda na vremensku liniju"
+#: ../preferences.rst:60
+#, fuzzy
+msgid "Select the default profile for new projects and exports"
+msgstr "Odaberite profil za zadane postavke Pregleda i Izvoza"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "Volume"
-msgstr "Glasnoća"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "75.00"
-msgstr "75.00"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:52
-msgid "The percentage of the volume of the clip when added to the timeline"
-msgstr "Postotak glasnoće isječka kada se doda na vremensku liniju"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:53
+#: ../preferences.rst:61
 msgid "Blender Command (path)"
 msgstr "Blender naredba (putanja)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:53 ../preferences.rst:54
-msgid "*<blank>*"
-msgstr "*<prazno>*"
+#: ../preferences.rst:62
+msgid "blender"
+msgstr "blender"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:53
+#: ../preferences.rst:63
 msgid "The path to the binary for Blender (version 5.0+)"
 msgstr "Putanja do izvršne datoteke za Blender (verzija 5.0+)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:54
+#: ../preferences.rst:64
 msgid "Advanced Title Editor (path)"
 msgstr "Napredni uređivač naslova (putanja)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:54
+#: ../preferences.rst:65
+msgid "inkscape"
+msgstr "inkscape"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:66
 msgid "The path to the binary for Inkscape"
 msgstr "Putanja do izvršne datoteke za Inkscape"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "Show Export Dialog when Finished"
-msgstr "Prikaži dijalog izvoza po završetku"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "*<checked>*"
-msgstr "*<označeno>*"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:55
-msgid "Displays the Export Video windows after the export is finished"
-msgstr "Prikazuje prozor Izvoz videa nakon završetka izvoza"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:59
+#: ../preferences.rst:69
 msgid "Themes"
 msgstr "Teme"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:60
+#: ../preferences.rst:70
 msgid ""
 "OpenShot comes with 3 standard themes, which change the look and feel of the "
 "program."
@@ -209,7 +192,38 @@ msgstr ""
 "OpenShot dolazi s 3 standardne teme koje mijenjaju izgled i dojam programa."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:62
+#: ../preferences.rst:72
+#, fuzzy
+msgid ""
+"**Cosmic Dusk:** [Default Theme] A bluish theme with a more modern UI "
+"design, enhancing the visual aesthetics of the editor. This theme features "
+"shades of blue and purple, giving the interface a contemporary and dynamic "
+"feel. It combines modern aesthetics with functionality, offering a fresh and "
+"visually appealing workspace for video editing."
+msgstr ""
+"**Cosmic Dusk:** Plavičasta tema s modernijim dizajnom sučelja, koja "
+"poboljšava vizualnu estetiku uređivača. Ova tema sadrži nijanse plave i "
+"ljubičaste, dajući sučelju suvremen i dinamičan dojam. Kombinira modernu "
+"estetiku s funkcionalnošću, nudeći svježe i vizualno privlačno radno "
+"okruženje za uređivanje videa."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:73
+msgid ""
+"**Humanity Dark:** A dark theme with dark gray tones, providing a modern and "
+"sleek look. This theme is designed for users who prefer working in low-light "
+"conditions or who enjoy a more subdued and professional appearance. The dark "
+"gray background reduces glare and eye strain, making it suitable for "
+"extended editing sessions."
+msgstr ""
+"**Humanity Dark:** Tamna tema s tamnosivim tonovima, koja pruža moderan i "
+"elegantan izgled. Ova tema je dizajnirana za korisnike koji preferiraju rad "
+"u uvjetima slabog osvjetljenja ili koji vole suzdržaniji i profesionalniji "
+"izgled. Tamnosiva pozadina smanjuje odsjaj i naprezanje očiju, što je čini "
+"prikladnom za duže sesije uređivanja."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:74
 msgid ""
 "**Retro:** A light theme that offers a classic and clean appearance. This "
 "theme uses light gray and white tones, making it ideal for users who prefer "
@@ -222,42 +236,12 @@ msgstr ""
 "ugodan za oči, osobito u dobro osvijetljenim prostorima."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:63
-msgid ""
-"**Humanity Dark:** [Default Theme] A dark theme with dark gray tones, "
-"providing a modern and sleek look. This theme is designed for users who "
-"prefer working in low-light conditions or who enjoy a more subdued and "
-"professional appearance. The dark gray background reduces glare and eye "
-"strain, making it suitable for extended editing sessions."
-msgstr ""
-"**Humanity Dark:** [Zadana tema] Tamna tema s tamnosivim tonovima, koja "
-"pruža moderan i elegantan izgled. Ova tema je namijenjena korisnicima koji "
-"preferiraju rad u uvjetima slabog osvjetljenja ili koji vole suzdržaniji i "
-"profesionalniji izgled. Tamnosiva pozadina smanjuje odsjaj i naprezanje "
-"očiju, što je čini prikladnom za duže sesije uređivanja."
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:64
-msgid ""
-"**Cosmic Dusk:** A bluish theme with a more modern UI design, enhancing the "
-"visual aesthetics of the editor. This theme features shades of blue and "
-"purple, giving the interface a contemporary and dynamic feel. It combines "
-"modern aesthetics with functionality, offering a fresh and visually "
-"appealing workspace for video editing."
-msgstr ""
-"**Cosmic Dusk:** Plavičasta tema s modernijim dizajnom sučelja, koja "
-"poboljšava vizualnu estetiku uređivača. Ova tema sadrži nijanse plave i "
-"ljubičaste, dajući sučelju suvremen i dinamičan dojam. Kombinira modernu "
-"estetiku s funkcionalnošću, nudeći svježe i vizualno privlačno radno "
-"okruženje za uređivanje videa."
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:69
+#: ../preferences.rst:79
 msgid "Restoring Defaults"
 msgstr "Vraćanje zadanih postavki"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:70
+#: ../preferences.rst:80
 msgid ""
 "In OpenShot, each preferences category (or tab) in the Preferences window "
 "has a **Restore Defaults** button that allows you to easily reset the values "
@@ -272,7 +256,7 @@ msgstr ""
 "ostale prilagođene postavke."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:74
+#: ../preferences.rst:84
 msgid ""
 "**Where to Find the Restore Defaults Button:** Each category or tab in the "
 "Preferences window has a **Restore Defaults** button located in the bottom "
@@ -286,7 +270,7 @@ msgstr ""
 "na kartici \"Tipkovnica\", gumb će prikazivati **Vrati zadano: Tipkovnica**."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:79
+#: ../preferences.rst:89
 msgid ""
 "**How It Works:** Only the settings in the currently selected category will "
 "be restored to their default values. This selective restoration makes it "
@@ -297,7 +281,7 @@ msgstr ""
 "resetiranje određenih postavki bez utjecaja na ostale."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:83
+#: ../preferences.rst:93
 msgid ""
 "**Tip for Beginners:** - If you're not sure about a change you've made in a "
 "particular category, don’t hesitate to use the **Restore Defaults** button. "
@@ -310,94 +294,242 @@ msgstr ""
 "kategoriju bez utjecaja na cjelokupnu konfiguraciju."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:89
+#: ../preferences.rst:99
+msgid "Timeline"
+msgstr "Vremenska Crta"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:103
+msgid ""
+"The Timeline tab controls default timeline behavior, clip/transition "
+"insertion defaults, and whether to use the new timeline backend or the "
+"legacy web-based timeline."
+msgstr ""
+"Kartica Vremenska Crta kontrolira zadano ponašanje vremenske crte, zadane "
+"postavke umetanja isječaka/prijelaza te hoće li se koristiti novi backend "
+"vremenske crte ili naslijeđena web-temeljena vremenska crta."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112
+msgid "Thumbnail Style"
+msgstr "Stil Sličice"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112
+msgid "Entire Clip"
+msgstr "Cijeli Isječak"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:112
+msgid "Thumbnail density for the new timeline backend"
+msgstr "Gustoća sličica za novi backend vremenske crte"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113
+msgid "Image Length (seconds)"
+msgstr "Duljina slike (sekunde)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113 ../preferences.rst:114
+msgid "10.00"
+msgstr "10.00"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:113
+msgid "Default duration for still images added to the timeline"
+msgstr "Zadano trajanje za statične slike dodane na vremensku crtu"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:114
+#, fuzzy
+msgid "Transition Length (seconds)"
+msgstr "Duljina slike (sekunde)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:114
+msgid "Default duration for newly added transitions"
+msgstr "Zadano trajanje za novododane prijelaze"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115
+msgid "Auto-Transition (overlap clips)"
+msgstr "Automatski Prijelaz (preklapanje isječaka)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115 ../preferences.rst:160 ../preferences.rst:334
+#: ../preferences.rst:340
+msgid "Enabled"
+msgstr "Omogućeno"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:115
+msgid "Automatically create transitions when clips overlap"
+msgstr "Automatski stvori prijelaze kada se isječci preklapaju"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:116
+msgid "Enable Legacy Timeline (web-based)"
+msgstr "Omogući Naslijeđenu Vremensku Crtu (temeljenu na webu)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:116 ../preferences.rst:331 ../preferences.rst:337
+#, fuzzy
+msgid "Disabled"
+msgstr "Omogućeno"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:116
+msgid "Use the legacy web timeline (WebEngine/WebKit auto-select)"
+msgstr ""
+"Koristi naslijeđenu web vremensku crtu (WebEngine/WebKit automatski odabir)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:122
 msgid "Preview"
 msgstr "Pregled"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:93
+#: ../preferences.rst:126
 msgid ""
-"The Preview tab of the Preferences window allows you to set a **Default "
-"Video Profile** for your project, if you have a preference for a specific "
-"editing profile. More about :ref:`profiles_ref`. Also, you can adjust the "
-"real-time preview audio settings, for example, which audio device and sample "
-"rate to use."
+"The Preview tab of the Preferences window controls real-time preview audio "
+"behavior, including device selection, sample rate, channels, buffering, "
+"playback volume, and optimized preview behavior."
 msgstr ""
-"Kartica Pregled u prozoru Postavki omogućuje vam postavljanje **Zadani video "
-"profil** za vaš projekt, ako imate preferenciju za određeni profil "
-"uređivanja. Više o :ref:`profiles_ref`. Također, možete prilagoditi postavke "
-"zvuka za pregled u stvarnom vremenu, na primjer, koji audio uređaj i "
-"uzorkovnu frekvenciju koristiti."
+"Kartica Pregled u prozoru Postavki kontrolira ponašanje audio pregleda u "
+"stvarnom vremenu, uključujući odabir uređaja, uzorkovanje, kanale, "
+"međuspremnik, glasnoću reprodukcije i optimizirano ponašanje pregleda."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "Default Video Profile"
-msgstr "Zadani video profil"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "HD 720P 30 fps"
-msgstr "HD 720P 30 fps"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:103
-msgid "Select the profile for Preview and Export defaults"
-msgstr "Odaberite profil za zadane postavke Pregleda i Izvoza"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid "Playback Audio Buffer Size"
-msgstr "Veličina audio međuspremnika za reprodukciju"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid "512"
-msgstr "512"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:104
-msgid ""
-"Adjust how many audio samples must be buffered before audio playback begins. "
-"Allowed range of values is 128 to 4096. NOTE: If you are experiencing a "
-"large drift or delay in audio playback, try setting this value lower."
-msgstr ""
-"Podesite koliko audio uzoraka mora biti u međuspremniku prije početka "
-"reprodukcije zvuka. Dozvoljeni raspon vrijednosti je od 128 do 4096. "
-"NAPOMENA: Ako imate veliki pomak ili kašnjenje u reprodukciji zvuka, "
-"pokušajte postaviti ovu vrijednost niže."
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:105
+#: ../preferences.rst:135
 msgid "Playback Audio Device"
 msgstr "Audio uređaj za reprodukciju"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:106
+#: ../preferences.rst:135
+msgid "Audio output device used during preview playback"
+msgstr "Uređaj za audio izlaz korišten tijekom reprodukcije pregleda"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:136
 msgid "Default Audio Sample Rate"
 msgstr "Zadana uzorkovna frekvencija zvuka"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:106
-msgid "44100"
+#: ../preferences.rst:136
+#, fuzzy
+msgid "48000"
 msgstr "44100"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:107
+#: ../preferences.rst:136
+#, fuzzy
+msgid "Default preview sample rate"
+msgstr "Zadana uzorkovna frekvencija zvuka"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:137
 msgid "Default Audio Channels"
 msgstr "Zadani audio kanali"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:107
+#: ../preferences.rst:137
 msgid "Stereo (2 Channel)"
 msgstr "Stereo (2 kanala)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:111
+#: ../preferences.rst:137
+msgid "Default preview channel layout"
+msgstr "Zadani raspored kanala pregleda"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid "Playback Audio Buffer Size"
+msgstr "Veličina audio međuspremnika za reprodukciju"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid "512"
+msgstr "512"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:138
+msgid "Audio samples buffered before playback begins (128 to 4096)"
+msgstr ""
+"Audio uzorci pohranjeni u međuspremnik prije početka reprodukcije (128 do "
+"4096)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:139
+msgid "Volume"
+msgstr "Glasnoća"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:139
+msgid "75"
+msgstr "75"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:139
+msgid "Preview playback volume percentage"
+msgstr "Postotak glasnoće reprodukcije pregleda"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
+msgid "Concurrent Optimize Jobs"
+msgstr "Istovremeni poslovi optimizacije"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
+msgid "2"
+msgstr "2"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:140
+msgid "Number of video files OpenShot can optimize at the same time"
+msgstr "Broj video datoteka koje OpenShot može istovremeno optimizirati"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "Optimized Preview Resolution"
+msgstr "Optimizirana rezolucija pregleda"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "1280x720"
+msgstr "1280x720"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:141
+msgid "Maximum resolution used when creating optimized preview files"
+msgstr ""
+"Maksimalna rezolucija korištena pri stvaranju optimiziranih datoteka pregleda"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid "Thumbnail Preload Rate / second"
+msgstr "Stopa predmemoriranja sličica / sekundi"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid "4"
+msgstr "4"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:142
+msgid ""
+"How many thumbnail preview frames per second are pre-generated while "
+"optimizing video"
+msgstr ""
+"Koliko se sličica pregleda po sekundi unaprijed generira tijekom "
+"optimizacije videa"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:146
 msgid "Autosave"
 msgstr "Automatsko spremanje"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:115
+#: ../preferences.rst:150
 msgid ""
 "Autosave is a feature in OpenShot which automatically saves the current "
 "changes to your project after a specific number of minutes, helping to "
@@ -410,52 +542,47 @@ msgstr ""
 "korisničke pogreške."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:125
+#: ../preferences.rst:160
 msgid "Enable Autosave"
 msgstr "Omogući automatsko spremanje"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:125
-msgid "Enabled"
-msgstr "Omogućeno"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:126
+#: ../preferences.rst:161
 msgid "Autosave Interval (minutes)"
 msgstr "Interval automatskog spremanja (minute)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:126
+#: ../preferences.rst:161
 msgid "3"
 msgstr "3"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:127
+#: ../preferences.rst:162
 msgid "History Limit (# of undo/redo)"
 msgstr "Ograničenje povijesti (broj poništavanja/ponavljanja)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:127
+#: ../preferences.rst:162
 msgid "15"
 msgstr "15"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:128
+#: ../preferences.rst:163
 msgid "Recovery Limit (# of project copies)"
 msgstr "Ograničenje oporavka (broj kopija projekta)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:128
+#: ../preferences.rst:163
 msgid "30"
 msgstr "30"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:132
+#: ../preferences.rst:167
 msgid "Recovery"
 msgstr "Oporavak"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:134
+#: ../preferences.rst:169
 msgid ""
 "**Before each save**, a compressed ``*.zip`` copy of the current project is "
 "saved in the recovery folder, to further reduce the risk of data loss. The "
@@ -468,7 +595,7 @@ msgstr ""
 "\\Users\\USERNAME\\.openshot_qt\\recovery``."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:138
+#: ../preferences.rst:173
 msgid ""
 "To recover a corrupt or broken ``*.osp`` project file, use the :guilabel:"
 "`File->Recovery` menu on the main window after opening your project. If "
@@ -492,7 +619,7 @@ msgstr ""
 "datoteke projekta da biste ga vratili."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:146
+#: ../preferences.rst:181
 msgid ""
 "To **manually** recover a corrupt or broken ``*.osp`` project file, please "
 "find the most recent copy in the recovery folder, and copy/paste the file "
@@ -512,12 +639,12 @@ msgstr ""
 "**Datum izmjene** datoteke za odabir verzije koju želite oporaviti."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:156
+#: ../preferences.rst:191
 msgid "Cache"
 msgstr "Predmemorija"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:160
+#: ../preferences.rst:195
 msgid ""
 "Cache settings can be adjusted to make real-time playback faster or less CPU "
 "intensive. The cache is used to store image and audio data for each frame of "
@@ -538,12 +665,12 @@ msgstr ""
 "`playback_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:172
+#: ../preferences.rst:207
 msgid "Cache Mode"
 msgstr "Način predmemorije"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:172
+#: ../preferences.rst:207
 msgid ""
 "Choose between Memory or Disk caching (memory caching is preferred). Disk "
 "caching writes image data to the hard disk for later retrieving, and works "
@@ -554,12 +681,12 @@ msgstr ""
 "tvrdi disk za kasnije dohvaćanje i najbolje radi s SSD-om."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:173
+#: ../preferences.rst:208
 msgid "Cache Limit (MB)"
 msgstr "Ograničenje predmemorije (MB)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:173
+#: ../preferences.rst:208
 msgid ""
 "How many MB are set aside for cache related data. Larger numbers are not "
 "always better, since it takes more CPU to generate more frames to fill the "
@@ -570,22 +697,22 @@ msgstr ""
 "više okvira za popunjavanje predmemorije."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:174
+#: ../preferences.rst:209
 msgid "Image Format (Disk Only)"
 msgstr "Format slike (samo disk)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:174
+#: ../preferences.rst:209
 msgid "Image format to store disk cache image data"
 msgstr "Format slike za pohranu podataka predmemorije na disku"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:175
+#: ../preferences.rst:210
 msgid "Scale Factor (Disk Only)"
 msgstr "Faktor skaliranja (samo disk)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:175
+#: ../preferences.rst:210
 msgid ""
 "Percentage (0.1 to 1.0) to reduce the size of disk based image files stored "
 "in the disk cache. Smaller numbers make writing and reading cached image "
@@ -596,12 +723,12 @@ msgstr ""
 "predmemoriranih slikovnih datoteka."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:176
+#: ../preferences.rst:211
 msgid "Image Quality (Disk Only)"
 msgstr "Kvaliteta slike (samo disk)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:176
+#: ../preferences.rst:211
 msgid ""
 "Quality of the image files used in disk cache. The higher compression can "
 "cause more slowness, but results in smaller file sizes."
@@ -611,12 +738,12 @@ msgstr ""
 "datoteka."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:177
+#: ../preferences.rst:212
 msgid "Cache Pre-roll: Min Frames:"
 msgstr "Predmemorija pred-puštanja: minimalni broj okvira:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:177
+#: ../preferences.rst:212
 msgid ""
 "Minimum # of frames that must be cached before playback begins. The larger "
 "the #, the larger the wait before playback begins."
@@ -626,12 +753,12 @@ msgstr ""
 "reprodukcije."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:178
+#: ../preferences.rst:213
 msgid "Cache Pre-roll: Max Frames:"
 msgstr "Predmemorija pred-puštanja: maksimalni broj okvira:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:178
+#: ../preferences.rst:213
 msgid ""
 "Maximum # of frames that can be cached during playback (in front of the "
 "playhead). The larger the #, the more CPU is required to cache ahead - vs "
@@ -643,12 +770,12 @@ msgstr ""
 "okvira."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:179
+#: ../preferences.rst:214
 msgid "Cache Ahead (Percent):"
 msgstr "Predmemoriranje unaprijed (postotak):"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:179
+#: ../preferences.rst:214
 msgid ""
 "Between 0.0 and 1.0. This represents how much % we cache ahead of the "
 "playhead. For example, 0.5 would cache 50% behind and 50% ahead of the "
@@ -660,15 +787,16 @@ msgstr ""
 "pokazivača reprodukcije."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:180
+#: ../preferences.rst:215
 msgid "Cache Max Frames:"
 msgstr "Maksimalan broj okvira za predmemoriranje:"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:180
+#: ../preferences.rst:215
+#, fuzzy
 msgid ""
 "This is an override on the total allowed frames that can be cached by our "
-"caching thread. It is defaulted to 600 frames, but even if you give a huge "
+"caching thread. It defaults to 900 frames, but even if you give a huge "
 "amount of RAM to OpenShot's cache size, this will override the max # of "
 "frames cached. The reason is... sometimes when the preview window is very "
 "small, and the cache size is set very high, OpenShot might calculate that we "
@@ -688,29 +816,26 @@ msgstr ""
 "čak i na sustavima koji daju OpenShotu velike količine RAM-a za rad."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:184
-msgid "Debug"
-msgstr "Otklanjanje pogrešaka"
-
-# Translated with gpt-4.1-mini
-#: ../preferences.rst:188
+#: ../preferences.rst:218
 msgid ""
-"Here you can modify how much data should be logged. Normally, *Debug Mode "
-"(verbose)* is off. The default port is 5556. If you want to help improve "
-"OpenShot you can enable **Send Anonymous Metrics and Errors**."
+"OpenShot's default cache settings now target a balanced preview experience: "
+"roughly **50% behind / 50% ahead** of the playhead, **768 MB** cache memory, "
+"and **900** max frames. In practice, this improves scrubbing and seek "
+"behavior while reducing stale preview frames on slower systems."
 msgstr ""
-"Ovdje možete promijeniti koliko podataka treba bilježiti. Obično je *Način "
-"otklanjanja pogrešaka (detaljno)* isključen. Zadani port je 5556. Ako želite "
-"pomoći u poboljšanju OpenShota, možete omogućiti **Slanje anonimnih metrika "
-"i pogrešaka**."
+"Zadane postavke predmemorije OpenShota sada ciljaju na uravnoteženo iskustvo "
+"pregleda: otprilike **50% iza / 50% ispred** pokazivača reprodukcije, **768 "
+"MB** memorije predmemorije i maksimalno **900** okvira. U praksi, to "
+"poboljšava pomicanje i traženje te smanjuje zastarjele okvire pregleda na "
+"sporijim sustavima."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:192
+#: ../preferences.rst:224
 msgid "Performance"
 msgstr "Performanse"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:195
+#: ../preferences.rst:227
 msgid ""
 "Please keep in mind that GPU hardware acceleration is experimental at the "
 "moment. OpenShot supports both decoding and encoding acceleration. For more "
@@ -727,12 +852,106 @@ msgstr ""
 "kodiranja pomoću CPU-a."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:212
+#: ../preferences.rst:237
+msgid "Hardware Decoder Mode"
+msgstr "Način Hardverskog Dekodera"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:238
+msgid ""
+"Select the hardware decoding backend to use. Use :guilabel:`Test` to verify "
+"the selected decoder mode."
+msgstr ""
+"Odaberite hardverski backend za dekodiranje. Koristite :guilabel:`Test` za "
+"provjeru odabranog načina dekodera."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:239
+msgid "Hardware Decoder Graphics Card"
+msgstr "Grafička Kartica Hardverskog Dekodera"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:240
+msgid "Choose which GPU device is used for hardware decoding."
+msgstr "Odaberite koji GPU uređaj se koristi za hardversko dekodiranje."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:241
+msgid "Hardware Encoder Graphics Card"
+msgstr "Grafička Kartica Hardverskog Kodera"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:242
+msgid "Choose which GPU device is used for hardware encoding."
+msgstr "Odaberite koji GPU uređaj se koristi za hardversko kodiranje."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:243
+msgid "OMP Threads"
+msgstr "OMP niti"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:244
+msgid ""
+"Number of OpenMP worker threads used by performance-sensitive processing."
+msgstr ""
+"Broj OpenMP radnih niti koje koristi procesiranje osjetljivo na performanse."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:245
+msgid "FFmpeg Threads"
+msgstr "FFmpeg niti"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:246
+msgid "Number of FFmpeg threads used for decoding/encoding."
+msgstr "Broj FFmpeg niti koje se koriste za dekodiranje/kodiranje."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:247
+msgid "Hardware Decoder Max Width (0 = Default)"
+msgstr "Maksimalna Širina Hardverskog Dekodera (0 = Zadano)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:248
+msgid ""
+"Optional maximum width for hardware decoding. Use ``0`` for no explicit "
+"limit."
+msgstr ""
+"Opcionalna maksimalna širina za hardversko dekodiranje. Koristite ``0`` za "
+"neograničeno."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:249
+msgid "Hardware Decoder Max Height (0 = Default)"
+msgstr "Maksimalna Visina Hardverskog Dekodera (0 = Zadano)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:250
+msgid ""
+"Optional maximum height for hardware decoding. Use ``0`` for no explicit "
+"limit."
+msgstr ""
+"Opcionalna maksimalna visina za hardversko dekodiranje. Koristite ``0`` za "
+"neograničeno."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:251
+msgid "Use Blender GPU rendering for Animated Titles"
+msgstr "Koristi Blender GPU renderiranje za Animirane Naslove"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:252
+msgid "Enable GPU rendering for Blender-based animated titles."
+msgstr "Omogući GPU renderiranje za animirane naslove temeljene na Blenderu."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:257
 msgid "Keyboard"
 msgstr "Tipkovnica"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:215
+#: ../preferences.rst:260
 msgid ""
 "This section allows you to view and customize hotkeys for various actions in "
 "the application. Here, you can assign and manage multiple shortcuts for the "
@@ -743,7 +962,7 @@ msgstr ""
 "te po potrebi vratiti zadane prečace."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:218
+#: ../preferences.rst:263
 msgid ""
 "**Assign Multiple Shortcuts**: You can assign multiple keyboard shortcuts to "
 "the same action by separating them with a pipe (``|``) delimiter. This "
@@ -755,7 +974,7 @@ msgstr ""
 "vam konfiguriranje onoliko prečaca koliko vam je potrebno za svaku radnju."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:221
+#: ../preferences.rst:266
 msgid ""
 "**Immediate Application**: No restart is required after adjusting keyboard "
 "shortcuts. Changes are applied immediately, so you can start using your "
@@ -766,7 +985,7 @@ msgstr ""
 "koristiti ažurirane prečace."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:224
+#: ../preferences.rst:269
 msgid ""
 "**Restore Default Shortcuts**: If needed, you can reset all keyboard "
 "shortcuts to their default settings by clicking on the :guilabel:`Restore "
@@ -778,7 +997,7 @@ msgstr ""
 "Tipkovnica` koji se nalazi u donjem lijevom kutu zaslona Postavki."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:227
+#: ../preferences.rst:272
 msgid ""
 "**Unique Shortcuts**: Each keyboard shortcut must be unique. If there are "
 "any duplicate shortcuts, they will be highlighted in **red** and will not "
@@ -789,7 +1008,7 @@ msgstr ""
 "funkcionirati dok se sukob ne riješi."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:231
+#: ../preferences.rst:276
 msgid ""
 "For more detailed information on how to use and customize keyboard "
 "shortcuts, see :ref:`keyboard_shortcut_ref`."
@@ -798,12 +1017,12 @@ msgstr ""
 "pogledajte :ref:`keyboard_shortcut_ref`."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:234
+#: ../preferences.rst:279
 msgid "Location"
 msgstr "Lokacija"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:238
+#: ../preferences.rst:283
 msgid ""
 "Default file path locations for saving/opening projects, importing files, "
 "and exporting videos can be configured here. This can save you time by "
@@ -816,48 +1035,48 @@ msgstr ""
 "najprikladniju početnu mapu (opcije su opisane u nastavku)."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:248
+#: ../preferences.rst:293
 msgid "File Import"
 msgstr "Uvoz datoteka"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:248
+#: ../preferences.rst:293
 msgid "Default folder to choose when importing a file"
 msgstr "Zadana mapa za odabir prilikom uvoza datoteke"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:249
+#: ../preferences.rst:294
 msgid "Save or Open Project"
 msgstr "Spremi ili otvori projekt"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:249
+#: ../preferences.rst:294
 msgid "Default folder to choose when saving or opening a project file"
 msgstr ""
 "Zadana mapa za odabir prilikom spremanja ili otvaranja projektne datoteke"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:250
+#: ../preferences.rst:295
 msgid "Video Export"
 msgstr "Izvoz videa"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:250
+#: ../preferences.rst:295
 msgid "Default folder to choose when exporting a video"
 msgstr "Zadana mapa za odabir prilikom izvoza videa"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:257
+#: ../preferences.rst:302
 msgid "Values"
 msgstr "Vrijednosti"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:259
+#: ../preferences.rst:304
 msgid "**Recent Folder**"
 msgstr "**Nedavna mapa**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:259
+#: ../preferences.rst:304
 msgid ""
 "The last folder used for this same operation. Project folders, Import "
 "folders, and Export folders are tracked separately."
@@ -866,12 +1085,12 @@ msgstr ""
 "prate se zasebno."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:260
+#: ../preferences.rst:305
 msgid "**Project Folder**"
 msgstr "**Mapa projekta**"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:260
+#: ../preferences.rst:305
 msgid ""
 "The current project folder (or the user's home folder, if the project is not "
 "yet saved)"
@@ -880,12 +1099,107 @@ msgstr ""
 "spremljen)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:266
+#: ../preferences.rst:311
+msgid "Advanced"
+msgstr "Napredno"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:315
+msgid "The Advanced tab includes ComfyUI integration and debugging options."
+msgstr ""
+"Kartica Napredno uključuje integraciju ComfyUI i opcije za otklanjanje "
+"pogrešaka."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:324
+msgid "Comfy UI URL"
+msgstr "URL Comfy UI-ja"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:325
+msgid "``http://127.0.0.1:8188``"
+msgstr "``http://127.0.0.1:8188``"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:326
+msgid "URL of your local or remote ComfyUI server"
+msgstr "URL vašeg lokalnog ili udaljenog ComfyUI poslužitelja"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:327
+msgid "Debug Mode (Port)"
+msgstr "Način Otklanjanja Pogrešaka (Port)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:328
+msgid "5556"
+msgstr "5556"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:329
+msgid "Port used by debug logging features"
+msgstr "Port koji koriste značajke zapisivanja otklanjanja pogrešaka"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:330
+msgid "Debug Mode (Verbose)"
+msgstr "Način Otklanjanja Pogrešaka (Detaljno)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:332
+msgid "Enable verbose debugging output"
+msgstr "Omogući detaljni ispis otklanjanja pogrešaka"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:333
+msgid "Send Anonymous Metrics and Errors"
+msgstr "Pošalji anonimne metrike i pogreške"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:335
+msgid "Send anonymous telemetry and error reports"
+msgstr "Pošalji anonimne telemetrijske podatke i izvještaje o pogreškama"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:336
+msgid "Show Playback Performance (FPS)"
+msgstr "Prikaži performanse reprodukcije (FPS)"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:338
+msgid "Display live FPS in preview playback"
+msgstr "Prikaži uživo FPS tijekom reprodukcije pregleda"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:339
+msgid "Show Export Dialog when Finished"
+msgstr "Prikaži dijalog izvoza po završetku"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:341
+msgid "Display the Export Video window when export completes"
+msgstr "Prikaži prozor Izvoz Videom kada izvoz završi"
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:343
+msgid ""
+"The ComfyUI **Check** button updates an inline status icon: green checkmark "
+"for success, red icon for failure. If OpenShot cannot reach this server, AI "
+"context menu options are hidden. See :ref:`ai_ref` for setup details, "
+"requirements, and workflow options."
+msgstr ""
+"Gumb ComfyUI **Provjeri** ažurira ikonu statusa u liniji: zelena kvačica za "
+"uspjeh, crvena ikona za neuspjeh. Ako OpenShot ne može pristupiti ovom "
+"poslužitelju, opcije AI kontekstnog izbornika su skrivene. Pogledajte :ref:"
+"`ai_ref` za detalje postavljanja, zahtjeve i opcije tijeka rada."
+
+# Translated with gpt-4.1-mini
+#: ../preferences.rst:350
 msgid "Reset (Default Values)"
 msgstr "Resetiraj (zadane vrijednosti)"
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:268
+#: ../preferences.rst:352
 msgid ""
 "To reset **all** preferences to their default values, please delete the "
 "``openshot.settings`` file and re-launch OpenShot. The settings file can be "
@@ -902,7 +1216,7 @@ msgstr ""
 "settings`` sa zadanim vrijednostima."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:273
+#: ../preferences.rst:357
 msgid ""
 "Optionally, you can delete the entire ``.openshot_qt/`` folder and re-launch "
 "OpenShot. However, please make a **backup** of any customized folders: "
@@ -918,7 +1232,7 @@ msgstr ""
 "datoteke)."
 
 # Translated with gpt-4.1-mini
-#: ../preferences.rst:278
+#: ../preferences.rst:362
 msgid ""
 "Deleting the ``.openshot_qt/`` folder is the quickest method to restore "
 "OpenShot preferences and settings to their Default values (i.e. also called "

@@ -18,7 +18,7 @@ init-builders:
 linux:
   stage: build
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build/*.AppImage
     - build/*.torrent
@@ -33,6 +33,8 @@ linux:
     - unzip artifacts.zip
     - cp -r "$CI_PROJECT_DIR/build/install-x64/python/." "$CI_PROJECT_DIR"
     - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/build/install-x64/lib:$LD_LIBRARY_PATH
+    - export QT_QPA_PLATFORM=offscreen
+    - python3 -m unittest discover -s src/tests -t src/tests --quiet
     - VERSION=$(python3 src/launch.py -V)
     - echo -e "CI_PROJECT_NAME:$CI_PROJECT_NAME\nCI_COMMIT_REF_NAME:$CI_COMMIT_REF_NAME\nCI_COMMIT_SHA:$CI_COMMIT_SHA\nCI_JOB_ID:$CI_JOB_ID\nCI_PIPELINE_ID:$CI_PIPELINE_ID\nVERSION:$VERSION" > "build/install-x64/share/$CI_PROJECT_NAME.env"
     - git log $(git describe --tags --abbrev=0 @^)..@ --oneline --pretty=format:"- %C(auto,yellow)%h%C(auto,magenta)% %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(25,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D" --date=short > "build/install-x64/share/$CI_PROJECT_NAME.log"
@@ -49,7 +51,7 @@ linux:
 mac:
   stage: build
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build/*.dmg
     - build/*.torrent
@@ -91,7 +93,7 @@ mac:
 win-x64:
   stage: build
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build\*.exe
     - build\*.torrent
@@ -133,7 +135,7 @@ win-x64:
 win-x86:
   stage: build
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build\*.exe
     - build\*.torrent
@@ -176,7 +178,7 @@ win-x86:
 win-sign-x64:
   stage: sign
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build\*-x86_64.exe
     - build\build-server.log
@@ -187,7 +189,7 @@ win-sign-x64:
     - $env:Path = $env:Path + ";C:\msys64\usr\local\bin;C:\msys64\usr\bin"
     - if (-not (Get-ChildItem -Path "build\*-x86_64.exe" -ErrorAction SilentlyContinue)) { throw "No x64 Windows installer found in build\\*-x86_64.exe" }
     - py -3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "sign-upload-only"
-  when: always
+  when: on_success
   except:
   - tags
   tags:
@@ -196,7 +198,7 @@ win-sign-x64:
 win-sign-x86:
   stage: sign
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build\*-x86.exe
     - build\build-server.log
@@ -207,7 +209,7 @@ win-sign-x86:
     - $env:Path = $env:Path + ";C:\msys64\usr\local\bin;C:\msys64\usr\bin"
     - if (-not (Get-ChildItem -Path "build\*-x86.exe" -ErrorAction SilentlyContinue)) { throw "No x86 Windows installer found in build\\*-x86.exe" }
     - py -3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "True" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD" "sign-upload-only"
-  when: always
+  when: on_success
   except:
   - tags
   tags:
@@ -229,7 +231,7 @@ re-init-builders:
 deployer:
   stage: deploy
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build/*.log
     - build/*.sha256sum
@@ -248,7 +250,7 @@ deployer:
 publisher:
   stage: publish
   artifacts:
-    expire_in: 4 weeks
+    expire_in: 2 weeks
     paths:
     - build/*.log
   script:

@@ -118,7 +118,7 @@ keyframes, and common workflows), see :ref:`timeline_ref`.
      - Center the visible timeline area around the current playhead position.
    * - 6
      - Zoom Slider
-     - Control the visible timeline range. Drag handles to zoom in/out, drag center to pan, and double-click to fit timeline.
+     - Control the visible timeline range. Drag handles to zoom in/out, drag center to pan, and double-click to fit timeline. You can also use :kbd:`Ctrl+Scroll Wheel`, or on the QWidget timeline hold :kbd:`Ctrl` and drag with the middle mouse button for smooth zooming.
    * - 7
      - Track toggles (Lock, Keyframe Panel)
      - Per-track controls such as lock and keyframe panel visibility.
@@ -150,6 +150,7 @@ Learning a few of these shortcuts can save you a bunch of time!
    Choose Profile                        :kbd:`Ctrl+Alt+P`
    Clear All Cache                       :kbd:`Ctrl+Shift+ESC`
    Clear History                         :kbd:`Ctrl+Shift+H`
+   Delete Optimized Videos               :kbd:`Ctrl+Shift+O`
    Clear Waveform Display Data           :kbd:`Ctrl+Shift+W`
    Copy                                  :kbd:`Ctrl+C`
    Cut                                   :kbd:`Ctrl+X`

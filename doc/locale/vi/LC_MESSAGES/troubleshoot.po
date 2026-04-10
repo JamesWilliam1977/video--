@@ -1,20 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) OpenShot Studios, LLC
-# This file is distributed under the same license as the OpenShot Video Editor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# This file is distributed under the same license as the OpenShot Video
+# Editor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
 
 # Translated with gpt-4.1-mini
 #: ../troubleshoot.rst:23
@@ -190,3 +193,147 @@ msgstr ""
 "MinGW64 và chạy một trong các lệnh sau (gõ lệnh và nhấn ENTER). Thông "
 "thường, lệnh đầu tiên nhập là ``bt``, viết tắt của ``backtrace``. Các lệnh "
 "khác được liệt kê bên dưới."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:117
+msgid "High DPI / 4K Monitors"
+msgstr "Màn hình DPI cao / 4K"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:119
+msgid ""
+"OpenShot Video Editor provides robust support for High DPI (Dots Per Inch) "
+"monitors, ensuring that the interface looks sharp and is easily readable on "
+"displays with various DPI settings. This support is particularly helpful on "
+"4K monitors and other high-resolution displays."
+msgstr ""
+"OpenShot Video Editor hỗ trợ mạnh mẽ cho màn hình DPI cao (Dots Per Inch), "
+"đảm bảo giao diện sắc nét và dễ đọc trên các màn hình với các thiết lập DPI "
+"khác nhau. Hỗ trợ này đặc biệt hữu ích trên màn hình 4K và các màn hình độ "
+"phân giải cao khác."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:125
+msgid "Per Monitor DPI Awareness"
+msgstr "Nhận biết DPI theo từng màn hình"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:127
+msgid ""
+"OpenShot is DPI aware on a per-monitor basis, meaning it can adjust its "
+"scaling dynamically depending on the DPI settings of each connected monitor. "
+"This helps provide a consistent experience across different displays."
+msgstr ""
+"OpenShot nhận biết DPI theo từng màn hình, nghĩa là nó có thể điều chỉnh tỷ "
+"lệ động dựa trên thiết lập DPI của từng màn hình được kết nối. Điều này giúp "
+"mang lại trải nghiệm nhất quán trên các màn hình khác nhau."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:132
+msgid "DPI Scaling on Windows"
+msgstr "Tỷ lệ DPI trên Windows"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:134
+msgid ""
+"On Windows, OpenShot rounds the scaling factor to the nearest whole value to "
+"maintain visual integrity. This helps avoid visual artifacts in the UI and "
+"keeps interface elements crisp and well-aligned. Due to this rounding, some "
+"scaling options can lead to larger fonts and UI elements than expected."
+msgstr ""
+"Trên Windows, OpenShot làm tròn hệ số tỷ lệ đến giá trị nguyên gần nhất để "
+"duy trì tính toàn vẹn hình ảnh. Điều này giúp tránh các hiện tượng sai lệch "
+"hình ảnh trong giao diện và giữ cho các phần tử giao diện sắc nét, căn chỉnh "
+"tốt. Do việc làm tròn này, một số tùy chọn tỷ lệ có thể dẫn đến phông chữ và "
+"phần tử giao diện lớn hơn mong đợi."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:139
+msgid "**125% scaling** rounds to **100%**"
+msgstr "**Tỷ lệ 125%** được làm tròn thành **100%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:140
+msgid "**150% scaling** rounds to **200%**"
+msgstr "**Tỷ lệ 150%** được làm tròn thành **200%**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:143
+msgid "Workarounds for Fine-Grained Adjustment"
+msgstr "Giải pháp thay thế cho điều chỉnh chi tiết"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:145
+msgid ""
+"While rounding helps maintain a clean interface, there are workarounds for "
+"users who require more precise control over scaling. These methods are **not "
+"recommended** due to potential visual artifacts:"
+msgstr ""
+"Mặc dù việc làm tròn giúp duy trì giao diện sạch sẽ, có những giải pháp thay "
+"thế cho người dùng cần kiểm soát tỷ lệ chính xác hơn. Các phương pháp này "
+"**không được khuyến nghị** do có thể gây ra hiện tượng sai lệch hình ảnh:"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:149
+msgid "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+msgstr "**QT_SCALE_FACTOR_ROUNDING_POLICY=PassThrough**"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:151
+msgid ""
+"Setting this environment variable can disable rounding and allow more "
+"precise scaling."
+msgstr ""
+"Thiết lập biến môi trường này có thể tắt việc làm tròn và cho phép điều "
+"chỉnh tỷ lệ chính xác hơn."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:152
+msgid ""
+"**Note:** This may cause visual artifacts, particularly in the timeline, and "
+"is not recommended."
+msgstr ""
+"**Lưu ý:** Điều này có thể gây ra hiện tượng sai lệch hình ảnh, đặc biệt là "
+"trên dòng thời gian, và không được khuyến nghị."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:154
+msgid "**QT_SCALE_FACTOR=1.25** (or similar value)"
+msgstr "**QT_SCALE_FACTOR=1.25** (hoặc giá trị tương tự)"
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:156
+msgid ""
+"Manually setting the scale factor can provide finer adjustments to the font "
+"and UI scaling."
+msgstr ""
+"Thiết lập hệ số tỷ lệ thủ công có thể cung cấp điều chỉnh tinh tế hơn cho "
+"phông chữ và tỷ lệ giao diện."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:157
+msgid ""
+"This can also be set via Preferences (User Interface Scale), but expect "
+"border/line issues on Windows with fractional scales."
+msgstr ""
+"Điều này cũng có thể được thiết lập qua Preferences (Tỷ lệ giao diện người "
+"dùng), nhưng hãy mong đợi các vấn đề về viền/dòng trên Windows với tỷ lệ "
+"phân số."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:158
+msgid ""
+"**Note:** This method can also lead to visual artifacts and make OpenShot "
+"harder to use."
+msgstr ""
+"**Lưu ý:** Phương pháp này cũng có thể gây ra hiện tượng sai lệch hình ảnh "
+"và làm OpenShot khó sử dụng hơn."
+
+# Translated with gpt-4.1-mini
+#: ../troubleshoot.rst:160
+msgid ""
+"For more info on adjusting these environment variables, please visit https://"
+"github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."
+msgstr ""
+"Để biết thêm thông tin về cách điều chỉnh các biến môi trường này, vui lòng "
+"truy cập https://github.com/OpenShot/openshot-qt/wiki/OpenShot-UI-too-large."

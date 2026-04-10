@@ -58,6 +58,8 @@ from classes.query import File
 
 import json
 
+MAX_FPS_SPINBOX_VALUE = 2147483647
+
 
 class Export(QDialog):
     """ Export Dialog """
@@ -200,6 +202,9 @@ class Export(QDialog):
             log.info(layout)
             self.channel_layout_choices.append(layout[0])
             self.cboChannelLayout.addItem(layout[1], layout[0])
+
+        self.txtFrameRateNum.setMaximum(MAX_FPS_SPINBOX_VALUE)
+        self.txtFrameRateDen.setMaximum(MAX_FPS_SPINBOX_VALUE)
 
         # Connect signals
         self.btnBrowse.clicked.connect(functools.partial(self.btnBrowse_clicked))
@@ -427,6 +432,8 @@ class Export(QDialog):
 
     def updateFrameRate(self, set_limits=True):
         """Callback for changing the frame rate"""
+        self.update_frame_rate_display()
+
         # Adjust the main timeline reader
         self.timeline.info.width = self.txtWidth.value()
         self.timeline.info.height = self.txtHeight.value()
@@ -467,6 +474,12 @@ class Export(QDialog):
         new_fps_float = float(self.txtFrameRateNum.value()) / float(self.txtFrameRateDen.value())
         self.export_fps_factor = new_fps_float / current_fps_float
         self.original_fps_factor = current_fps_float / new_fps_float
+
+    def update_frame_rate_display(self):
+        """Show the current FPS fraction as a calculated float."""
+        fps_den = self.txtFrameRateDen.value() or 1
+        fps_float = self.txtFrameRateNum.value() / fps_den
+        self.lblFrameRateValueDisplay.setText(f"= {fps_float:.2f}")
 
     def cboSimpleProjectType_index_changed(self, widget, index):
         selected_project = widget.itemData(index)

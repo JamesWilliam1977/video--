@@ -1542,8 +1542,6 @@ class KeyframePanelMixin:
             anchor_pending = anchor.get("original_seconds")
 
         self._panel_update_property_points(drag)
-        self._panel_begin_transaction(drag)
-        self._apply_panel_keyframe_delta(drag, ignore_refresh=True)
         # Rebuild clip keyframe markers every drag tick so old pre-snap
         # marker frames are not left in the cached marker list.
         self._keyframes_dirty = True
@@ -1553,7 +1551,7 @@ class KeyframePanelMixin:
             frame_seek = int(round(anchor_pending * fps_seek)) + 1
             frame_seek = max(1, frame_seek)
             if hasattr(self.win, "SeekSignal"):
-                self.win.SeekSignal.emit(frame_seek, True)
+                self.win.SeekSignal.emit(frame_seek, False)
         self.update()
 
     def _panel_seek_to_point(self, info, point):
@@ -1608,6 +1606,9 @@ class KeyframePanelMixin:
         timeline = getattr(self.win, "timeline", None)
         started = drag.get("transaction_started")
         moved = drag.get("moved")
+        if moved:
+            self._panel_begin_transaction(drag)
+            started = drag.get("transaction_started")
         if started:
             self._apply_panel_keyframe_delta(drag, ignore_refresh=False, force=True)
             if timeline:
@@ -1615,8 +1616,12 @@ class KeyframePanelMixin:
                     drag.get("owner_type", "clip") or "clip",
                     drag.get("object_id", "") or "",
                 )
-            if moved and hasattr(self.win, "show_property_timeout"):
+            if hasattr(self.win, "show_property_timeout"):
                 QTimer.singleShot(0, self.win.show_property_timeout)
+            anchor = (drag.get("anchor") or ((drag.get("entries") or [None])[0])) or {}
+            frame_seek = anchor.get("pending_frame")
+            if frame_seek is not None and hasattr(self, "win") and hasattr(self.win, "SeekSignal"):
+                self.win.SeekSignal.emit(max(1, int(frame_seek)), True)
         self._dragging_panel_keyframes = None
         self.mouse_dragging = False
         info = dict(self._panel_press_info or {})
@@ -2797,7 +2802,7 @@ class KeyframePanelMixin:
                     continue
                 base_path = path + (("dict", prop_key),)
                 points = candidate.get("Points")
-                if isinstance(points, list) and points:
+                if isinstance(points, list):
                     point_paths = [
                         base_path + (("dict", "Points"), ("list", index))
                         for index, _point in enumerate(points)
@@ -2809,7 +2814,7 @@ class KeyframePanelMixin:
                         if not isinstance(channel_data, dict):
                             continue
                         channel_points = channel_data.get("Points")
-                        if isinstance(channel_points, list) and channel_points:
+                        if isinstance(channel_points, list):
                             channel_path = base_path + (("dict", channel), ("dict", "Points"))
                             point_paths = [
                                 channel_path + (("list", index),)
@@ -2883,7 +2888,6 @@ class KeyframePanelMixin:
         for key, prop in props.items():
             if not isinstance(prop, dict):
                 continue
-            metadata_keyframe = bool(prop.get("keyframe"))
             point_count_value = prop.get("points")
             declared_points = None
             if point_count_value is not None:
@@ -2892,7 +2896,9 @@ class KeyframePanelMixin:
                 except (TypeError, ValueError):
                     declared_points = None
             points, min_val, max_val, source_meta, normalized_paths = convert_points(key, prop)
-            if not points and not normalized_paths:
+            has_curve_container = bool(source_meta)
+            metadata_keyframe = bool(prop.get("keyframe")) or has_curve_container
+            if not points and not normalized_paths and not metadata_keyframe:
                 continue
             name = prop.get("name") or str(key)
             if len(points) <= 1:

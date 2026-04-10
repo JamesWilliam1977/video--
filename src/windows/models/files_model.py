@@ -38,7 +38,7 @@ from qt_api import (
     QSortFilterProxyModel, QItemSelectionModel, QItemSelection, QPersistentModelIndex, QModelIndex
 )
 from qt_api import (
-    QIcon, QStandardItem, QStandardItemModel
+    QIcon, QPixmap, QStandardItem, QStandardItemModel
 )
 from qt_api import QAbstractItemView
 from classes import updates
@@ -48,8 +48,37 @@ from classes.query import File
 from classes.logger import log
 from classes.app import get_app
 from classes.thumbnail import GetThumbPath
+from classes.qt_types import model_index_sibling_at_column
 
 import openshot
+
+
+IMPORT_READER_MAX_SIZE = 128
+
+
+def inspect_media(path, max_width=0, max_height=0):
+    """Inspect media using the shared libopenshot reader-selection logic."""
+    def _inspect_with_reader(inspect_reader):
+        reader = openshot.Clip.CreateReader(path, inspect_reader)
+        if not reader:
+            raise RuntimeError(f"No reader available for path: {path}")
+
+        if max_width > 0 and max_height > 0 and hasattr(reader, "SetMaxDecodeSize"):
+            reader.SetMaxDecodeSize(int(max_width), int(max_height))
+
+        reader.Open()
+        try:
+            return json.loads(reader.Json()), float(reader.info.duration or 0.0)
+        finally:
+            reader.Close()
+
+    try:
+        return _inspect_with_reader(False)
+    except Exception:
+        # Retry with eager inspection so libopenshot can reject an incorrect
+        # lightweight reader choice during construction and fall back to the
+        # next candidate (for example, unknown-but-supported FFmpeg formats).
+        return _inspect_with_reader(True)
 
 
 class SingleColumnProxyModel(QSortFilterProxyModel):
@@ -180,6 +209,59 @@ class FileFilterProxyModel(QSortFilterProxyModel):
 class FilesModel(QObject, updates.UpdateInterface):
     ModelRefreshed = pyqtSignal()
     PLACEHOLDER_PREFIX = "__genjob__:"
+    PROJECT_FILE_THUMB_ATTEMPTS = 3
+
+    @staticmethod
+    def _icon_from_thumbnail_source(thumb_source):
+        """Create an icon from freshly loaded thumbnail bytes when possible."""
+        thumb_source = str(thumb_source or "")
+        if thumb_source:
+            pixmap = QPixmap()
+            if pixmap.load(thumb_source) and not pixmap.isNull():
+                return QIcon(pixmap)
+        return QIcon(thumb_source)
+
+    def _thumbnail_source_for_file(self, file, clear_cache=False):
+        """Return the thumbnail/artwork source path and display name for a file."""
+        path, filename = os.path.split(file.data["path"])
+        name = file.data.get("name", filename)
+        media_type = file.data.get("media_type")
+
+        if media_type in ["video", "image"]:
+            thumbnail_frame = 1
+            if 'start' in file.data:
+                fps = file.data["fps"]
+                fps_float = float(fps["num"]) / float(fps["den"])
+                thumbnail_frame = round(float(file.data['start']) * fps_float) + 1
+            thumb_source = GetThumbPath(
+                file.id,
+                thumbnail_frame,
+                clear_cache=clear_cache,
+                attempts=self.PROJECT_FILE_THUMB_ATTEMPTS,
+            )
+        else:
+            thumb_source = os.path.join(info.PATH, "images", "AudioThumbnail.svg")
+
+        return thumb_source, name, media_type
+
+    def _project_file_icon_for_file(self, file):
+        thumb_source, name, media_type = self._thumbnail_source_for_file(file)
+        return self._icon_from_thumbnail_source(thumb_source), name, media_type
+
+    def _tooltip_for_file(self, file, name):
+        tooltip = str(name or "")
+        app = get_app()
+        window = getattr(app, "window", None) if app else None
+        proxy_service = getattr(window, "proxy_service", None) if window else None
+        if not proxy_service or not file:
+            return tooltip
+
+        state = proxy_service.get_proxy_state(file)
+        if state == "ready":
+            return "{} {}".format(tooltip, app._tr("(Optimized)"))
+        if state == "missing":
+            return "{} {}".format(tooltip, app._tr("(Optimized)"))
+        return tooltip
 
     # This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface)
     def changed(self, action):
@@ -190,10 +272,10 @@ class FilesModel(QObject, updates.UpdateInterface):
             if action.type == "insert":
                 # Don't clear the existing items if only inserting new things
                 self.update_model(clear=False)
-            elif action.type == "delete" and action.key[0].lower() == "files":
-                # Don't clear the existing items if only deleting things
+            elif action.type == "delete" and action.key[0].lower() == "files" and len(action.key) == 2:
+                # Delete a top-level file row only when the file object itself was deleted.
                 self.update_model(clear=False, delete_file_id=action.key[1].get('id', ''))
-            elif action.type == "update" and action.key[0].lower() == "files":
+            elif action.type in ("update", "delete") and action.key[0].lower() == "files":
                 # Update a single file (if found)
                 self.update_model(clear=False, update_file_id=action.key[1].get('id', ''))
             else:
@@ -241,6 +323,9 @@ class FilesModel(QObject, updates.UpdateInterface):
                 row_num = id_index.row()
                 if f.data.get("tags") != self.model.item(row_num, 2).text():
                     self.model.item(row_num, 2).setText(f.data.get("tags"))
+                path, filename = os.path.split(f.data["path"])
+                name = f.data.get("name", filename)
+                self.model.item(row_num, 0).setToolTip(self._tooltip_for_file(f, name))
 
         # Clear all items
         if clear:
@@ -266,31 +351,14 @@ class FilesModel(QObject, updates.UpdateInterface):
 
             path, filename = os.path.split(file.data["path"])
             tags = file.data.get("tags", "")
-            name = file.data.get("name", filename)
-
-            media_type = file.data.get("media_type")
-
-            # Generate thumbnail for file (if needed)
-            if media_type in ["video", "image"]:
-                # Check for start and end attributes (optional)
-                thumbnail_frame = 1
-                if 'start' in file.data:
-                    fps = file.data["fps"]
-                    fps_float = float(fps["num"]) / float(fps["den"])
-                    thumbnail_frame = round(float(file.data['start']) * fps_float) + 1
-
-                # Get thumb path
-                thumb_icon = QIcon(GetThumbPath(file.id, thumbnail_frame))
-            else:
-                # Audio file
-                thumb_icon = QIcon(os.path.join(info.PATH, "images", "AudioThumbnail.svg"))
+            thumb_icon, name, media_type = self._project_file_icon_for_file(file)
 
             row = []
             flags = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsDragEnabled | Qt. ItemNeverHasChildren
 
             # Append thumbnail
             col = QStandardItem(thumb_icon, name)
-            col.setToolTip(name)
+            col.setToolTip(self._tooltip_for_file(file, name))
             col.setFlags(flags)
             col.setAccessibleText(name)
             row.append(col)
@@ -373,12 +441,12 @@ class FilesModel(QObject, updates.UpdateInterface):
                 continue
 
             try:
-                # Load filepath in libopenshot clip object (which will try multiple readers to open it)
-                clip = openshot.Clip(filepath)
-
-                # Get the JSON for the clip's internal reader
-                reader = clip.Reader()
-                file_data = json.loads(reader.Json())
+                # Inspect the file with a lightweight temporary reader.
+                file_data, _media_duration = inspect_media(
+                    filepath,
+                    max_width=IMPORT_READER_MAX_SIZE,
+                    max_height=IMPORT_READER_MAX_SIZE,
+                )
 
                 # Determine media type
                 file_data["media_type"] = get_media_type(file_data)
@@ -404,9 +472,12 @@ class FilesModel(QObject, updates.UpdateInterface):
                     new_path = seq_info.get("path")
 
                     # Load image sequence (to determine duration and video_length)
-                    clip = openshot.Clip(new_path)
-                    new_file.data = json.loads(clip.Reader().Json())
-                    if clip and clip.info.duration > 0.0:
+                    new_file.data, media_duration = inspect_media(
+                        new_path,
+                        max_width=IMPORT_READER_MAX_SIZE,
+                        max_height=IMPORT_READER_MAX_SIZE,
+                    )
+                    if media_duration > 0.0:
                         # Update file details
                         new_file.data["media_type"] = "video"
                         duration = new_file.data["duration"]
@@ -484,7 +555,10 @@ class FilesModel(QObject, updates.UpdateInterface):
             if index.isValid():
                 # Select & scroll to selection
                 self.selection_model.select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
-                get_app().window.filesView.scrollTo(index.siblingAtColumn(0), QAbstractItemView.PositionAtCenter)
+                get_app().window.filesView.scrollTo(
+                    model_index_sibling_at_column(index, 0),
+                    QAbstractItemView.PositionAtCenter,
+                )
                 last_selected_index = index
         if last_selected_index.isValid():
             # Keep current index aligned with the newly selected file so actions
@@ -615,9 +689,6 @@ class FilesModel(QObject, updates.UpdateInterface):
         path, filename = os.path.split(file.data["path"])
         name = file.data.get("name", filename)
 
-        fps = file.data["fps"]
-        fps_float = float(fps["num"]) / float(fps["den"])
-
         # Refresh thumbnail for updated file
         self.ignore_updates = True
         m = self.model
@@ -628,25 +699,15 @@ class FilesModel(QObject, updates.UpdateInterface):
             if not id_index.isValid():
                 return
 
-            # Generate thumbnail for file (if needed)
-            if file.data.get("media_type") in ["video", "image"]:
-                # Check for start and end attributes (optional)
-                thumbnail_frame = 1
-                if 'start' in file.data:
-                    thumbnail_frame = round(float(file.data['start']) * fps_float) + 1
-
-                # Get thumb path
-                thumb_icon = QIcon(GetThumbPath(file.id, thumbnail_frame, clear_cache=True))
-            else:
-                # Audio file
-                thumb_icon = QIcon(os.path.join(info.PATH, "images", "AudioThumbnail.svg"))
+            thumb_source, _, _ = self._thumbnail_source_for_file(file, clear_cache=True)
+            thumb_icon = self._icon_from_thumbnail_source(thumb_source)
 
             # Update thumb for file
             thumb_index = id_index.sibling(id_index.row(), 0)
             item = m.itemFromIndex(thumb_index)
             item.setIcon(thumb_icon)
             item.setText(name)
-            item.setToolTip(name)
+            item.setToolTip(self._tooltip_for_file(file, name))
             item.setAccessibleText(name)
 
             # Update display name
@@ -773,8 +834,9 @@ class FilesModel(QObject, updates.UpdateInterface):
         finally:
             self._syncing_selection = False
 
-    def __init__(self, generation_queue=None, *args):
+    def __init__(self, *args, generation_queue=None, proxy_service=None):
         self.generation_queue = generation_queue
+        self.proxy_service = proxy_service
 
         # Add self as listener to project data updates
         # (undo/redo, as well as normal actions handled within this class all update the model)
@@ -823,6 +885,9 @@ class FilesModel(QObject, updates.UpdateInterface):
             self.generation_queue.job_updated.connect(self._on_generation_job_updated)
             self.generation_queue.job_finished.connect(self._on_generation_job_finished)
             self.generation_queue.job_removed.connect(self._on_generation_job_removed)
+        if self.proxy_service:
+            self.proxy_service.file_job_changed.connect(self._refresh_file_generation_display)
+            self.proxy_service.queue_changed.connect(self._refresh_all_generation_displays)
 
         # Call init for superclass QObject
         super().__init__(*args)
@@ -1036,6 +1101,11 @@ class FilesModel(QObject, updates.UpdateInterface):
         if not id_index.isValid():
             return
         row = id_index.row()
+        file_obj = File.get(id=file_id)
+        if file_obj:
+            _, filename = os.path.split(file_obj.data["path"])
+            name = file_obj.data.get("name", filename)
+            self.model.item(row, 0).setToolTip(self._tooltip_for_file(file_obj, name))
         left = self.model.index(row, 0)
         right = self.model.index(row, 0)
         self.model.dataChanged.emit(left, right, [Qt.DisplayRole, Qt.AccessibleTextRole])

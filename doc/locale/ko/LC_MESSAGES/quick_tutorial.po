@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenShot Video Editor 3.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-22 12:37-0600\n"
+"POT-Creation-Date: 2026-03-16 18:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -67,8 +68,8 @@ msgid ""
 "A **project** includes references to all the video files and edits "
 "(animations, titles, etc...), saved in a single file."
 msgstr ""
-"** 프로젝트** 는 모든 비디오 파일과 편집(애니메이션, 타이틀 등)에 대한 참조를 "
-"포함하며, 하나의 파일로 저장됩니다."
+"** 프로젝트** 는 모든 비디오 파일과 편집(애니메이션, 타이틀 등)에 대한 참조"
+"를 포함하며, 하나의 파일로 저장됩니다."
 
 # Translated with gpt-4.1-mini
 #: ../quick_tutorial.rst:41
@@ -81,8 +82,8 @@ msgid ""
 "The **timeline** is an editing user interface that represents edits and "
 "clips on a horizontal ruler. Time progresses from left to right."
 msgstr ""
-"** 타임라인** 은 편집 사용자 인터페이스로, 편집 및 클립을 가로 눈금에 표시합니"
-"다. 시간은 왼쪽에서 오른쪽으로 진행됩니다."
+"** 타임라인** 은 편집 사용자 인터페이스로, 편집 및 클립을 가로 눈금에 표시합"
+"니다. 시간은 왼쪽에서 오른쪽으로 진행됩니다."
 
 # Translated with gpt-4.1-mini
 #: ../quick_tutorial.rst:42
@@ -110,8 +111,8 @@ msgid ""
 "a specific position in time. When files are dropped on the timeline, they "
 "are represented as a Clip."
 msgstr ""
-"트랙에 배치된 비디오, 오디오 또는 둘 다의 ** 트리밍된** 부분으로, 특정 시간 위"
-"치에 있습니다. 파일을 타임라인에 드롭하면 클립으로 표시됩니다."
+"트랙에 배치된 비디오, 오디오 또는 둘 다의 ** 트리밍된** 부분으로, 특정 시간 "
+"위치에 있습니다. 파일을 타임라인에 드롭하면 클립으로 표시됩니다."
 
 # Translated with gpt-4.1-mini
 #: ../quick_tutorial.rst:44
@@ -124,8 +125,8 @@ msgid ""
 "A method to **blend** two images. Transitions can take many forms, including "
 "cuts, dissolves, and wipes."
 msgstr ""
-"두 이미지를 ** 블렌딩** 하는 방법입니다. 트랜지션은 컷, 디졸브, 와이프 등 다양"
-"한 형태가 있습니다."
+"두 이미지를 ** 블렌딩** 하는 방법입니다. 트랜지션은 컷, 디졸브, 와이프 등 다"
+"양한 형태가 있습니다."
 
 # Translated with gpt-4.1-mini
 #: ../quick_tutorial.rst:48
@@ -140,9 +141,9 @@ msgid ""
 "introductory topics. These videos are a great next step on your way to "
 "master OpenShot Video Editor!"
 msgstr ""
-"읽기 대신 ** 비디오 시청** 으로 배우고 싶다면, 초보자 및 입문자용 다양한 공식 "
-"비디오 튜토리얼이 있습니다. 이 비디오들은 OpenShot Video Editor를 마스터하는 "
-"데 훌륭한 다음 단계입니다!"
+"읽기 대신 ** 비디오 시청** 으로 배우고 싶다면, 초보자 및 입문자용 다양한 공"
+"식 비디오 튜토리얼이 있습니다. 이 비디오들은 OpenShot Video Editor를 마스터하"
+"는 데 훌륭한 다음 단계입니다!"
 
 # Translated with gpt-4.1-mini
 #: ../quick_tutorial.rst:54
@@ -311,9 +312,9 @@ msgid ""
 "guilabel:`File→Export Video` menu). The default values will work fine, so "
 "just click the :guilabel:`Export Video` button to render your new video."
 msgstr ""
-"화면 상단의 비디오 내보내기 아이콘을 클릭하거나 :guilabel:` 파일→비디오 내보내"
-"기` 메뉴를 사용하세요. 기본 설정 값이 적절하므로, :guilabel:` 비디오 내보내기"
-"` 버튼을 클릭하여 새 비디오를 렌더링하면 됩니다."
+"화면 상단의 비디오 내보내기 아이콘을 클릭하거나 :guilabel:` 파일→비디오 내보"
+"내기` 메뉴를 사용하세요. 기본 설정 값이 적절하므로, :guilabel:` 비디오 내보내"
+"기` 버튼을 클릭하여 새 비디오를 렌더링하면 됩니다."
 
 # Translated with gpt-4.1-mini
 #: ../quick_tutorial.rst:127
@@ -341,5 +342,5 @@ msgid ""
 "topics, ask questions, and meet with other OpenShot users."
 msgstr ""
 "이 사용자 가이드를 읽은 후 질문이 있으시면, 주제 토론, 질문, 다른 OpenShot 사"
-"용자와의 만남을 위해 `Reddit 사용자 커뮤니티 <https://openshot.org/forum>`_"
-" 에 참여해 보시기 바랍니다."
+"용자와의 만남을 위해 `Reddit 사용자 커뮤니티 <https://openshot.org/forum>`_ "
+"에 참여해 보시기 바랍니다."

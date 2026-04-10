@@ -121,9 +121,6 @@ class Preferences(QDialog):
         # Highlight invalid keyboard shortcuts
         self.check_shortcut_validity()
 
-        # Restore normal cursor
-        get_app().restoreOverrideCursor()
-
     def category_tab_changed(self, index):
         """Update the Restore Defaults button label based on the selected tab."""
         # Get the current widget for the selected tab
@@ -266,9 +263,20 @@ class Preferences(QDialog):
                 if param["type"] == "spinner-int":
                     # create QDoubleSpinBox
                     widget = QSpinBox()
-                    widget.setMinimum(int(param["min"]))
-                    widget.setMaximum(int(param["max"]))
-                    widget.setValue(int(param["value"]))
+                    min_value = int(param["min"])
+                    max_value = int(param["max"])
+                    current_value = int(param["value"])
+                    thread_limits = self._get_thread_spinner_limits(param.get("setting"))
+                    if thread_limits:
+                        min_value, max_value = thread_limits
+                        clamped_value = max(min_value, min(current_value, max_value))
+                        if clamped_value != current_value:
+                            self.s.set(param["setting"], clamped_value)
+                            param["value"] = clamped_value
+                            current_value = clamped_value
+                    widget.setMinimum(min_value)
+                    widget.setMaximum(max_value)
+                    widget.setValue(current_value)
                     widget.setSingleStep(param.get("step", 1))
                     widget.setToolTip(param["title"])
                     widget.valueChanged.connect(functools.partial(self.spinner_value_changed, param))
@@ -358,6 +366,19 @@ class Preferences(QDialog):
                             value_list.append({
                                 "name": _(theme_name), "value": theme_name
                             })
+
+                    if param["setting"] == "ui-scale":
+                        current_scale = float(param["value"])
+                        has_current_value = any(
+                            abs(float(item.get("value", 0.0)) - current_scale) < 0.001
+                            for item in value_list
+                        )
+                        if not has_current_value:
+                            value_list.append({
+                                "name": _("%d%% (Custom)") % int(round(current_scale * 100)),
+                                "value": current_scale,
+                            })
+                            value_list.sort(key=lambda item: float(item.get("value", 0.0)))
 
                     # Overwrite value list (for language dropdown)
                     if param["setting"] == "default-language":
@@ -449,7 +470,10 @@ class Preferences(QDialog):
                             widget.addItem(_(k), v)
 
                         # select dropdown (if default)
-                        if v == param["value"]:
+                        if (
+                            param["setting"] == "ui-scale"
+                            and abs(float(v) - float(param["value"])) < 0.001
+                        ) or v == param["value"]:
                             widget.setCurrentIndex(box_index)
                         box_index = box_index + 1
 
@@ -612,6 +636,54 @@ class Preferences(QDialog):
         except Exception:
             log.warning("Failed to apply timeline thumbnail style live", exc_info=1)
 
+    def _get_thread_spinner_limits(self, setting_name):
+        """Return UI bounds for thread-related preference spinners."""
+        lib_settings = openshot.Settings.Instance()
+        if setting_name == "omp_threads_number":
+            default_value = int(lib_settings.DefaultOMPThreads())
+            min_value = 2
+        elif setting_name == "ff_threads_number":
+            default_value = int(lib_settings.DefaultFFThreads())
+            min_value = 2
+        else:
+            return None
+
+        max_value = max(min_value, default_value * 3)
+        return min_value, max_value
+
+    def _apply_thread_settings(self):
+        """Apply current thread preference values to libopenshot."""
+        lib_settings = openshot.Settings.Instance()
+        omp_value = int(str(self.s.get("omp_threads_number")))
+        ff_value = int(str(self.s.get("ff_threads_number")))
+        omp_min, omp_max = self._get_thread_spinner_limits("omp_threads_number")
+        ff_min, ff_max = self._get_thread_spinner_limits("ff_threads_number")
+        lib_settings.OMP_THREADS = max(omp_min, min(omp_value, omp_max))
+        lib_settings.ApplyOpenMPSettings()
+        lib_settings.FF_THREADS = max(ff_min, min(ff_value, ff_max))
+
+    def _apply_cache_settings(self):
+        """Apply current cache preference values to the active session."""
+        get_app().window.InitCacheSettings()
+
+    def _set_ui_scale_to_default(self):
+        """Force the UI scale preference back to 100%."""
+        default_scale = 1.0
+        self.s.set("ui-scale", default_scale)
+
+        widget = self.setting_widgets.get("ui-scale")
+        if not widget or not isinstance(widget, QComboBox):
+            return
+
+        for index in range(widget.count()):
+            value = widget.itemData(index)
+            try:
+                if abs(float(value) - default_scale) < 0.001:
+                    widget.setCurrentIndex(index)
+                    break
+            except (TypeError, ValueError):
+                continue
+
     def bool_value_changed(self, widget, param, state):
         # Save setting
         if state == Qt.Checked:
@@ -637,6 +709,9 @@ class Preferences(QDialog):
                 # Stop autosave timer
                 get_app().window.auto_save_timer.stop()
 
+        elif param["setting"] == "legacy-based-timeline" and state == Qt.Checked:
+            self._set_ui_scale_to_default()
+
         # Check for restart
         self.check_for_restart(param)
 
@@ -654,10 +729,17 @@ class Preferences(QDialog):
             get_app().window.auto_save_timer.setInterval(int(value * 1000 * 60))
 
         elif param["setting"] == "omp_threads_number":
-            openshot.Settings.Instance().OMP_THREADS = max(2, int(str(value)))
+            lib_settings = openshot.Settings.Instance()
+            value = int(str(value))
+            min_value, max_value = self._get_thread_spinner_limits("omp_threads_number")
+            lib_settings.OMP_THREADS = max(min_value, min(value, max_value))
+            lib_settings.ApplyOpenMPSettings()
 
         elif param["setting"] == "ff_threads_number":
-            openshot.Settings.Instance().FF_THREADS = int(str(value))
+            lib_settings = openshot.Settings.Instance()
+            value = int(str(value))
+            min_value, max_value = self._get_thread_spinner_limits("ff_threads_number")
+            lib_settings.FF_THREADS = max(min_value, min(value, max_value))
 
         elif param["setting"] == "decode_hw_max_width":
             openshot.Settings.Instance().DE_LIMIT_WIDTH_MAX = int(str(value))
@@ -958,6 +1040,12 @@ class Preferences(QDialog):
             # Restore category settings
             self.requires_restart = self.s.restore(category_filter=category)
             self.settings_data = self.s.get_all_settings()
+
+            if category == "Performance":
+                self._apply_thread_settings()
+                self._apply_cache_settings()
+            elif category == "Cache":
+                self._apply_cache_settings()
 
             # Re-apply thumbnail style to the QWidget timeline if it changed
             self._apply_timeline_thumbnail_style()
