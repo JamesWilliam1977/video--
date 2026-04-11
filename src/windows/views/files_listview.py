@@ -45,7 +45,7 @@ from classes.query import File
 from classes.qt_types import font_metrics_horizontal_advance
 from .ai_tools_menu import add_ai_tools_menu
 from .files_thumbnail_overlay import paint_media_overlay, paint_proxy_badge
-from .menu import StyledContextMenu
+from .menu import StyledContextMenu, add_bound_action
 from .optimized_preview_menu import add_optimized_preview_menu
 
 
@@ -188,7 +188,7 @@ class FilesListView(QListView):
         # Build menu
         menu = StyledContextMenu(parent=self)
 
-        menu.addAction(self.win.actionImportFiles)
+        add_bound_action(menu, self.win, "actionImportFiles", _("Import Files..."), "actionImportFiles_trigger")
 
         source_file = None
 
@@ -223,7 +223,7 @@ class FilesListView(QListView):
                 lambda checked=False, job_id=active_job.get("id"): self.win.cancel_generation_job(job_id)
             )
         menu.addSeparator()
-        menu.addAction(self.win.actionDetailsView)
+        add_bound_action(menu, self.win, "actionDetailsView", _("Details View"), "actionDetailsView_trigger")
 
         if index.isValid():
             # Look up the model item and our unique ID
@@ -243,17 +243,17 @@ class FilesListView(QListView):
                 menu.popup(event.globalPos())
                 return
             if file and file.data.get("path").endswith(".svg"):
-                menu.addAction(self.win.actionEditTitle)
-                menu.addAction(self.win.actionDuplicate)
+                add_bound_action(menu, self.win, "actionEditTitle", _("Edit Title"), "actionEditTitle_trigger")
+                add_bound_action(menu, self.win, "actionDuplicate", _("Duplicate"), "actionDuplicate_trigger")
                 menu.addSeparator()
 
-            menu.addAction(self.win.actionPreview_File)
+            add_bound_action(menu, self.win, "actionPreview_File", _("Preview File"), "actionPreview_File_trigger")
             add_optimized_preview_menu(self.win, menu)
             menu.addSeparator()
-            menu.addAction(self.win.actionSplitFile)
-            menu.addAction(self.win.actionExportFiles)
+            add_bound_action(menu, self.win, "actionSplitFile", _("Split Clip"), "actionSplitFile_trigger")
+            add_bound_action(menu, self.win, "actionExportFiles", _("Export Selected Clips"), "actionExportFiles_trigger")
             menu.addSeparator()
-            menu.addAction(self.win.actionAdd_to_Timeline)
+            add_bound_action(menu, self.win, "actionAdd_to_Timeline", _("Add to Timeline"), "actionAdd_to_Timeline_trigger")
 
             # Add Profile menu
             profile_menu = StyledContextMenu(title=_("Choose Profile"), parent=self)
@@ -271,9 +271,9 @@ class FilesListView(QListView):
                 action.triggered.connect(lambda: get_app().window.actionProfileEdit_trigger(file_profile, duplicate=True))
             menu.addMenu(profile_menu)
 
-            menu.addAction(self.win.actionFile_Properties)
+            add_bound_action(menu, self.win, "actionFile_Properties", _("File Properties"), "actionFile_Properties_trigger")
             menu.addSeparator()
-            menu.addAction(self.win.actionRemove_from_Project)
+            add_bound_action(menu, self.win, "actionRemove_from_Project", _("Remove from Project"), "actionRemove_from_Project_trigger")
             menu.addSeparator()
 
         # Show menu

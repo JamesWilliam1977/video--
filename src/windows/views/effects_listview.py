@@ -33,7 +33,7 @@ from qt_api import QListView, QAbstractItemView
 from classes import info
 from classes.app import get_app
 from classes.logger import log
-from .menu import StyledContextMenu
+from .menu import StyledContextMenu, add_bound_action
 
 
 class EffectsListView(QListView):
@@ -48,7 +48,7 @@ class EffectsListView(QListView):
         app.context_menu_object = "effects"
 
         menu = StyledContextMenu(parent=self)
-        menu.addAction(self.win.actionDetailsView)
+        add_bound_action(menu, self.win, "actionDetailsView", app._tr("Details View"), "actionDetailsView_trigger")
         menu.show_at(event)
 
     def startDrag(self, event):

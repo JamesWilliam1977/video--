@@ -33,7 +33,7 @@ from qt_api import QTreeView, QAbstractItemView, QSizePolicy
 from classes import info
 from classes.app import get_app
 from classes.logger import log
-from .menu import StyledContextMenu
+from .menu import StyledContextMenu, add_bound_action
 
 
 class EffectsTreeView(QTreeView):
@@ -49,7 +49,7 @@ class EffectsTreeView(QTreeView):
         app.context_menu_object = "effects"
 
         menu = StyledContextMenu(parent=self)
-        menu.addAction(self.win.actionThumbnailView)
+        add_bound_action(menu, self.win, "actionThumbnailView", app._tr("Thumbnail View"), "actionThumbnailView_trigger")
         menu.show_at(event)
 
     def startDrag(self, supportedActions):
