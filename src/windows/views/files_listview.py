@@ -175,6 +175,7 @@ class FilesListView(QListView):
 
         # Set context menu mode
         app = get_app()
+        self.win = app.window
         _ = app._tr
         app.context_menu_object = "files"
 

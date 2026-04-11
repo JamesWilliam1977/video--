@@ -44,6 +44,7 @@ class TransitionsTreeView(QTreeView):
     def contextMenuEvent(self, event):
         # Set context menu mode
         app = get_app()
+        self.win = app.window
         app.context_menu_object = "transitions"
 
         menu = StyledContextMenu(parent=self)

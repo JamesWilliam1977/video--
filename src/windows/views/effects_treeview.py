@@ -45,6 +45,7 @@ class EffectsTreeView(QTreeView):
         # Set context menu mode
         event.accept()
         app = get_app()
+        self.win = app.window
         app.context_menu_object = "effects"
 
         menu = StyledContextMenu(parent=self)

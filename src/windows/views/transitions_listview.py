@@ -46,6 +46,7 @@ class TransitionsListView(QListView):
 
         # Set context menu mode
         app = get_app()
+        self.win = app.window
         app.context_menu_object = "transitions"
 
         menu = StyledContextMenu(parent=self)
