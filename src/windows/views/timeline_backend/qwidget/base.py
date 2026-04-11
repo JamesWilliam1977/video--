@@ -2813,7 +2813,7 @@ class TimelineWidgetBase(QWidget):
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.geometry.ensure()
-            pos = event.pos()
+            pos = _event_posf(event)
             for rect, item, _selected, _type in self.geometry.iter_items(reverse=True):
                 if rect.contains(pos):
                     self.win.actionProperties.trigger()
