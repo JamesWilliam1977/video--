@@ -3472,3 +3472,66 @@ class TimelineHelperTests(unittest.TestCase):
 
         self.assertEqual([item[1] for item in ready], [100, 300, 400])
         self.assertEqual([item[2] for item in ready], ["F1:100", "F1:300", "F1:400"])
+
+    def test_qwidget_drag_enter_prefers_internal_clip_mime_over_urls(self):
+        helper = types.SimpleNamespace(
+            _drag_payload=None,
+            item_type=None,
+            new_item=None,
+        )
+        preimport_calls = []
+
+        def _preimport(urls):
+            preimport_calls.append(list(urls))
+            return {"type": "clip", "ids": ["wrong"]}
+
+        helper._preimport_os_drop_urls = _preimport
+
+        mime = types.SimpleNamespace(
+            html=lambda: "clip",
+            text=lambda: '["F1","F2","F3","F4"]',
+            hasUrls=lambda: True,
+            urls=lambda: ["file:///tmp/a.mp4", "file:///tmp/b.mp4"],
+        )
+        accepted = []
+        event = types.SimpleNamespace(
+            mimeData=lambda: mime,
+            accept=lambda: accepted.append(True),
+            ignore=lambda: accepted.append(False),
+        )
+
+        self.qwidget_base_module.TimelineWidgetBase.dragEnterEvent(helper, event)
+
+        self.assertEqual(preimport_calls, [])
+        self.assertEqual(helper.item_type, "clip")
+        self.assertTrue(helper.new_item)
+        self.assertEqual(helper._drag_payload, {"type": "clip", "ids": ["F1", "F2", "F3", "F4"]})
+        self.assertEqual(accepted, [True])
+
+    def test_qwidget_ensure_drag_payload_prefers_internal_clip_mime_over_urls(self):
+        helper = types.SimpleNamespace(
+            _drag_payload=None,
+            item_type=None,
+            new_item=None,
+        )
+        preimport_calls = []
+
+        def _preimport(urls):
+            preimport_calls.append(list(urls))
+            return {"type": "clip", "ids": ["wrong"]}
+
+        helper._preimport_os_drop_urls = _preimport
+
+        mime = types.SimpleNamespace(
+            html=lambda: "clip",
+            text=lambda: '["F1","F2"]',
+            hasUrls=lambda: True,
+            urls=lambda: ["file:///tmp/a.mp4"],
+        )
+        event = types.SimpleNamespace(mimeData=lambda: mime)
+
+        payload = self.qwidget_base_module.TimelineWidgetBase._ensure_drag_payload_from_event(helper, event)
+
+        self.assertEqual(preimport_calls, [])
+        self.assertEqual(payload, {"type": "clip", "ids": ["F1", "F2"]})
+        self.assertEqual(helper._drag_payload, {"type": "clip", "ids": ["F1", "F2"]})

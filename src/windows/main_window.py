@@ -180,7 +180,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             log.debug("Already shutting down, skipping the closeEvent() method")
             return
 
-        self._shutdown()
+        # Call the class implementation directly so closeEvent() remains usable
+        # with lightweight duck-typed test doubles that don't bind methods.
+        MainWindow._shutdown(self)
 
     def _shutdown(self):
         """Perform shutdown without prompting (used by closeEvent and app cleanup)."""

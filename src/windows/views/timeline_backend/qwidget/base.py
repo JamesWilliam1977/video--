@@ -41,8 +41,6 @@ from qt_api import (
     QColor,
     QToolTip,
     QPixmap,
-    QToolTip,
-    QPixmap,
 )
 from qt_api import QSizePolicy, QWidget
 
@@ -1108,21 +1106,6 @@ class TimelineWidgetBase(QWidget):
     def dragEnterEvent(self, event):
         self._drag_payload = None
         mime = event.mimeData()
-
-        if mime.hasUrls():
-            urls = mime.urls()
-            payload = self._preimport_os_drop_urls(urls)
-            if payload:
-                self._drag_payload = payload
-                self.item_type = payload.get("type")
-                self.new_item = True
-                event.accept()
-                return
-            event.accept()
-            self.new_item = True
-            self.item_type = "os_drop"
-            self._drag_payload = {"type": "os_drop", "urls": urls}
-            return
         mime_html = mime.html()
 
         if mime_html:
@@ -1144,10 +1127,18 @@ class TimelineWidgetBase(QWidget):
                 return
 
         if mime.hasUrls():
+            urls = mime.urls()
+            payload = self._preimport_os_drop_urls(urls)
+            if payload:
+                self._drag_payload = payload
+                self.item_type = payload.get("type")
+                self.new_item = True
+                event.accept()
+                return
             event.accept()
             self.new_item = True
             self.item_type = "os_drop"
-            self._drag_payload = {"type": "os_drop", "urls": mime.urls()}
+            self._drag_payload = {"type": "os_drop", "urls": urls}
             return
 
         event.ignore()
@@ -1184,30 +1175,7 @@ class TimelineWidgetBase(QWidget):
         os_drop_tid = None
         mime = event.mimeData()
         mime_html = mime.html()
-        if mime.hasUrls():
-            payload = self._drag_payload or {}
-            if (
-                payload.get("type") == "clip"
-                and payload.get("source") == "os_drop"
-                and payload.get("ids")
-            ):
-                file_ids.extend(payload.get("ids") or [])
-                os_drop_tid = payload.get("transaction_id")
-                mime_html = "clip"
-            else:
-                urls = mime.urls()
-                # Wrap file import + clip creation + auto-transitions in a single
-                # transaction so a single Undo reverts everything.
-                os_drop_tid = str(uuid.uuid4())
-                self.win.files_model.process_urls(
-                    urls, import_quietly=True, prevent_image_seq=True,
-                    transaction_id=os_drop_tid,
-                )
-                # process_urls preserves our transaction when given a transaction_id
-                for uri in urls:
-                    for f in File.filter(path=uri.toLocalFile()):
-                        file_ids.append(f.id)
-        elif mime_html == "clip":
+        if mime_html == "clip":
             try:
                 ids = json.loads(mime.text())
             except Exception:
@@ -1232,11 +1200,28 @@ class TimelineWidgetBase(QWidget):
                 names = [names]
             effect_names.extend(names)
         elif mime.hasUrls():
-            urls = mime.urls()
-            self.win.files_model.process_urls(urls, import_quietly=True, prevent_image_seq=True)
-            for uri in urls:
-                for f in File.filter(path=uri.toLocalFile()):
-                    file_ids.append(f.id)
+            payload = self._drag_payload or {}
+            if (
+                payload.get("type") == "clip"
+                and payload.get("source") == "os_drop"
+                and payload.get("ids")
+            ):
+                file_ids.extend(payload.get("ids") or [])
+                os_drop_tid = payload.get("transaction_id")
+                mime_html = "clip"
+            else:
+                urls = mime.urls()
+                # Wrap file import + clip creation + auto-transitions in a single
+                # transaction so a single Undo reverts everything.
+                os_drop_tid = str(uuid.uuid4())
+                self.win.files_model.process_urls(
+                    urls, import_quietly=True, prevent_image_seq=True,
+                    transaction_id=os_drop_tid,
+                )
+                # process_urls preserves our transaction when given a transaction_id
+                for uri in urls:
+                    for f in File.filter(path=uri.toLocalFile()):
+                        file_ids.append(f.id)
 
         if not file_ids and not effect_names:
             if os_drop_tid:
@@ -1308,16 +1293,6 @@ class TimelineWidgetBase(QWidget):
         if self._drag_payload:
             return self._drag_payload
         mime = event.mimeData()
-        if mime.hasUrls():
-            urls = mime.urls()
-            payload = self._preimport_os_drop_urls(urls)
-            if payload:
-                self._drag_payload = payload
-                self.item_type = payload.get("type")
-                self.new_item = True
-                return self._drag_payload
-            self._drag_payload = {"type": "os_drop", "urls": urls}
-            return self._drag_payload
         mime_html = mime.html()
         if mime_html in {"clip", "transition"}:
             try:
@@ -1332,6 +1307,13 @@ class TimelineWidgetBase(QWidget):
         elif mime_html == "effect":
             self._drag_payload = {"type": "effect"}
         elif mime.hasUrls():
+            urls = mime.urls()
+            payload = self._preimport_os_drop_urls(urls)
+            if payload:
+                self._drag_payload = payload
+                self.item_type = payload.get("type")
+                self.new_item = True
+                return self._drag_payload
             self._drag_payload = {"type": "os_drop", "urls": mime.urls()}
         return self._drag_payload
 
