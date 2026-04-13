@@ -16,6 +16,15 @@ from typing import List, Optional, Tuple
 logger = logging.getLogger(__name__)
 
 
+def _is_android_runtime() -> bool:
+    return sys.platform == "android" or bool(
+        os.environ.get("ANDROID_ARGUMENT")
+        or os.environ.get("ANDROID_PRIVATE")
+        or os.environ.get("ANDROID_DATA")
+        or os.environ.get("ANDROID_APP_PATH")
+    )
+
+
 # Public exports filled in after binding selection
 QtCore = QtGui = QtWidgets = QtSvg = QtWebEngineCore = QtWebEngineWidgets = QtWebChannel = QtWebKitWidgets = None
 Signal = Slot = Property = None
@@ -32,21 +41,15 @@ _SELECTING = False
 
 _shiboken_ext_load_error = None
 _openshot_shiboken_ext = None
-if sys.platform == "android":
+if _is_android_runtime():
     try:
         import openshot_shiboken_ext as _openshot_shiboken_ext  # type: ignore
     except Exception as exc:
         _shiboken_ext_load_error = exc
     if _openshot_shiboken_ext is not None:
-        logger.warning("qt_api: openshot_shiboken_ext loaded successfully")
-        print("qt_api: openshot_shiboken_ext loaded successfully", file=sys.stderr, flush=True)
+        logger.debug("qt_api: openshot_shiboken_ext loaded successfully")
     else:
         logger.warning("qt_api: openshot_shiboken_ext failed to load: %r", _shiboken_ext_load_error)
-        print(
-            f"qt_api: openshot_shiboken_ext failed to load: {_shiboken_ext_load_error!r}",
-            file=sys.stderr,
-            flush=True,
-        )
 
 
 def _load_sip_like():
@@ -92,11 +95,6 @@ def wrapinstance(ptr, base_type):
     if backend == "sip":
         return mod.wrapinstance(ptr, base_type)
     if _openshot_shiboken_ext is not None:
-        logger.warning(
-            "qt_api: Using openshot_shiboken_ext.wrap_instance_u64 for ptr=%r base=%r",
-            ptr,
-            base_type,
-        )
         return _openshot_shiboken_ext.wrap_instance_u64(ptr, base_type)
     if _shiboken_ext_load_error is not None:
         logger.warning("qt_api: openshot_shiboken_ext unavailable: %s", _shiboken_ext_load_error)
@@ -105,8 +103,7 @@ def wrapinstance(ptr, base_type):
     # 64-bit value with the high bit set, convert it to signed.
     if ptr_in >= (1 << 63):
         ptr_in -= (1 << 64)
-    ptr_norm = ctypes.c_void_p(ptr_in).value
-    return mod.wrapInstance(ptr_norm, base_type)
+    return mod.wrapInstance(ptr_in, base_type)
 
 
 def isdeleted(obj):
