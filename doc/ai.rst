@@ -305,6 +305,34 @@ Music... (``txt2music-ace-step``)
 Enhance with AI
 ^^^^^^^^^^^^^^^
 
+Reduce Noise (``audio-reduce-noise``)
+"""""""""""""""""""""""""""""""""""""""""""
+
+- Why: Reduce hiss, hum, and steady background noise while keeping spoken voice as intact as possible.
+- How: Choose :guilabel:`Enhance with AI` on an audio file, then generate.
+- Details: Uses ``comfyui/audio-reduce-noise.json`` with ``FL_ClearVoice_ModelLoader`` using ``Resemble_Denoise`` and ``FL_ClearVoice_Process``.
+
+Enhance Voice (``audio-enhance-voice``)
+""""""""""""""""""""""""""""""""""""""""""
+
+- Why: Improve speech clarity and overall voice quality for already usable recordings.
+- How: Choose :guilabel:`Enhance with AI` on an audio file, then generate.
+- Details: Uses ``comfyui/audio-enhance-voice.json`` with ``FL_ClearVoice_ModelLoader`` using ``Resemble_Enhance`` and ``FL_ClearVoice_Process``.
+
+Improve Audio Resolution (``audio-improve-audio-resolution``)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+- Why: Improve low-quality or low-resolution audio by using an audio super-resolution model.
+- How: Choose :guilabel:`Enhance with AI` on an audio file, then generate.
+- Details: Uses ``comfyui/audio-improve-audio-resolution.json`` with ``FL_ClearVoice_ModelLoader`` using ``MossFormer2_SR_48K`` and ``FL_ClearVoice_Process``.
+
+Repair Audio (``audio-repair-audio``)
+""""""""""""""""""""""""""""""""""""""""
+
+- Why: Repair degraded, compressed, rough, or damaged audio recordings.
+- How: Choose :guilabel:`Enhance with AI` on an audio file, then generate.
+- Details: Uses ``comfyui/audio-repair-audio.json`` with ``FL_ClearVoice_ModelLoader`` using ``VoiceFixer`` and ``FL_ClearVoice_Process``.
+
 Change Image Style... (``img2img-basic``)
 """"""""""""""""""""""""""""""""""""""""""
 
