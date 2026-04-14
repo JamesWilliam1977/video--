@@ -35,7 +35,8 @@ import traceback
 import json
 
 from qt_api import QT_API, QT_VERSION_STR, BINDING_VERSION_STR, Slot
-from qt_api import QApplication, QMessageBox
+from qt_api import QApplication, QMessageBox, QTimer
+from qt_api import request_android_storage_permission_if_needed
 
 # Disable sandbox support for QtWebEngine (required on some Linux distros
 # for the QtWebEngineWidgets to be rendered, otherwise no timeline is visible).
@@ -293,6 +294,10 @@ class OpenShotApp(QApplication):
 
         # Show main window
         self.window.show()
+
+        # On Android, prompt for All Files Access once the window is visible so
+        # the permission is in place before the user first taps Import Files.
+        QTimer.singleShot(500, request_android_storage_permission_if_needed)
 
         args = self.args
         if len(args) < 2:

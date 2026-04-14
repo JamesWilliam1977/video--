@@ -136,6 +136,386 @@ def clear_override_cursor():
         pass
 
 
+# Module-level reference keeps the picker alive until the callback fires.
+_active_picker = None
+
+# Lazily created on the main thread; used to post callbacks from background threads.
+_callback_bridge = None
+
+
+def _get_callback_bridge():
+    """Return the shared callback bridge, creating it lazily (must be called on the main thread).
+
+    The class is defined here rather than at module level because QtCore is None
+    until the Qt binding is selected — defining it inline avoids that ordering issue.
+    """
+    global _callback_bridge
+    if _callback_bridge is None:
+        class _CallbackBridge(QtCore.QObject):
+            """Delivers a callable to Qt's main thread via a queued signal connection."""
+            _invoke = QtCore.Signal(object)
+
+            def __init__(self):
+                super().__init__()
+                self._invoke.connect(self._run, QtCore.Qt.QueuedConnection)
+
+            def call(self, fn):
+                self._invoke.emit(fn)
+
+            def _run(self, fn):
+                fn()
+
+        _callback_bridge = _CallbackBridge()
+    return _callback_bridge
+
+
+class _AndroidFilePicker:
+    """Launches Android's document picker and resolves selected files to local paths.
+
+    On API 30+, requests MANAGE_EXTERNAL_STORAGE first so files can be accessed
+    directly without copying.  Falls back to stream-copying into app cache when
+    the permission is absent or denied.
+
+    Calls on_complete([QUrl, ...]) on the Qt main thread when done.
+    """
+
+    # Activity result request codes
+    _RC_STORAGE_PERM = 10442
+    _RC_FILE_PICKER  = 10443
+
+    def __init__(self, on_complete, allow_multiple=True):
+        self._on_complete = on_complete
+        self._allow_multiple = allow_multiple
+        self._listener = None
+        self._perm_listener = None
+        self._mActivity = None
+        # jnius class refs stored here so open/launch/resolve all share them
+        self._Activity = None
+        self._Intent = None
+        self._OpenableColumns = None
+        self._File = None
+        self._FileOutputStream = None
+        self._PythonJavaClass = None
+        self._java_method = None
+        self._autoclass = None
+
+    def open(self):
+        try:
+            from jnius import autoclass, PythonJavaClass, java_method  # type: ignore
+        except Exception as exc:
+            self._on_complete([])
+            return
+
+        # Store all class refs on self so they survive across method calls
+        self._autoclass = autoclass
+        self._PythonJavaClass = PythonJavaClass
+        self._java_method = java_method
+
+        PythonActivity = autoclass("org.kivy.android.PythonActivity")
+        self._mActivity = PythonActivity.mActivity
+        self._Activity = autoclass("android.app.Activity")
+        self._Intent = autoclass("android.content.Intent")
+        self._OpenableColumns = autoclass("android.provider.OpenableColumns")
+        self._File = autoclass("java.io.File")
+        self._FileOutputStream = autoclass("java.io.FileOutputStream")
+
+        # On API 30+ request All Files Access so we can read files directly.
+        # On older API or if already granted, go straight to the picker.
+        BuildVersion = autoclass("android.os.Build$VERSION")
+        Environment = autoclass("android.os.Environment")
+        needs_perm = (BuildVersion.SDK_INT >= 30
+                      and not Environment.isExternalStorageManager())
+
+        if needs_perm:
+            self._request_storage_permission()
+        else:
+            self._launch_picker()
+
+    def _request_storage_permission(self):
+        """Send the user to the All Files Access settings page, then open the picker on return."""
+        autoclass = self._autoclass
+        Settings = autoclass("android.provider.Settings")
+        Uri = autoclass("android.net.Uri")
+
+        intent = self._Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+        intent.setData(Uri.parse("package:" + self._mActivity.getPackageName()))
+
+        picker = self
+        PythonJavaClass = self._PythonJavaClass
+        java_method = self._java_method
+
+        class _PermListener(PythonJavaClass):
+            __javainterfaces__ = ["org/kivy/android/PythonActivity$ActivityResultListener"]
+            __javacontext__ = "app"
+
+            def __init__(self):
+                super().__init__()
+
+            @java_method("(IILandroid/content/Intent;)V")
+            def onActivityResult(self, request_code, result_code, data):
+                if request_code != picker._RC_STORAGE_PERM:
+                    return
+                try:
+                    picker._mActivity.unregisterActivityResultListener(self)
+                except Exception:
+                    pass
+                picker._perm_listener = None
+                # Open the picker regardless — user may have granted or denied
+                picker._launch_picker()
+
+        try:
+            self._perm_listener = _PermListener()
+            self._mActivity.registerActivityResultListener(self._perm_listener)
+            self._mActivity.startActivityForResult(intent, self._RC_STORAGE_PERM)
+        except Exception:
+            # Some ROMs may not handle this intent; skip straight to the picker
+            self._perm_listener = None
+            self._launch_picker()
+
+    def _launch_picker(self):
+        """Start the system document picker."""
+        Intent = self._Intent
+        Activity = self._Activity
+        OpenableColumns = self._OpenableColumns
+        File = self._File
+        FileOutputStream = self._FileOutputStream
+        PythonJavaClass = self._PythonJavaClass
+        java_method = self._java_method
+
+        intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.setType("*/*")
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+        if self._allow_multiple:
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, True)
+
+        picker = self
+
+        class _Listener(PythonJavaClass):
+            __javainterfaces__ = ["org/kivy/android/PythonActivity$ActivityResultListener"]
+            __javacontext__ = "app"
+
+            def __init__(self):
+                super().__init__()
+                self._Activity = Activity
+                self._OpenableColumns = OpenableColumns
+                self._File = File
+                self._FileOutputStream = FileOutputStream
+
+            @java_method("(IILandroid/content/Intent;)V")
+            def onActivityResult(self, request_code, result_code, data):
+                if request_code != picker._RC_FILE_PICKER:
+                    return
+                try:
+                    picker._mActivity.unregisterActivityResultListener(self)
+                except Exception:
+                    pass
+
+                if result_code != self._Activity.RESULT_OK or data is None:
+                    picker._on_complete([])
+                    return
+
+                resolver = picker._mActivity.getContentResolver()
+
+                uris = []
+                try:
+                    clip = data.getClipData()
+                    if clip is not None:
+                        for i in range(clip.getItemCount()):
+                            uri = clip.getItemAt(i).getUri()
+                            if uri is not None:
+                                uris.append(uri)
+                    else:
+                        uri = data.getData()
+                        if uri is not None:
+                            uris.append(uri)
+                except Exception:
+                    pass
+
+                # Snapshot URI strings now — jnius objects may not survive thread boundaries.
+                uri_strings = [u.toString() for u in uris]
+                cache_dir = picker._mActivity.getCacheDir().getAbsolutePath()
+                on_complete = picker._on_complete
+
+                # The bridge was created on the Qt main thread (in show_open_file_dialog).
+                # Do NOT call _get_callback_bridge() here — this runs on the Android main thread.
+                bridge = _callback_bridge
+
+                import threading
+                def _resolve_and_complete():
+                    urls = []
+                    for uri_str in uri_strings:
+                        path = picker._resolve_uri(resolver, uri_str, cache_dir,
+                                                   self._OpenableColumns, self._File,
+                                                   self._FileOutputStream)
+                        if path:
+                            urls.append(QtCore.QUrl.fromLocalFile(path))
+                    bridge.call(lambda: on_complete(urls))
+
+                threading.Thread(target=_resolve_and_complete, daemon=True).start()
+
+        try:
+            self._listener = _Listener()
+            self._mActivity.registerActivityResultListener(self._listener)
+            self._mActivity.startActivityForResult(intent, self._RC_FILE_PICKER)
+        except Exception:
+            self._on_complete([])
+
+    def _resolve_uri(self, resolver, uri_str, cache_dir, OpenableColumns, File, FileOutputStream):
+        """Return a local file path for a content URI.
+
+        With MANAGE_EXTERNAL_STORAGE granted, resolves media documents URIs
+        (content://com.android.providers.media.documents/document/TYPE:ID) by
+        re-querying MediaStore directly — the DocumentsProvider URI itself does
+        not expose _data, but the corresponding MediaStore row does.
+
+        Falls back to stream-copying into app cache when the permission is absent
+        or the URI is not a local MediaStore entry (e.g. Google Drive).
+        """
+        import os
+        autoclass = self._autoclass
+
+        # --- Attempt 1: MediaStore path via document ID (fast, no copy) ---
+        # Only applies to com.android.providers.media.documents URIs where the
+        # document ID encodes a MediaStore type and row ID (e.g. "video:126").
+        if "com.android.providers.media.documents" in uri_str:
+            try:
+                Environment = autoclass("android.os.Environment")
+                if Environment.isExternalStorageManager():
+                    DocumentsContract = autoclass("android.provider.DocumentsContract")
+                    ContentUris = autoclass("android.content.ContentUris")
+                    Uri = autoclass("android.net.Uri")
+                    uri_obj = Uri.parse(uri_str)
+                    doc_id = DocumentsContract.getDocumentId(uri_obj)
+                    parts = doc_id.split(":")
+                    if len(parts) == 2:
+                        media_type, media_id_str = parts[0], parts[1]
+                        media_id = int(media_id_str)
+                        media_uri = None
+                        if media_type == "video":
+                            media_uri = autoclass("android.provider.MediaStore$Video$Media")
+                        elif media_type == "image":
+                            media_uri = autoclass("android.provider.MediaStore$Images$Media")
+                        elif media_type == "audio":
+                            media_uri = autoclass("android.provider.MediaStore$Audio$Media")
+                        if media_uri is not None:
+                            row_uri = ContentUris.withAppendedId(
+                                media_uri.EXTERNAL_CONTENT_URI, media_id)
+                            cursor = resolver.query(row_uri, ["_data"], None, None, None)
+                            if cursor is not None:
+                                try:
+                                    if cursor.moveToFirst():
+                                        idx = cursor.getColumnIndex("_data")
+                                        if idx >= 0:
+                                            path = cursor.getString(idx)
+                                            if path and os.path.isfile(path) and os.access(path, os.R_OK):
+                                                return path
+                                finally:
+                                    cursor.close()
+            except Exception:
+                pass
+
+        # --- Attempt 2: stream copy into app cache ---
+        display_name = ""
+        try:
+            Uri = autoclass("android.net.Uri")
+            uri_obj = Uri.parse(uri_str)
+            cursor = resolver.query(uri_obj, None, None, None, None)
+            if cursor is not None:
+                try:
+                    if cursor.moveToFirst():
+                        idx = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                        if idx >= 0:
+                            display_name = cursor.getString(idx) or ""
+                finally:
+                    cursor.close()
+        except Exception:
+            pass
+
+        suffix = os.path.splitext(display_name)[1]
+        # Use a deterministic name derived from the URI so the same source file always maps
+        # to the same cache path — this lets the existing duplicate-skip logic work correctly.
+        import hashlib
+        uri_hash = hashlib.sha1(uri_str.encode()).hexdigest()[:16]
+        dest_path = os.path.join(cache_dir, f"openshot_import_{uri_hash}{suffix}")
+
+        try:
+            Uri = autoclass("android.net.Uri")
+            uri_obj = Uri.parse(uri_str)
+            input_stream = resolver.openInputStream(uri_obj)
+            if input_stream is None:
+                return None
+            output_stream = FileOutputStream(File(dest_path))
+            try:
+                buf = bytearray(64 * 1024)
+                while True:
+                    count = input_stream.read(buf)
+                    if count == -1:
+                        break
+                    output_stream.write(buf, 0, count)
+            finally:
+                input_stream.close()
+                output_stream.close()
+            return dest_path
+        except Exception:
+            return None
+
+
+def request_android_storage_permission_if_needed():
+    """On Android API 30+, open the All Files Access settings page if not already granted.
+
+    Safe to call at any time — does nothing on non-Android platforms or when the
+    permission is already granted.  Uses startActivity (fire-and-forget) so no
+    callback or result listener is required; the user grants the permission, presses
+    Back, and returns to the app.  Intended to be called once at startup so the
+    permission is in place before the user first taps Import Files.
+    """
+    if not _is_android_runtime():
+        return
+    try:
+        from jnius import autoclass  # type: ignore
+        BuildVersion = autoclass("android.os.Build$VERSION")
+        if BuildVersion.SDK_INT < 30:
+            return
+        Environment = autoclass("android.os.Environment")
+        if Environment.isExternalStorageManager():
+            return
+        PythonActivity = autoclass("org.kivy.android.PythonActivity")
+        Settings = autoclass("android.provider.Settings")
+        Uri = autoclass("android.net.Uri")
+        Intent = autoclass("android.content.Intent")
+        mActivity = PythonActivity.mActivity
+        intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+        intent.setData(Uri.parse("package:" + mActivity.getPackageName()))
+        mActivity.startActivity(intent)
+    except Exception:
+        pass
+
+
+def show_open_file_dialog(parent, caption, directory, file_filter, on_complete, allow_multiple=True):
+    """Show a file-open dialog and call on_complete([QUrl, ...]) with the result.
+
+    On desktop this is synchronous (on_complete is called before returning).
+    On Android the system document picker is used and on_complete is called
+    asynchronously from the main thread when the user finishes selecting.
+    """
+    if _is_android_runtime():
+        global _active_picker
+        # Create (or confirm) the bridge HERE, on the Qt main thread, so its QObject
+        # ownership belongs to the Qt event loop.  onActivityResult runs on the Android
+        # main thread — a different thread — so creating the bridge there causes queued
+        # signals to be posted to a thread with no Qt event loop (they are never delivered).
+        _get_callback_bridge()
+        _active_picker = _AndroidFilePicker(on_complete, allow_multiple=allow_multiple)
+        _active_picker.open()
+    else:
+        QFileDialog = getattr(QtWidgets, "QFileDialog", None)
+        dir_url = QtCore.QUrl.fromLocalFile(directory) if directory else QtCore.QUrl()
+        urls, _ = QFileDialog.getOpenFileUrls(parent, caption, dir_url, file_filter)
+        on_complete(urls)
+
+
 def get_font_dialog_selection(initial_font=None, parent=None, title=""):
     """Return (font, accepted) from a font dialog across bindings."""
     QFontDialog = getattr(QtWidgets, "QFontDialog", None)

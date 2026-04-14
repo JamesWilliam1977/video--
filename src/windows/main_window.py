@@ -45,6 +45,7 @@ from qt_api import (
     Qt, pyqtSignal, pyqtSlot, QCoreApplication, QTimer, QDateTime, QFileInfo, QEvent, QUrl, QLocale
 )
 from qt_api import QIcon, QCursor, QKeySequence, QTextCursor
+from qt_api import show_open_file_dialog
 from qt_api import (
     QMainWindow, QWidget, QDockWidget,
     QMessageBox, QDialog, QFileDialog, QInputDialog,
@@ -915,30 +916,20 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         recommended_path = s.getDefaultPath(s.actionType.IMPORT)
 
-        fd = QFileDialog()
-        fd.setDirectory(recommended_path)
-        qurl_list = fd.getOpenFileUrls(
-            self,
-            _("Import Files...")
-        )[0]
+        def _on_files_selected(qurl_list):
+            if not qurl_list:
+                return
+            app.setOverrideCursor(QCursor(Qt.WaitCursor))
+            try:
+                self.dockFiles.setVisible(True)
+                self.dockFiles.raise_()
+                self.dockFiles.activateWindow()
+                self.files_model.process_urls(qurl_list)
+                self.refreshFilesSignal.emit()
+            finally:
+                app.restoreOverrideCursor()
 
-        # Set cursor to waiting
-        app.setOverrideCursor(QCursor(Qt.WaitCursor))
-
-        try:
-            # Switch to Files dock
-            self.dockFiles.setVisible(True)
-            self.dockFiles.raise_()
-            self.dockFiles.activateWindow()
-
-            # Import list of files
-            self.files_model.process_urls(qurl_list)
-
-            # Refresh files views
-            self.refreshFilesSignal.emit()
-        finally:
-            # Restore cursor
-            app.restoreOverrideCursor()
+        show_open_file_dialog(self, _("Import Files..."), recommended_path, "", _on_files_selected)
 
     def invalidImage(self, filename=None):
         """ Show a popup when an image file can't be loaded """
