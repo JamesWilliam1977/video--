@@ -34,10 +34,17 @@ import re
 import fnmatch
 import subprocess
 import sys
-from qt_api import QTranslator, QCoreApplication  # type: ignore
 from collections import Counter
 from collections import Counter
 from typing import Any, Dict, List, Optional, Tuple
+
+try:
+    from PyQt6.QtCore import QCoreApplication, QTranslator  # type: ignore
+except ImportError:
+    try:
+        from PySide6.QtCore import QCoreApplication, QTranslator  # type: ignore
+    except ImportError:
+        from PyQt5.QtCore import QCoreApplication, QTranslator  # type: ignore
 
 
 # Absolute path of the translations directory
