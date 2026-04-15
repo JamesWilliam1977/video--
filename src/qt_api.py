@@ -312,8 +312,8 @@ class _AndroidFilePicker:
                     return
                 try:
                     picker._mActivity.unregisterActivityResultListener(self)
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.debug("qt_api: failed to unregister file picker listener: %s", exc, exc_info=True)
 
                 if result_code != self._Activity.RESULT_OK or data is None:
                     picker._on_complete([])
@@ -865,13 +865,16 @@ def show_save_file_dialog(parent, caption, suggested_name, mime_type, on_complet
 
 def get_font_dialog_selection(initial_font=None, parent=None, title=""):
     """Return (font, accepted) from a font dialog across bindings."""
-    QFontDialog = getattr(QtWidgets, "QFontDialog", None)
-    if not callable(QFontDialog):
+    font_dialog_class = getattr(QtWidgets, "QFontDialog", None)
+    if font_dialog_class is None:
         raise RuntimeError("QFontDialog is unavailable")
 
     # PySide6 has been unreliable with the static getFont() overloads here.
     # Use an instance dialog consistently across bindings.
-    dialog = QFontDialog(initial_font, parent) if initial_font is not None else QFontDialog(parent)
+    if initial_font is None:
+        dialog = font_dialog_class(parent)
+    else:
+        dialog = font_dialog_class(initial_font, parent)
     if title:
         dialog.setWindowTitle(title)
     exec_fn = getattr(dialog, "exec", None) or getattr(dialog, "exec_", None)
@@ -2368,7 +2371,10 @@ def _select_binding() -> str:
             _SELECTING = False
             return QT_API
         except Exception as ex:  # noqa: BLE001
-            logger.warning("qt_api: failed to load %s: %s", candidate, ex)
+            if requested == "auto":
+                logger.info("qt_api: skipping %s during auto-detect: %s", candidate, ex)
+            else:
+                logger.warning("qt_api: failed to load %s: %s", candidate, ex)
             errors.append(f"{candidate}: {ex}")
 
     _SELECTING = False

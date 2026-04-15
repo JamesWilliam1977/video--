@@ -25,11 +25,16 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+import logging
+import re
+
 from qt_api import QMenu, isdeleted
 from qt_api import QPainter, QPen, QColor
 from qt_api import Qt, QRectF
 from classes.app import get_app
-import re
+
+
+logger = logging.getLogger(__name__)
 
 
 class StyledContextMenu(QMenu):
@@ -129,8 +134,8 @@ def add_bound_action(menu, owner, action_name, fallback_text, callback=None, ena
                 icon = source_action.icon()
                 if enabled is None:
                     enabled = source_action.isEnabled()
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.debug("menu: failed to read source action metadata for %s: %s", action_name, exc, exc_info=True)
     action = menu.addAction(icon, label) if icon and not icon.isNull() else menu.addAction(label)
     if enabled is not None:
         action.setEnabled(bool(enabled))

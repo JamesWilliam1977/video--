@@ -32,13 +32,11 @@ import re
 import fnmatch
 import sys
 
-try:
-    from PyQt6.QtCore import QCoreApplication, QLocale, QTranslator  # type: ignore
-except ImportError:
-    try:
-        from PySide6.QtCore import QCoreApplication, QLocale, QTranslator  # type: ignore
-    except ImportError:
-        from PyQt5.QtCore import QCoreApplication, QLocale, QTranslator  # type: ignore
+SRC_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if SRC_PATH not in sys.path:
+    sys.path.insert(0, SRC_PATH)
+
+from qt_api import QCoreApplication, QTranslator
 
 
 # Get the absolute path of this project

@@ -248,10 +248,13 @@ def main():
 
     # Launch GUI and start event loop
     if app.gui():
-        exec_fn = getattr(app, "exec", None) or getattr(app, "exec_", None)
-        if not callable(exec_fn):
+        if hasattr(app, "exec") and callable(app.exec):
+            exit_code = app.exec()
+        elif hasattr(app, "exec_") and callable(app.exec_):
+            exit_code = app.exec_()
+        else:
             raise AttributeError("OpenShotApp has no exec_/exec method")
-        sys.exit(exec_fn())
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":

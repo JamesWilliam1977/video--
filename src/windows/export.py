@@ -430,12 +430,14 @@ class Export(QDialog):
         # Update channels to match layout
         self.txtChannels.setValue(channels)
 
-    def updateFrameRate(self, set_limits=True, *_args):
+    def updateFrameRate(self, *args, set_limits=True):
         """Callback for changing the frame rate"""
         # Qt change signals may pass the new value/index. Treat those as
         # signal payloads, not as the internal set_limits flag.
-        if not isinstance(set_limits, bool):
-            _args = (set_limits,) + _args
+        if args and isinstance(args[0], bool):
+            set_limits = args[0]
+            args = args[1:]
+        elif not isinstance(set_limits, bool):
             set_limits = True
 
         self.update_frame_rate_display()
