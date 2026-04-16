@@ -1,8 +1,9 @@
 {
-  "template_id": "audio-reduce-noise",
-  "name": "Reduce Noise",
+  "template_id": "audio-clarity-speech",
+  "name": "Speech",
   "menu_category": "enhance",
-  "menu_order": 5,
+  "menu_parent": "clarity",
+  "menu_order": 7,
   "input_type": "audio",
   "output_type": "audio",
   "open_dialog": false,
@@ -10,31 +11,31 @@
   "workflow": {
     "1": {
       "inputs": {
-        "model": "Resemble_Denoise",
-        "force_reload": false
-      },
-      "class_type": "FL_ClearVoice_ModelLoader"
-    },
-    "2": {
-      "inputs": {
         "audio": "__openshot_input__",
         "start_time": 0,
         "duration": 0
       },
       "class_type": "VHS_LoadAudioUpload"
     },
-    "3": {
+    "2": {
       "inputs": {
-        "model": [
+        "source_audio_path": "",
+        "audio": [
           "1",
           0
         ],
-        "audio": [
+        "keep_model_loaded": true
+      },
+      "class_type": "OpenShotLavaSRSpeechClarity"
+    },
+    "3": {
+      "inputs": {
+        "audio_file": [
           "2",
           0
         ]
       },
-      "class_type": "FL_ClearVoice_Process"
+      "class_type": "VHS_LoadAudio"
     },
     "4": {
       "inputs": {
@@ -42,7 +43,7 @@
           "3",
           0
         ],
-        "filename_prefix": "audio/openshot_reduce_noise"
+        "filename_prefix": "audio/openshot_clarity_speech"
       },
       "class_type": "SaveAudio"
     }

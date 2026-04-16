@@ -111,6 +111,7 @@ KNOWN_NODE_TYPES = {
     "zoe_depthanythingpreprocessor",
     # Video Helper Suite
     "vhs_batchmanager",
+    "vhs_loadaudio",
     "vhs_loadvideo",
     "vhs_loadaudioupload",
     "vhs_loadvideopath",
@@ -132,6 +133,8 @@ KNOWN_NODE_TYPES = {
     "openshotsam2videosegmentationchunked",
     "openshotimageblurmasked",
     "openshotimagehighlightmasked",
+    "openshotdeepfilternetdenoiseaudio",
+    "openshotlavasrspeechclarity",
 }
 
 

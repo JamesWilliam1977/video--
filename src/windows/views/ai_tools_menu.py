@@ -51,10 +51,14 @@ def add_ai_tools_menu(win, parent_menu, source_file=None):
         parent_labels = {
             "track_object": _("Track an Object"),
             "extract": _("Extract"),
+            "noise": _("Noise"),
+            "clarity": _("Clarity"),
         }
         parent_icons = {
             "track_object": "tool-generate-sparkle.svg",
             "extract": "ai-action-create-image.svg",
+            "noise": "ai-action-create-audio.svg",
+            "clarity": "ai-action-create-audio.svg",
         }
         parent_menus = {}
 
