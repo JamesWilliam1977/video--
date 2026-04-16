@@ -3535,3 +3535,18 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertEqual(preimport_calls, [])
         self.assertEqual(payload, {"type": "clip", "ids": ["F1", "F2"]})
         self.assertEqual(helper._drag_payload, {"type": "clip", "ids": ["F1", "F2"]})
+
+    def test_qwidget_paste_uses_saved_timeline_context_menu_target(self):
+        pasted = []
+        helper = types.SimpleNamespace(
+            _context_menu_paste_data={"position": 12.5, "track": 4},
+            _handle_paste_callback=lambda clip_ids, tran_ids, data: pasted.append(
+                (list(clip_ids), list(tran_ids), dict(data))
+            ),
+            context_menu_cursor_position=None,
+        )
+
+        self.timeline_module.TimelineView.Paste_Triggered(helper, "paste", [], [])
+
+        self.assertEqual(pasted, [([], [], {"position": 12.5, "track": 4})])
+        self.assertIsNone(helper._context_menu_paste_data)

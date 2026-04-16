@@ -1100,6 +1100,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
     @pyqtSlot(float)
     def ShowPlayheadMenu(self, position=None):
         log.debug('ShowPlayheadMenu: %s' % position)
+        self._context_menu_paste_data = None
 
         # Get translation method
         _ = get_app()._tr
@@ -1142,6 +1143,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
     @pyqtSlot(str)
     def ShowEffectMenu(self, effect_id=None):
         log.debug('ShowEffectMenu: %s' % effect_id)
+        self._context_menu_paste_data = None
 
         # Get translation method
         _ = get_app()._tr
@@ -1169,6 +1171,10 @@ class TimelineView(updates.UpdateInterface, ViewClass):
     @pyqtSlot(float, int)
     def ShowTimelineMenu(self, position, layer_number):
         log.debug('ShowTimelineMenu: position: %s, layer: %s' % (position, layer_number))
+        self._context_menu_paste_data = {
+            "position": max(0.0, float(position)),
+            "track": int(layer_number),
+        }
 
         # Get translation method
         _ = get_app()._tr
@@ -1262,6 +1268,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
     @pyqtSlot(str)
     def ShowClipMenu(self, clip_id=None):
         log.debug('ShowClipMenu: %s' % clip_id)
+        self._context_menu_paste_data = None
 
         # Get translation method
         _ = get_app()._tr
@@ -2602,6 +2609,12 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         """Callback for paste context menus"""
         log.debug(action)
 
+        if ViewClass == TimelineWidget and self._context_menu_paste_data and not clip_ids and not tran_ids:
+            paste_data = dict(self._context_menu_paste_data)
+            self._context_menu_paste_data = None
+            self._handle_paste_callback(clip_ids, tran_ids, paste_data)
+            return
+
         # Get global mouse position
         if self.context_menu_cursor_position:
             global_mouse_pos = self.context_menu_cursor_position
@@ -3558,6 +3571,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
     @pyqtSlot(str)
     def ShowTransitionMenu(self, tran_id=None):
         log.info('ShowTransitionMenu: %s' % tran_id)
+        self._context_menu_paste_data = None
 
         # Get translation method
         _ = get_app()._tr
@@ -3695,6 +3709,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
     @pyqtSlot(str)
     def ShowTrackMenu(self, layer_id=None):
         log.info('ShowTrackMenu: %s', layer_id)
+        self._context_menu_paste_data = None
 
         # Get translation method
         _ = get_app()._tr
@@ -3770,6 +3785,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
     @pyqtSlot(str)
     def ShowMarkerMenu(self, marker_id=None):
         log.info('ShowMarkerMenu: %s' % marker_id)
+        self._context_menu_paste_data = None
 
         if marker_id not in self.window.selected_markers:
             self.window.selected_markers = [marker_id]
@@ -4917,6 +4933,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         self.last_position_frames = None
         self._last_playhead_seek_state = None
         self.context_menu_cursor_position = None
+        self._context_menu_paste_data = None
         self._pending_trim_refresh = None
 
         # Get logger
