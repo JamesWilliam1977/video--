@@ -17,6 +17,14 @@ from classes.assets import get_assets_path
 
 
 class AssetsPathTests(unittest.TestCase):
+    def test_get_assets_path_uses_project_folder_for_windows_drive_paths(self):
+        with patch("classes.assets.info.USER_PATH", "/home/test/.openshot_qt"), \
+             patch("classes.assets.info.BACKUP_FILE", "/home/test/.openshot_qt/backup.osp"), \
+             patch("classes.assets.info.RECOVERY_PATH", "/home/test/.openshot_qt/recovery"):
+            asset_path = get_assets_path(r"C:\Projects\example.osp", create_paths=False)
+
+        self.assertEqual(asset_path, r"C:\Projects\example_assets")
+
     def test_get_assets_path_uses_user_path_for_backup_project(self):
         with patch("classes.assets.info.USER_PATH", "/home/test/.openshot_qt"), \
              patch("classes.assets.info.BACKUP_FILE", "/home/test/.openshot_qt/backup.osp"), \
@@ -30,5 +38,13 @@ class AssetsPathTests(unittest.TestCase):
              patch("classes.assets.info.BACKUP_FILE", "/home/test/.openshot_qt/backup.osp"), \
              patch("classes.assets.info.RECOVERY_PATH", "/home/test/.openshot_qt/recovery"):
             asset_path = get_assets_path("/home/test/.openshot_qt/recovery/123/project.osp", create_paths=False)
+
+        self.assertEqual(asset_path, "/home/test/.openshot_qt")
+
+    def test_get_assets_path_uses_user_path_for_content_uri_projects(self):
+        with patch("classes.assets.info.USER_PATH", "/home/test/.openshot_qt"), \
+             patch("classes.assets.info.BACKUP_FILE", "/home/test/.openshot_qt/backup.osp"), \
+             patch("classes.assets.info.RECOVERY_PATH", "/home/test/.openshot_qt/recovery"):
+            asset_path = get_assets_path("content://documents/tree/project.osp", create_paths=False)
 
         self.assertEqual(asset_path, "/home/test/.openshot_qt")
