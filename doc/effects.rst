@@ -84,7 +84,7 @@ identify a clip's start is by utilizing the 'next/previous marker' feature on th
 
 List of Effects
 ---------------
-OpenShot Video Editor has a total of 27 built-in video and audio effects: 18 video effects and 9 audio effects.
+OpenShot Video Editor has a total of 28 built-in video and audio effects: 19 video effects and 9 audio effects.
 These effects can be added to a clip by dragging the effect onto a clip. The following table contains
 the name and short description of each effect.
 
@@ -135,6 +135,10 @@ the name and short description of each effect.
 .. |deinterlace_icon| image:: ../src/effects/icons/deinterlace@2x.png
    :width: 50px
    :alt: Deinterlace Icon
+
+.. |displace_icon| image:: ../src/effects/icons/displace@2x.png
+   :width: 50px
+   :alt: Displacement Map Icon
 
 .. |hue_icon| image:: ../src/effects/icons/hue@2x.png
    :width: 50px
@@ -238,6 +242,7 @@ the name and short description of each effect.
    |colorshift_icon|           Color Shift                   Shift image colors in various directions.
    |crop_icon|                 Crop                          Crop out parts of your video.
    |deinterlace_icon|          Deinterlace                   Remove interlacing from video.
+   |displace_icon|             Displacement Map              Use a grayscale image or video to warp the frame.
    |hue_icon|                  Hue                           Adjust hue / color.
    |lensflare_icon|            Lens Flare                    Simulate sunlight hitting a lens with flares.
    |negate_icon|               Negative                      Produce a negative image.
@@ -831,6 +836,45 @@ older video cameras or broadcast sources) into a progressive format suitable for
    ==========================  ============
    isOdd                       ``(bool, choices: ['Yes', 'No'])`` Use odd or even lines
    ==========================  ============
+
+Displacement Map
+""""""""""""""""
+The Displacement Map effect uses a grayscale image or video to warp the current frame in the horizontal and vertical
+directions. This effect is also commonly called a **distortion map**, **warp map**, **displace effect**, or
+**displacement effect**. It is useful for heat haze, water ripples, refractive glass, mirage effects, animated
+distortion overlays, shockwave looks, and other stylized screen warps.
+
+The map source is sampled for every pixel. **Mid-gray** is neutral and causes no movement. **Darker** and **lighter**
+areas shift pixels in opposite directions. A still image creates a fixed distortion pattern, while a video or animated
+map creates moving distortion over time. Transparent parts of the map smoothly fade back toward neutral displacement.
+
+Usage Notes
+^^^^^^^^^^^
+
+- Use a **grayscale image or grayscale video** for the most predictable results.
+- Use **Map: Source** to pick an imported file, image sequence, video clip, or even a transition image as the map.
+- **Strength** multiplies both the horizontal and vertical displacement.
+- **Horizontal** controls left/right warping as a percentage of the frame width.
+- **Vertical** controls up/down warping as a percentage of the frame height.
+- **Brightness** and **Contrast** reshape the map before displacement, which can make the warp subtler or more dramatic.
+- **Map: Invert** flips the direction driven by light and dark areas.
+- **Replace Image** is a debug preview that shows the processed map instead of the warped frame.
+
+.. table::
+   :widths: 26 80
+
+   ==========================  ============================================================================
+   Property Name               Description
+   ==========================  ============================================================================
+   map_reader                  ``(reader)`` **Map: Source.** Select the grayscale image, animation, video, or transition file used as the displacement source
+   invert                      ``(int, choices: ['Yes', 'No'])`` **Map: Invert.** Reverse the displacement direction driven by dark and light areas
+   strength                    ``(float, 0 to 3)`` Overall multiplier for the displacement effect
+   horizontal                  ``(float, -1 to 1)`` Horizontal displacement amount, as a percentage of the frame width
+   vertical                    ``(float, -1 to 1)`` Vertical displacement amount, as a percentage of the frame height
+   brightness                  ``(float, -1 to 1)`` Brightness adjustment applied to the displacement map before warping
+   contrast                    ``(float, 0 to 20)`` Contrast adjustment applied to the displacement map before warping
+   replace_image               ``(int, choices: ['Yes', 'No'])`` Replace the output image with the processed map, useful for previewing or debugging the distortion map
+   ==========================  ============================================================================
 
 Hue
 """
