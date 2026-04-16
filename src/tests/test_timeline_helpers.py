@@ -3590,3 +3590,48 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertEqual(saved, [{"position": 20.0, "layer": 4, "start": 0.0, "end": 4.0}])
         self.assertEqual(helper._extend_timeline_to_fit_items_calls, [True])
         self.assertIsNone(app.updates.transaction_id)
+
+    def test_qwidget_paste_coordinates_uses_viewport_adjusted_tracks(self):
+        helper = types.SimpleNamespace(
+            _seconds_from_x=lambda x: float(x) / 10.0,
+            geometry=types.SimpleNamespace(
+                ensure=lambda: None,
+                iter_tracks=lambda: iter(
+                    [
+                        (
+                            QRectF(0.0, 0.0, 500.0, 40.0),
+                            types.SimpleNamespace(data={"number": 7}),
+                            QRectF(),
+                        ),
+                        (
+                            QRectF(0.0, 40.0, 500.0, 40.0),
+                            types.SimpleNamespace(data={"number": 6}),
+                            QRectF(),
+                        ),
+                    ]
+                ),
+                track_rects=[
+                    (
+                        QRectF(0.0, 120.0, 500.0, 40.0),
+                        types.SimpleNamespace(data={"number": 7}),
+                        QRectF(),
+                    ),
+                    (
+                        QRectF(0.0, 160.0, 500.0, 40.0),
+                        types.SimpleNamespace(data={"number": 6}),
+                        QRectF(),
+                    ),
+                ],
+            ),
+            window=types.SimpleNamespace(selected_tracks=[]),
+        )
+
+        seconds, track_number = self.timeline_module.TimelineView._qwidget_paste_coordinates(
+            helper,
+            QPointF(150.0, 20.0),
+            [],
+            [],
+        )
+
+        self.assertEqual(seconds, 15.0)
+        self.assertEqual(track_number, 7)

@@ -366,7 +366,13 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         track_number = None
         if hasattr(self, "geometry"):
             self.geometry.ensure()
-            for track_rect, track, _name_rect in getattr(self.geometry, "track_rects", []):
+            track_iter = getattr(self.geometry, "iter_tracks", None)
+            if callable(track_iter):
+                track_entries = track_iter()
+            else:
+                track_entries = getattr(self.geometry, "track_rects", [])
+
+            for track_rect, track, _name_rect in track_entries:
                 if track_rect.contains(local_posf):
                     track_number = track.data.get("number")
                     break
