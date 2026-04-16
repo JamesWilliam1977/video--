@@ -250,11 +250,27 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             if isinstance(effect, dict):
                 effect["id"] = get_app().project.generate_id()
 
+    def _select_inserted_paste_items(self, inserted_items):
+        """Replace the current selection with newly inserted pasted items."""
+        if not inserted_items:
+            return
+
+        if ViewClass == TimelineWidget:
+            TimelineWidget.clear_all_selections(self)
+            for index, (item_id, item_type) in enumerate(inserted_items):
+                self._select_timeline_item(item_id, item_type, clear_existing=(index == 0))
+            return
+
+        self.ClearAllSelections()
+        for index, (item_id, item_type) in enumerate(inserted_items):
+            self.AddSelectionJS(item_id, item_type, clear_existing=(index == 0))
+
     def _handle_paste_callback(self, clip_ids, tran_ids, callback_data):
         """Handle clipboard data insertion after resolving timeline coordinates."""
         position = callback_data.get("position", 0.0)
         layer_id = callback_data.get("track", 0)
         inserted_new_items = False
+        inserted_items = []
 
         tid = self.get_uuid()
         get_app().updates.transaction_id = tid
@@ -286,6 +302,14 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     obj.data["position"] = obj.data.get("position", 0.0) + position_diff
                     obj.data["layer"] = obj.data.get("layer", 0) + layer_diff
                     obj.save()
+                    item_id = getattr(obj, "id", None) or obj.data.get("id")
+                    item_type = None
+                    if isinstance(obj, Clip):
+                        item_type = "clip"
+                    elif isinstance(obj, Transition):
+                        item_type = "transition"
+                    if item_id and item_type:
+                        inserted_items.append((str(item_id), item_type))
 
             def apply_clipboard_data(target_obj, clipboard_data, excluded_keys=None):
                 excluded_keys = excluded_keys or []
@@ -350,6 +374,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
             if inserted_new_items:
                 self._extend_timeline_to_fit_items()
+                self._select_inserted_paste_items(inserted_items)
         finally:
             get_app().updates.transaction_id = None
 

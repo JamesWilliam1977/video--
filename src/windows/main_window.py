@@ -65,6 +65,7 @@ from classes.logger import log
 from classes.metrics import track_metric_session, track_metric_screen
 from classes.path_utils import comparable_local_path, native_display_path, normalized_local_path
 from classes.query import File, Clip, Transition, Marker, Track, Effect
+from classes.clipboard import ClipboardManager
 from classes.generation_queue import GenerationQueueManager
 from classes.generation_service import GenerationService
 from classes.proxy_service import ProxyService
@@ -3864,13 +3865,25 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         """Handle Paste QShortcut (at timeline position, same track as original clip)"""
         clipboard = get_app().clipboard()
         mime_data = clipboard.mimeData() if clipboard else None
+        copied_object = ClipboardManager.from_mime(mime_data) if mime_data else None
 
         if mime_data and not mime_data.hasFormat("application/x-openshot-generic"):
             if self.import_files_from_clipboard(mime_data):
                 return
 
+        paste_clip_ids = self.selected_clips
+        paste_tran_ids = self.selected_transitions
+        if isinstance(copied_object, (Clip, Transition)):
+            paste_clip_ids = []
+            paste_tran_ids = []
+        elif isinstance(copied_object, list) and copied_object and all(
+            isinstance(obj, (Clip, Transition)) for obj in copied_object
+        ):
+            paste_clip_ids = []
+            paste_tran_ids = []
+
         self.timeline.context_menu_cursor_position = None
-        self.timeline.Paste_Triggered(MenuCopy.PASTE, self.selected_clips, self.selected_transitions)
+        self.timeline.Paste_Triggered(MenuCopy.PASTE, paste_clip_ids, paste_tran_ids)
 
     def clipboard_contains_media(self, mime_data=None):
         """Check if clipboard contains media files or supported media data."""

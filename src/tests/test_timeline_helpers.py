@@ -3553,12 +3553,24 @@ class TimelineHelperTests(unittest.TestCase):
 
     def test_handle_paste_callback_extends_project_duration_for_inserted_items(self):
         saved = []
-        inserted_clip = types.SimpleNamespace(
-            id="C1",
-            type="copy",
-            data={"id": "C1", "position": 5.0, "layer": 2, "start": 0.0, "end": 4.0},
-            save=lambda: saved.append(copy.deepcopy(inserted_clip.data)),
+        inserted_clip = None
+
+        class FakeClip:
+            def __init__(self, clip_id, data):
+                self.id = clip_id
+                self.type = "copy"
+                self.data = data
+
+        def save_inserted_clip():
+            inserted_clip.id = "C1-copy"
+            inserted_clip.data["id"] = "C1-copy"
+            saved.append(copy.deepcopy(inserted_clip.data))
+
+        inserted_clip = FakeClip(
+            "C1",
+            {"id": "C1", "position": 5.0, "layer": 2, "start": 0.0, "end": 4.0},
         )
+        inserted_clip.save = save_inserted_clip
         copied_objects = [inserted_clip]
         app = types.SimpleNamespace(
             clipboard=lambda: types.SimpleNamespace(mimeData=lambda: object()),
@@ -3568,8 +3580,10 @@ class TimelineHelperTests(unittest.TestCase):
             get_uuid=lambda: "tx-paste-1",
             _assign_new_effect_ids=lambda data: self.timeline_module.TimelineView._assign_new_effect_ids(helper, data),
             _extend_timeline_to_fit_items_calls=[],
+            _select_inserted_paste_items_calls=[],
         )
         helper._extend_timeline_to_fit_items = lambda: helper._extend_timeline_to_fit_items_calls.append(True)
+        helper._select_inserted_paste_items = lambda items: helper._select_inserted_paste_items_calls.append(list(items))
 
         with ExitStack() as stack:
             stack.enter_context(
@@ -3579,6 +3593,7 @@ class TimelineHelperTests(unittest.TestCase):
                     return_value=copied_objects,
                 )
             )
+            stack.enter_context(patch.object(self.timeline_module, "Clip", FakeClip))
             stack.enter_context(patch.object(self.timeline_module, "get_app", return_value=app))
             self.timeline_module.TimelineView._handle_paste_callback(
                 helper,
@@ -3587,8 +3602,9 @@ class TimelineHelperTests(unittest.TestCase):
                 {"position": 20.0, "track": 4},
             )
 
-        self.assertEqual(saved, [{"position": 20.0, "layer": 4, "start": 0.0, "end": 4.0}])
+        self.assertEqual(saved, [{"id": "C1-copy", "position": 20.0, "layer": 4, "start": 0.0, "end": 4.0}])
         self.assertEqual(helper._extend_timeline_to_fit_items_calls, [True])
+        self.assertEqual(helper._select_inserted_paste_items_calls, [[("C1-copy", "clip")]])
         self.assertIsNone(app.updates.transaction_id)
 
     def test_qwidget_paste_coordinates_uses_viewport_adjusted_tracks(self):
