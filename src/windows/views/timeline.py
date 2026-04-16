@@ -254,6 +254,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         """Handle clipboard data insertion after resolving timeline coordinates."""
         position = callback_data.get("position", 0.0)
         layer_id = callback_data.get("track", 0)
+        inserted_new_items = False
 
         tid = self.get_uuid()
         get_app().updates.transaction_id = tid
@@ -321,6 +322,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
             if isinstance(copied_object, list):
                 adjust_positions_and_layers(copied_object, position, layer_id)
+                inserted_new_items = True
 
             for clip_id in clip_ids:
                 clip = Clip.get(id=clip_id)
@@ -345,6 +347,9 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                         copied_object.data,
                         excluded_keys=["id", "position", "layer", "start", "end"],
                     )
+
+            if inserted_new_items:
+                self._extend_timeline_to_fit_items()
         finally:
             get_app().updates.transaction_id = None
 

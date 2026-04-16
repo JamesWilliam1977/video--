@@ -3550,3 +3550,43 @@ class TimelineHelperTests(unittest.TestCase):
 
         self.assertEqual(pasted, [([], [], {"position": 12.5, "track": 4})])
         self.assertIsNone(helper._context_menu_paste_data)
+
+    def test_handle_paste_callback_extends_project_duration_for_inserted_items(self):
+        saved = []
+        inserted_clip = types.SimpleNamespace(
+            id="C1",
+            type="copy",
+            data={"id": "C1", "position": 5.0, "layer": 2, "start": 0.0, "end": 4.0},
+            save=lambda: saved.append(copy.deepcopy(inserted_clip.data)),
+        )
+        copied_objects = [inserted_clip]
+        app = types.SimpleNamespace(
+            clipboard=lambda: types.SimpleNamespace(mimeData=lambda: object()),
+            updates=types.SimpleNamespace(transaction_id=None),
+        )
+        helper = types.SimpleNamespace(
+            get_uuid=lambda: "tx-paste-1",
+            _assign_new_effect_ids=lambda data: self.timeline_module.TimelineView._assign_new_effect_ids(helper, data),
+            _extend_timeline_to_fit_items_calls=[],
+        )
+        helper._extend_timeline_to_fit_items = lambda: helper._extend_timeline_to_fit_items_calls.append(True)
+
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(
+                    self.timeline_module.ClipboardManager,
+                    "from_mime",
+                    return_value=copied_objects,
+                )
+            )
+            stack.enter_context(patch.object(self.timeline_module, "get_app", return_value=app))
+            self.timeline_module.TimelineView._handle_paste_callback(
+                helper,
+                [],
+                [],
+                {"position": 20.0, "track": 4},
+            )
+
+        self.assertEqual(saved, [{"position": 20.0, "layer": 4, "start": 0.0, "end": 4.0}])
+        self.assertEqual(helper._extend_timeline_to_fit_items_calls, [True])
+        self.assertIsNone(app.updates.transaction_id)
