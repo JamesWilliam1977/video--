@@ -13,6 +13,8 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if PATH not in sys.path:
     sys.path.append(PATH)
 
+TEST_MEDIA_ROOT = os.path.join(os.sep, "mock-media")
+
 from qt_test_app import ensure_app_state, get_or_create_app
 
 
@@ -69,6 +71,22 @@ class DummyVideoPreview:
 
 
 class DialogPreviewResizeTests(unittest.TestCase):
+    def test_cutting_preview_window_title_prefers_friendly_name(self):
+        title = Cutting._preview_window_title(
+            types.SimpleNamespace(data={"name": "My Friendly File", "path": os.path.join(TEST_MEDIA_ROOT, "raw-name.mp4")}),
+            lambda text: text,
+        )
+
+        self.assertEqual(title, "Preview: My Friendly File")
+
+    def test_cutting_preview_window_title_falls_back_to_plain_preview(self):
+        title = Cutting._preview_window_title(
+            types.SimpleNamespace(data={"name": "", "path": ""}),
+            lambda text: text,
+        )
+
+        self.assertEqual(title, "Preview")
+
     def test_cutting_select_reader_data_uses_proxy_when_target_fits(self):
         proxy = {"path": "/proxy.mp4", "width": 1280, "height": 720}
         source = {"path": "/source.mp4", "width": 3840, "height": 2160}
