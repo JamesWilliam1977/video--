@@ -458,11 +458,15 @@ elif sys.platform == "darwin":
     for filename in find_files(babl_ext_path, ["*.dylib"]):
         src_files.append((filename, os.path.join("lib", "babl-ext", os.path.relpath(filename, start=babl_ext_path))))
 
-    for filename in find_files(os.path.join(qt_install_path, "plugins"), ["*"]):
-        relative_filepath = os.path.relpath(filename, start=os.path.join(qt_install_path, "plugins"))
-        plugin_name = os.path.dirname(relative_filepath)
-        if plugin_name in ["imageformats", "platforms"]:
-            external_so_files.append((filename, relative_filepath))
+    qt_plugins_path = QLibraryInfo.location(QLibraryInfo.PluginsPath)
+    if os.path.exists(qt_plugins_path):
+        for filename in find_files(qt_plugins_path, ["*"]):
+            relative_filepath = os.path.relpath(filename, start=qt_plugins_path)
+            plugin_name = os.path.dirname(relative_filepath)
+            if plugin_name in ["imageformats", "platforms"]:
+                external_so_files.append((filename, relative_filepath))
+    else:
+        log.warning("Qt plugins path not found on macOS: %s", qt_plugins_path)
 
     # Append all source files
     src_files.append((os.path.join(PATH, "installer", "qt.conf"), "qt.conf"))
