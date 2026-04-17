@@ -4281,6 +4281,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             # Check if this tab bar contains dock titles
             tabs = [tab_bar.tabText(i) for i in range(tab_bar.count())]
             if any(title in dock_titles for title in tabs):
+                tab_bar.setElideMode(Qt.ElideRight)
                 tab_bar.currentChanged.connect(self._schedule_tab_order_update)
                 self._connected_dock_tab_bars.add(tab_bar)
 
