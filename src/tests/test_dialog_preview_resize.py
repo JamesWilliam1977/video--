@@ -69,6 +69,22 @@ class DummyVideoPreview:
 
 
 class DialogPreviewResizeTests(unittest.TestCase):
+    def test_cutting_preview_window_title_prefers_friendly_name(self):
+        title = Cutting._preview_window_title(
+            types.SimpleNamespace(data={"name": "My Friendly File", "path": "/tmp/raw-name.mp4"}),
+            lambda text: text,
+        )
+
+        self.assertEqual(title, "Preview: My Friendly File")
+
+    def test_cutting_preview_window_title_falls_back_to_plain_preview(self):
+        title = Cutting._preview_window_title(
+            types.SimpleNamespace(data={"name": "", "path": ""}),
+            lambda text: text,
+        )
+
+        self.assertEqual(title, "Preview")
+
     def test_cutting_select_reader_data_uses_proxy_when_target_fits(self):
         proxy = {"path": "/proxy.mp4", "width": 1280, "height": 720}
         source = {"path": "/source.mp4", "width": 3840, "height": 2160}
