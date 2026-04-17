@@ -474,9 +474,9 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             log.error("Error duplicating UpdateAction", exc_info=1)
             return
 
-        # Bail out if change unrelated to webview
+        # Bail out if change unrelated to the timeline widget
         if action and len(action.key) >= 1 and action.key[0] not in ["clips", "effects", "duration", "layers", "markers"]:
-            log.debug(f"Skipping unneeded webview update for '{action.key[0]}'")
+            log.debug(f"Skipping unneeded timeline update for '{action.key[0]}'")
             return
 
         redraw_waveforms = self._should_refresh_waveforms(action)
@@ -493,7 +493,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     TimelineWidget.setZoomFactor(self, initial_scale, emit=False)
             return
 
-        # Send a JSON version of the UpdateAction to the timeline webview method: applyJsonDiff()
+        # Send a JSON version of the UpdateAction to the timeline widget update method.
         if action.type == "load":
             # Set thumbnail server
             self.run_js(JS_SCOPE_SELECTOR + ".setThumbAddress('" + self.get_thumb_address() + "');")

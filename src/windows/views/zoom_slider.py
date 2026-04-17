@@ -549,7 +549,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         self.setZoomFactor(new_factor, center=True)
 
     def update_scrollbars(self, new_positions):
-        """Consume the current scroll bar positions from the webview timeline"""
+        """Consume the current scroll bar positions from the timeline view."""
         if self.mouse_dragging:
             return
 

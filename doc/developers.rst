@@ -101,7 +101,6 @@ unofficial Ubuntu repository, which has our software packages available to downl
                         libzmq3-dev \
                         pkg-config \
                         python3-dev \
-                        python3-pyqt5.qtwebengine \
                         python3-zmq \
                         protobuf-compiler \
                         qtbase5-dev \
@@ -124,9 +123,6 @@ For PySide6 (Qt6) bindings, install these packages:
                         python3-pyside6.qtwidgets \
                         python3-pyside6.qtstatemachine \
                         python3-pyside6.qtsvg \
-                        python3-pyside6.qtwebenginecore \
-                        python3-pyside6.qtwebenginewidgets \
-                        python3-pyside6.qtwebchannel \
                         python3-pyside6.qtuitools \
                         shiboken6
 

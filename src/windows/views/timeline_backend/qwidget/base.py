@@ -760,7 +760,7 @@ class TimelineWidgetBase(QWidget):
         return max(0.0, seconds)
 
     def run_js(self, code, callback=None, retries=0):
-        """Placeholder due to webview compatibility"""
+        """Compatibility placeholder for legacy timeline integration hooks."""
 
     def apply_theme(self, css=None):
         """Apply CSS theme to this widget."""
@@ -796,10 +796,10 @@ class TimelineWidgetBase(QWidget):
         self.update()
 
     def setup_js_data(self):
-        """Placeholder due to webview compatibility"""
+        """Compatibility placeholder for legacy timeline integration hooks."""
 
     def get_html(self):
-        """Placeholder due to webview compatibility"""
+        """Compatibility placeholder for legacy timeline integration hooks."""
 
     # This method is invoked by the UpdateManager each time a change happens (i.e UpdateInterface)
     def changed(self, action):
@@ -2266,7 +2266,7 @@ class TimelineWidgetBase(QWidget):
         self._apply_zoom_steps(-1.0, emit=True)
 
     def update_scrollbars(self, new_positions):
-        """Consume the current scroll bar positions from the webview timeline"""
+        """Consume the current scroll bar positions from the timeline view."""
         if self.mouse_dragging:
             return
 

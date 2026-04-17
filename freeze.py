@@ -287,19 +287,6 @@ elif sys.platform == "linux":
     if os.path.exists(resvg_path):
         external_so_files.append((resvg_path, os.path.basename(resvg_path)))
 
-    # Add QtWebEngineProcess (if found)
-    web_process_path = ARCHLIB + "qt5/libexec/QtWebEngineProcess"
-    if os.path.exists(web_process_path):
-        external_so_files.append(
-            (web_process_path, os.path.basename(web_process_path)))
-
-    # Add QtWebEngineProcess Resources & Local
-    qt5_path = "/usr/share/qt5/"
-    for filename in find_files(os.path.join(qt5_path, "resources"), ["*"]):
-        external_so_files.append((filename, os.path.relpath(filename, start=qt5_path)))
-    for filename in find_files(os.path.join(qt5_path, "translations", "qtwebengine_locales"), ["*"]):
-        external_so_files.append((filename, os.path.relpath(filename, start=qt5_path)))
-
     # Add Qt xcbglintegrations plugin
     xcbgl_path = ARCHLIB + "qt5/"
     for filename in find_files(os.path.join(xcbgl_path, "plugins", "xcbglintegrations"), ["*"]):
@@ -338,19 +325,6 @@ elif sys.platform == "linux":
         mod_name = "{}.{}".format(QT_BINDING_PACKAGE, submod)
         mod = import_module(mod_name)
         qt_mod_files.append(inspect.getfile(mod))
-    # Optional additions
-    for mod_name in [
-            '{}.QtWebEngine'.format(QT_BINDING_PACKAGE),
-            '{}.QtWebEngineWidgets'.format(QT_BINDING_PACKAGE),
-            '{}.QtWebKit'.format(QT_BINDING_PACKAGE),
-            '{}.QtWebKitWidgets'.format(QT_BINDING_PACKAGE),
-            ]:
-        try:
-            mod = import_module(mod_name)
-            qt_mod_files.append(inspect.getfile(mod))
-        except ImportError as ex:
-            log.warning("Skipping {}: {}".format(mod_name, ex))
-
     lib_list = qt_mod_files
     try:
         import _ssl
@@ -478,25 +452,12 @@ elif sys.platform == "darwin":
     iconFile += ".hqx"
     src_files.append((os.path.join(PATH, "xdg", iconFile), iconFile))
 
-    # Add QtWebEngineProcess (if found)
-    qt_install_path = "/usr/local/qt5.15.X/qt5.15/5.15.0/clang_64/"
-    qt_webengine_path = os.path.join(qt_install_path, "lib", "QtWebEngineCore.framework", "Versions", "5")
-    web_process_path = os.path.join(qt_webengine_path, "Helpers", "QtWebEngineProcess.app", "Contents", "MacOS", "QtWebEngineProcess")
-    web_core_path = os.path.join(qt_webengine_path, "QtWebEngineCore")
-    external_so_files.append((web_process_path, os.path.basename(web_process_path)))
-    external_so_files.append((web_core_path, os.path.basename(web_core_path)))
-
     # Manually add BABL extensions (used in ChromaKey effect) - these are loaded at runtime,
     # and thus cx_freeze is not able to detect them
     babl_ext_path = "/usr/local/lib/babl-0.1"
     for filename in find_files(babl_ext_path, ["*.dylib"]):
         src_files.append((filename, os.path.join("lib", "babl-ext", os.path.relpath(filename, start=babl_ext_path))))
 
-    # Add QtWebEngineProcess Resources & Local
-    for filename in find_files(os.path.join(qt_webengine_path, "Resources"), ["*"]):
-        external_so_files.append((filename, os.path.relpath(filename, start=os.path.join(qt_webengine_path, "Resources"))))
-    for filename in find_files(os.path.join(qt_webengine_path, "Resources", "qtwebengine_locales"), ["*"]):
-        external_so_files.append((filename, os.path.relpath(filename, start=os.path.join(qt_webengine_path, "Resources"))))
     for filename in find_files(os.path.join(qt_install_path, "plugins"), ["*"]):
         relative_filepath = os.path.relpath(filename, start=os.path.join(qt_install_path, "plugins"))
         plugin_name = os.path.dirname(relative_filepath)
@@ -585,8 +546,7 @@ elif sys.platform == "linux":
                          "lib/*opencv*",
                          "lib/libopenshot*",
                          "translations/",
-                         "locales/",
-                         "libQt5WebKit.so.5"]
+                         "locales/"]
                 for path in paths:
                     full_path = os.path.join(build_path, frozen_path, path)
                     for remove_path in glob.glob(full_path):
