@@ -654,6 +654,27 @@ class MainWindowTests(unittest.TestCase):
         self.assertEqual(refreshed.calls, [()])
         self.assertIsNone(self.app.updates.transaction_id)
 
+    def test_delete_item_removes_selected_effects(self):
+        calls = []
+        refreshed = SignalRecorder()
+
+        self.app.updates = types.SimpleNamespace(transaction_id=None)
+
+        fake_window = types.SimpleNamespace(
+            filesView=types.SimpleNamespace(hasFocus=lambda: False),
+            timeline=None,
+            refreshFrameSignal=refreshed,
+            actionRemoveEffect_trigger=lambda: calls.append("effect"),
+            actionRemoveClip_trigger=lambda refresh=False: calls.append(("clip", refresh)),
+            actionRemoveTransition_trigger=lambda refresh=False: calls.append(("transition", refresh)),
+        )
+
+        self.main_window_module.MainWindow.deleteItem(fake_window)
+
+        self.assertEqual(calls, ["effect", ("clip", False), ("transition", False)])
+        self.assertEqual(refreshed.calls, [()])
+        self.assertIsNone(self.app.updates.transaction_id)
+
     def test_ripple_delete_gap_shifts_only_later_items_on_same_layer(self):
         saved = []
         clips = [

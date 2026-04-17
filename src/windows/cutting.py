@@ -540,7 +540,7 @@ class Cutting(QDialog):
         if getattr(self, "preview_thread", None):
             # Startup preview should show frame 1 immediately without waiting for
             # preroll/cache work before the first autoplay attempt.
-            self.preview_thread.Seek(1, True)
+            self.preview_thread.Seek(1, False)
         else:
             self.SeekSignal.emit(1)
         if self._preview_autoplay_active:
