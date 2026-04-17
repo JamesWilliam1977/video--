@@ -84,7 +84,7 @@ identify a clip's start is by utilizing the 'next/previous marker' feature on th
 
 List of Effects
 ---------------
-OpenShot Video Editor has a total of 27 built-in video and audio effects: 18 video effects and 9 audio effects.
+OpenShot Video Editor has a total of 36 built-in video and audio effects: 27 video effects and 9 audio effects.
 These effects can be added to a clip by dragging the effect onto a clip. The following table contains
 the name and short description of each effect.
 
@@ -136,6 +136,10 @@ the name and short description of each effect.
    :width: 50px
    :alt: Deinterlace Icon
 
+.. |glow_icon| image:: ../src/effects/icons/glow@2x.png
+   :width: 50px
+   :alt: Glow Icon
+
 .. |hue_icon| image:: ../src/effects/icons/hue@2x.png
    :width: 50px
    :alt: Hue Icon
@@ -163,6 +167,10 @@ the name and short description of each effect.
 .. |sharpen_icon| image:: ../src/effects/icons/sharpen@2x.png
    :width: 50px
    :alt: Sharpen Icon
+
+.. |shadow_icon| image:: ../src/effects/icons/shadow@2x.png
+   :width: 50px
+   :alt: Shadow Icon
 
 .. |shift_icon| image:: ../src/effects/icons/shift@2x.png
    :width: 50px
@@ -238,6 +246,7 @@ the name and short description of each effect.
    |colorshift_icon|           Color Shift                   Shift image colors in various directions.
    |crop_icon|                 Crop                          Crop out parts of your video.
    |deinterlace_icon|          Deinterlace                   Remove interlacing from video.
+   |glow_icon|                 Glow                          Add a soft outer or inner glow to visible pixels.
    |hue_icon|                  Hue                           Adjust hue / color.
    |lensflare_icon|            Lens Flare                    Simulate sunlight hitting a lens with flares.
    |negate_icon|               Negative                      Produce a negative image.
@@ -245,6 +254,7 @@ the name and short description of each effect.
    |outline_icon|              Outline                       Add outline around any image or text.
    |pixelate_icon|             Pixelate                      Increase or decrease visible pixels.
    |sharpen_icon|              Sharpen                       Boost edge contrast to make video details look crisper.
+   |shadow_icon|               Shadow                        Add a soft drop shadow behind visible pixels.
    |shift_icon|                Shift                         Shift image in different directions.
    |sphericalprojection_icon|  Spherical Projection          Flatten or project 360° and fisheye footage.
    |stabilizer_icon|           Stabilizer                    Reduce video shake.
@@ -832,6 +842,25 @@ older video cameras or broadcast sources) into a progressive format suitable for
    isOdd                       ``(bool, choices: ['Yes', 'No'])`` Use odd or even lines
    ==========================  ============
 
+Glow
+""""
+The Glow effect creates a soft halo from the clip's visible pixels. It can render either outside the subject
+for a classic outer glow, or along the inside edges for an inner glow. The effect uses the source alpha channel,
+so transparent PNGs, text, logos, and masked clips work especially well.
+
+.. table::
+   :widths: 26 80
+
+   ==========================  ============
+   Property Name               Description
+   ==========================  ============
+   mode                        ``(int, choices: ['Outer', 'Inner'])`` Choose whether the glow appears outside the visible pixels or just inside their edges.
+   opacity                     ``(float, 0 to 1)`` Overall glow strength and transparency.
+   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the glow.
+   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blurring for a denser glow.
+   color                       ``(color)`` Tint color of the glow, including alpha.
+   ==========================  ============
+
 Hue
 """
 The Hue effect adjusts the overall color balance of the video, changing the hues without affecting the brightness or
@@ -1010,6 +1039,26 @@ Properties
    mode                        ``(int, choices: ['Unsharp', 'HighPass'])`` Math style of the sharpening mask
    channel                     ``(int, choices: ['All', 'Luma', 'Chroma'])`` Which colour channels receive sharpening
    ==========================  ============================================================
+
+Shadow
+""""""
+The Shadow effect creates a soft drop shadow from the clip's visible pixels. It uses the source alpha channel,
+blurs that silhouette, and offsets it by a distance and angle before drawing the original image on top. This is
+useful for giving text, logos, overlays, and cut-out subjects more separation from the background.
+
+.. table::
+   :widths: 26 80
+
+   ==========================  ============
+   Property Name               Description
+   ==========================  ============
+   opacity                     ``(float, 0 to 1)`` Overall shadow strength and transparency.
+   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the shadow.
+   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blur for a fuller shadow shape.
+   distance                    ``(float, -500 to 500)`` Offset distance of the shadow in pixels.
+   angle                       ``(float, -360 to 360)`` Direction of the shadow offset in degrees.
+   color                       ``(color)`` Shadow tint color, including alpha.
+   ==========================  ============
 
 Shift
 """""
