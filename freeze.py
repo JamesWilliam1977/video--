@@ -562,6 +562,21 @@ if os.path.exists(os.path.join(PATH, "src")):
 
 # Fix a few things on the frozen folder(s)
 build_path = os.path.join(PATH, "build")
+
+
+def prune_frozen_root(root_path, patterns):
+    """Remove files/directories matching glob patterns under a frozen output root."""
+    for pattern in patterns:
+        full_pattern = os.path.join(root_path, pattern)
+        for remove_path in glob.glob(full_pattern):
+            if os.path.isfile(remove_path):
+                log.info("Removing unneeded file: %s" % remove_path)
+                os.unlink(remove_path)
+            elif os.path.isdir(remove_path):
+                log.info("Removing unneeded folder: %s" % remove_path)
+                rmtree(remove_path)
+
+
 if sys.platform == "darwin":
     # Mac issues with frozen folder and *.app folder
     # We need to rewrite many dependency paths and library IDs
@@ -578,56 +593,57 @@ elif sys.platform == "linux":
     # We need to remove some excess folders/files that are unneeded bloat
     for frozen_path in os.listdir(build_path):
             if frozen_path.startswith("exe"):
-                paths = ["lib/openshot_qt/",
-                         "lib/*opencv*",
-                         "lib/libopenshot*",
-                         "translations/",
-                         "locales/"]
-                for path in paths:
-                    full_path = os.path.join(build_path, frozen_path, path)
-                    for remove_path in glob.glob(full_path):
-                        if os.path.isfile(remove_path):
-                            log.info("Removing unneeded file: %s" % remove_path)
-                            os.unlink(remove_path)
-                        elif os.path.isdir(remove_path):
-                            log.info("Removing unneeded folder: %s" % remove_path)
-                            rmtree(remove_path)
+                prune_frozen_root(os.path.join(build_path, frozen_path), [
+                    "lib/openshot_qt/",
+                    "lib/*opencv*",
+                    "lib/libopenshot*",
+                    "translations/",
+                    "locales/",
+                ])
 
 # We need to remove some excess folders/files that are unneeded bloat
 # All 3 OSes
+all_platform_prune_patterns = [
+    "lib/babl-ext/libbabl-0.1-0.*",
+    "lib/babl-ext/libgcc_s_seh-1.*",
+    "lib/babl-ext/liblcms2-2.*",
+    "lib/babl-ext/libwinpthread-1.*",
+    "lib/babl-ext/msvcrt.*",
+    "lib/PyQt5/QtWebChannel*",
+    "lib/PyQt5/QtWebEngine*",
+    "lib/PyQt5/QtWebKit*",
+    "lib/PyQt5/QtWebSockets*",
+    "lib/PyQt5/bindings/QtWebChannel/*",
+    "lib/PyQt5/bindings/QtWebEngine/*",
+    "lib/PyQt5/bindings/QtWebEngineCore/*",
+    "lib/PyQt5/bindings/QtWebEngineWidgets/*",
+    "lib/PyQt5/bindings/QtWebKit/*",
+    "lib/PyQt5/bindings/QtWebKitWidgets/*",
+    "PyQt5.uic.widget-plugins/qtwebenginewidgets.py",
+    "PyQt5.uic.widget-plugins/qtwebkit.py",
+    "PyQt5.uic.widget-plugins/__pycache__/qtwebenginewidgets.*",
+    "PyQt5.uic.widget-plugins/__pycache__/qtwebkit.*",
+    "QtWebChannel",
+    "QtWebEngine",
+    "QtWebEngineCore",
+    "QtWebEngineWidgets",
+    "QtWebSockets",
+    "Qt5WebChannel.dll",
+    "Qt5WebEngine.dll",
+    "Qt5WebEngineCore.dll",
+    "Qt5WebEngineWidgets.dll",
+    "Qt5WebKit.dll",
+    "Qt5WebKitWidgets.dll",
+    "language/OpenShot_*.qm",
+    "lib/language/OpenShot_*.qm",
+    "lib/openshot_qt/language/OpenShot_*.qm",
+]
+
 for frozen_path in os.listdir(build_path):
         if frozen_path.startswith("exe"):
-            paths = ["lib/babl-ext/libbabl-0.1-0.*",
-                     "lib/babl-ext/libgcc_s_seh-1.*",
-                     "lib/babl-ext/liblcms2-2.*",
-                     "lib/babl-ext/libwinpthread-1.*",
-                     "lib/babl-ext/msvcrt.*",
-                     "lib/PyQt5/QtWebChannel*",
-                     "lib/PyQt5/QtWebEngine*",
-                     "lib/PyQt5/QtWebKit*",
-                     "lib/PyQt5/bindings/QtWebChannel/*",
-                     "lib/PyQt5/bindings/QtWebEngine/*",
-                     "lib/PyQt5/bindings/QtWebEngineCore/*",
-                     "lib/PyQt5/bindings/QtWebEngineWidgets/*",
-                     "lib/PyQt5/bindings/QtWebKit/*",
-                     "lib/PyQt5/bindings/QtWebKitWidgets/*",
-                     "PyQt5.uic.widget-plugins/qtwebenginewidgets.py",
-                     "PyQt5.uic.widget-plugins/qtwebkit.py",
-                     "PyQt5.uic.widget-plugins/__pycache__/qtwebenginewidgets.*",
-                     "PyQt5.uic.widget-plugins/__pycache__/qtwebkit.*",
-                     "QtWebChannel",
-                     "QtWebEngine",
-                     "QtWebEngineCore",
-                     "QtWebEngineWidgets",
-                     "Qt5WebChannel.dll",
-                     "Qt5WebEngine.dll",
-                     "Qt5WebEngineCore.dll",
-                     "Qt5WebEngineWidgets.dll",
-                     "Qt5WebKit.dll",
-                     "Qt5WebKitWidgets.dll"]
-            for path in paths:
-                full_path = os.path.join(build_path, frozen_path, path)
-                for remove_path in glob.glob(full_path):
-                    if os.path.isfile(remove_path):
-                        log.info("Removing unneeded file: %s" % remove_path)
-                        os.unlink(remove_path)
+            prune_frozen_root(os.path.join(build_path, frozen_path), all_platform_prune_patterns)
+        elif frozen_path.endswith(".app"):
+            prune_frozen_root(
+                os.path.join(build_path, frozen_path, "Contents", "MacOS"),
+                all_platform_prune_patterns,
+            )
