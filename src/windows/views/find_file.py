@@ -30,11 +30,8 @@ import os
 from classes import info
 from classes.app import get_app
 from classes.path_utils import native_display_path, wrapped_path_html
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QFileDialog, QDialog, QVBoxLayout, QHBoxLayout,
-    QPushButton, QLabel
-)
+from qt_api import Qt
+from qt_api import QFileDialog, QDialog, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
 
 # Keep track of all previously checked paths, and keep checking them
 known_paths = [info.HOME_PATH]

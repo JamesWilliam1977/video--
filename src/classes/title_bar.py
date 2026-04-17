@@ -25,7 +25,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel
+from qt_api import QWidget, QHBoxLayout, QPushButton, QLabel
 
 from classes.app import get_app
 
@@ -73,9 +73,14 @@ class HiddenTitleBar(QWidget):
         layout.addWidget(self.undock_button)
         layout.addWidget(self.close_button)
 
-        # Set margins and reduce height for the title bar
+        # Set margins and height for the title bar
         layout.setContentsMargins(0, 0, 0, 0)
-        self.setFixedHeight(20)  # Reduced height
+        if title_text:
+            # Taller for title with bottom margin
+            self.setFixedHeight(40)
+        else:
+            # Shorter for just drag handle + buttons (tabbed docks)
+            self.setFixedHeight(20)
         self._update_accessible_labels()
 
     def update_title(self, text):

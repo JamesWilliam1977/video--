@@ -33,10 +33,10 @@ from functools import partial
 from classes import info
 from classes.logger import log
 
-from PyQt5.QtCore import QFileInfo, QUrl, Qt, QTimer
-from PyQt5.QtGui import QColor
-from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
-from PyQt5.QtWebChannel import QWebChannel
+from qt_api import QFileInfo, QUrl, Qt, QTimer, QT_API
+from qt_api import QColor
+from qt_api import QWebEngineView, QWebEnginePage
+from qt_api import QWebChannel
 
 
 class LoggingWebEnginePage(QWebEnginePage):
@@ -73,17 +73,47 @@ class TimelineWebEngineView(QWebEngineView):
         # Delete the webview when closed
         self.setAttribute(Qt.WA_DeleteOnClose)
 
-        # Enable smooth scrolling on timeline
-        self.settings().setAttribute(self.settings().ScrollAnimatorEnabled, True)
+        # Enable smooth scrolling on timeline (Qt6 uses scoped enums)
+        settings = self.settings()
+        scroll_attr = getattr(settings, "ScrollAnimatorEnabled", None)
+        if scroll_attr is None:
+            web_attr = getattr(settings, "WebAttribute", None)
+            if web_attr and hasattr(web_attr, "ScrollAnimatorEnabled"):
+                scroll_attr = web_attr.ScrollAnimatorEnabled
+        if scroll_attr is not None:
+            settings.setAttribute(scroll_attr, True)
+
+        # Allow local content to access file URLs (Qt6 scoped enums)
+        local_attr = getattr(settings, "LocalContentCanAccessFileUrls", None)
+        if local_attr is None:
+            web_attr = getattr(settings, "WebAttribute", None)
+            if web_attr and hasattr(web_attr, "LocalContentCanAccessFileUrls"):
+                local_attr = web_attr.LocalContentCanAccessFileUrls
+        if local_attr is not None:
+            settings.setAttribute(local_attr, True)
+
+        # Allow local content to access remote URLs (file:// -> http:// thumbnails)
+        remote_attr = getattr(settings, "LocalContentCanAccessRemoteUrls", None)
+        if remote_attr is None:
+            web_attr = getattr(settings, "WebAttribute", None)
+            if web_attr and hasattr(web_attr, "LocalContentCanAccessRemoteUrls"):
+                remote_attr = web_attr.LocalContentCanAccessRemoteUrls
+        if remote_attr is not None:
+            settings.setAttribute(remote_attr, True)
 
         # Set url from configuration (QUrl takes absolute paths for file system paths, create from QFileInfo)
         self.webchannel = QWebChannel(self.page())
-        self.setHtml(self.get_html(), QUrl.fromLocalFile(QFileInfo(self.html_path).absoluteFilePath()))
         self.page().setWebChannel(self.webchannel)
+        self.setHtml(self.get_html(), QUrl.fromLocalFile(QFileInfo(self.html_path).absoluteFilePath()))
 
         # Connect signal of javascript initialization to our javascript reference init function
         log.info("WebEngine backend initializing")
         self.page().loadStarted.connect(self.setup_js_data)
+        self.page().loadFinished.connect(self._load_finished)
+
+    def _load_finished(self, ok):
+        if not ok:
+            log.warning("WebEngine failed to load timeline HTML (%s)", self.html_path)
 
     def run_js(self, code, callback=None, retries=0):
         """Run JS code async and optionally have a callback for response"""
@@ -105,7 +135,14 @@ class TimelineWebEngineView(QWebEngineView):
             return None
         # Execute JS code
         if callback:
-            return self.page().runJavaScript(code, callback)
+            def _wrapped_callback(result):
+                callback(result)
+            if QT_API == "pyside6":
+                try:
+                    return self.page().runJavaScript(code, 0, _wrapped_callback)
+                except TypeError:
+                    return self.page().runJavaScript(code, _wrapped_callback)
+            return self.page().runJavaScript(code, _wrapped_callback)
         # else
         return self.page().runJavaScript(code)
 

@@ -41,11 +41,12 @@ import zipfile
 import threading
 
 import openshot  # Python module for libopenshot (required video editing module installed separately)
-from PyQt5.QtCore import (
+from qt_api import (
     Qt, pyqtSignal, pyqtSlot, QCoreApplication, QTimer, QDateTime, QFileInfo, QEvent, QUrl, QLocale
 )
-from PyQt5.QtGui import QIcon, QCursor, QKeySequence, QTextCursor
-from PyQt5.QtWidgets import (
+from qt_api import QIcon, QCursor, QKeySequence, QTextCursor
+from qt_api import show_open_file_dialog, show_save_file_dialog, file_exists, ensure_extension, path_basename
+from qt_api import (
     QMainWindow, QWidget, QDockWidget,
     QMessageBox, QDialog, QFileDialog, QInputDialog,
     QAction, QActionGroup, QSizePolicy,
@@ -64,6 +65,7 @@ from classes.logger import log
 from classes.metrics import track_metric_session, track_metric_screen
 from classes.path_utils import comparable_local_path, native_display_path, normalized_local_path
 from classes.query import File, Clip, Transition, Marker, Track, Effect
+from classes.clipboard import ClipboardManager
 from classes.generation_queue import GenerationQueueManager
 from classes.generation_service import GenerationService
 from classes.proxy_service import ProxyService
@@ -179,8 +181,18 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if self.shutting_down:
             log.debug("Already shutting down, skipping the closeEvent() method")
             return
-        else:
-            self.shutting_down = True
+
+        # Call the class implementation directly so closeEvent() remains usable
+        # with lightweight duck-typed test doubles that don't bind methods.
+        MainWindow._shutdown(self)
+
+    def _shutdown(self):
+        """Perform shutdown without prompting (used by closeEvent and app cleanup)."""
+        app = get_app()
+        if self.shutting_down:
+            log.debug("Already shutting down, skipping the shutdown routine")
+            return
+        self.shutting_down = True
 
         # Log the exit routine
         log.info('---------------- Shutting down -----------------')
@@ -209,12 +221,14 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Stop timeline background workers (such as the thumbnail thread) before Qt
         # begins destroying child widgets, to avoid QThread warnings on shutdown.
         timeline_widget = getattr(self, "timeline", None)
+        from qt_api import isdeleted
         if timeline_widget and getattr(timeline_widget, "thumbnail_manager", None):
             log.info(
                 "Shutdown timeline thumbnail thread running=%s",
                 timeline_widget.thumbnail_manager._thread.isRunning(),
             )
-            timeline_widget.thumbnail_manager.shutdown()
+            if not isdeleted(timeline_widget.thumbnail_manager):
+                timeline_widget.thumbnail_manager.shutdown()
 
         # Stop thumbnail server thread (if any)
         if self.http_server_thread:
@@ -247,9 +261,10 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 )
             self.preview_thread.player.CloseAudioDevice()
             self.preview_thread.kill()
-            if self.videoPreview:
+            from qt_api import isdeleted
+            if self.videoPreview and not isdeleted(self.videoPreview):
                 self.videoPreview.deleteLater()
-                self.videoPreview = None
+            self.videoPreview = None
             self.preview_parent.Stop()
 
         # Clean-up Timeline
@@ -686,7 +701,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         app.setOverrideCursor(QCursor(Qt.WaitCursor))
 
         try:
-            if os.path.exists(file_path):
+            if file_exists(file_path):
                 # Clear any previous thumbnails
                 if clear_thumbnails:
                     self.clear_temporary_files()
@@ -769,6 +784,24 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         s = app.get_settings()
         recommended_folder = s.getDefaultPath(s.actionType.LOAD)
 
+        def _show_open_dialog():
+            def _on_file_selected(qurl_list):
+                if not qurl_list:
+                    return
+                file_path = qurl_list[0].toLocalFile() or qurl_list[0].toString()
+                if file_path:
+                    s.setDefaultPath(s.actionType.LOAD, file_path)
+                    self.OpenProjectSignal.emit(file_path)
+
+            show_open_file_dialog(
+                self,
+                _("Open Project..."),
+                recommended_folder,
+                _("OpenShot Project (*.osp)"),
+                _on_file_selected,
+                allow_multiple=False,
+            )
+
         # Do we have unsaved changes?
         if app.project.needs_save():
             ret = QMessageBox.question(
@@ -777,50 +810,47 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 _("Save changes to project first?"),
                 QMessageBox.Cancel | QMessageBox.No | QMessageBox.Yes)
             if ret == QMessageBox.Yes:
-                # Save project
+                # Save project first, then open
                 self.actionSave_trigger()
+                _show_open_dialog()
             elif ret == QMessageBox.Cancel:
-                # User canceled prompt
                 return
-
-        # Prompt for open project file
-        file_path = QFileDialog.getOpenFileName(
-            self,
-            _("Open Project..."),
-            recommended_folder,
-            _("OpenShot Project (*.osp)"))[0]
-
-        if file_path:
-            # Load project file
-            self.OpenProjectSignal.emit(file_path)
+            else:
+                _show_open_dialog()
+        else:
+            _show_open_dialog()
 
     def actionSave_trigger(self):
         app = get_app()
         s = app.get_settings()
         _ = app._tr
 
-        # Get current filepath if any, otherwise ask user
+        # If the project already has a path, save immediately without a dialog.
         file_path = app.project.current_filepath
-        if not file_path:
-            recommended_folder = s.getDefaultPath(s.actionType.SAVE)
-            recommended_path = os.path.join(
-                recommended_folder,
-                _("Untitled Project") + ".osp"
-            )
-            file_path = QFileDialog.getSaveFileName(
-                self,
-                _("Save Project..."),
-                recommended_path,
-                _("OpenShot Project (*.osp)"))[0]
-
         if file_path:
             s.setDefaultPath(s.actionType.SAVE, file_path)
-            # Append .osp if needed
-            if not file_path.endswith(".osp"):
-                file_path = "%s.osp" % file_path
-
-            # Save project
+            file_path = ensure_extension(file_path, ".osp")
             self.save_project(file_path)
+            return
+
+        # No existing path — ask the user where to save.
+        recommended_folder = s.getDefaultPath(s.actionType.SAVE)
+        suggested_name = _("Untitled Project") + ".osp"
+
+        def _on_path(path):
+            if not path:
+                return
+            s.setDefaultPath(s.actionType.SAVE, path)
+            self.save_project(ensure_extension(path, ".osp"))
+
+        show_save_file_dialog(
+            self,
+            _("Save Project..."),
+            suggested_name,
+            "*/*",
+            _on_path,
+            directory=recommended_folder,
+        )
 
     def auto_save_project(self):
         """Auto save the project"""
@@ -840,9 +870,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         if file_path:
             # A Real project file exists
-            # Append .osp if needed
-            if not file_path.endswith(".osp"):
-                    file_path = "%s.osp" % file_path
+            file_path = ensure_extension(file_path, ".osp")
 
             # Save project
             log.info("Auto save project file: %s", file_path)
@@ -872,28 +900,23 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         _ = app._tr
 
         project_file_path = app.project.current_filepath
-        if project_file_path:
-            recommended_file_name = os.path.basename(project_file_path)
-        else:
-            recommended_file_name = "%s.osp" % _("Untitled Project")
+        suggested_name = path_basename(project_file_path) or ("%s.osp" % _("Untitled Project"))
+
+        def _on_path(path):
+            if not path:
+                return
+            s.setDefaultPath(s.actionType.SAVE, path)
+            threading.Thread(target=self.save_project, args=(ensure_extension(path, ".osp"),), daemon=True).start()
+
         recommended_folder = s.getDefaultPath(s.actionType.SAVE)
-        recommended_path = os.path.join(
-            recommended_folder,
-            recommended_file_name
-        )
-        file_path = QFileDialog.getSaveFileName(
+        show_save_file_dialog(
             self,
             _("Save Project As..."),
-            recommended_path,
-            _("OpenShot Project (*.osp)"))[0]
-        if file_path:
-            s.setDefaultPath(s.actionType.SAVE, file_path)
-            # Append .osp if needed
-            if ".osp" not in file_path:
-                file_path = "%s.osp" % file_path
-
-            # Save new project
-            threading.Thread(target=self.save_project, args=(file_path,), daemon=True).start()
+            suggested_name,
+            "*/*",
+            _on_path,
+            directory=recommended_folder,
+        )
 
     def actionImportFiles_trigger(self):
         app = get_app()
@@ -902,30 +925,20 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         recommended_path = s.getDefaultPath(s.actionType.IMPORT)
 
-        fd = QFileDialog()
-        fd.setDirectory(recommended_path)
-        qurl_list = fd.getOpenFileUrls(
-            self,
-            _("Import Files...")
-        )[0]
+        def _on_files_selected(qurl_list):
+            if not qurl_list:
+                return
+            app.setOverrideCursor(QCursor(Qt.WaitCursor))
+            try:
+                self.dockFiles.setVisible(True)
+                self.dockFiles.raise_()
+                self.dockFiles.activateWindow()
+                self.files_model.process_urls(qurl_list)
+                self.refreshFilesSignal.emit()
+            finally:
+                app.restoreOverrideCursor()
 
-        # Set cursor to waiting
-        app.setOverrideCursor(QCursor(Qt.WaitCursor))
-
-        try:
-            # Switch to Files dock
-            self.dockFiles.setVisible(True)
-            self.dockFiles.raise_()
-            self.dockFiles.activateWindow()
-
-            # Import list of files
-            self.files_model.process_urls(qurl_list)
-
-            # Refresh files views
-            self.refreshFilesSignal.emit()
-        finally:
-            # Restore cursor
-            app.restoreOverrideCursor()
+        show_open_file_dialog(self, _("Import Files..."), recommended_path, "", _on_files_selected)
 
     def invalidImage(self, filename=None):
         """ Show a popup when an image file can't be loaded """
@@ -2883,6 +2896,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     def caption_editor_load(self, new_caption_text, caption_model_row):
         """Load the caption editor with text, or disable it if empty string detected"""
         self.caption_model_row = caption_model_row
+        if self.captionTextEdit is None:
+            self.captionTextEdit = QTextEdit(self.dockCaptionContents)
+            self.captionTextEdit.setReadOnly(True)
+            self.tabCaptions.addWidget(self.captionTextEdit)
+            self.captionTextEdit.textChanged.connect(self.captionTextEdit_TextChanged)
         self.captionTextEdit.setPlainText(new_caption_text.strip())
         if not caption_model_row:
             self.captionTextEdit.setReadOnly(True)
@@ -3067,6 +3085,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     # Get window settings from setting store
     def load_settings(self):
         s = get_app().get_settings()
+        from qt_api import QT_API
 
         # Window state and geometry (also toolbar, dock locations and frozen UI state)
         if s.get('window_geometry_v2'):
@@ -3124,8 +3143,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 _("Recent Projects"))
             self.menuFile.insertMenu(self.actionRecentProjects, self.recent_menu)
         else:
-            # Clear the existing children
-            self.recent_menu.clear()
+            # Remove all actions individually instead of clear() — PySide6's
+            # clear() can delete QActions owned by other parents (e.g. actionClearRecents),
+            # crashing the next load_recent_menu call with "C++ object already deleted".
+            for _action in list(self.recent_menu.actions()):
+                self.recent_menu.removeAction(_action)
 
         # Add recent projects to menu
         # Show just a placeholder menu, if we have no recent projects list
@@ -3305,7 +3327,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.actionRedo.setEnabled(False)
 
         # Add files toolbar
-        self.filesToolbar = QToolBar("Files Toolbar")
+        self.filesToolbar = QToolBar("Files Toolbar", self.dockFilesContents)
         self.filesToolbar.setObjectName("filesToolbar")
         self.filesActionGroup = QActionGroup(self)
         self.filesActionGroup.setExclusive(True)
@@ -3318,15 +3340,15 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.filesToolbar.addAction(self.actionFilesShowVideo)
         self.filesToolbar.addAction(self.actionFilesShowAudio)
         self.filesToolbar.addAction(self.actionFilesShowImage)
-        self.filesFilter = QLineEdit()
+        self.filesFilter = QLineEdit(self.filesToolbar)
         self.filesFilter.setObjectName("filesFilter")
         self.filesFilter.setPlaceholderText(_("Filter"))
         self.filesFilter.setClearButtonEnabled(True)
         self.filesToolbar.addWidget(self.filesFilter)
-        self.tabFiles.layout().insertWidget(0, self.filesToolbar)
+        self.tabFiles.insertWidget(0, self.filesToolbar)
 
         # Add transitions toolbar
-        self.transitionsToolbar = QToolBar("Transitions Toolbar")
+        self.transitionsToolbar = QToolBar("Transitions Toolbar", self.dockTransitionsContents)
         self.transitionsToolbar.setObjectName("transitionsToolbar")
         self.transitionsActionGroup = QActionGroup(self)
         self.transitionsActionGroup.setExclusive(True)
@@ -3335,17 +3357,17 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.actionTransitionsShowAll.setChecked(True)
         self.transitionsToolbar.addAction(self.actionTransitionsShowAll)
         self.transitionsToolbar.addAction(self.actionTransitionsShowCommon)
-        self.transitionsFilter = QLineEdit()
+        self.transitionsFilter = QLineEdit(self.transitionsToolbar)
         self.transitionsFilter.setObjectName("transitionsFilter")
         self.transitionsFilter.setPlaceholderText(_("Filter"))
         self.transitionsFilter.setClearButtonEnabled(True)
         self.transitionsToolbar.addWidget(self.transitionsFilter)
-        self.tabTransitions.layout().addWidget(self.transitionsToolbar)
+        self.tabTransitions.addWidget(self.transitionsToolbar)
 
         # Add effects toolbar
-        self.effectsToolbar = QToolBar("Effects Toolbar")
+        self.effectsToolbar = QToolBar("Effects Toolbar", self.dockEffectsContents)
         self.effectsToolbar.setObjectName("effectsToolbar")
-        self.effectsFilter = QLineEdit()
+        self.effectsFilter = QLineEdit(self.effectsToolbar)
         self.effectsActionGroup = QActionGroup(self)
         self.effectsActionGroup.setExclusive(True)
         self.effectsActionGroup.addAction(self.actionEffectsShowAll)
@@ -3359,40 +3381,40 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.effectsFilter.setPlaceholderText(_("Filter"))
         self.effectsFilter.setClearButtonEnabled(True)
         self.effectsToolbar.addWidget(self.effectsFilter)
-        self.tabEffects.layout().addWidget(self.effectsToolbar)
+        self.tabEffects.addWidget(self.effectsToolbar)
 
         # Add emojis toolbar
-        self.emojisToolbar = QToolBar("Emojis Toolbar")
+        self.emojisToolbar = QToolBar("Emojis Toolbar", self.dockEmojisContents)
         self.emojisToolbar.setObjectName("emojisToolbar")
-        self.emojiFilterGroup = QComboBox()
-        self.emojisFilter = QLineEdit()
+        self.emojiFilterGroup = QComboBox(self.emojisToolbar)
+        self.emojisFilter = QLineEdit(self.emojisToolbar)
         self.emojisFilter.setObjectName("emojisFilter")
         self.emojisFilter.setPlaceholderText(_("Filter"))
         self.emojisFilter.setClearButtonEnabled(True)
         self.emojisToolbar.addWidget(self.emojiFilterGroup)
         self.emojisToolbar.addWidget(self.emojisFilter)
-        self.tabEmojis.layout().addWidget(self.emojisToolbar)
+        self.tabEmojis.addWidget(self.emojisToolbar)
 
         # Add Video Preview toolbar
-        self.videoToolbar = QToolBar("Video Toolbar")
+        self.videoToolbar = QToolBar("Video Toolbar", self.dockVideoContents)
         self.videoToolbar.setObjectName("videoToolbar")
-        self.tabVideo.layout().addWidget(self.videoToolbar)
+        self.tabVideo.addWidget(self.videoToolbar)
 
         # Add Timeline toolbar
-        self.timelineToolbar = QToolBar("Timeline Toolbar", self)
+        self.timelineToolbar = QToolBar("Timeline Toolbar", getattr(self, "dockTimelineContents", self))
         self.timelineToolbar.setObjectName("timelineToolbar")
 
         # Add Video Preview toolbar
-        self.captionToolbar = QToolBar(_("Caption Toolbar"))
+        self.captionToolbar = QToolBar(_("Caption Toolbar"), self.dockCaptionContents)
 
         # Add Caption text editor widget
-        self.captionTextEdit = QTextEdit()
+        self.captionTextEdit = QTextEdit(self.dockCaptionContents)
         self.captionTextEdit.setReadOnly(True)
 
         # Playback controls (centered)
         self.captionToolbar.addAction(self.actionInsertTimestamp)
-        self.tabCaptions.layout().addWidget(self.captionToolbar)
-        self.tabCaptions.layout().addWidget(self.captionTextEdit)
+        self.tabCaptions.addWidget(self.captionToolbar)
+        self.tabCaptions.addWidget(self.captionTextEdit)
 
         # Hook up caption editor signal
         self.captionTextEdit.textChanged.connect(self.captionTextEdit_TextChanged)
@@ -3416,7 +3438,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.timelineToolbar.addWidget(self.sliderZoomWidget)
 
         # Add timeline toolbar to web frame
-        self.frameWeb.addWidget(self.timelineToolbar)
+        self.frameWeb.insertWidget(0, self.timelineToolbar)
+        self.timelineToolbar.show()
 
     def clearSelections(self):
         """Clear all selection containers and reset preview transforms"""
@@ -3621,8 +3644,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.filesTreeView = FilesTreeView(self.files_model)
         self.filesListView = FilesListView(self.files_model)
         self.files_model.update_model()
-        self.tabFiles.layout().insertWidget(-1, self.filesTreeView)
-        self.tabFiles.layout().insertWidget(-1, self.filesListView)
+        self.tabFiles.insertWidget(-1, self.filesTreeView)
+        self.tabFiles.insertWidget(-1, self.filesListView)
         if s.get("file_view") == "details":
             self.filesView = self.filesTreeView
             self.filesListView.hide()
@@ -3640,8 +3663,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.transitionsTreeView = TransitionsTreeView(self.transition_model)
         self.transitionsListView = TransitionsListView(self.transition_model)
         self.transition_model.update_model()
-        self.tabTransitions.layout().insertWidget(-1, self.transitionsTreeView)
-        self.tabTransitions.layout().insertWidget(-1, self.transitionsListView)
+        self.tabTransitions.insertWidget(-1, self.transitionsTreeView)
+        self.tabTransitions.insertWidget(-1, self.transitionsListView)
         if s.get("transitions_view") == "details":
             self.transitionsView = self.transitionsTreeView
             self.transitionsListView.hide()
@@ -3659,8 +3682,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.effectsTreeView = EffectsTreeView(self.effects_model)
         self.effectsListView = EffectsListView(self.effects_model)
         self.effects_model.update_model()
-        self.tabEffects.layout().insertWidget(-1, self.effectsTreeView)
-        self.tabEffects.layout().insertWidget(-1, self.effectsListView)
+        self.tabEffects.insertWidget(-1, self.effectsTreeView)
+        self.tabEffects.insertWidget(-1, self.effectsListView)
         if s.get("effects_view") == "details":
             self.effectsView = self.effectsTreeView
             self.effectsListView.hide()
@@ -3677,7 +3700,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.emojis_model = EmojisModel()
         self.emojis_model.update_model()
         self.emojiListView = EmojisListView(self.emojis_model)
-        self.tabEmojis.layout().addWidget(self.emojiListView)
+        self.tabEmojis.addWidget(self.emojiListView)
 
     def _init_generation_actions(self):
         _ = get_app()._tr
@@ -3842,13 +3865,25 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         """Handle Paste QShortcut (at timeline position, same track as original clip)"""
         clipboard = get_app().clipboard()
         mime_data = clipboard.mimeData() if clipboard else None
+        copied_object = ClipboardManager.from_mime(mime_data) if mime_data else None
 
         if mime_data and not mime_data.hasFormat("application/x-openshot-generic"):
             if self.import_files_from_clipboard(mime_data):
                 return
 
+        paste_clip_ids = self.selected_clips
+        paste_tran_ids = self.selected_transitions
+        if isinstance(copied_object, (Clip, Transition)):
+            paste_clip_ids = []
+            paste_tran_ids = []
+        elif isinstance(copied_object, list) and copied_object and all(
+            isinstance(obj, (Clip, Transition)) for obj in copied_object
+        ):
+            paste_clip_ids = []
+            paste_tran_ids = []
+
         self.timeline.context_menu_cursor_position = None
-        self.timeline.Paste_Triggered(MenuCopy.PASTE, self.selected_clips, self.selected_transitions)
+        self.timeline.Paste_Triggered(MenuCopy.PASTE, paste_clip_ids, paste_tran_ids)
 
     def clipboard_contains_media(self, mime_data=None):
         """Check if clipboard contains media files or supported media data."""
@@ -4060,7 +4095,13 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                     try:
                         sequences = get_app().window.getShortcutByName(action_name)
                         for sequence in sequences:
-                            if (sequence == QKeySequence(event.modifiers() | event.key())):
+                            try:
+                                modifiers = event.modifiers()
+                                key = event.key()
+                                combo = int(modifiers.value) | int(key) if hasattr(modifiers, "value") else int(modifiers) | int(key)
+                            except Exception:
+                                combo = event.modifiers() | event.key()
+                            if (sequence == QKeySequence(combo)):
                                 event.accept()
                                 return True
                     except KeyError:
@@ -4078,7 +4119,11 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                         # Get the shortcut key sequence
                         sequences = get_app().window.getShortcutByName(action_name)
                         for sequence in sequences:
-                            if (sequence == QKeySequence(event.modifiers() | event.key())):
+                            if hasattr(event, "keyCombination"):
+                                event_sequence = QKeySequence(event.keyCombination())
+                            else:
+                                event_sequence = QKeySequence(event.modifiers() | event.key())
+                            if sequence == event_sequence:
                                 event.accept()
                                 return True
 
@@ -4365,7 +4410,10 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Setup timeline
         self.timeline = TimelineView(self)
-        self.frameWeb.layout().addWidget(self.timeline)
+        self.frameWeb.addWidget(self.timeline)
+        self.frameWeb.setStretch(0, 0)
+        self.frameWeb.setStretch(1, 1)
+        self.timeline.show()
 
         # Configure the side docks to full-height
         self.setCorner(Qt.TopLeftCorner, Qt.LeftDockWidgetArea)
@@ -4418,9 +4466,10 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.clearSelections()
 
         # Setup video preview QWidget
-        self.videoPreview = VideoWidget()
+        self.videoPreview = VideoWidget(self.dockVideoContents)
         self.videoPreview.setObjectName("videoPreview")
-        self.tabVideo.layout().insertWidget(0, self.videoPreview)
+        self.tabVideo.insertWidget(0, self.videoPreview)
+        self.videoPreview.show()
 
         # Load window state and geometry
         self.saved_state = None

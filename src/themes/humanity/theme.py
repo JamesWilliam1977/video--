@@ -70,7 +70,7 @@ QLabel#lblMissingFilePath {
 
         from classes import ui_util
         from classes.logger import log
-        from PyQt5.QtWidgets import QStyleFactory
+        from qt_api import QStyleFactory
 
         log.info("Setting Fusion dark palette")
         self.app.setStyle(QStyleFactory.create("Fusion"))

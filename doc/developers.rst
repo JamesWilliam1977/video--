@@ -75,7 +75,9 @@ unofficial Ubuntu repository, which has our software packages available to downl
    sudo add-apt-repository ppa:openshot.developers/libopenshot-daily
    sudo apt-get update
    sudo apt-get install openshot-qt \
+                        build-essential \
                         cmake \
+                        catch2 \
                         libx11-dev \
                         libasound2-dev \
                         libavcodec-dev \
@@ -99,12 +101,44 @@ unofficial Ubuntu repository, which has our software packages available to downl
                         libzmq3-dev \
                         pkg-config \
                         python3-dev \
+                        python3-pyqt5.qtwebengine \
+                        python3-zmq \
                         protobuf-compiler \
                         qtbase5-dev \
                         libqt5svg5-dev \
                         libxcb-xfixes0-dev \
                         qtmultimedia5-dev \
                         swig
+
+OpenShot supports PyQt5, PyQt6, and PySide6. libopenshot must be built
+against the correct Qt version for the binding you are using
+(Qt5: PyQt5, Qt6: PyQt6 or PySide6).
+
+For PySide6 (Qt6) bindings, install these packages:
+
+.. code-block:: bash
+
+   sudo apt-get install \
+                        python3-pyside6.qtcore \
+                        python3-pyside6.qtgui \
+                        python3-pyside6.qtwidgets \
+                        python3-pyside6.qtstatemachine \
+                        python3-pyside6.qtsvg \
+                        python3-pyside6.qtwebenginecore \
+                        python3-pyside6.qtwebenginewidgets \
+                        python3-pyside6.qtwebchannel \
+                        python3-pyside6.qtuitools \
+                        shiboken6
+
+For PyQt6, install these packages:
+
+.. code-block:: bash
+
+   sudo apt-get install \
+                        qt6-base-dev \
+                        qt6-base-dev-tools \
+                        qt6-tools-dev \
+                        qt6-svg-dev
 
 At this point, you should have all 3 OpenShot components source code cloned into local folders, the OpenShot
 daily PPA installed, and all of the required development and runtime dependencies installed. This is a

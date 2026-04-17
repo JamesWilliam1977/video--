@@ -32,27 +32,16 @@ from functools import partial
 from types import SimpleNamespace
 
 import openshot
-from PyQt5.QtCore import (
-    Qt,
-    QRectF,
-    QSize,
-    QTimer,
-    QPointF,
-    QSignalTransition,
-    QByteArray,
-    pyqtSignal,
-    pyqtSlot,
-    QObject,
-    QMetaMethod,
-)
-from PyQt5.QtGui import (
+from qt_api import Qt, QRectF, QSize, QTimer, QPointF, QByteArray, pyqtSignal, pyqtSlot, QObject, QMetaMethod
+from qt_api import QtCore
+from qt_api import (
     QPainter,
     QCursor,
     QIcon,
-    QColor,
+    QToolTip,
     QPixmap,
 )
-from PyQt5.QtWidgets import QSizePolicy, QWidget, QToolTip
+from qt_api import QSizePolicy, QWidget
 
 from ..geometry import Geometry
 from ..paint import (
@@ -111,7 +100,13 @@ def _collect_signal_signatures(qobject_type):
 _TIMELINE_EVENT_SIGNATURES = _collect_signal_signatures(TimelineEvents)
 
 
-class _ConditionalTransition(QSignalTransition):
+def _event_posf(event):
+    if hasattr(event, "position"):
+        return event.position()
+    return QPointF(event.pos())
+
+
+class _ConditionalTransition(QtCore.QSignalTransition):
     def __init__(self, sender, signal_bytes, source_state, target_state, condition):
         """Create a QSignalTransition that evaluates a condition before firing."""
 
@@ -351,9 +346,19 @@ class TimelineWidgetBase(QWidget):
 
         # Load icon (using display DPI)
         self.cursors = {}
+        cursor_fallbacks = {
+            "move": Qt.SizeAllCursor,
+            "resize_x": Qt.SizeHorCursor,
+            "hand": Qt.OpenHandCursor,
+        }
         for cursor_name in ["move", "resize_x", "hand"]:
             icon = QIcon(":/cursors/cursor_%s.png" % cursor_name)
-            self.cursors[cursor_name] = QCursor(icon.pixmap(24, 24))
+            pixmap = icon.pixmap(24, 24)
+            if pixmap.isNull() or pixmap.size().isEmpty():
+                self.cursors[cursor_name] = QCursor(cursor_fallbacks[cursor_name])
+            else:
+                self.cursors[cursor_name] = QCursor(pixmap)
+        self.cursors["razor"] = self._load_razor_cursor()
         self.cursors["razor"] = self._load_razor_cursor()
 
         # Init Qt widget's properties (background repainting, etc...)
@@ -556,7 +561,7 @@ class TimelineWidgetBase(QWidget):
         return self.events, self._event_signal_bytes(name)
 
     def _add_simple_transition(self, source_state, sender, sig_bytes, target_state):
-        t = QSignalTransition(source_state)
+        t = QtCore.QSignalTransition(source_state)
         normalized = _normalize_signal_bytes(sig_bytes)
         t.setSenderObject(sender)
         t.setSignal(QByteArray(normalized))
@@ -1100,6 +1105,25 @@ class TimelineWidgetBase(QWidget):
     def dragEnterEvent(self, event):
         self._drag_payload = None
         mime = event.mimeData()
+        mime_html = mime.html()
+
+        if mime_html:
+            if mime_html in ("clip", "transition"):
+                try:
+                    ids = json.loads(mime.text())
+                except Exception:
+                    ids = []
+                if not isinstance(ids, list):
+                    ids = [ids]
+                self._drag_payload = {"type": mime_html, "ids": ids}
+                self.item_type = mime_html
+                self.new_item = True
+                event.accept()
+                return
+            if mime_html == "effect":
+                self._drag_payload = {"type": "effect"}
+                event.accept()
+                return
 
         if mime.hasUrls():
             urls = mime.urls()
@@ -1116,25 +1140,7 @@ class TimelineWidgetBase(QWidget):
             self._drag_payload = {"type": "os_drop", "urls": urls}
             return
 
-        mime_html = mime.html()
-        if mime_html:
-            if mime_html in ("clip", "transition"):
-                try:
-                    ids = json.loads(mime.text())
-                except Exception:
-                    ids = []
-                if not isinstance(ids, list):
-                    ids = [ids]
-                self._drag_payload = {"type": mime_html, "ids": ids}
-                self.item_type = mime_html
-                self.new_item = True
-                event.accept()
-            elif mime_html == "effect":
-                event.accept()
-            else:
-                event.ignore()
-        else:
-            event.ignore()
+        event.ignore()
 
     def dragMoveEvent(self, event):
         event.accept()
@@ -1168,30 +1174,7 @@ class TimelineWidgetBase(QWidget):
         os_drop_tid = None
         mime = event.mimeData()
         mime_html = mime.html()
-        if mime.hasUrls():
-            payload = self._drag_payload or {}
-            if (
-                payload.get("type") == "clip"
-                and payload.get("source") == "os_drop"
-                and payload.get("ids")
-            ):
-                file_ids.extend(payload.get("ids") or [])
-                os_drop_tid = payload.get("transaction_id")
-                mime_html = "clip"
-            else:
-                urls = mime.urls()
-                # Wrap file import + clip creation + auto-transitions in a single
-                # transaction so a single Undo reverts everything.
-                os_drop_tid = str(uuid.uuid4())
-                self.win.files_model.process_urls(
-                    urls, import_quietly=True, prevent_image_seq=True,
-                    transaction_id=os_drop_tid,
-                )
-                # process_urls preserves our transaction when given a transaction_id
-                for uri in urls:
-                    for f in File.filter(path=uri.toLocalFile()):
-                        file_ids.append(f.id)
-        elif mime_html == "clip":
+        if mime_html == "clip":
             try:
                 ids = json.loads(mime.text())
             except Exception:
@@ -1215,6 +1198,29 @@ class TimelineWidgetBase(QWidget):
             if not isinstance(names, list):
                 names = [names]
             effect_names.extend(names)
+        elif mime.hasUrls():
+            payload = self._drag_payload or {}
+            if (
+                payload.get("type") == "clip"
+                and payload.get("source") == "os_drop"
+                and payload.get("ids")
+            ):
+                file_ids.extend(payload.get("ids") or [])
+                os_drop_tid = payload.get("transaction_id")
+                mime_html = "clip"
+            else:
+                urls = mime.urls()
+                # Wrap file import + clip creation + auto-transitions in a single
+                # transaction so a single Undo reverts everything.
+                os_drop_tid = str(uuid.uuid4())
+                self.win.files_model.process_urls(
+                    urls, import_quietly=True, prevent_image_seq=True,
+                    transaction_id=os_drop_tid,
+                )
+                # process_urls preserves our transaction when given a transaction_id
+                for uri in urls:
+                    for f in File.filter(path=uri.toLocalFile()):
+                        file_ids.append(f.id)
 
         if not file_ids and not effect_names:
             if os_drop_tid:
@@ -1239,7 +1245,7 @@ class TimelineWidgetBase(QWidget):
                 effect_names,
                 pos_seconds,
                 track_num,
-                drop_pos=event.pos(),
+                drop_pos=_event_posf(event),
             )
             self._reset_drag_preview()
             return
@@ -1286,16 +1292,6 @@ class TimelineWidgetBase(QWidget):
         if self._drag_payload:
             return self._drag_payload
         mime = event.mimeData()
-        if mime.hasUrls():
-            urls = mime.urls()
-            payload = self._preimport_os_drop_urls(urls)
-            if payload:
-                self._drag_payload = payload
-                self.item_type = payload.get("type")
-                self.new_item = True
-                return self._drag_payload
-            self._drag_payload = {"type": "os_drop", "urls": urls}
-            return self._drag_payload
         mime_html = mime.html()
         if mime_html in {"clip", "transition"}:
             try:
@@ -1309,6 +1305,15 @@ class TimelineWidgetBase(QWidget):
             self.new_item = True
         elif mime_html == "effect":
             self._drag_payload = {"type": "effect"}
+        elif mime.hasUrls():
+            urls = mime.urls()
+            payload = self._preimport_os_drop_urls(urls)
+            if payload:
+                self._drag_payload = payload
+                self.item_type = payload.get("type")
+                self.new_item = True
+                return self._drag_payload
+            self._drag_payload = {"type": "os_drop", "urls": mime.urls()}
         return self._drag_payload
 
     def _viewport_offsets(self):
@@ -1330,10 +1335,11 @@ class TimelineWidgetBase(QWidget):
         return h_offset, v_offset
 
     def _event_seconds_track(self, event):
-        pos = event.pos()
+        pos = _event_posf(event)
         if pos.y() < self.ruler_height:
             return None
-        if not self.rect().contains(pos):
+        contains_pos = pos.toPoint() if hasattr(pos, "toPoint") else pos
+        if not self.rect().contains(contains_pos):
             return None
         if not self.track_list:
             return None
@@ -2806,7 +2812,7 @@ class TimelineWidgetBase(QWidget):
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.geometry.ensure()
-            pos = event.pos()
+            pos = _event_posf(event)
             for rect, item, _selected, _type in self.geometry.iter_items(reverse=True):
                 if rect.contains(pos):
                     self.win.actionProperties.trigger()
@@ -2817,18 +2823,20 @@ class TimelineWidgetBase(QWidget):
     def mousePressEvent(self, event):
         self._reset_ctrl_mouse_zoom()
         self._press_marker = None
+        posf = _event_posf(event)
+        pos = posf
         if event.button() == Qt.RightButton:
             self._last_event = event
-            if self._panel_show_property_menu_at(event.pos()):
+            if self._panel_show_property_menu_at(posf):
                 event.accept()
                 return
-            icon_entry = self._effect_icon_at(event.pos())
+            icon_entry = self._effect_icon_at(posf)
             if icon_entry and self._trigger_effect_context_menu(
                 icon_entry, event.modifiers() if hasattr(event, "modifiers") else None
             ):
                 event.accept()
                 return
-            if self._showContextMenu(event.pos()):
+            if self._showContextMenu(posf):
                 event.accept()
             else:
                 event.ignore()
@@ -2840,12 +2848,11 @@ class TimelineWidgetBase(QWidget):
                 if self._start_ctrl_mouse_zoom(event.pos()):
                     event.accept()
                     return
-            if self._startMiddlePan(event.pos()):
+            if self._startMiddlePan(posf):
                 event.accept()
                 return
 
         self.geometry.ensure()
-        pos = event.pos()
 
         if event.button() == Qt.LeftButton:
             toolbar_button = self._track_toolbar_button_at(pos)
@@ -2932,7 +2939,7 @@ class TimelineWidgetBase(QWidget):
         return False
 
     def _assign_press_target(self, event):
-        pos = event.pos()
+        pos = _event_posf(event)
         modifiers = event.modifiers() if hasattr(event, "modifiers") else Qt.NoModifier
         ctrl = bool(modifiers & Qt.ControlModifier)
         marker_entry = self._marker_at(pos)
@@ -3073,6 +3080,7 @@ class TimelineWidgetBase(QWidget):
 
     def mouseMoveEvent(self, event):
         self._last_event = event
+        posf = _event_posf(event)
 
         if self._handle_ctrl_mouse_zoom(event):
             return
@@ -3083,7 +3091,7 @@ class TimelineWidgetBase(QWidget):
             width_norm = self.scrollbar_position_previous[1] - self.scrollbar_position_previous[0]
             handle_w = width_norm * view_w
             avail = view_w - handle_w
-            delta_px = self.mouse_position - event.pos().x()
+            delta_px = self.mouse_position - posf.x()
             delta = 0.0
             if avail > 0:
                 delta = (delta_px / avail) * (1.0 - width_norm)
@@ -3104,7 +3112,7 @@ class TimelineWidgetBase(QWidget):
             height_norm = self.v_scrollbar_position_previous[1] - self.v_scrollbar_position_previous[0]
             handle_h = height_norm * view_h
             avail = view_h - handle_h
-            delta_py = self.mouse_position - event.pos().y()
+            delta_py = self.mouse_position - posf.y()
             delta = 0.0
             if avail > 0:
                 delta = (delta_py / avail) * (1.0 - height_norm)
@@ -3117,8 +3125,7 @@ class TimelineWidgetBase(QWidget):
             return
 
         if self._middle_panning:
-            self._set_hover_tooltip("")
-            self._updateMiddlePan(event.pos())
+            self._updateMiddlePan(posf)
             return
 
         if self.dragging_playhead:
@@ -3126,17 +3133,18 @@ class TimelineWidgetBase(QWidget):
             self.events.moved.emit(event)
             return
 
-        pos = event.pos()
         if self._toolbar_pressed_key:
-            self._update_toolbar_pressed_state(pos)
-        self._update_toolbar_hover(pos)
-        self._update_hover_tooltip(pos)
+            self._update_toolbar_pressed_state(posf)
+        self._update_toolbar_hover(posf)
+        self._update_hover_tooltip(posf)
 
-        self._updateCursor(pos)
+        self._updateCursor(posf)
         self.events.moved.emit(event)
 
     def mouseReleaseEvent(self, event):
         self._last_event = event
+        posf = _event_posf(event)
+        self._reset_ctrl_mouse_zoom()
         self._reset_ctrl_mouse_zoom()
 
         if event.button() == Qt.LeftButton and self._toolbar_pressed_key:
@@ -3144,14 +3152,14 @@ class TimelineWidgetBase(QWidget):
             inside = bool(
                 button
                 and button.get("rect")
-                and button["rect"].contains(event.pos())
+                and button["rect"].contains(posf)
                 and self._toolbar_pressed_inside
             )
             self._toolbar_pressed_key = None
             self._toolbar_pressed_inside = False
             if inside and button:
                 self._activate_track_toolbar_button(button)
-            self._update_toolbar_hover(event.pos())
+            self._update_toolbar_hover(posf)
             self.update()
             event.accept()
             return
@@ -3236,7 +3244,7 @@ class TimelineWidgetBase(QWidget):
             marker_entry = self._press_marker
             self._press_marker = None
             if event.button() == Qt.LeftButton and isinstance(marker_entry, dict):
-                current = self._marker_at(event.pos())
+                current = self._marker_at(posf)
                 if self._marker_same(marker_entry, current):
                     self._handle_marker_click(marker_entry)
                     self._press_hit = None
@@ -3248,17 +3256,18 @@ class TimelineWidgetBase(QWidget):
         self._press_hit = None
 
     def contextMenuEvent(self, event):
-        if self._panel_show_property_menu_at(event.pos()):
+        posf = _event_posf(event)
+        if self._panel_show_property_menu_at(posf):
             event.accept()
             return
-        icon_entry = self._effect_icon_at(event.pos())
+        icon_entry = self._effect_icon_at(posf)
         if icon_entry:
             if self._trigger_effect_context_menu(
                 icon_entry, event.modifiers() if hasattr(event, "modifiers") else None
             ):
                 event.accept()
                 return
-        if not self._showContextMenu(event.pos()):
+        if not self._showContextMenu(posf):
             event.ignore()
 
     def _panel_show_property_menu_at(self, pos):
@@ -3346,7 +3355,7 @@ class TimelineWidgetBase(QWidget):
             placeholder = menu.addAction(message)
             placeholder.setEnabled(False)
 
-        global_pos = self.mapToGlobal(pos)
+        global_pos = self.mapToGlobal(pos.toPoint() if hasattr(pos, "toPoint") else pos)
         menu.exec_(global_pos)
         return bool(menu.actions())
 

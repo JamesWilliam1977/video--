@@ -37,8 +37,8 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if PATH not in sys.path:
     sys.path.append(PATH)
 
-from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QApplication
+from qt_api import QObject
+from qt_api import QApplication
 
 from classes.project_data import ProjectDataStore
 from classes.proxy_service import ProxyService, dialog_preview_reader_data

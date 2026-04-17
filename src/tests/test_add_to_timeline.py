@@ -14,8 +14,8 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if PATH not in sys.path:
     sys.path.append(PATH)
 
-from PyQt5.QtCore import QCoreApplication, Qt
-from PyQt5.QtWidgets import QApplication
+from qt_api import QCoreApplication, Qt
+from qt_api import QApplication
 
 from classes import info
 from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app

@@ -34,8 +34,9 @@ import platform
 import traceback
 import json
 
-from PyQt5.QtCore import PYQT_VERSION_STR, QT_VERSION_STR, pyqtSlot
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from qt_api import QT_API, QT_VERSION_STR, BINDING_VERSION_STR, Slot
+from qt_api import QApplication, QMessageBox, QTimer
+from qt_api import request_android_storage_permission_if_needed
 
 # Disable sandbox support for QtWebEngine (required on some Linux distros
 # for the QtWebEngineWidgets to be rendered, otherwise no timeline is visible).
@@ -121,6 +122,12 @@ class OpenShotApp(QApplication):
 
         # Log some basic system info
         self.log = log
+        # Clear any stale override cursor (can suppress widget cursors in some Qt bindings)
+        try:
+            while QApplication.overrideCursor():
+                QApplication.restoreOverrideCursor()
+        except Exception as exc:
+            log.debug("Failed to clear stale override cursor: %s", exc, exc_info=True)
         self.show_environment(info, openshot)
         if self.mode != "unittest":
             self.check_libopenshot_version(info, openshot)
@@ -169,8 +176,7 @@ class OpenShotApp(QApplication):
             log.info("processor: %s" % platform.processor())
             log.info("machine: %s" % platform.machine())
             log.info("python version: %s" % platform.python_version())
-            log.info("qt5 version: %s" % QT_VERSION_STR)
-            log.info("pyqt5 version: %s" % PYQT_VERSION_STR)
+            log.info("qt binding: %s (Qt %s, binding %s)" % (QT_API, QT_VERSION_STR, BINDING_VERSION_STR))
 
             # Look for frozen version info
             version_path = os.path.join(info.PATH, "settings", "version.json")
@@ -289,6 +295,10 @@ class OpenShotApp(QApplication):
         # Show main window
         self.window.show()
 
+        # On Android, prompt for All Files Access once the window is visible so
+        # the permission is in place before the user first taps Import Files.
+        QTimer.singleShot(500, request_android_storage_permission_if_needed)
+
         args = self.args
         if len(args) < 2:
             # Recover backup file (this can't happen until after the Main Window has completely loaded)
@@ -335,10 +345,15 @@ class OpenShotApp(QApplication):
     def _tr(self, message):
         return self.translate("", message)
 
-    @pyqtSlot()
+    @Slot()
     def cleanup(self):
         """aboutToQuit signal handler for application exit"""
         self.log.debug("Saving settings in app.cleanup")
+        if getattr(self, "window", None):
+            try:
+                self.window._shutdown()
+            except Exception:
+                self.log.warning("Window shutdown raised during app cleanup.", exc_info=1)
         try:
             self.settings.save()
         except Exception:

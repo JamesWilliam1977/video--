@@ -32,8 +32,15 @@ import json
 import unittest
 
 import openshot
+import qt_api
 
-from PyQt5.QtGui import QGuiApplication
+from qt_api import QGuiApplication
+try:
+    # QtWebEngineWidgets must be loaded prior to creating a QApplication
+    # But on systems with only WebKit, this will fail (and we ignore the failure)
+    getattr(qt_api, "QWebEngineView")
+except ImportError:
+    pass
 
 # Import parent folder (so it can find other imports)
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))

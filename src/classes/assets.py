@@ -37,6 +37,11 @@ def get_assets_path(file_path=None, create_paths=True):
     if not file_path:
         return info.USER_PATH
 
+    # Android content:// handles are not local filesystem paths.
+    # Keep all project assets in the app's user storage directory instead.
+    if str(file_path).startswith("content://"):
+        return info.USER_PATH
+
     file_abs = os.path.abspath(str(file_path))
     backup_abs = os.path.abspath(info.BACKUP_FILE)
     recovery_abs = os.path.abspath(info.RECOVERY_PATH) + os.sep

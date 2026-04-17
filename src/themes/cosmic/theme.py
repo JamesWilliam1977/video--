@@ -27,9 +27,9 @@
 
 import os
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QTabWidget, QWidget
+from qt_api import Qt
+from qt_api import QIcon
+from qt_api import QTabWidget, QWidget
 
 from classes.info import PATH
 from ..base import BaseTheme
@@ -676,8 +676,8 @@ QMessageBox QPushButton[text="&{_('Cancel')}"] {{
         from classes.app import get_app
         from classes import ui_util
         from classes.logger import log
-        from PyQt5.QtWidgets import QStyleFactory
-        from PyQt5.QtGui import QFont
+        from qt_api import QStyleFactory
+        from qt_api import QFont
 
         _ = get_app()._tr
 

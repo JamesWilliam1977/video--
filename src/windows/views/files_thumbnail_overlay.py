@@ -5,9 +5,9 @@
 
 import os
 
-from PyQt5.QtCore import QRectF
-from PyQt5.QtGui import QPainter
-from PyQt5.QtSvg import QSvgRenderer
+from qt_api import QRectF
+from qt_api import QPainter
+from qt_api import QSvgRenderer
 
 from classes import info
 

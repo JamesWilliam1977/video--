@@ -8,7 +8,7 @@
 
  @mainpage OpenShot Video Editor 2.0
 
- Welcome to the OpenShot Video Editor 2.0 PyQt5 documentation. OpenShot was developed to
+Welcome to the OpenShot Video Editor 2.0 Qt documentation. OpenShot was developed to
  make high-quality video editing and animation solutions freely available to the world. With a focus
  on stability, performance, and ease-of-use, we believe OpenShot is the best cross-platform,
  open-source video editing application in the world!
@@ -49,18 +49,22 @@ import logging
 # Ensure Qt plugin DLL dependencies are found on Windows packaged builds.
 if os.name == "nt":
     _exe_dir = os.path.dirname(os.path.abspath(sys.executable))
-    _pyqt_dll_dir = os.path.join(_exe_dir, "lib", "PyQt5")
-    if os.path.isdir(_pyqt_dll_dir):
-        os.environ["PATH"] = _pyqt_dll_dir + os.pathsep + os.environ.get("PATH", "")
+    _qt_dll_dirs = [
+        os.path.join(_exe_dir, "lib", binding_name)
+        for binding_name in ("PyQt{}".format(6), "PySide{}".format(6), "PyQt{}".format(5))
+    ]
+    _existing_qt_dll_dirs = [path for path in _qt_dll_dirs if os.path.isdir(path)]
+    if _existing_qt_dll_dirs:
+        os.environ["PATH"] = os.pathsep.join(_existing_qt_dll_dirs + [os.environ.get("PATH", "")])
 
 try:
-    # This needs to be imported before PyQt5
+    # This needs to be imported before the Qt binding
     # To prevent some issues on AppImage build: wrapping/forcing older glibc versions
     import openshot
 except ImportError:
     pass
 
-# Load user-configured UI scale before importing PyQt
+# Load user-configured UI scale before importing the Qt binding
 scale = 1.0
 logger = logging.getLogger(__name__)
 
@@ -79,8 +83,10 @@ scale = max(0.5, min(3.0, scale))
 if scale != 1.0:
     os.environ["QT_SCALE_FACTOR"] = str(scale)
 
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication
+from qt_api import QtCore, QtWidgets, QtWebEngineWidgets
+
+Qt = QtCore.Qt
+QApplication = QtWidgets.QApplication
 
 try:
     # This apparently has to be done before loading QtQuick
@@ -93,8 +99,8 @@ except (ImportError, AttributeError):
 try:
     # QtWebEngineWidgets must be loaded prior to creating a QApplication
     # But on systems with only WebKit, this will fail (and we ignore the failure)
-    from PyQt5 import QtWebEngineWidgets
-    WebEngineView = QtWebEngineWidgets.QWebEngineView
+    if QtWebEngineWidgets:
+        WebEngineView = QtWebEngineWidgets.QWebEngineView
 except ImportError:
     pass
 
@@ -242,7 +248,13 @@ def main():
 
     # Launch GUI and start event loop
     if app.gui():
-        sys.exit(app.exec_())
+        if hasattr(app, "exec") and callable(app.exec):
+            exit_code = app.exec()
+        elif hasattr(app, "exec_") and callable(app.exec_):
+            exit_code = app.exec_()
+        else:
+            raise AttributeError("OpenShotApp has no exec_/exec method")
+        sys.exit(exit_code)
 
 
 if __name__ == "__main__":

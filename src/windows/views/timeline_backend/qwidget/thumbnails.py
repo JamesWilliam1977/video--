@@ -27,7 +27,7 @@
 
 from collections import deque
 
-from PyQt5.QtCore import QObject, QThread, QTimer, pyqtSignal, pyqtSlot
+from qt_api import QObject, QThread, QTimer, pyqtSignal, pyqtSlot
 
 from classes.logger import log
 from classes.thumbnail import GetThumbPath
@@ -114,6 +114,8 @@ class TimelineThumbnailManager(QObject):
 
     def shutdown(self):
         """Stop the worker thread."""
+        if self._thread is None:
+            return
         self._clear_jobs.emit()
         was_running = self._thread.isRunning()
         if was_running:
@@ -126,3 +128,6 @@ class TimelineThumbnailManager(QObject):
             )
             if not stopped:
                 log.warning("Timeline thumbnail thread did not stop within 2 seconds")
+        self._worker.deleteLater()
+        self._thread.deleteLater()
+        self._thread = None

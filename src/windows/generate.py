@@ -29,9 +29,9 @@ import os
 import json
 import functools
 
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QIcon, QPixmap, QColor
-from PyQt5.QtWidgets import (
+from qt_api import Qt, QSize
+from qt_api import QIcon, QPixmap, QColor
+from qt_api import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QLabel, QLineEdit,
     QComboBox, QTextEdit, QTabWidget, QWidget, QPushButton, QMessageBox,
     QDoubleSpinBox, QSpinBox

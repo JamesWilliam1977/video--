@@ -305,6 +305,27 @@ Music... (``txt2music-ace-step``)
 Enhance with AI
 ^^^^^^^^^^^^^^^
 
+Noise -> Reduce (``audio-noise-reduce``)
+""""""""""""""""""""""""""""""""""""""""
+
+- Why: Lightly reduce steady background noise while keeping more of the original ambience.
+- How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Noise` -> :guilabel:`Reduce` on an audio file, then generate.
+- Details: Uses ``comfyui/audio-noise-reduce.json`` with ``OpenShotDeepFilterNetDenoiseAudio``.
+
+Noise -> Remove (``audio-noise-remove``)
+""""""""""""""""""""""""""""""""""""""""
+
+- Why: Aggressively remove background noise from noisy recordings.
+- How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Noise` -> :guilabel:`Remove` on an audio file, then generate.
+- Details: Uses ``comfyui/audio-noise-remove.json`` with ``OpenShotDeepFilterNetDenoiseAudio``.
+
+Clarity -> Speech (``audio-clarity-speech``)
+""""""""""""""""""""""""""""""""""""""""""""
+
+- Why: Improve clarity for speech recordings that sound dull, noisy, bandwidth-limited, or low fidelity.
+- How: Choose :guilabel:`Enhance with AI` -> :guilabel:`Clarity` -> :guilabel:`Speech` on an audio file, then generate.
+- Details: Uses ``comfyui/audio-clarity-speech.json`` with ``OpenShotLavaSRSpeechClarity``.
+
 Change Image Style... (``img2img-basic``)
 """"""""""""""""""""""""""""""""""""""""""
 

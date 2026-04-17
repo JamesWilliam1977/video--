@@ -26,7 +26,7 @@
  """
 
 import openshot
-from PyQt5.QtCore import QRectF
+from qt_api import QRectF, QPointF
 from classes.app import get_app
 
 
@@ -179,14 +179,14 @@ class PlayheadMixin:
         self._fix_cursor(self.cursors["hand"])
         if self._last_event:
             self._move_playhead(
-                self._last_event.pos().x(),
+                self._last_event.position().x() if hasattr(self._last_event, "position") else self._last_event.pos().x(),
                 start_preroll=self._playhead_seek_commit_mode,
             )
 
     def _playheadMove(self):
         if self.dragging_playhead:
             self._move_playhead(
-                self._last_event.pos().x(),
+                self._last_event.position().x() if hasattr(self._last_event, "position") else self._last_event.pos().x(),
                 start_preroll=getattr(self, "_playhead_seek_commit_mode", False),
             )
 
@@ -200,4 +200,5 @@ class PlayheadMixin:
         )
         self._release_cursor()
         if self._last_event:
-            self._updateCursor(self._last_event.pos())
+            posf = self._last_event.position() if hasattr(self._last_event, "position") else QPointF(self._last_event.pos())
+            self._updateCursor(posf)

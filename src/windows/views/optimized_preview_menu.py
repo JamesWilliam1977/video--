@@ -27,11 +27,11 @@
 
 import os
 
-from PyQt5.QtGui import QIcon
+from qt_api import QIcon
 
 from classes import info
 from classes.app import get_app
-from .menu import StyledContextMenu
+from .menu import StyledContextMenu, add_bound_action
 
 
 _OPTIMIZE_PREVIEW_READY_ICON = "tool-optimize-preview.svg"
@@ -78,17 +78,31 @@ def populate_optimized_preview_menu(win, optimized_menu):
      win.actionOptimizedPreviewRemove.setEnabled(has_proxy)
      win.actionOptimizedPreviewCancel.setEnabled(has_active)
      win.actionOptimizedPreviewDeleteAndUnlink.setEnabled(has_proxy and not has_active)
-
      optimized_menu.setIcon(optimized_preview_icon("missing" if has_missing and not has_active else "ready"))
      if has_active:
-         optimized_menu.addAction(win.actionOptimizedPreviewCancel)
+         add_bound_action(
+             optimized_menu, win, "actionOptimizedPreviewCancel", _("Cancel"),
+             "actionOptimizedPreviewCancel_trigger", enabled=has_active,
+         )
          return optimized_menu
      if not has_active:
-         optimized_menu.addAction(win.actionOptimizedPreviewCreate)
-     optimized_menu.addAction(win.actionOptimizedPreviewUseExisting)
+         add_bound_action(
+             optimized_menu, win, "actionOptimizedPreviewCreate", _("Optimize Video"),
+             "actionOptimizedPreviewCreate_trigger", enabled=not has_active,
+         )
+     add_bound_action(
+         optimized_menu, win, "actionOptimizedPreviewUseExisting", _("Link to Existing..."),
+         "actionOptimizedPreviewUseExisting_trigger", enabled=use_existing_enabled,
+     )
      if has_proxy:
-         optimized_menu.addAction(win.actionOptimizedPreviewRemove)
-         optimized_menu.addAction(win.actionOptimizedPreviewDeleteAndUnlink)
+         add_bound_action(
+             optimized_menu, win, "actionOptimizedPreviewRemove", _("Unlink"),
+             "actionOptimizedPreviewRemove_trigger", enabled=has_proxy,
+         )
+         add_bound_action(
+             optimized_menu, win, "actionOptimizedPreviewDeleteAndUnlink", _("Delete && Unlink"),
+             "actionOptimizedPreviewDeleteAndUnlink_trigger", enabled=has_proxy and not has_active,
+         )
      return optimized_menu
 
 

@@ -2,7 +2,7 @@
 
 import os
 
-from PyQt5.QtCore import QCoreApplication, Qt
+from qt_api import QCoreApplication, Qt
 
 
 # Package builders run without an X server, so use the minimal backend and

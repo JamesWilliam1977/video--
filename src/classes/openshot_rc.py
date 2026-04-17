@@ -6,7 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore
+from qt_api import QtCore
 
 qt_resource_data = b"\
 \x00\x02\xc8\x54\

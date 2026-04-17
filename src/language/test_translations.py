@@ -34,9 +34,15 @@ import re
 import fnmatch
 import subprocess
 import sys
-from PyQt5.QtCore import QTranslator, QCoreApplication  # type: ignore
+from collections import Counter
 from collections import Counter
 from typing import Any, Dict, List, Optional, Tuple
+
+SRC_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if SRC_PATH not in sys.path:
+    sys.path.insert(0, SRC_PATH)
+
+from qt_api import QCoreApplication, QTranslator
 
 
 # Absolute path of the translations directory

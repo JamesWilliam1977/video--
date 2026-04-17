@@ -31,7 +31,7 @@ import os
 from classes import info
 from classes.logger import log
 import openshot
-from PyQt5.QtWidgets import QApplication
+from qt_api import QApplication
 
 # Try to get the security-patched XML functions from defusedxml
 try:

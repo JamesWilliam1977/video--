@@ -30,9 +30,14 @@
 import os
 import uuid
 
-from PyQt5.QtCore import QSize, Qt, QPoint, QItemSelectionModel
-from PyQt5.QtGui import QDrag, QCursor, QPixmap, QPainter, QIcon, QColor, QFontMetrics
-from PyQt5.QtWidgets import QTreeView, QAbstractItemView, QSizePolicy, QHeaderView, QStyledItemDelegate, QStyleOptionViewItem, QStyle
+from qt_api import QSize, Qt, QPoint
+from qt_api import clear_override_cursor
+from qt_api import modifiers_has
+from qt_api import QDrag, QCursor, QPixmap, QPainter, QIcon, QColor, QFontMetrics
+from qt_api import (
+    QTreeView, QAbstractItemView, QSizePolicy, QHeaderView, QItemSelectionModel,
+    QStyledItemDelegate, QStyleOptionViewItem, QStyle,
+)
 
 from classes import info
 from classes.app import get_app
@@ -41,7 +46,7 @@ from classes.query import File
 from classes.qt_types import font_metrics_horizontal_advance
 from .ai_tools_menu import add_ai_tools_menu
 from .files_thumbnail_overlay import paint_media_overlay, paint_proxy_badge
-from .menu import StyledContextMenu
+from .menu import StyledContextMenu, add_bound_action
 from .optimized_preview_menu import add_optimized_preview_menu
 
 
@@ -165,6 +170,7 @@ class FilesTreeView(QTreeView):
 
         # Set context menu mode
         app = get_app()
+        self.win = app.window
         _ = app._tr
         app.context_menu_object = "files"
 
@@ -178,7 +184,7 @@ class FilesTreeView(QTreeView):
         # Build menu
         menu = StyledContextMenu(parent=self)
 
-        menu.addAction(self.win.actionImportFiles)
+        add_bound_action(menu, self.win, "actionImportFiles", _("Import Files..."), "actionImportFiles_trigger")
 
         source_file = None
         active_job = None
@@ -210,7 +216,7 @@ class FilesTreeView(QTreeView):
                 lambda checked=False, job_id=active_job.get("id"): self.win.cancel_generation_job(job_id)
             )
         menu.addSeparator()
-        menu.addAction(self.win.actionThumbnailView)
+        add_bound_action(menu, self.win, "actionThumbnailView", _("Thumbnail View"), "actionThumbnailView_trigger")
 
         if index.isValid():
             # Look up the model item and our unique ID
@@ -229,17 +235,17 @@ class FilesTreeView(QTreeView):
                 menu.popup(event.globalPos())
                 return
             if file and file.data.get("path").endswith(".svg"):
-                menu.addAction(self.win.actionEditTitle)
-                menu.addAction(self.win.actionDuplicate)
+                add_bound_action(menu, self.win, "actionEditTitle", _("Edit Title"), "actionEditTitle_trigger")
+                add_bound_action(menu, self.win, "actionDuplicate", _("Duplicate"), "actionDuplicate_trigger")
                 menu.addSeparator()
 
-            menu.addAction(self.win.actionPreview_File)
+            add_bound_action(menu, self.win, "actionPreview_File", _("Preview File"), "actionPreview_File_trigger")
             add_optimized_preview_menu(self.win, menu)
             menu.addSeparator()
-            menu.addAction(self.win.actionSplitFile)
-            menu.addAction(self.win.actionExportFiles)
+            add_bound_action(menu, self.win, "actionSplitFile", _("Split Clip"), "actionSplitFile_trigger")
+            add_bound_action(menu, self.win, "actionExportFiles", _("Export Selected Clips"), "actionExportFiles_trigger")
             menu.addSeparator()
-            menu.addAction(self.win.actionAdd_to_Timeline)
+            add_bound_action(menu, self.win, "actionAdd_to_Timeline", _("Add to Timeline"), "actionAdd_to_Timeline_trigger")
 
             # Add Profile menu
             profile_menu = StyledContextMenu(title=_("Choose Profile"), parent=self)
@@ -257,13 +263,13 @@ class FilesTreeView(QTreeView):
                 action.triggered.connect(lambda: get_app().window.actionProfileEdit_trigger(file_profile))
             menu.addMenu(profile_menu)
 
-            menu.addAction(self.win.actionFile_Properties)
+            add_bound_action(menu, self.win, "actionFile_Properties", _("File Properties"), "actionFile_Properties_trigger")
             menu.addSeparator()
-            menu.addAction(self.win.actionRemove_from_Project)
+            add_bound_action(menu, self.win, "actionRemove_from_Project", _("Remove from Project"), "actionRemove_from_Project_trigger")
             menu.addSeparator()
 
         # Show menu
-        menu.popup(event.globalPos())
+        menu.show_at(event)
 
     def mousePressEvent(self, event):
         index = self.indexAt(event.pos())
@@ -276,9 +282,9 @@ class FilesTreeView(QTreeView):
         index = self.indexAt(event.pos())
         if index.column() == 0:
             # If column 0 (thumbnail) is double-clicked, trigger the custom actions
-            if int(get_app().keyboardModifiers() & Qt.ShiftModifier) > 0:
+            if modifiers_has(get_app().keyboardModifiers(), Qt.ShiftModifier):
                 get_app().window.actionSplitFile.trigger()
-            elif int(get_app().keyboardModifiers() & Qt.ControlModifier) > 0:
+            elif modifiers_has(get_app().keyboardModifiers(), Qt.ControlModifier):
                 get_app().window.actionFile_Properties.trigger()
             else:
                 get_app().window.actionPreview_File.trigger()
@@ -348,8 +354,12 @@ class FilesTreeView(QTreeView):
         tid = str(uuid.uuid4())
         get_app().updates.transaction_id = tid
 
-        # Execute the drag operation (blocking - dropEvent creates clips during this call)
-        drag.exec_(supportedActions)
+        # Execute the drag operation
+        exec_fn = getattr(drag, "exec", None) or getattr(drag, "exec_", None)
+        if exec_fn is None:
+            raise AttributeError("QDrag has no exec_/exec method")
+        exec_fn(supportedActions)
+        clear_override_cursor()
 
         # End transaction
         get_app().updates.transaction_id = None

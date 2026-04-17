@@ -35,8 +35,8 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if PATH not in sys.path:
     sys.path.append(PATH)
 
-from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QAction, QApplication
+from qt_api import QObject
+from qt_api import QAction, QApplication
 
 from qt_test_app import get_or_create_app
 from windows.views.menu import StyledContextMenu

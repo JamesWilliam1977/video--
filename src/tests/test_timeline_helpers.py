@@ -41,9 +41,9 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if PATH not in sys.path:
     sys.path.append(PATH)
 
-from PyQt5.QtCore import QCoreApplication, QPointF, QRectF, Qt
-from PyQt5.QtGui import QColor, QCursor
-from PyQt5.QtWidgets import QApplication
+from qt_api import QCoreApplication, QPointF, QRectF, Qt
+from qt_api import QColor, QCursor
+from qt_api import QApplication
 from classes import info
 from classes.updates import UpdateAction
 from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
@@ -1096,7 +1096,7 @@ class TimelineHelperTests(unittest.TestCase):
             menu_size = 0
             menu_margin = 0
 
-        from PyQt5.QtWidgets import QWidget
+        from qt_api import QWidget
 
         class Widget(QWidget):
             def __init__(self):
@@ -3472,3 +3472,182 @@ class TimelineHelperTests(unittest.TestCase):
 
         self.assertEqual([item[1] for item in ready], [100, 300, 400])
         self.assertEqual([item[2] for item in ready], ["F1:100", "F1:300", "F1:400"])
+
+    def test_qwidget_drag_enter_prefers_internal_clip_mime_over_urls(self):
+        helper = types.SimpleNamespace(
+            _drag_payload=None,
+            item_type=None,
+            new_item=None,
+        )
+        preimport_calls = []
+
+        def _preimport(urls):
+            preimport_calls.append(list(urls))
+            return {"type": "clip", "ids": ["wrong"]}
+
+        helper._preimport_os_drop_urls = _preimport
+
+        mime = types.SimpleNamespace(
+            html=lambda: "clip",
+            text=lambda: '["F1","F2","F3","F4"]',
+            hasUrls=lambda: True,
+            urls=lambda: ["file:///tmp/a.mp4", "file:///tmp/b.mp4"],
+        )
+        accepted = []
+        event = types.SimpleNamespace(
+            mimeData=lambda: mime,
+            accept=lambda: accepted.append(True),
+            ignore=lambda: accepted.append(False),
+        )
+
+        self.qwidget_base_module.TimelineWidgetBase.dragEnterEvent(helper, event)
+
+        self.assertEqual(preimport_calls, [])
+        self.assertEqual(helper.item_type, "clip")
+        self.assertTrue(helper.new_item)
+        self.assertEqual(helper._drag_payload, {"type": "clip", "ids": ["F1", "F2", "F3", "F4"]})
+        self.assertEqual(accepted, [True])
+
+    def test_qwidget_ensure_drag_payload_prefers_internal_clip_mime_over_urls(self):
+        helper = types.SimpleNamespace(
+            _drag_payload=None,
+            item_type=None,
+            new_item=None,
+        )
+        preimport_calls = []
+
+        def _preimport(urls):
+            preimport_calls.append(list(urls))
+            return {"type": "clip", "ids": ["wrong"]}
+
+        helper._preimport_os_drop_urls = _preimport
+
+        mime = types.SimpleNamespace(
+            html=lambda: "clip",
+            text=lambda: '["F1","F2"]',
+            hasUrls=lambda: True,
+            urls=lambda: ["file:///tmp/a.mp4"],
+        )
+        event = types.SimpleNamespace(mimeData=lambda: mime)
+
+        payload = self.qwidget_base_module.TimelineWidgetBase._ensure_drag_payload_from_event(helper, event)
+
+        self.assertEqual(preimport_calls, [])
+        self.assertEqual(payload, {"type": "clip", "ids": ["F1", "F2"]})
+        self.assertEqual(helper._drag_payload, {"type": "clip", "ids": ["F1", "F2"]})
+
+    def test_qwidget_paste_uses_saved_timeline_context_menu_target(self):
+        pasted = []
+        helper = types.SimpleNamespace(
+            _context_menu_paste_data={"position": 12.5, "track": 4},
+            _handle_paste_callback=lambda clip_ids, tran_ids, data: pasted.append(
+                (list(clip_ids), list(tran_ids), dict(data))
+            ),
+            context_menu_cursor_position=None,
+        )
+
+        self.timeline_module.TimelineView.Paste_Triggered(helper, "paste", [], [])
+
+        self.assertEqual(pasted, [([], [], {"position": 12.5, "track": 4})])
+        self.assertIsNone(helper._context_menu_paste_data)
+
+    def test_handle_paste_callback_extends_project_duration_for_inserted_items(self):
+        saved = []
+        inserted_clip = None
+
+        class FakeClip:
+            def __init__(self, clip_id, data):
+                self.id = clip_id
+                self.type = "copy"
+                self.data = data
+
+        def save_inserted_clip():
+            inserted_clip.id = "C1-copy"
+            inserted_clip.data["id"] = "C1-copy"
+            saved.append(copy.deepcopy(inserted_clip.data))
+
+        inserted_clip = FakeClip(
+            "C1",
+            {"id": "C1", "position": 5.0, "layer": 2, "start": 0.0, "end": 4.0},
+        )
+        inserted_clip.save = save_inserted_clip
+        copied_objects = [inserted_clip]
+        app = types.SimpleNamespace(
+            clipboard=lambda: types.SimpleNamespace(mimeData=lambda: object()),
+            updates=types.SimpleNamespace(transaction_id=None),
+        )
+        helper = types.SimpleNamespace(
+            get_uuid=lambda: "tx-paste-1",
+            _assign_new_effect_ids=lambda data: self.timeline_module.TimelineView._assign_new_effect_ids(helper, data),
+            _extend_timeline_to_fit_items_calls=[],
+            _select_inserted_paste_items_calls=[],
+        )
+        helper._extend_timeline_to_fit_items = lambda: helper._extend_timeline_to_fit_items_calls.append(True)
+        helper._select_inserted_paste_items = lambda items: helper._select_inserted_paste_items_calls.append(list(items))
+
+        with ExitStack() as stack:
+            stack.enter_context(
+                patch.object(
+                    self.timeline_module.ClipboardManager,
+                    "from_mime",
+                    return_value=copied_objects,
+                )
+            )
+            stack.enter_context(patch.object(self.timeline_module, "Clip", FakeClip))
+            stack.enter_context(patch.object(self.timeline_module, "get_app", return_value=app))
+            self.timeline_module.TimelineView._handle_paste_callback(
+                helper,
+                [],
+                [],
+                {"position": 20.0, "track": 4},
+            )
+
+        self.assertEqual(saved, [{"id": "C1-copy", "position": 20.0, "layer": 4, "start": 0.0, "end": 4.0}])
+        self.assertEqual(helper._extend_timeline_to_fit_items_calls, [True])
+        self.assertEqual(helper._select_inserted_paste_items_calls, [[("C1-copy", "clip")]])
+        self.assertIsNone(app.updates.transaction_id)
+
+    def test_qwidget_paste_coordinates_uses_viewport_adjusted_tracks(self):
+        helper = types.SimpleNamespace(
+            _seconds_from_x=lambda x: float(x) / 10.0,
+            geometry=types.SimpleNamespace(
+                ensure=lambda: None,
+                iter_tracks=lambda: iter(
+                    [
+                        (
+                            QRectF(0.0, 0.0, 500.0, 40.0),
+                            types.SimpleNamespace(data={"number": 7}),
+                            QRectF(),
+                        ),
+                        (
+                            QRectF(0.0, 40.0, 500.0, 40.0),
+                            types.SimpleNamespace(data={"number": 6}),
+                            QRectF(),
+                        ),
+                    ]
+                ),
+                track_rects=[
+                    (
+                        QRectF(0.0, 120.0, 500.0, 40.0),
+                        types.SimpleNamespace(data={"number": 7}),
+                        QRectF(),
+                    ),
+                    (
+                        QRectF(0.0, 160.0, 500.0, 40.0),
+                        types.SimpleNamespace(data={"number": 6}),
+                        QRectF(),
+                    ),
+                ],
+            ),
+            window=types.SimpleNamespace(selected_tracks=[]),
+        )
+
+        seconds, track_number = self.timeline_module.TimelineView._qwidget_paste_coordinates(
+            helper,
+            QPointF(150.0, 20.0),
+            [],
+            [],
+        )
+
+        self.assertEqual(seconds, 15.0)
+        self.assertEqual(track_number, 7)

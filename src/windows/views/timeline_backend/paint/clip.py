@@ -25,8 +25,8 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from PyQt5.QtCore import QPointF, QRectF, Qt, QTimer
-from PyQt5.QtGui import (
+from qt_api import QPointF, QRectF, Qt, QTimer
+from qt_api import (
     QBrush,
     QColor,
     QFont,
@@ -39,7 +39,9 @@ from PyQt5.QtGui import (
     QPixmap,
     QRadialGradient,
 )
-from PyQt5.QtWidgets import QGraphicsBlurEffect, QGraphicsPixmapItem, QGraphicsScene
+from qt_api import QGraphicsBlurEffect, QGraphicsPixmapItem, QGraphicsScene
+import copy
+import json
 import copy
 import json
 import math
@@ -894,7 +896,7 @@ class ClipPainter(BasePainter):
         bg = self.w.theme.clip.background
         bg2 = self.w.theme.clip.background2
         if bg2.isValid() and bg2 != bg:
-            grad = QLinearGradient(inner_rect.topLeft(), inner_rect.bottomLeft())
+            grad = QLinearGradient(QPointF(inner_rect.topLeft()), QPointF(inner_rect.bottomLeft()))
             grad.setColorAt(0, bg)
             grad.setColorAt(1, bg2)
             if shape_path:
@@ -916,7 +918,7 @@ class ClipPainter(BasePainter):
             if not bottom_overlay.isValid() and top_overlay.isValid():
                 bottom_overlay = QColor(top_overlay)
                 bottom_overlay.setAlpha(0)
-            overlay = QLinearGradient(inner_rect.topLeft(), inner_rect.bottomLeft())
+            overlay = QLinearGradient(QPointF(inner_rect.topLeft()), QPointF(inner_rect.bottomLeft()))
             overlay.setColorAt(0.0, top_overlay)
             overlay.setColorAt(1.0, bottom_overlay)
             if shape_path:
@@ -1985,7 +1987,6 @@ class ClipPainter(BasePainter):
         self._invalidate_clip_cache_for_clip(clip_key)
 
         # Safe repaint — defer to avoid active painter issues
-        from PyQt5.QtCore import QTimer
         QTimer.singleShot(0, self.w.update)
 
     def _invalidate_clip_cache_for_clip(self, clip_token):

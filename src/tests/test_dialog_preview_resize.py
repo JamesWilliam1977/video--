@@ -4,8 +4,8 @@ import types
 import unittest
 from unittest.mock import patch
 
-from PyQt5.QtCore import QRect, QSize
-from PyQt5.QtWidgets import QApplication
+from qt_api import QRect, QSize
+from qt_api import QApplication
 import openshot
 
 
@@ -48,6 +48,9 @@ class DummySignal:
 
     def emit(self, *args):
         self.calls += 1
+
+    def connect(self, *args, **kwargs):
+        return None
 
 
 class DummyVideoPreview:
@@ -231,6 +234,33 @@ class DialogPreviewResizeTests(unittest.TestCase):
 
         self.assertEqual(timer_calls, ["start"])
         self.assertEqual(pause_calls, [])
+
+    def test_video_widget_init_preserves_dialog_watch_project_flag(self):
+        fake_updates = types.SimpleNamespace(add_listener=lambda listener: None)
+        fake_window = types.SimpleNamespace(
+            PlaySignal=DummySignal(),
+            PauseSignal=DummySignal(),
+            SpeedSignal=DummySignal(),
+            StopSignal=DummySignal(),
+            TransformSignal=DummySignal(),
+            KeyFrameTransformSignal=DummySignal(),
+            SelectRegionSignal=DummySignal(),
+            refreshFrameSignal=DummySignal(),
+        )
+        fake_app = types.SimpleNamespace(
+            _tr=lambda text: text,
+            get_settings=DummySettings,
+            updates=fake_updates,
+            window=fake_window,
+        )
+
+        with patch("windows.video_widget.get_app", return_value=fake_app):
+            widget = VideoWidget(watch_project=False)
+
+        try:
+            self.assertFalse(widget.watch_project)
+        finally:
+            widget.deleteLater()
 
     def test_cutting_build_preview_timeline_uses_source_dimensions(self):
         timeline_args = []

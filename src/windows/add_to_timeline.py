@@ -31,9 +31,9 @@ import uuid
 from operator import itemgetter
 from random import shuffle, randint, uniform
 
-from PyQt5.QtCore import QLocale
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtGui import QIcon
+from qt_api import QLocale
+from qt_api import QDialog
+from qt_api import QIcon
 
 from classes import info, ui_util, time_parts
 from classes.logger import log
@@ -491,7 +491,7 @@ class AddToTimeline(QDialog):
 
     def __init__(self, files=None, position=0.0):
         # Create dialog class
-        QDialog.__init__(self)
+        super().__init__()
 
         # Load UI from Designer
         ui_util.load_ui(self, self.ui_path)
