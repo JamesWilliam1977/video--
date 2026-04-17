@@ -3491,7 +3491,7 @@ class TimelineHelperTests(unittest.TestCase):
             html=lambda: "clip",
             text=lambda: '["F1","F2","F3","F4"]',
             hasUrls=lambda: True,
-            urls=lambda: ["file:///tmp/a.mp4", "file:///tmp/b.mp4"],
+            urls=lambda: ["file:///mock-media/a.mp4", "file:///mock-media/b.mp4"],
         )
         accepted = []
         event = types.SimpleNamespace(
@@ -3526,7 +3526,7 @@ class TimelineHelperTests(unittest.TestCase):
             html=lambda: "clip",
             text=lambda: '["F1","F2"]',
             hasUrls=lambda: True,
-            urls=lambda: ["file:///tmp/a.mp4"],
+            urls=lambda: ["file:///mock-media/a.mp4"],
         )
         event = types.SimpleNamespace(mimeData=lambda: mime)
 
@@ -3566,6 +3566,9 @@ class TimelineHelperTests(unittest.TestCase):
             inserted_clip.data["id"] = "C1-copy"
             saved.append(copy.deepcopy(inserted_clip.data))
 
+        def clipboard_stub():
+            return types.SimpleNamespace(mimeData=object)
+
         inserted_clip = FakeClip(
             "C1",
             {"id": "C1", "position": 5.0, "layer": 2, "start": 0.0, "end": 4.0},
@@ -3573,7 +3576,7 @@ class TimelineHelperTests(unittest.TestCase):
         inserted_clip.save = save_inserted_clip
         copied_objects = [inserted_clip]
         app = types.SimpleNamespace(
-            clipboard=lambda: types.SimpleNamespace(mimeData=lambda: object()),
+            clipboard=clipboard_stub,
             updates=types.SimpleNamespace(transaction_id=None),
         )
         helper = types.SimpleNamespace(

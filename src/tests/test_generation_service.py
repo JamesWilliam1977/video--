@@ -9,6 +9,8 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if PATH not in sys.path:
     sys.path.append(PATH)
 
+TEST_MEDIA_ROOT = os.path.join(os.sep, "mock-media")
+
 generate_module = types.ModuleType("windows.generate")
 generate_module.GenerateMediaDialog = type("GenerateMediaDialog", (), {})
 sys.modules.setdefault("windows.generate", generate_module)
@@ -43,14 +45,14 @@ class GenerationServiceTests(unittest.TestCase):
         service = GenerationService.__new__(GenerationService)
 
         existing_files = [
-            types.SimpleNamespace(data={"name": "p232_229_gen1", "path": "/tmp/p232_229_gen1.flac"}),
-            types.SimpleNamespace(data={"name": "p232_229_gen#2 [Noise: Remove]", "path": "/tmp/p232_229_gen#2.flac"}),
+            types.SimpleNamespace(data={"name": "p232_229_gen1", "path": os.path.join(TEST_MEDIA_ROOT, "p232_229_gen1.flac")}),
+            types.SimpleNamespace(data={"name": "p232_229_gen#2 [Noise: Remove]", "path": os.path.join(TEST_MEDIA_ROOT, "p232_229_gen#2.flac")}),
         ]
         with patch("classes.generation_service.File.filter", return_value=existing_files):
-            file_obj = types.SimpleNamespace(data={"path": "/tmp/p232_229_gen_001.flac"})
+            file_obj = types.SimpleNamespace(data={"path": os.path.join(TEST_MEDIA_ROOT, "p232_229_gen_001.flac")})
             self.assertEqual(service._default_generation_name(file_obj), "p232_229_gen3")
 
-            file_obj = types.SimpleNamespace(data={"path": "/tmp/afdr001_30s.wav"})
+            file_obj = types.SimpleNamespace(data={"path": os.path.join(TEST_MEDIA_ROOT, "afdr001_30s.wav")})
             self.assertEqual(service._default_generation_name(file_obj), "afdr001_30s_gen1")
 
     def test_default_generation_name_prefers_display_name_over_collision_adjusted_path(self):
@@ -60,7 +62,7 @@ class GenerationServiceTests(unittest.TestCase):
             types.SimpleNamespace(
                 data={
                     "name": "generation_gen1 [Noise: Remove]",
-                    "path": "/tmp/generation_gen1_2.png",
+                    "path": os.path.join(TEST_MEDIA_ROOT, "generation_gen1_2.png"),
                 }
             ),
         ]
@@ -68,7 +70,7 @@ class GenerationServiceTests(unittest.TestCase):
             file_obj = types.SimpleNamespace(
                 data={
                     "name": "generation_gen1 [Noise: Remove]",
-                    "path": "/tmp/generation_gen1_2.png",
+                    "path": os.path.join(TEST_MEDIA_ROOT, "generation_gen1_2.png"),
                 }
             )
             self.assertEqual(service._default_generation_name(file_obj), "generation_gen2")
@@ -77,9 +79,9 @@ class GenerationServiceTests(unittest.TestCase):
         service = GenerationService.__new__(GenerationService)
 
         existing_files = [
-            types.SimpleNamespace(data={"name": "alpha_gen1", "path": "/tmp/alpha_gen1.flac"}),
-            types.SimpleNamespace(data={"name": "alpha_gen2 [Noise: Remove]", "path": "/tmp/alpha_gen2.flac"}),
-            types.SimpleNamespace(data={"name": "custom_name", "path": "/tmp/custom_name.flac"}),
+            types.SimpleNamespace(data={"name": "alpha_gen1", "path": os.path.join(TEST_MEDIA_ROOT, "alpha_gen1.flac")}),
+            types.SimpleNamespace(data={"name": "alpha_gen2 [Noise: Remove]", "path": os.path.join(TEST_MEDIA_ROOT, "alpha_gen2.flac")}),
+            types.SimpleNamespace(data={"name": "custom_name", "path": os.path.join(TEST_MEDIA_ROOT, "custom_name.flac")}),
         ]
         with patch("classes.generation_service.File.filter", return_value=existing_files):
             self.assertEqual(service._next_generation_name("alpha_gen#2"), "alpha_gen3")
@@ -116,10 +118,10 @@ class GenerationServiceTests(unittest.TestCase):
     def test_source_display_root_name_strips_workflow_suffix(self):
         service = GenerationService.__new__(GenerationService)
 
-        file_obj = types.SimpleNamespace(data={"name": "alpha_gen2 [Noise: Remove]", "path": "/tmp/alpha_gen2.flac"})
+        file_obj = types.SimpleNamespace(data={"name": "alpha_gen2 [Noise: Remove]", "path": os.path.join(TEST_MEDIA_ROOT, "alpha_gen2.flac")})
         self.assertEqual(service._source_display_root_name(file_obj), "alpha")
 
-        file_obj = types.SimpleNamespace(data={"name": "Bravo Custom [Clarity: Speech]", "path": "/tmp/bravo.wav"})
+        file_obj = types.SimpleNamespace(data={"name": "Bravo Custom [Clarity: Speech]", "path": os.path.join(TEST_MEDIA_ROOT, "bravo.wav")})
         self.assertEqual(service._source_display_root_name(file_obj), "Bravo Custom")
 
     def test_output_local_name_omits_index_for_single_output(self):
@@ -131,9 +133,9 @@ class GenerationServiceTests(unittest.TestCase):
 
     def test_action_generate_trigger_queues_all_selected_files_for_quick_actions(self):
         files = [
-            types.SimpleNamespace(id="F1", data={"path": "/tmp/alpha.wav"}),
-            types.SimpleNamespace(id="F2", data={"path": "/tmp/bravo.wav"}),
-            types.SimpleNamespace(id="F3", data={"path": "/tmp/charlie.wav"}),
+            types.SimpleNamespace(id="F1", data={"path": os.path.join(TEST_MEDIA_ROOT, "alpha.wav")}),
+            types.SimpleNamespace(id="F2", data={"path": os.path.join(TEST_MEDIA_ROOT, "bravo.wav")}),
+            types.SimpleNamespace(id="F3", data={"path": os.path.join(TEST_MEDIA_ROOT, "charlie.wav")}),
         ]
         status_bar = _StatusBarRecorder()
         queued_targets = []
