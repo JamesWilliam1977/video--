@@ -32,6 +32,7 @@ from qt_api import Qt, QPointF, QRectF, QSize, pyqtSignal, QShortcut, QKeySequen
 from qt_api import QColor, QPainter, QPen, QBrush, QPainterPath, QConicalGradient
 from qt_api import QWidget, QDialog, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QAction
 from qt_api import QDialogButtonBox, QFrame, QSlider, QDoubleSpinBox, QGridLayout
+from qt_api import QFontMetrics, QSizePolicy
 
 from classes.app import get_app
 from windows.views.menu import StyledContextMenu
@@ -420,20 +421,33 @@ class CurvePreviewWidget(QWidget):
         painter.end()
 
 
+class ElidedLabel(QLabel):
+    """A QLabel that shows '...' when text is wider than the available width."""
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        elided = QFontMetrics(self.font()).elidedText(self.text(), Qt.ElideRight, self.width())
+        painter.drawText(self.rect(), Qt.AlignLeft | Qt.AlignVCenter, elided)
+        painter.end()
+
+
 class ColorGradeCurveDialog(QDialog):
     changeStarted = pyqtSignal()
     changeFinished = pyqtSignal()
     closed = pyqtSignal()
 
-    def __init__(self, curve_data=None, channel="master", parent=None):
+    def __init__(self, curve_data=None, channel="master", parent=None, title=None):
         super().__init__(parent)
         _ = get_app()._tr
-        self.setWindowTitle(_("Edit Color Curve"))
+        self.setWindowTitle(title if title else _("Edit Color Curve"))
         self.setModal(False)
         self._widget = CurvePreviewWidget(curve_data, self)
 
         layout = QVBoxLayout(self)
-        layout.addWidget(QLabel(_("Double-click to remove points. Drag to reshape the curve."), self))
+        layout.addWidget(ElidedLabel(_("Drag to reshape. Double-click to remove."), self))
         layout.addWidget(self._widget)
 
         button_row = QHBoxLayout()

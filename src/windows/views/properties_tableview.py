@@ -201,8 +201,10 @@ class PropertyDelegate(QItemDelegate):
 
             if property_type == "colorgrade_curve":
                 curve = normalize_curve_data(cur_property[1].get("curve"))
+                is_enabled = curve.get("enabled", True)
                 preview_rect = QRectF(option.rect.adjusted(8, 8, -8, -8))
-                painter.setPen(QPen(Qt.white, 1.5))
+                line_color = Qt.white if is_enabled else QColor(100, 100, 100)
+                painter.setPen(QPen(line_color, 1.5))
                 path = QPainterPath()
                 points_data = curve["points"]
                 if points_data:
@@ -219,6 +221,8 @@ class PropertyDelegate(QItemDelegate):
                     painter.drawPath(path)
             elif property_type == "colorgrade_wheels":
                 wheels = normalize_wheels_data(cur_property[1].get("wheels"))
+                is_enabled = wheels.get("enabled", True)
+                circle_color = QColor(Qt.white) if is_enabled else QColor(100, 100, 100)
                 names = ["global", "shadows", "midtones", "highlights"]
                 preview_rect = QRectF(option.rect.adjusted(6, 4, -6, -4))
                 wheel_width = preview_rect.width() / 4.0
@@ -227,33 +231,39 @@ class PropertyDelegate(QItemDelegate):
                     rect = QRectF(preview_rect.x() + (idx * wheel_width), preview_rect.y(), wheel_width, preview_rect.height())
                     center = QPointF(rect.center().x(), rect.top() + rect.height() * 0.43)
                     radius = min(rect.width() * 0.34, rect.height() * 0.34)
-                    painter.setPen(QPen(Qt.white, 1.0))
-                    painter.setBrush(QBrush(QColor(255, 255, 255, 18)))
+                    painter.setPen(QPen(circle_color, 1.0))
+                    painter.setBrush(QBrush(QColor(circle_color.red(), circle_color.green(), circle_color.blue(), 18)))
                     painter.drawEllipse(center, radius, radius)
-                    color = display_wheel_color(wheel)
-                    tint = QColor(color)
-                    if is_neutral_wheel(wheel):
-                        tint = QColor(255, 255, 255, 18)
+                    if is_enabled:
+                        color = display_wheel_color(wheel)
+                        tint = QColor(color)
+                        if is_neutral_wheel(wheel):
+                            tint = QColor(255, 255, 255, 18)
+                        else:
+                            tint.setAlpha(32)
+                        puck_color = puck_display_color(wheel)
                     else:
-                        tint.setAlpha(32)
+                        tint = QColor(100, 100, 100, 18)
+                        puck_color = QColor(100, 100, 100)
+                        color = QColor(100, 100, 100)
                     painter.setBrush(QBrush(tint))
                     painter.drawEllipse(center, radius * 0.92, radius * 0.92)
                     amount = float(wheel["amount"]) * radius * 0.85
                     hue = color.hueF() if color.hueF() >= 0 else 0.0
                     angle = math.radians(hue * 360.0)
                     puck = QPointF(center.x() + math.cos(angle) * amount, center.y() - math.sin(angle) * amount)
-                    painter.setPen(QPen(Qt.white, 1.0))
-                    painter.setBrush(QBrush(puck_display_color(wheel)))
+                    painter.setPen(QPen(circle_color, 1.0))
+                    painter.setBrush(QBrush(puck_color))
                     puck_radius = max(2.0, radius * 0.11)
                     painter.drawEllipse(puck, puck_radius, puck_radius)
                     luma_y = min(rect.bottom() - 4.0, center.y() + radius + 9.0)
                     luma_left = rect.center().x() - radius
                     luma_right = rect.center().x() + radius
-                    painter.setPen(QPen(QColor(255, 255, 255, 80), 1.0))
+                    painter.setPen(QPen(QColor(circle_color.red(), circle_color.green(), circle_color.blue(), 80), 1.0))
                     painter.drawLine(QPointF(luma_left, luma_y), QPointF(luma_right, luma_y))
                     luma_value = (float(wheel["luma"]) + 1.0) / 2.0
                     luma_fill_right = luma_left + ((luma_right - luma_left) * luma_value)
-                    painter.setPen(QPen(Qt.white, 2.0))
+                    painter.setPen(QPen(circle_color, 2.0))
                     painter.drawLine(QPointF(luma_left, luma_y), QPointF(luma_fill_right, luma_y))
 
             value = index.data(Qt.DisplayRole)
@@ -994,7 +1004,8 @@ class PropertiesTableView(QTableView):
             elif property_type == "colorgrade_curve":
                 curve_data = normalize_curve_data(cur_property[1].get("curve"))
                 property_key = cur_property[0]
-                dialog = ColorGradeCurveDialog(curve_data, cur_property[1].get("channel", "master"), self.win)
+                dialog = ColorGradeCurveDialog(curve_data, cur_property[1].get("channel", "master"), self.win,
+                                               title=cur_property[1].get("name"))
                 item = self.selected_item
                 dialog._property_key = property_key
                 dialog._item_data = copy.deepcopy(item.data()) if item else None
