@@ -132,6 +132,14 @@ class TimelineSync(UpdateInterface):
         scaled_width = round(new_size.width() * device_pixel_ratio)
         scaled_height = round(new_size.height() * device_pixel_ratio)
 
+        if scaled_width < 1 or scaled_height < 1:
+            log.info(
+                "Skipping preview max size update for invalid size: %sx%s",
+                scaled_width,
+                scaled_height,
+            )
+            return
+
         log.info(f"Adjusting max size of preview image: {scaled_width}x{scaled_height}")
 
         # Set new max video size (Based on preview widget size and display scaling)
