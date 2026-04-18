@@ -689,7 +689,7 @@ class PropertiesModel(updates.UpdateInterface):
                     log.debug("%s: update property %s. %s", log_id, property_key, clip_data.get(property_key))
 
                     # Check the type of property (some are keyframe, and some are not)
-                    if property_type != "reader" and isinstance(clip_data[property_key], dict):
+                    if property_type not in ["reader", "colorgrade_curve", "colorgrade_wheels"] and isinstance(clip_data[property_key], dict):
                         # Keyframe
 
                         # Protection from HUGE scale values
@@ -821,6 +821,18 @@ class PropertiesModel(updates.UpdateInterface):
                             clip_data[property_key] = str(value)
                         except Exception:
                             log.warn('Invalid Font/Caption value passed to property', exc_info=1)
+
+                    elif property_type in ["colorgrade_curve", "colorgrade_wheels"]:
+                        clip_updated = True
+                        try:
+                            if isinstance(value, str):
+                                clip_data[property_key] = json.loads(value)
+                            elif isinstance(value, dict):
+                                clip_data[property_key] = value
+                            else:
+                                clip_data[property_key] = {}
+                        except Exception:
+                            log.warn('Invalid rich JSON value passed to property', exc_info=1)
 
                     elif property_type == "reader":
                         # Reader / mask source
@@ -1006,6 +1018,8 @@ class PropertiesModel(updates.UpdateInterface):
                 col.setText("")
             elif type == "reader":
                 col.setText(self._reader_display_name(c, memo))
+            elif type in ["colorgrade_curve", "colorgrade_wheels"]:
+                col.setText(property[1].get("summary", memo))
             elif type == "int" and label == "Track":
                 # Find track display name
                 all_tracks = get_app().project.get("layers")
@@ -1056,7 +1070,7 @@ class PropertiesModel(updates.UpdateInterface):
                 a = int(vals.get("alpha", {}).get("value", vals.get("max", 255.0)))
                 col.setBackground(QColor(r, g, b, a))
 
-            if readonly or type in ["color", "font", "caption"] or choices or label == "Track":
+            if readonly or type in ["color", "font", "caption", "colorgrade_curve", "colorgrade_wheels"] or choices or label == "Track":
                 col.setFlags(Qt.ItemIsEnabled)
             else:
                 col.setFlags(
@@ -1108,6 +1122,8 @@ class PropertiesModel(updates.UpdateInterface):
             elif type == "color":
                 # Don't output a value for colors
                 col.setText("")
+            elif type in ["colorgrade_curve", "colorgrade_wheels"]:
+                col.setText(property[1].get("summary", memo))
             elif type == "int" and label == "Track":
                 # Find track display name
                 all_tracks = get_app().project.get("layers")

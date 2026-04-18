@@ -120,6 +120,10 @@ the name and short description of each effect.
    :width: 50px
    :alt: Color Map / Lookup Icon
 
+.. |colorgrade_icon| image:: ../src/effects/icons/colorgrade@2x.png
+   :width: 50px
+   :alt: Color Grade Icon
+
 .. |saturation_icon| image:: ../src/effects/icons/saturation@2x.png
    :width: 50px
    :alt: Color Saturation Icon
@@ -237,6 +241,7 @@ the name and short description of each effect.
    |brightness_icon|           Brightness & Contrast         Modify frame’s brightness and contrast.
    |caption_icon|              Caption                       Add text captions to any clip.
    |chromakey_icon|            Chroma Key (Greenscreen)      Replace color with transparency.
+   |colorgrade_icon|           Color Grade                   Unified grading with corrections, curves, wheels, and LUT support.
    |colormap_icon|             Color Map / Lookup            Adjust colors using 3D LUT lookup tables (.cube format).
    |saturation_icon|           Color Saturation              Adjust color intensity.
    |colorshift_icon|           Color Shift                   Shift image colors in various directions.
@@ -524,6 +529,56 @@ impossible or impractical to shoot in.
    threshold                   ``(float, 0 to 125)`` The threshold (or fuzz factor) for matching similar colors. The larger the value the more colors that will be matched.
    halo                        ``(float, 0 to 125)`` The additional threshold for halo elimination.
    keymethod                   ``(int, choices: ['Basic keying', 'HSV/HSL hue', 'HSV saturation', 'HSL saturation', 'HSV value', 'HSL luminance', 'LCH luminosity', 'LCH chroma', 'LCH hue', 'CIE Distance', 'Cb,Cr vector'])`` The keying method or algorithm to use.
+   ==========================  ============
+
+Color Grade
+"""""""""""
+The Color Grade effect combines primary correction, tonal wheels, RGB curves, and LUT support into one effect.
+It is designed as a grading workflow instead of a collection of unrelated controls, making it easier to build a
+look in one place and animate it over time.
+
+In the :guilabel:`Properties` dock, the :guilabel:`Wheels` row opens the :guilabel:`Color Wheels` dock, and each :guilabel:`Curve` row opens a dedicated curve editor dialog. The property
+list also shows tiny preview indicators for the wheels and curve rows, so you can tell at a glance which controls
+are active and how they are shaped before opening them.
+
+Workflow
+^^^^^^^^
+
+1. Add the :guilabel:`Color Grade` effect to a clip.
+2. Open the effect :guilabel:`Properties`.
+3. Use the main controls for broad correction: :guilabel:`Temperature`, :guilabel:`Tint`, :guilabel:`Exposure`,
+   :guilabel:`Contrast`, :guilabel:`Highlights`, :guilabel:`Shadows`, :guilabel:`Saturation`, and :guilabel:`Vibrance`.
+4. Open the :guilabel:`Wheels` row to balance global tone, shadows, midtones, and highlights.
+5. Open the :guilabel:`Curve: Master`, :guilabel:`Curve: Red`, :guilabel:`Curve: Green`, and :guilabel:`Curve: Blue`
+   rows to shape overall contrast or individual channels.
+6. Optionally choose a :guilabel:`LUT File` and blend it with :guilabel:`LUT Intensity`.
+7. Use :guilabel:`Mix` to blend the graded result back toward the original image.
+
+Properties
+^^^^^^^^^^
+
+.. table::
+   :widths: 26 80
+
+   ==========================  ============
+   Property Name               Description
+   ==========================  ============
+   temperature                 ``(float, -1 to 1)`` Warm or cool the image with a white-balance style adjustment.
+   tint                        ``(float, -1 to 1)`` Shift the image toward magenta or green.
+   exposure                    ``(float, -2 to 2)`` Brighten or darken the image in stops.
+   contrast                    ``(float, -1 to 1)`` Expand or flatten tonal separation.
+   highlights                  ``(float, -1 to 1)`` Recover or boost bright tonal regions.
+   shadows                     ``(float, -1 to 1)`` Lift or deepen darker tonal regions.
+   saturation                  ``(float, 0 to 4)`` Increase or decrease color intensity.
+   vibrance                    ``(float, -1 to 1)`` Protect low-color areas while increasing or decreasing colorfulness.
+   mix                         ``(float, 0 to 1)`` Blend between the original frame and the graded result.
+   wheels                      ``(rich wheels editor)`` Opens the Color Wheels dock for global, shadows, midtones, and highlights adjustments.
+   curve_master                ``(rich curve editor)`` Opens the master curve dialog for overall tonal shaping.
+   curve_red                   ``(rich curve editor)`` Opens the red channel curve dialog.
+   curve_green                 ``(rich curve editor)`` Opens the green channel curve dialog.
+   curve_blue                  ``(rich curve editor)`` Opens the blue channel curve dialog.
+   lut_path                    ``(string)`` Filesystem path to the `.cube` LUT file.
+   lut_intensity               ``(float, 0 to 1)`` Blend amount for the selected LUT.
    ==========================  ============
 
 Color Map / Lookup

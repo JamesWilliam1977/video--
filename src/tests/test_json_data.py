@@ -170,6 +170,38 @@ class JsonDataTests(unittest.TestCase):
                 self.assertEqual(loaded["resource"], str(transitions_dir / "common" / "fade.svg"))
                 self.assertEqual(loaded["lut_path"], str(colors_dir / "teal.cube"))
 
+    def test_empty_lut_path_stays_blank_through_path_conversion(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmpdir = Path(tmpdir)
+            project_file = tmpdir / "project.osp"
+            assets_dir = tmpdir / "project_assets"
+            colors_dir = tmpdir / "colors"
+
+            import classes.json_data as json_data_module
+
+            with ExitStack() as stack:
+                stack.enter_context(patch.object(info, "PATH", str(tmpdir / "openshot")))
+                stack.enter_context(patch.object(info, "COLORS_PATH", str(colors_dir)))
+                stack.enter_context(patch.object(info, "THUMBNAIL_PATH", str(tmpdir / "thumbs")))
+                stack.enter_context(
+                    patch.object(
+                        json_data_module,
+                        "get_assets_path",
+                        lambda file_path, create_paths=False: str(assets_dir),
+                    )
+                )
+                store = JsonDataStore()
+                source = {
+                    "lut_path": "",
+                }
+
+                store.write_to_file(str(project_file), source, path_mode="relative")
+                saved = project_file.read_text(encoding="utf-8")
+                self.assertIn('"lut_path": ""', saved)
+
+                loaded = store.read_from_file(str(project_file), path_mode="absolute")
+                self.assertEqual(loaded["lut_path"], "")
+
     def test_make_repair_backup_increments_suffix_when_backup_exists(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             project_file = Path(tmpdir) / "project.osp"

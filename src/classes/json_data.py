@@ -236,6 +236,9 @@ class JsonDataStore:
         #   /Videos/quote \\"/  instead of  /Videos/quote "/
         path = json.loads('"%s"' % path)
 
+        if path == "":
+            return '"%s": ""' % key
+
         # Find absolute path of file (if needed)
         if "@transitions" in path:
             new_path = path.replace("@transitions", os.path.join(info.PATH, "transitions"))
@@ -291,6 +294,9 @@ class JsonDataStore:
         # are escaped during the JSON dumps() conversion.
         #   /Videos/quote \\"/  instead of  /Videos/quote "/
         path = json.loads('"%s"' % path)
+
+        if path == "":
+            return '"%s": ""' % key
 
         # Split path into folder and file
         folder_path, file_path = os.path.split(os.path.abspath(path))

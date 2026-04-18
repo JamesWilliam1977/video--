@@ -169,7 +169,7 @@
     </property>
     <widget class="QMenu" name="menuViews">
      <property name="title">
-      <string>Views</string>
+     <string>Views</string>
      </property>
      <addaction name="actionSimple_View"/>
      <addaction name="actionAdvanced_View"/>

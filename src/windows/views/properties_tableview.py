@@ -29,6 +29,7 @@ import copy
 import os
 import json
 import functools
+import math
 from operator import itemgetter
 import uuid
 
@@ -41,7 +42,7 @@ from qt_api import (
 )
 from qt_api import (
     QTableView, QAbstractItemView, QSizePolicy,
-    QHeaderView, QItemDelegate, QStyle, QLabel,
+    QHeaderView, QItemDelegate, QStyle, QLabel, QDockWidget,
     QPushButton, QHBoxLayout, QFrame
 )
 
@@ -53,6 +54,15 @@ from classes.thumbnail import GetThumbPath
 
 from windows.models.properties_model import PropertiesModel
 from windows.color_picker import ColorPicker
+from windows.color_grade_editor import (
+    ColorGradeCurveDialog,
+    ColorGradeWheelsPanel,
+    display_wheel_color,
+    is_neutral_wheel,
+    puck_display_color,
+    normalize_curve_data,
+    normalize_wheels_data,
+)
 from .menu import StyledContextMenu
 
 import openshot
@@ -134,6 +144,8 @@ class PropertyDelegate(QItemDelegate):
                 green = int(cur_property[1]["green"]["value"])
                 blue = int(cur_property[1]["blue"]["value"])
                 painter.setBrush(QColor(red, green, blue))
+            elif property_type in ["colorgrade_curve", "colorgrade_wheels"]:
+                painter.setBrush(background_color)
             else:
                 # Normal Keyframe
                 state_selected = getattr(QStyle, "State_Selected", None)
@@ -185,8 +197,65 @@ class PropertyDelegate(QItemDelegate):
                 # Set text color
                 painter.setPen(QPen(Qt.white))
 
+            if property_type == "colorgrade_curve":
+                curve = normalize_curve_data(cur_property[1].get("curve"))
+                preview_rect = QRectF(option.rect.adjusted(8, 8, -8, -8))
+                painter.setPen(QPen(Qt.white, 1.5))
+                path = QPainterPath()
+                points_data = curve["points"]
+                if points_data:
+                    start = QPointF(
+                        preview_rect.left() + (points_data[0]["x"] * preview_rect.width()),
+                        preview_rect.bottom() - (points_data[0]["y"] * preview_rect.height()),
+                    )
+                    path.moveTo(start)
+                    for point in points_data[1:]:
+                        path.lineTo(
+                            preview_rect.left() + (point["x"] * preview_rect.width()),
+                            preview_rect.bottom() - (point["y"] * preview_rect.height()),
+                        )
+                    painter.drawPath(path)
+            elif property_type == "colorgrade_wheels":
+                wheels = normalize_wheels_data(cur_property[1].get("wheels"))
+                names = ["global", "shadows", "midtones", "highlights"]
+                preview_rect = QRectF(option.rect.adjusted(6, 4, -6, -4))
+                wheel_width = preview_rect.width() / 4.0
+                for idx, name in enumerate(names):
+                    wheel = wheels[name]
+                    rect = QRectF(preview_rect.x() + (idx * wheel_width), preview_rect.y(), wheel_width, preview_rect.height())
+                    center = QPointF(rect.center().x(), rect.top() + rect.height() * 0.43)
+                    radius = min(rect.width() * 0.34, rect.height() * 0.34)
+                    painter.setPen(QPen(Qt.white, 1.0))
+                    painter.setBrush(QBrush(QColor(255, 255, 255, 18)))
+                    painter.drawEllipse(center, radius, radius)
+                    color = display_wheel_color(wheel)
+                    tint = QColor(color)
+                    if is_neutral_wheel(wheel):
+                        tint = QColor(255, 255, 255, 18)
+                    else:
+                        tint.setAlpha(32)
+                    painter.setBrush(QBrush(tint))
+                    painter.drawEllipse(center, radius * 0.92, radius * 0.92)
+                    amount = float(wheel["amount"]) * radius * 0.85
+                    hue = color.hueF() if color.hueF() >= 0 else 0.0
+                    angle = math.radians(hue * 360.0)
+                    puck = QPointF(center.x() + math.cos(angle) * amount, center.y() - math.sin(angle) * amount)
+                    painter.setPen(QPen(Qt.white, 1.0))
+                    painter.setBrush(QBrush(puck_display_color(wheel)))
+                    puck_radius = max(2.0, radius * 0.11)
+                    painter.drawEllipse(puck, puck_radius, puck_radius)
+                    luma_y = min(rect.bottom() - 4.0, center.y() + radius + 9.0)
+                    luma_left = rect.center().x() - radius
+                    luma_right = rect.center().x() + radius
+                    painter.setPen(QPen(QColor(255, 255, 255, 80), 1.0))
+                    painter.drawLine(QPointF(luma_left, luma_y), QPointF(luma_right, luma_y))
+                    luma_value = (float(wheel["luma"]) + 1.0) / 2.0
+                    luma_fill_right = luma_left + ((luma_right - luma_left) * luma_value)
+                    painter.setPen(QPen(Qt.white, 2.0))
+                    painter.drawLine(QPointF(luma_left, luma_y), QPointF(luma_fill_right, luma_y))
+
             value = index.data(Qt.DisplayRole)
-            if value:
+            if value and property_type not in ["colorgrade_curve", "colorgrade_wheels"]:
                 painter.drawText(option.rect, Qt.AlignCenter, value)
         finally:
             painter.restore()
@@ -378,6 +447,206 @@ class PropertiesTableView(QTableView):
         self.transaction_id = None
         self.original_data_map = {}
         self.update_in_progress = False
+
+    def _restore_original_objects(self):
+        for item_id, info in self.original_data_map.items():
+            item_type = info.get("type")
+            original = copy.deepcopy(info.get("data"))
+            obj = None
+            if item_type == "clip":
+                obj = Clip.get(id=item_id)
+            elif item_type == "transition":
+                obj = Transition.get(id=item_id)
+            elif item_type == "effect":
+                obj = Effect.get(id=item_id)
+            if obj:
+                obj.data = original
+                obj.save()
+        get_app().window.refreshFrameSignal.emit()
+
+    def cancel_transaction(self):
+        if not self.transaction_id:
+            return
+        self._restore_original_objects()
+        get_app().updates.transaction_id = None
+        get_app().updates.ignore_history = False
+        self.transaction_id = None
+        self.original_data_map = {}
+        self.update_in_progress = False
+
+    def begin_live_property_session(self, item, property_type, property_key, original_value):
+        if self.live_property_session:
+            if self.live_property_session.get("property_type") == "colorgrade_wheels" and property_type == "colorgrade_curve":
+                if self.transaction_id:
+                    self.finalize_transaction()
+                get_app().updates.ignore_history = False
+                self.resume_live_property_caching()
+                self.live_property_session = None
+                self.color_grade_wheels_panel.setEnabled(False)
+            elif self.live_property_session.get("property_type") == "colorgrade_wheels":
+                self.accept_live_property_session()
+            else:
+                self.cancel_live_property_session()
+        if not self.clip_properties_model.ignore_update_signal and property_type != "colorgrade_curve":
+            self.start_transaction(item)
+        self.live_property_session = {
+            "item": item,
+            "property_type": property_type,
+            "property_key": property_key,
+            "original_value": copy.deepcopy(original_value),
+        }
+        get_app().updates.ignore_history = True
+
+    def preview_live_property_value(self, value):
+        if not self.live_property_session:
+            return
+        self.update_in_progress = True
+        self.clip_properties_model.value_updated(self.live_property_session["item"], value=value)
+        self._update_live_property_preview(value)
+        get_app().updates.ignore_history = True
+
+    def preview_curve_property_value(self, item, property_key, value):
+        if not item:
+            return
+        self.update_in_progress = True
+        self.clip_properties_model.value_updated(item, value=value)
+        self._update_property_preview(item, "colorgrade_curve", property_key, value)
+        get_app().updates.ignore_history = True
+
+    def _update_live_property_preview(self, value):
+        session = self.live_property_session or {}
+        self._update_property_preview(
+            session.get("item"),
+            session.get("property_type"),
+            session.get("property_key"),
+            value,
+        )
+
+    def _update_property_preview(self, item, property_type, property_key, value):
+        if not item or property_type not in ["colorgrade_curve", "colorgrade_wheels"]:
+            return
+
+        model = self.clip_properties_model.model
+        label_item = model.item(item.row(), 0)
+        value_item = model.item(item.row(), 1)
+        if not label_item:
+            return
+
+        current_property = label_item.data()
+        if not isinstance(current_property, tuple) or len(current_property) != 2:
+            return
+
+        prop_name, prop_meta = current_property
+        if prop_name != property_key:
+            return
+
+        updated_meta = copy.deepcopy(prop_meta)
+        if property_type == "colorgrade_curve":
+            updated_meta["curve"] = copy.deepcopy(value)
+        elif property_type == "colorgrade_wheels":
+            updated_meta["wheels"] = copy.deepcopy(value)
+
+        label_item.setData((prop_name, updated_meta))
+        if value_item:
+            summary = updated_meta.get("summary") or updated_meta.get("memo") or ""
+            value_item.setText(summary)
+
+        self.viewport().update()
+
+    def pause_live_property_caching(self):
+        if self.live_property_cache_paused:
+            return
+        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
+        self.live_property_cache_paused = True
+        log.debug("pause_live_property_caching: Stop caching frames on timeline")
+
+    def resume_live_property_caching(self):
+        if not self.live_property_cache_paused:
+            return
+        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
+        self.live_property_cache_paused = False
+        log.debug("resume_live_property_caching: Start caching frames on timeline")
+
+    def accept_live_property_session(self):
+        if not self.live_property_session:
+            return
+        property_type = self.live_property_session.get("property_type")
+        if self.transaction_id:
+            self.finalize_transaction()
+        get_app().updates.ignore_history = False
+        self.resume_live_property_caching()
+        self.live_property_session = None
+        self.clip_properties_model.update_model(get_app().window.txtPropertyFilter.text())
+        if property_type == "colorgrade_wheels":
+            self.color_grade_wheels_dock.blockSignals(True)
+            self.color_grade_wheels_dock.hide()
+            self.color_grade_wheels_dock.blockSignals(False)
+        elif property_type == "colorgrade_curve" and self.color_grade_wheels_dock.isVisible():
+            self.color_grade_wheels_panel.setEnabled(True)
+
+    def _selection_is_color_grade(self, selection):
+        if len(selection or []) != 1:
+            return False
+        item = selection[0]
+        if item.get("type") != "effect":
+            return False
+        effect = Effect.get(id=item.get("id"))
+        if not effect or not getattr(effect, "data", None):
+            return False
+        return effect.data.get("class_name") == "ColorGrade"
+
+    def _close_color_grade_editors(self, commit_changes=True):
+        session = self.live_property_session or {}
+        property_type = session.get("property_type")
+
+        if property_type in ["colorgrade_curve", "colorgrade_wheels"]:
+            if commit_changes:
+                self.accept_live_property_session()
+            else:
+                self.cancel_live_property_session()
+
+        for dialog in list(getattr(self, "color_grade_curve_dialogs", [])):
+            if isdeleted(dialog):
+                self.color_grade_curve_dialogs.discard(dialog)
+                continue
+            dialog.blockSignals(True)
+            dialog.close()
+            dialog.blockSignals(False)
+
+    def cancel_live_property_session(self):
+        if not self.live_property_session:
+            return
+        property_type = self.live_property_session.get("property_type")
+        if self.transaction_id:
+            self.cancel_transaction()
+        self.resume_live_property_caching()
+        self.live_property_session = None
+        if property_type == "colorgrade_wheels":
+            self.color_grade_wheels_dock.blockSignals(True)
+            self.color_grade_wheels_dock.hide()
+            self.color_grade_wheels_dock.blockSignals(False)
+        elif property_type == "colorgrade_curve" and self.color_grade_wheels_dock.isVisible():
+            self.color_grade_wheels_panel.setEnabled(True)
+        self.clip_properties_model.update_model(get_app().window.txtPropertyFilter.text())
+
+    def start_live_property_change(self):
+        session = self.live_property_session or {}
+        self.start_property_change(session.get("item"))
+
+    def start_property_change(self, item):
+        if not item or self.transaction_id or self.clip_properties_model.ignore_update_signal:
+            return
+        self.start_transaction(item)
+        get_app().updates.ignore_history = True
+
+    def finish_live_property_change(self):
+        self.finish_property_change()
+
+    def finish_property_change(self):
+        if self.transaction_id:
+            self.finalize_transaction()
+        get_app().updates.ignore_history = False
+        self.clip_properties_model.update_model(get_app().window.txtPropertyFilter.text())
 
     def value_updated_wrapper(self, item):
         """Wrap PropertiesModel.value_updated to manage transactions."""
@@ -632,6 +901,39 @@ class PropertiesTableView(QTableView):
                     if not self.mouse_pressed:
                         self.finalize_transaction()
 
+            elif property_type == "colorgrade_curve":
+                curve_data = normalize_curve_data(cur_property[1].get("curve"))
+                property_key = cur_property[0]
+                dialog = ColorGradeCurveDialog(curve_data, cur_property[1].get("channel", "master"), self.win)
+                item = self.selected_item
+                self.color_grade_curve_dialogs.add(dialog)
+                dialog.destroyed.connect(lambda *_args, dlg=dialog: self.color_grade_curve_dialogs.discard(dlg))
+                dialog.curve_widget().curveChanged.connect(
+                    lambda value, item=item, key=property_key: self.preview_curve_property_value(item, key, value)
+                )
+                dialog.changeStarted.connect(lambda item=item: self.start_property_change(item))
+                dialog.changeStarted.connect(self.pause_live_property_caching)
+                dialog.changeFinished.connect(self.resume_live_property_caching)
+                dialog.changeFinished.connect(self.finish_property_change)
+                dialog.setAttribute(Qt.WA_DeleteOnClose, True)
+                dialog.show()
+                dialog.raise_()
+                dialog.activateWindow()
+
+            elif property_type == "colorgrade_wheels":
+                wheels_data = normalize_wheels_data(cur_property[1].get("wheels"))
+                property_key = cur_property[0]
+                self._ensure_color_grade_wheels_dock_attached()
+                self.color_grade_wheels_panel.setEnabled(True)
+                if self.live_property_session and self.live_property_session.get("property_type") == "colorgrade_wheels":
+                    self.color_grade_wheels_dock.show()
+                    self.color_grade_wheels_dock.raise_()
+                    return
+                self.begin_live_property_session(self.selected_item, property_type, property_key, wheels_data)
+                self.color_grade_wheels_panel.set_wheels_data(wheels_data)
+                self.color_grade_wheels_dock.show()
+                self.color_grade_wheels_dock.raise_()
+
     def caption_text_updated(self, new_caption_text, caption_model_row):
         """Caption text has been updated in the caption editor, and needs saving"""
         if not caption_model_row:
@@ -663,6 +965,8 @@ class PropertiesTableView(QTableView):
         """Update the selected items in the properties window"""
 
         _ = get_app()._tr
+        if selection and not self._selection_is_color_grade(selection):
+            self._close_color_grade_editors(commit_changes=True)
 
         self.clip_properties_model.update_item(selection)
 
@@ -948,8 +1252,8 @@ class PropertiesTableView(QTableView):
                 self.choices.append({"name": _("Transitions"), "value": trans_choices, "selected": False})
 
             elif property_key == "lut_path":
-                # “None” option
-                self.choices = [{"name": _("None"), "value": "", "selected": False, "icon": None}]
+                # Keep the default LUT selection visually blank.
+                self.choices = [{"name": "", "value": "", "selected": False, "icon": None}]
 
                 def _gather(dir_path):
                     try:
@@ -1261,6 +1565,9 @@ class PropertiesTableView(QTableView):
         self.lock_selection = False
         self.prev_row = None
         self.menu = None
+        self.live_property_session = None
+        self.live_property_cache_paused = False
+        self.color_grade_curve_dialogs = set()
 
         # Context menu icons
         self.bezier_icon = QIcon(QPixmap(os.path.join(info.IMAGES_PATH, "keyframe-%s.png" % openshot.BEZIER)))
@@ -1297,6 +1604,28 @@ class PropertiesTableView(QTableView):
         self.doubleClicked.connect(self.doubleClickedCB)
         self.loadProperties.connect(self.select_item)
         get_app().window.CaptionTextUpdated.connect(self.caption_text_updated)
+
+        self.color_grade_wheels_dock = QDockWidget(get_app()._tr("Color Wheels"), self.win)
+        self.color_grade_wheels_dock.setObjectName("dockColorGradeWheels")
+        self.color_grade_wheels_panel = ColorGradeWheelsPanel(parent=self.color_grade_wheels_dock)
+        self.color_grade_wheels_dock.setWidget(self.color_grade_wheels_panel)
+        self.color_grade_wheels_dock.hide()
+        self.win.addDockWidget(Qt.RightDockWidgetArea, self.color_grade_wheels_dock)
+        self.color_grade_wheels_panel.wheelsChanged.connect(self.preview_live_property_value)
+        self.color_grade_wheels_panel.dragStarted.connect(self.pause_live_property_caching)
+        self.color_grade_wheels_panel.dragFinished.connect(self.resume_live_property_caching)
+        self.color_grade_wheels_dock.visibilityChanged.connect(self._color_grade_wheels_visibility_changed)
+
+    def _ensure_color_grade_wheels_dock_attached(self):
+        if self.win.dockWidgetArea(self.color_grade_wheels_dock) == Qt.NoDockWidgetArea:
+            self.win.addDockWidget(Qt.RightDockWidgetArea, self.color_grade_wheels_dock)
+        self.color_grade_wheels_dock.setFloating(False)
+
+    def _color_grade_wheels_visibility_changed(self, visible):
+        if visible:
+            return
+        if self.live_property_session and self.live_property_session.get("property_type") == "colorgrade_wheels":
+            self.accept_live_property_session()
 
 
 class SelectionLabel(QFrame):
