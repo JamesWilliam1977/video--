@@ -38,7 +38,7 @@ from qt_api import isdeleted
 from qt_api import get_font_dialog_selection
 from qt_api import (
     QIcon, QColor, QBrush, QPen, QPalette, QPixmap,
-    QPainter, QPainterPath, QLinearGradient, QFont, QFontInfo, QCursor,
+    QPainter, QPainterPath, QLinearGradient, QFont, QFontInfo, QCursor, QGuiApplication,
 )
 from qt_api import (
     QTableView, QAbstractItemView, QSizePolicy,
@@ -57,6 +57,8 @@ from windows.color_picker import ColorPicker
 from windows.color_grade_editor import (
     ColorGradeCurveDialog,
     ColorGradeWheelsPanel,
+    default_curve_data,
+    default_wheels_data,
     display_wheel_color,
     is_neutral_wheel,
     puck_display_color,
@@ -553,6 +555,30 @@ class PropertiesTableView(QTableView):
 
         self.viewport().update()
 
+    def _sync_color_grade_editors(self, property_type, property_key, value):
+        item = self.selected_item
+        item_data = item.data() if item else None
+
+        if property_type == "colorgrade_curve":
+            for dialog in list(getattr(self, "color_grade_curve_dialogs", [])):
+                if isdeleted(dialog):
+                    self.color_grade_curve_dialogs.discard(dialog)
+                    continue
+                if getattr(dialog, "_property_key", None) != property_key:
+                    continue
+                if getattr(dialog, "_item_data", None) != item_data:
+                    continue
+                dialog.curve_widget().set_curve_data(value)
+                dialog._update_enabled_state()
+        elif property_type == "colorgrade_wheels":
+            session = self.live_property_session or {}
+            if (
+                session.get("property_type") == "colorgrade_wheels"
+                and session.get("property_key") == property_key
+                and session.get("item") is item
+            ):
+                self.color_grade_wheels_panel.set_wheels_data(value)
+
     def pause_live_property_caching(self):
         if self.live_property_cache_paused:
             return
@@ -906,6 +932,8 @@ class PropertiesTableView(QTableView):
                 property_key = cur_property[0]
                 dialog = ColorGradeCurveDialog(curve_data, cur_property[1].get("channel", "master"), self.win)
                 item = self.selected_item
+                dialog._property_key = property_key
+                dialog._item_data = copy.deepcopy(item.data()) if item else None
                 self.color_grade_curve_dialogs.add(dialog)
                 dialog.destroyed.connect(lambda *_args, dlg=dialog: self.color_grade_curve_dialogs.discard(dlg))
                 dialog.curve_widget().curveChanged.connect(
@@ -916,6 +944,7 @@ class PropertiesTableView(QTableView):
                 dialog.changeFinished.connect(self.resume_live_property_caching)
                 dialog.changeFinished.connect(self.finish_property_change)
                 dialog.setAttribute(Qt.WA_DeleteOnClose, True)
+                self._place_curve_dialog_near_index(dialog, model_index)
                 dialog.show()
                 dialog.raise_()
                 dialog.activateWindow()
@@ -1359,6 +1388,10 @@ class PropertiesTableView(QTableView):
                 Color_Action = menu.addAction(_("Select a Color"))
                 Color_Action.triggered.connect(functools.partial(self.Color_Picker_Triggered, cur_property))
                 menu.addSeparator()
+            if self.property_type in ["colorgrade_curve", "colorgrade_wheels"]:
+                Reset_Action = menu.addAction(_("Reset"))
+                Reset_Action.triggered.connect(self.Reset_Color_Grade_Action_Triggered)
+                menu.addSeparator()
             if points > 1:
                 # Menu items only for multiple points
                 Bezier_Menu = menu.addMenu(self.bezier_icon, _("Bezier"))
@@ -1454,6 +1487,29 @@ class PropertiesTableView(QTableView):
         else:
             # Update colors interpolation mode
             self.clip_properties_model.color_update(self.selected_item, QColor("#000"), interpolation=2, interpolation_details=[])
+
+    def Reset_Color_Grade_Action_Triggered(self):
+        log.info("Reset_Color_Grade_Action_Triggered")
+        if self.property_type == "colorgrade_curve":
+            current_value = normalize_curve_data(self.selected_label.data()[1].get("curve"))
+            reset_value = default_curve_data()
+            reset_value["enabled"] = current_value.get("enabled", True)
+        elif self.property_type == "colorgrade_wheels":
+            current_value = normalize_wheels_data(self.selected_label.data()[1].get("wheels"))
+            reset_value = default_wheels_data()
+            reset_value["enabled"] = current_value.get("enabled", True)
+        else:
+            return
+
+        if not self.clip_properties_model.ignore_update_signal:
+            self.start_transaction(self.selected_item)
+        self.update_in_progress = True
+        self.clip_properties_model.value_updated(self.selected_item, value=reset_value)
+        property_key = self.selected_label.data()[0]
+        self._update_property_preview(self.selected_item, self.property_type, property_key, reset_value)
+        self._sync_color_grade_editors(self.property_type, property_key, reset_value)
+        if not self.mouse_pressed:
+            self.finalize_transaction()
 
     def Color_Picker_Triggered(self, cur_property):
         log.info("Color_Picker_Triggered")
@@ -1626,6 +1682,39 @@ class PropertiesTableView(QTableView):
             return
         if self.live_property_session and self.live_property_session.get("property_type") == "colorgrade_wheels":
             self.accept_live_property_session()
+
+    def _place_curve_dialog_near_index(self, dialog, index):
+        rect = self.visualRect(index)
+        if not rect.isValid():
+            return
+
+        top_left = self.viewport().mapToGlobal(rect.topLeft())
+        top_right = self.viewport().mapToGlobal(rect.topRight())
+        anchor_center_x = (top_left.x() + top_right.x()) // 2
+
+        dialog_size = dialog.sizeHint()
+        x = anchor_center_x - (dialog_size.width() // 2)
+        y = top_left.y() - dialog_size.height() - 6
+
+        screen = QGuiApplication.screenAt(QPoint(anchor_center_x, top_left.y()))
+        if not screen:
+            screen = self.window().screen()
+        if not screen:
+            dialog.move(x, y)
+            return
+
+        available = screen.availableGeometry()
+        min_x = available.left()
+        max_x = available.right() - dialog_size.width() + 1
+        x = max(min_x, min(x, max_x))
+
+        min_y = available.top()
+        if y < min_y:
+            y = self.viewport().mapToGlobal(rect.bottomLeft()).y() + 6
+            max_y = available.bottom() - dialog_size.height() + 1
+            y = max(min_y, min(y, max_y))
+
+        dialog.move(x, y)
 
 
 class SelectionLabel(QFrame):
