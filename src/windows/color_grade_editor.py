@@ -96,6 +96,11 @@ def display_wheel_color(data):
     return color if color.isValid() else QColor(Qt.white)
 
 
+def selected_wheel_color(data):
+    color = QColor((data or {}).get("color", NEUTRAL_WHEEL_COLOR))
+    return color if color.isValid() else QColor(Qt.white)
+
+
 def is_achromatic_color(color):
     if not isinstance(color, QColor) or not color.isValid():
         return True
@@ -616,8 +621,8 @@ class WheelRow(QWidget):
         return slider, spin
 
     def _apply_data(self, data):
-        color = display_wheel_color(data)
-        if is_neutral_wheel(data):
+        color = selected_wheel_color(data)
+        if is_achromatic_color(color):
             self.color_button.setText(get_app()._tr("Neutral"))
             self.color_button.setStyleSheet("")
         else:

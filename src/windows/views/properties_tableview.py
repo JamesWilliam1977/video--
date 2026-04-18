@@ -33,7 +33,7 @@ import math
 from operator import itemgetter
 import uuid
 
-from qt_api import Qt, QRectF, QLocale, pyqtSignal, pyqtSlot, QEvent, QPoint, QPointF
+from qt_api import Qt, QRectF, QLocale, pyqtSignal, pyqtSlot, QEvent, QPoint, QPointF, QTimer
 from qt_api import isdeleted
 from qt_api import get_font_dialog_selection
 from qt_api import (
@@ -608,7 +608,7 @@ class PropertiesTableView(QTableView):
             self.color_grade_wheels_dock.hide()
             self.color_grade_wheels_dock.blockSignals(False)
         elif property_type == "colorgrade_curve" and self.color_grade_wheels_dock.isVisible():
-            self.color_grade_wheels_panel.setEnabled(True)
+            self._update_color_grade_wheels_enabled()
 
     def _selection_is_color_grade(self, selection):
         if len(selection or []) != 1:
@@ -620,6 +620,56 @@ class PropertiesTableView(QTableView):
         if not effect or not getattr(effect, "data", None):
             return False
         return effect.data.get("class_name") == "ColorGrade"
+
+    def _update_color_grade_wheels_enabled(self, selection=None):
+        if selection is None:
+            selection = getattr(self, "current_selection", [])
+        self.color_grade_wheels_panel.setEnabled(self._selection_is_color_grade(selection))
+
+    def _find_color_grade_wheels_item(self):
+        model = self.clip_properties_model.model
+        for row in range(model.rowCount()):
+            label_item = model.item(row, 0)
+            value_item = model.item(row, 1)
+            if not label_item or not value_item:
+                continue
+            cur_property = label_item.data()
+            if not isinstance(cur_property, tuple) or len(cur_property) != 2:
+                continue
+            if cur_property[1].get("type") == "colorgrade_wheels":
+                return value_item, cur_property[0], normalize_wheels_data(cur_property[1].get("wheels"))
+        return None, None, None
+
+    def _activate_color_grade_wheels_session(self, item, property_key, wheels_data):
+        session = self.live_property_session or {}
+        if session.get("property_type") == "colorgrade_wheels":
+            if session.get("item") is item and session.get("property_key") == property_key:
+                self.color_grade_wheels_panel.set_wheels_data(wheels_data)
+                return
+            if self.transaction_id:
+                self.finalize_transaction()
+            get_app().updates.ignore_history = False
+            self.resume_live_property_caching()
+            self.live_property_session = None
+        elif self.live_property_session:
+            self.cancel_live_property_session()
+
+        self.begin_live_property_session(item, "colorgrade_wheels", property_key, wheels_data)
+        self.color_grade_wheels_panel.set_wheels_data(wheels_data)
+
+    def _auto_connect_color_grade_wheels_dock(self):
+        if not self.color_grade_wheels_dock.isVisible():
+            return
+        if not self._selection_is_color_grade(self.current_selection):
+            return
+
+        item, property_key, wheels_data = self._find_color_grade_wheels_item()
+        if not item or not property_key:
+            return
+
+        self.selected_item = item
+        self._ensure_color_grade_wheels_dock_attached()
+        self._activate_color_grade_wheels_session(item, property_key, wheels_data)
 
     def _close_color_grade_editors(self, commit_changes=True):
         session = self.live_property_session or {}
@@ -652,7 +702,7 @@ class PropertiesTableView(QTableView):
             self.color_grade_wheels_dock.hide()
             self.color_grade_wheels_dock.blockSignals(False)
         elif property_type == "colorgrade_curve" and self.color_grade_wheels_dock.isVisible():
-            self.color_grade_wheels_panel.setEnabled(True)
+            self._update_color_grade_wheels_enabled()
         self.clip_properties_model.update_model(get_app().window.txtPropertyFilter.text())
 
     def start_live_property_change(self):
@@ -958,8 +1008,7 @@ class PropertiesTableView(QTableView):
                     self.color_grade_wheels_dock.show()
                     self.color_grade_wheels_dock.raise_()
                     return
-                self.begin_live_property_session(self.selected_item, property_type, property_key, wheels_data)
-                self.color_grade_wheels_panel.set_wheels_data(wheels_data)
+                self._activate_color_grade_wheels_session(self.selected_item, property_key, wheels_data)
                 self.color_grade_wheels_dock.show()
                 self.color_grade_wheels_dock.raise_()
 
@@ -993,11 +1042,13 @@ class PropertiesTableView(QTableView):
     def select_item(self, selection):
         """Update the selected items in the properties window"""
 
-        _ = get_app()._tr
+        self.current_selection = list(selection or [])
         if selection and not self._selection_is_color_grade(selection):
             self._close_color_grade_editors(commit_changes=True)
 
+        self._update_color_grade_wheels_enabled(selection)
         self.clip_properties_model.update_item(selection)
+        QTimer.singleShot(125, self._auto_connect_color_grade_wheels_dock)
 
     def select_frame(self, frame_number):
         """ Update the values of the selected clip, based on the current frame """
@@ -1621,6 +1672,7 @@ class PropertiesTableView(QTableView):
         self.lock_selection = False
         self.prev_row = None
         self.menu = None
+        self.current_selection = []
         self.live_property_session = None
         self.live_property_cache_paused = False
         self.color_grade_curve_dialogs = set()
@@ -1665,6 +1717,7 @@ class PropertiesTableView(QTableView):
         self.color_grade_wheels_dock.setObjectName("dockColorGradeWheels")
         self.color_grade_wheels_panel = ColorGradeWheelsPanel(parent=self.color_grade_wheels_dock)
         self.color_grade_wheels_dock.setWidget(self.color_grade_wheels_panel)
+        self.color_grade_wheels_panel.setEnabled(False)
         self.color_grade_wheels_dock.hide()
         self.win.addDockWidget(Qt.RightDockWidgetArea, self.color_grade_wheels_dock)
         self.color_grade_wheels_panel.wheelsChanged.connect(self.preview_live_property_value)
@@ -1679,6 +1732,7 @@ class PropertiesTableView(QTableView):
 
     def _color_grade_wheels_visibility_changed(self, visible):
         if visible:
+            self._update_color_grade_wheels_enabled()
             return
         if self.live_property_session and self.live_property_session.get("property_type") == "colorgrade_wheels":
             self.accept_live_property_session()
