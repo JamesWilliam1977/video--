@@ -37,7 +37,6 @@ from qt_api import (
 # ─── Persistent settings keys ────────────────────────────────────────────────
 _S_WAVE_MODE  = "scope-waveform-mode"     # luma|red|green|blue|rgb_overlay|rgb_parade
 _S_WAVE_COLOR = "scope-waveform-color"    # green|white|orange
-_S_WAVE_IRE   = "scope-waveform-ire"      # True|False
 _S_HIST_CH    = "scope-histogram-channel" # rgba|luma|red|green|blue
 _S_HIST_SCALE = "scope-histogram-scale"   # log|linear
 
@@ -80,14 +79,13 @@ class WaveformWidget(QWidget):
         self._data  = None
         self._mode  = _get(_S_WAVE_MODE,  "luma")
         self._color = _get(_S_WAVE_COLOR, "green")
-        self._ire   = _get(_S_WAVE_IRE,   True)
+        self._ire   = True
         self.setMinimumSize(120, 100)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setFocusPolicy(Qt.NoFocus)
 
     def set_mode(self,  v): self._mode  = v; _set(_S_WAVE_MODE,  v); self.update()
     def set_color(self, v): self._color = v; _set(_S_WAVE_COLOR, v); self.update()
-    def set_ire(self,   v): self._ire   = v; _set(_S_WAVE_IRE,   v); self.update()
 
     def update_data(self, video_data):
         self._data = video_data
@@ -379,11 +377,6 @@ class WaveformDockContent(QWidget):
         ("white",  "White"),
         ("orange", "Orange"),
     ]
-    _IRE = [
-        (True,  "IRE: On"),
-        (False, "IRE: Off"),
-    ]
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setFocusPolicy(Qt.NoFocus)
@@ -399,10 +392,8 @@ class WaveformDockContent(QWidget):
 
         self._mode_cb  = _make_combo(toolbar, self._MODES)
         self._color_cb = _make_combo(toolbar, self._COLORS)
-        self._ire_cb   = _make_combo(toolbar, self._IRE)
         tl.addWidget(self._mode_cb)
         tl.addWidget(self._color_cb)
-        tl.addWidget(self._ire_cb)
         tl.addStretch()
 
         self.waveform = WaveformWidget(self)
@@ -412,12 +403,10 @@ class WaveformDockContent(QWidget):
         # Restore saved state
         _restore_combo(self._mode_cb,  _get(_S_WAVE_MODE,  "luma"))
         _restore_combo(self._color_cb, _get(_S_WAVE_COLOR, "green"))
-        _restore_combo(self._ire_cb,   _get(_S_WAVE_IRE,   True))
         self._sync_color_visibility()
 
         self._mode_cb.currentIndexChanged.connect(self._on_mode)
         self._color_cb.currentIndexChanged.connect(self._on_color)
-        self._ire_cb.currentIndexChanged.connect(self._on_ire)
 
     def _sync_color_visibility(self):
         self._color_cb.setVisible(self._mode_cb.currentData() == "luma")
@@ -428,9 +417,6 @@ class WaveformDockContent(QWidget):
 
     def _on_color(self):
         self.waveform.set_color(self._color_cb.currentData())
-
-    def _on_ire(self):
-        self.waveform.set_ire(self._ire_cb.currentData())
 
     @pyqtSlot(dict)
     def update_data(self, video_data):
