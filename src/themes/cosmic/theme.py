@@ -772,8 +772,10 @@ QMessageBox QPushButton[text="&{_('Cancel')}"] {{
         font.setPointSizeF(8)
         self.app.setFont(font)
 
-        # Move tabs to top
-        self.app.window.setTabPosition(Qt.TopDockWidgetArea, QTabWidget.North)
+        # Move tabs to top (all dock areas, since restoreState() does not persist tab positions)
+        for area in (Qt.TopDockWidgetArea, Qt.BottomDockWidgetArea,
+                     Qt.LeftDockWidgetArea, Qt.RightDockWidgetArea):
+            self.app.window.setTabPosition(area, QTabWidget.North)
 
         # Set dock widget content margins to 0
         self.set_dock_margins([16, 0, 16, 0])
