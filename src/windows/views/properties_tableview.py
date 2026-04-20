@@ -599,9 +599,8 @@ class PropertiesTableView(QTableView):
     def resume_live_property_caching(self):
         if not self.live_property_cache_paused:
             return
-        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
         self.live_property_cache_paused = False
-        log.debug("resume_live_property_caching: Start caching frames on timeline")
+        log.debug("resume_live_property_caching")
 
     def accept_live_property_session(self):
         if not self.live_property_session:
@@ -613,11 +612,7 @@ class PropertiesTableView(QTableView):
         self.resume_live_property_caching()
         self.live_property_session = None
         self.clip_properties_model.update_model(get_app().window.txtPropertyFilter.text())
-        if property_type == "colorgrade_wheels":
-            self.color_grade_wheels_dock.blockSignals(True)
-            self.color_grade_wheels_dock.hide()
-            self.color_grade_wheels_dock.blockSignals(False)
-        elif property_type == "colorgrade_curve" and self.color_grade_wheels_dock.isVisible():
+        if property_type == "colorgrade_curve" and self.color_grade_wheels_dock.isVisible():
             self._update_color_grade_wheels_enabled()
 
     def _selection_is_color_grade(self, selection):
@@ -721,11 +716,7 @@ class PropertiesTableView(QTableView):
             self.cancel_transaction()
         self.resume_live_property_caching()
         self.live_property_session = None
-        if property_type == "colorgrade_wheels":
-            self.color_grade_wheels_dock.blockSignals(True)
-            self.color_grade_wheels_dock.hide()
-            self.color_grade_wheels_dock.blockSignals(False)
-        elif property_type == "colorgrade_curve" and self.color_grade_wheels_dock.isVisible():
+        if property_type == "colorgrade_curve" and self.color_grade_wheels_dock.isVisible():
             self._update_color_grade_wheels_enabled()
         self.clip_properties_model.update_model(get_app().window.txtPropertyFilter.text())
 
@@ -910,8 +901,6 @@ class PropertiesTableView(QTableView):
         get_app().updates.ignore_history = False
         self.mouse_pressed = False
 
-        # Enable video caching again
-        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
         log.debug('mouseReleaseEvent: apply_last_action to history')
 
         if self.update_in_progress:
@@ -1032,10 +1021,12 @@ class PropertiesTableView(QTableView):
                 if self.live_property_session and self.live_property_session.get("property_type") == "colorgrade_wheels":
                     self.color_grade_wheels_dock.show()
                     self.color_grade_wheels_dock.raise_()
+                    self._show_scope_docks_if_hidden()
                     return
                 self._activate_color_grade_wheels_session(self.selected_item, property_key, wheels_data)
                 self.color_grade_wheels_dock.show()
                 self.color_grade_wheels_dock.raise_()
+                self._show_scope_docks_if_hidden()
 
     def caption_text_updated(self, new_caption_text, caption_model_row):
         """Caption text has been updated in the caption editor, and needs saving"""
@@ -1357,8 +1348,7 @@ class PropertiesTableView(QTableView):
                 self.choices.append({"name": _("Transitions"), "value": trans_choices, "selected": False})
 
             elif property_key == "lut_path":
-                # Keep the default LUT selection visually blank.
-                self.choices = [{"name": "", "value": "", "selected": False, "icon": None}]
+                self.choices = [{"name": _("None"), "value": "", "selected": False, "icon": None}]
 
                 def _gather(dir_path):
                     try:
@@ -1750,15 +1740,31 @@ class PropertiesTableView(QTableView):
         self.color_grade_wheels_panel.dragFinished.connect(self.resume_live_property_caching)
         self.color_grade_wheels_dock.visibilityChanged.connect(self._color_grade_wheels_visibility_changed)
 
+    def _show_scope_docks_if_hidden(self):
+        """Show Luma Waveform, Histogram, and Audio Levels docks if currently hidden."""
+        win = self.win
+        for attr in ("dockLumaWaveform", "dockHistogram", "dockAudio"):
+            dock = getattr(win, attr, None)
+            if dock and not dock.isVisible():
+                dock.show()
+
     def _ensure_color_grade_wheels_dock_attached(self):
         if self.win.dockWidgetArea(self.color_grade_wheels_dock) == Qt.NoDockWidgetArea:
             self.win.addDockWidget(Qt.RightDockWidgetArea, self.color_grade_wheels_dock)
-        self.color_grade_wheels_dock.setFloating(False)
+        if self.color_grade_wheels_dock.isFloating():
+            # Only call setFloating(False) when actually floating — calling it
+            # unconditionally triggers setWindowFlags → reparentFocusWidgets over
+            # the entire (large) ColorGradeWheelsPanel widget tree, freezing the UI.
+            self.color_grade_wheels_dock.setFloating(False)
 
     def _color_grade_wheels_visibility_changed(self, visible):
         if visible:
             self._update_color_grade_wheels_enabled()
             QTimer.singleShot(125, self._reconnect_color_grade_wheels_session)
+            return
+        # Only end the session if the dock was truly closed, not just hidden behind
+        # another tab in a tabified group (dockWidgetArea still valid in that case).
+        if self.win.dockWidgetArea(self.color_grade_wheels_dock) != Qt.NoDockWidgetArea:
             return
         if self.live_property_session and self.live_property_session.get("property_type") == "colorgrade_wheels":
             self.accept_live_property_session()

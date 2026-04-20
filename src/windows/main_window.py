@@ -51,7 +51,7 @@ from qt_api import (
     QMessageBox, QDialog, QFileDialog, QInputDialog,
     QAction, QActionGroup, QSizePolicy,
     QStatusBar, QToolBar, QToolButton,
-    QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar, QAbstractButton,
+    QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar, QTabWidget, QAbstractButton,
     QPlainTextEdit, QSpinBox, QDoubleSpinBox
 )
 
@@ -81,6 +81,7 @@ from windows.models.files_model import FilesModel
 from windows.views.optimized_preview_menu import populate_optimized_preview_menu
 from windows.models.transition_model import TransitionsModel
 from windows.preview_thread import PreviewParent
+from windows.scope_panel import WaveformDockContent, HistogramDockContent, AudioMeterWidget
 from windows.video_widget import VideoWidget
 from windows.views.effects_listview import EffectsListView
 from windows.views.effects_treeview import EffectsTreeView
@@ -123,6 +124,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     KeyFrameTransformSignal = pyqtSignal(str, str)
     SelectRegionSignal = pyqtSignal(str)
     MaxSizeChanged = pyqtSignal(object)
+    RunScopeSignal = pyqtSignal(int, bool, bool)   # Route scope GetFrame to worker thread to avoid mutex contention
     InsertKeyframe = pyqtSignal()
     OpenProjectSignal = pyqtSignal(str)
     ThumbnailUpdated = pyqtSignal(str, int)
@@ -1320,6 +1322,62 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         )
         if is_actively_playing:
             self.PauseSignal.emit()
+
+    @pyqtSlot(int, bool)
+    def _enter_playback_mode(self, _frame=0, _preroll=False):
+        """Re-enable video caching when the user seeks or starts playback."""
+        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
+
+    @pyqtSlot()
+    def _enter_playback_mode_play(self):
+        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
+
+    @pyqtSlot(int)
+    def _on_scope_frame(self, frame_number):
+        """Record the latest frame number and arm the debounce timer."""
+        if not any(
+            getattr(self, d, None) and getattr(self, d).isVisible()
+            for d in ("dockLumaWaveform", "dockHistogram", "dockAudio")
+        ):
+            return
+        self._scope_pending_frame = frame_number
+        if not self._scope_timer.isActive():
+            self._scope_timer.start()
+
+    @pyqtSlot(int, bool)
+    def _on_scope_seek(self, frame_number, _start_preroll):
+        """Catch manual seeks (scrubbing, step buttons) that may not emit position_changed."""
+        self._on_scope_frame(frame_number)
+
+    def _run_scope_analysis(self):
+        """Dispatch FrameScope analysis to the worker thread (timer-debounced).
+
+        GetFrame is routed via RunScopeSignal so scope work stays off the UI thread.
+        """
+        frame_number = self._scope_pending_frame
+        if frame_number is None:
+            return
+        wf_vis   = getattr(self, "dockLumaWaveform", None) and self.dockLumaWaveform.isVisible()
+        hist_vis = getattr(self, "dockHistogram",    None) and self.dockHistogram.isVisible()
+        aud_vis  = getattr(self, "dockAudio",        None) and self.dockAudio.isVisible()
+        need_video = bool(wf_vis or hist_vis)
+        need_audio = bool(aud_vis)
+        if not (need_video or need_audio):
+            return
+        self._scope_wf_vis   = wf_vis
+        self._scope_hist_vis = hist_vis
+        self._scope_aud_vis  = aud_vis
+        self.RunScopeSignal.emit(frame_number, need_video, need_audio)
+
+    @pyqtSlot(dict, dict)
+    def _on_scope_ready(self, video, audio):
+        """Receive FrameScope results from the worker thread and update scope widgets."""
+        if video and getattr(self, "_scope_wf_vis", False):
+            self.waveform_content.update_data(video)
+        if video and getattr(self, "_scope_hist_vis", False):
+            self.histogram_content.update_data(video)
+        if audio and getattr(self, "_scope_aud_vis", False):
+            self.audio_meter.update_data(audio)
 
     def actionSaveFrame_trigger(self, checked=True):
         log.info("actionSaveFrame_trigger")
@@ -2723,7 +2781,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         ])
         self.restoreState(qt_types.str_to_bytes(simple_state))
         QCoreApplication.processEvents()
-        self._schedule_tab_order_update()
 
     def actionAdvanced_View_trigger(self):
         """ Switch to an alternative view """
@@ -2763,10 +2820,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             "cAAAEdAAAAggD////7AAAAEgBkAG8AYwBrAFYAaQBkAGUAbwEAAAGrAAAB/AAAAEcA////+wAAABgAZABvAGMA"
             "awBUAGkAbQBlAGwAaQBuAGUBAAAB9QAAAQoAAACWAP///wAAArAAAAABAAAAAQAAAAIAAAABAAAAAvwAAAABAA"
             "AAAgAAAAEAAAAOAHQAbwBvAGwAQgBhAHIBAAAAAP////8AAAAAAAAAAA=="
-            ])
+        ])
         self.restoreState(qt_types.str_to_bytes(advanced_state))
         QCoreApplication.processEvents()
-        self._schedule_tab_order_update()
 
     def actionColor_Grade_View_trigger(self):
         """Switch to a color grading focused view."""
@@ -2776,9 +2832,18 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         self.addDocks([self.dockProperties], Qt.LeftDockWidgetArea)
         self.addDocks([self.dockVideo], Qt.TopDockWidgetArea)
+        # Tabify order (right side): Wheels → Luma Waveform → Histogram → Audio Levels
         if color_grade_dock:
             self.addDocks([color_grade_dock], Qt.RightDockWidgetArea)
-        self.addDocks([self.dockTimeline], Qt.BottomDockWidgetArea)
+        self.addDocks([self.dockLumaWaveform], Qt.RightDockWidgetArea)
+        self.addDocks([self.dockHistogram],    Qt.RightDockWidgetArea)
+        self.addDocks([self.dockAudio],        Qt.RightDockWidgetArea)
+        if color_grade_dock:
+            self.tabifyDockWidget(color_grade_dock, self.dockLumaWaveform)
+        self.tabifyDockWidget(self.dockLumaWaveform, self.dockHistogram)
+        self.tabifyDockWidget(self.dockHistogram,    self.dockAudio)
+        self.splitDockWidget(self.dockVideo, self.dockTimeline, Qt.Vertical)
+        self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
 
         self.floatDocks(False)
 
@@ -2786,13 +2851,19 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self.dockProperties,
             self.dockVideo,
             self.dockTimeline,
+            self.dockLumaWaveform,
+            self.dockHistogram,
+            self.dockAudio,
         ]
         if color_grade_dock:
             docks_to_show.append(color_grade_dock)
 
         self.showDocks(docks_to_show)
         QCoreApplication.processEvents()
-        self._schedule_tab_order_update()
+        # Raise Wheels (color grade) to front of the tabified group
+        if color_grade_dock:
+            color_grade_dock.raise_()
+        self.style_dock_widgets()
 
     def actionFreeze_View_trigger(self):
         """ Freeze all dockable widgets on the main screen """
@@ -4245,70 +4316,86 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         else:
             self._release_wait_cursor()
 
-    def style_dock_widgets(self):
+    def style_dock_widgets(self, theme_changed=False):
         """Check if any dock widget is part of a tabbed group and hide the title text if tabbed."""
         theme = None
         if get_app().theme_manager:
             theme = get_app().theme_manager.get_current_theme()
 
+        if theme_changed:
+            # Theme switch invalidates all cached states so every dock gets re-styled.
+            for dw in self.getDocks():
+                dw._titlebar_state = None
+
         for dock_widget in self.getDocks():
             # Check if dock is tabbed with other widgets
             tabified_widgets = self.tabifiedDockWidgets(dock_widget)
 
+            # Compute the required title-bar state key. setTitleBarWidget internally
+            # calls QWidget::setParent → reparentFocusWidgets, which iterates the
+            # entire Qt focus chain. When dockLocationChanged fires repeatedly during
+            # a drag this becomes O(n²) and freezes the UI. Skip the call when the
+            # state hasn't actually changed.
             if dock_widget.objectName() == "dockTimeline":
-                # Hide title bar for timeline widget (ALL themes)
-                dock_widget.setTitleBarWidget(QWidget())
-
+                required_state = "timeline"
             elif theme and theme.name == ThemeName.COSMIC.value:
-                # handle COSMIC theme dock widgets
                 if tabified_widgets:
-                    # Apply custom title bar with grab handle (for grouped/tabbed docks)
-                    dock_widget.setTitleBarWidget(HiddenTitleBar(dock_widget, ""))
+                    required_state = "tabbed"
                 elif dock_widget.isFloating():
-                    # Use standard system title bar (minimize, maximize, close) for floating docks
-                    dock_widget.setTitleBarWidget(None)
+                    required_state = "floating"
                 else:
-                    # Apply custom title bar with text (no grab handle) for non-tabbed, non-floating docks
-                    dock_widget.setTitleBarWidget(HiddenTitleBar(dock_widget, dock_widget.windowTitle()))
-
+                    required_state = f"docked:{dock_widget.windowTitle()}"
             else:
-                # for ALL other themes, regardless of floating or tabbed
-                # Use standard system title bar (minimize, maximize, close)
+                required_state = "system"
+
+            if getattr(dock_widget, "_titlebar_state", None) == required_state:
+                continue
+
+            dock_widget._titlebar_state = required_state
+
+            if required_state == "timeline":
+                dock_widget.setTitleBarWidget(QWidget())
+            elif required_state == "tabbed":
+                dock_widget.setTitleBarWidget(HiddenTitleBar(dock_widget, "", show_buttons=False))
+            elif required_state == "floating" or required_state == "system":
                 dock_widget.setTitleBarWidget(None)
+            else:  # "docked:<title>"
+                dock_widget.setTitleBarWidget(HiddenTitleBar(dock_widget, dock_widget.windowTitle()))
 
         # Set tab drawBase property
         self.set_tab_drawbase()
-        self._schedule_tab_order_update()
 
-    def _schedule_tab_order_update(self):
-        if not hasattr(self, "_tab_order_timer"):
-            self._tab_order_timer = QTimer(self)
-            self._tab_order_timer.setSingleShot(True)
-            self._tab_order_timer.timeout.connect(self._apply_tab_order_and_connect_dock_tabs)
-        self._tab_order_timer.start(50)
+    def _schedule_dock_style_update(self, theme_changed=False):
+        """Defer dock titlebar restyling until dock/layout churn has settled."""
+        if not hasattr(self, "_dock_style_timer"):
+            self._dock_style_timer = QTimer(self)
+            self._dock_style_timer.setSingleShot(True)
+            self._dock_style_timer.timeout.connect(self._apply_scheduled_dock_style_update)
+            self._dock_style_theme_changed = False
+        if theme_changed:
+            self._dock_style_theme_changed = True
+        self._dock_style_timer.start(150)
 
-    def _apply_tab_order_and_connect_dock_tabs(self):
-        """Apply tab order and connect dock tab bar signals."""
-        tabstops.apply_auto_tab_order(self, include_hidden=True, include_disabled=True)
-        self._connect_dock_tab_bar_signals()
+    def _apply_scheduled_dock_style_update(self):
+        theme_changed = bool(getattr(self, "_dock_style_theme_changed", False))
+        self._dock_style_theme_changed = False
+        self.style_dock_widgets(theme_changed=theme_changed)
 
-    def _connect_dock_tab_bar_signals(self):
-        """Connect currentChanged signals on dock tab bars to update tab order."""
-        if not hasattr(self, "_connected_dock_tab_bars"):
-            self._connected_dock_tab_bars = set()
+    def _mark_dock_interaction_active(self, *_args):
+        """Suppress expensive preview/cache churn while docks are being rearranged."""
+        self._dock_interaction_active = True
+        if not hasattr(self, "_dock_interaction_timer"):
+            self._dock_interaction_timer = QTimer(self)
+            self._dock_interaction_timer.setSingleShot(True)
+            self._dock_interaction_timer.timeout.connect(self._finish_dock_interaction)
+        self._dock_interaction_timer.start(250)
 
-        dock_titles = {dock.windowTitle() for dock in self.getDocks()}
-
-        for tab_bar in self.findChildren(QTabBar):
-            if tab_bar in self._connected_dock_tab_bars:
-                continue
-            if tab_bar.count() == 0:
-                continue
-            # Check if this tab bar contains dock titles
-            tabs = [tab_bar.tabText(i) for i in range(tab_bar.count())]
-            if any(title in dock_titles for title in tabs):
-                tab_bar.currentChanged.connect(self._schedule_tab_order_update)
-                self._connected_dock_tab_bars.add(tab_bar)
+    def _finish_dock_interaction(self):
+        self._dock_interaction_active = False
+        pending_size = getattr(self, "_pending_preview_size", None)
+        self._pending_preview_size = None
+        if pending_size is not None:
+            self.MaxSizeChanged.emit(pending_size)
 
     def set_tab_drawbase(self):
         """Set the drawBase property on all QTabBar objects. This draws a line
@@ -4449,6 +4536,34 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         self.initModels()
 
+        # Create individual scope docks (before addViewDocksMenu so they appear in Docks menu)
+        self.waveform_content = WaveformDockContent()
+        self.dockLumaWaveform = QDockWidget(_("Luma Waveform"), self)
+        self.dockLumaWaveform.setObjectName("dockLumaWaveform")
+        self.dockLumaWaveform.setProperty("_skip_auto_tab_order", True)
+        self.dockLumaWaveform.setFocusPolicy(Qt.NoFocus)
+        self.dockLumaWaveform.setWidget(self.waveform_content)
+        self.dockLumaWaveform.hide()
+        self.addDockWidget(Qt.RightDockWidgetArea, self.dockLumaWaveform)
+
+        self.histogram_content = HistogramDockContent()
+        self.dockHistogram = QDockWidget(_("Histogram"), self)
+        self.dockHistogram.setObjectName("dockHistogram")
+        self.dockHistogram.setProperty("_skip_auto_tab_order", True)
+        self.dockHistogram.setFocusPolicy(Qt.NoFocus)
+        self.dockHistogram.setWidget(self.histogram_content)
+        self.dockHistogram.hide()
+        self.addDockWidget(Qt.RightDockWidgetArea, self.dockHistogram)
+
+        self.audio_meter = AudioMeterWidget()
+        self.dockAudio = QDockWidget(_("Audio Levels"), self)
+        self.dockAudio.setObjectName("dockAudio")
+        self.dockAudio.setProperty("_skip_auto_tab_order", True)
+        self.dockAudio.setFocusPolicy(Qt.NoFocus)
+        self.dockAudio.setWidget(self.audio_meter)
+        self.dockAudio.hide()
+        self.addDockWidget(Qt.RightDockWidgetArea, self.dockAudio)
+
         # Add Docks submenu to View menu
         self.addViewDocksMenu()
 
@@ -4514,6 +4629,23 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.preview_thread = self.preview_parent.worker
         self.sliderZoomWidget.connect_playback()
         self.timeline.connect_playback()
+
+        # Scope analysis: debounced timer dispatches GetFrame+FrameScope to the
+        # PlayerWorker thread so the UI thread only handles paint/update work.
+        self._scope_pending_frame = None
+        self._scope_wf_vis = self._scope_hist_vis = self._scope_aud_vis = False
+        self._dock_interaction_active = False
+        self._pending_preview_size = None
+        self._scope_timer = QTimer(self)
+        self._scope_timer.setSingleShot(True)
+        self._scope_timer.setInterval(50)   # 50 ms → ~20 fps max
+        self._scope_timer.timeout.connect(self._run_scope_analysis)
+        self.preview_thread.position_changed.connect(self._on_scope_frame)
+        self.SeekSignal.connect(self._on_scope_seek)
+
+        # Playback mode: re-enable caching on any seek or play action
+        self.SeekSignal.connect(self._enter_playback_mode)
+        self.PlaySignal.connect(self._enter_playback_mode_play)
 
         # Set play/pause callbacks
         self.PauseSignal.connect(self.onPauseCallback)
@@ -4617,16 +4749,15 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.SeekSignal.connect(self.handleSeek)
 
         # Connect theme changed signal
-        self.ThemeChangedSignal.connect(self.style_dock_widgets)
+        self.ThemeChangedSignal.connect(lambda _=None: self._schedule_dock_style_update(theme_changed=True))
         self.ProjectSaved.connect(self._on_project_saved, Qt.QueuedConnection)
         self.ProjectSaveFailed.connect(self._on_project_save_failed, Qt.QueuedConnection)
 
         # Connect the signals for each dock widget from self.getDocks()
         for dock_widget in self.getDocks():
-            dock_widget.dockLocationChanged.connect(self.style_dock_widgets)
-            dock_widget.dockLocationChanged.connect(self._schedule_tab_order_update)
-            dock_widget.topLevelChanged.connect(self._schedule_tab_order_update)
-            dock_widget.visibilityChanged.connect(lambda _=None: self._schedule_tab_order_update())
+            dock_widget.dockLocationChanged.connect(self._schedule_dock_style_update)
+            dock_widget.dockLocationChanged.connect(self._mark_dock_interaction_active)
+            dock_widget.topLevelChanged.connect(self._mark_dock_interaction_active)
 
         # Ensure toolbar is movable when floated (even with docks frozen)
         self.toolBar.topLevelChanged.connect(
@@ -4656,7 +4787,12 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.initShortcuts()
 
         # Apply accessibility-friendly tab order after layout settles
-        self._schedule_tab_order_update()
+        QTimer.singleShot(
+            0,
+            lambda: tabstops.apply_auto_tab_order(
+                self, include_hidden=True, include_disabled=True
+            ),
+        )
         self._schedule_initial_focus()
         self._install_focus_debugger()
 

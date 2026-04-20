@@ -174,6 +174,9 @@ class PreviewParent(QObject, UpdateInterface):
         self.parent.LoadTimelineAndSeekSignal.connect(self.worker.LoadTimelineAndSeek)
         self.parent.SpeedSignal.connect(self.worker.Speed)
         self.parent.StopSignal.connect(self.worker.Stop)
+        if hasattr(self.parent, "RunScopeSignal"):
+            self.parent.RunScopeSignal.connect(self.worker.run_scope_analysis)
+            self.worker.scope_ready.connect(self.parent._on_scope_ready)
 
         # Move Worker to new thread, and Start
         self.worker.moveToThread(self.background)
@@ -191,6 +194,7 @@ class PlayerWorker(QObject):
     error_found = pyqtSignal(object)
     ready = pyqtSignal()
     finished = pyqtSignal()
+    scope_ready = pyqtSignal(dict, dict)
 
     @pyqtSlot(object, object)
     def Init(self, parent, timeline, videoPreview):
@@ -373,6 +377,68 @@ class PlayerWorker(QObject):
         # Refreshes should not trigger preroll/cache invalidation behavior.
         refresh_frame = int(self.player.Position())
         self.Seek(refresh_frame, False)
+
+    @pyqtSlot(int, bool, bool)
+    def run_scope_analysis(self, frame_number, need_video, need_audio):
+        """Compute FrameScope data on the worker thread and emit scope_ready.
+
+        Running here keeps scope analysis work off the UI thread.
+        """
+        timeline = getattr(getattr(get_app().window, "timeline_sync", None), "timeline", None)
+        if not timeline:
+            self.scope_ready.emit({}, {})
+            return
+        video, audio = {}, {}
+        try:
+            frame = timeline.GetFrame(frame_number)
+            scope = openshot.FrameScope(frame, 256, 256)
+            if need_video:
+                if scope.HasVideo():
+                    video = {
+                        "present": True,
+                        "waveform": {
+                            "columns": scope.GetWaveformColumns(),
+                            "bins":    scope.GetWaveformBins(),
+                            "luma":    list(scope.GetVideoWaveformLuma()),
+                            "red":     list(scope.GetVideoWaveformRed()),
+                            "green":   list(scope.GetVideoWaveformGreen()),
+                            "blue":    list(scope.GetVideoWaveformBlue()),
+                        },
+                        "histogram": {
+                            "luma":  list(scope.GetVideoHistogramLuma()),
+                            "red":   list(scope.GetVideoHistogramRed()),
+                            "green": list(scope.GetVideoHistogramGreen()),
+                            "blue":  list(scope.GetVideoHistogramBlue()),
+                        },
+                        "summary": {
+                            "avg_luma":           scope.GetVideoAverageLuma(),
+                            "clipped_shadows":    scope.GetVideoClippedShadows(),
+                            "clipped_highlights": scope.GetVideoClippedHighlights(),
+                        },
+                    }
+                else:
+                    video = {"present": False}
+            if need_audio:
+                if scope.HasAudio():
+                    channels = scope.GetAudioChannels()
+                    audio = {
+                        "present":  True,
+                        "channels": channels,
+                        "summary": {
+                            "peak":            list(scope.GetAudioPeakLevels()),
+                            "rms":             list(scope.GetAudioRmsLevels()),
+                            "clipped_samples": list(scope.GetAudioClippedSamples()),
+                        },
+                        "waveform": {
+                            "min": [list(scope.GetAudioWaveformMin(ch)) for ch in range(channels)],
+                            "max": [list(scope.GetAudioWaveformMax(ch)) for ch in range(channels)],
+                        },
+                    }
+                else:
+                    audio = {"present": False}
+        except Exception:
+            pass
+        self.scope_ready.emit(video, audio)
 
     def LoadFile(self, path=None):
         """ Load a media file into the video player """

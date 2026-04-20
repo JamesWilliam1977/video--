@@ -31,7 +31,7 @@ import time
 import uuid
 
 from qt_api import (
-    Qt, QCoreApplication, QMutex, QTimer,
+    Qt, QApplication, QCoreApplication, QMutex, QTimer,
     pyqtSignal, pyqtSlot, QPoint, QPointF, QSize, QSizeF, QRect, QRectF, QLineF,
 )
 from qt_api import modifiers_has
@@ -931,10 +931,6 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
         # Inform UpdateManager to accept updates, and only store our final update
         get_app().updates.ignore_history = False
-
-        # Enable video caching again
-        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
-        log.debug('mouseReleaseEvent: Start caching frames on timeline')
 
         # Record history for all transformed clips
         for clip in self.transforming_clips:
@@ -2173,11 +2169,17 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         # Only the main project preview uses VideoWidget's internal delayed resize
         # pipeline. Dialog previews manage their own resize/max-size flow and
         # should not be forcibly paused here during startup.
-        if getattr(self, "watch_project", True):
+        if getattr(self, "watch_project", True) and not getattr(self.win, "_dock_interaction_active", False):
             self.win.PauseSignal.emit()
 
     def delayed_resize_callback(self):
         """Callback for resize event timer (to delay the resize event, and prevent lots of similar resize events)"""
+        # While the mouse button is still held down (e.g. dragging docks/splitters),
+        # keep deferring preview resize work so we don't thrash SetMaxSize/ClearAllCache.
+        if QApplication.mouseButtons() & Qt.LeftButton:
+            self.delayed_resize_timer.start()
+            return
+
         # Ensure width & height are divisible by 2 (round decimals).
         # Trying to find the closest even number to the requested aspect ratio
         # so that both width and height are divisible by 2. This is to prevent some

@@ -25,24 +25,27 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from qt_api import QWidget, QHBoxLayout, QPushButton, QLabel
+from qt_api import Qt, QWidget, QHBoxLayout, QPushButton, QLabel
 
 from classes.app import get_app
 
 
 class HiddenTitleBar(QWidget):
-    def __init__(self, dock_widget, title_text=""):
+    def __init__(self, dock_widget, title_text="", show_buttons=True):
         super().__init__()
         self.dock_widget = dock_widget
+        self.show_buttons = show_buttons
         self._tr = None
         self.dragging = False  # Flag for dragging
         self.start_pos = None
+        self.setFocusPolicy(Qt.NoFocus)
 
         # Set up a horizontal layout
         layout = QHBoxLayout(self)
 
         # Add a QLabel for the title (optional, based on title_text)
         self.title_label = QLabel(title_text)
+        self.title_label.setFocusPolicy(Qt.NoFocus)
         if title_text:
             self.title_label.setObjectName("dock-title-label")
         else:
@@ -57,21 +60,27 @@ class HiddenTitleBar(QWidget):
         # Add a spacer to push buttons to the right
         layout.addStretch()
 
-        # Add close and undock buttons
-        self.close_button = QPushButton()
-        self.undock_button = QPushButton()
+        self.close_button = None
+        self.undock_button = None
 
-        # Set object names for styling via stylesheets
-        self.close_button.setObjectName("dock-close-button")
-        self.undock_button.setObjectName("dock-float-button")
+        if self.show_buttons:
+            # Add close and undock buttons
+            self.close_button = QPushButton()
+            self.undock_button = QPushButton()
+            self.close_button.setFocusPolicy(Qt.NoFocus)
+            self.undock_button.setFocusPolicy(Qt.NoFocus)
 
-        # Connect the buttons to the appropriate actions
-        self.close_button.clicked.connect(self.dock_widget.close)
-        self.undock_button.clicked.connect(self.toggle_dock_state)
+            # Set object names for styling via stylesheets
+            self.close_button.setObjectName("dock-close-button")
+            self.undock_button.setObjectName("dock-float-button")
 
-        # Add buttons to the layout
-        layout.addWidget(self.undock_button)
-        layout.addWidget(self.close_button)
+            # Connect the buttons to the appropriate actions
+            self.close_button.clicked.connect(self.dock_widget.close)
+            self.undock_button.clicked.connect(self.toggle_dock_state)
+
+            # Add buttons to the layout
+            layout.addWidget(self.undock_button)
+            layout.addWidget(self.close_button)
 
         # Set margins and height for the title bar
         layout.setContentsMargins(0, 0, 0, 0)
@@ -91,6 +100,8 @@ class HiddenTitleBar(QWidget):
         if self._tr is None:
             self._tr = get_app()._tr
         _ = self._tr
+        if not self.show_buttons:
+            return
         close_label = _("Close")
         self.close_button.setAccessibleName(close_label)
 
