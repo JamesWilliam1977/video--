@@ -59,10 +59,11 @@ from ..paint import (
     KeyframePainter,
 )
 from ..snap import SnapHelper
-from ..theme import DEFAULT_THEME, apply_theme as parse_theme
+from ..theme import DEFAULT_THEME, TimelineTheme
 from ..state import TimelineStateMachine
 from windows.views.menu import StyledContextMenu
 from classes.app import get_app
+from classes.info import PATH
 from classes.query import Clip, Transition, File
 from classes.logger import log
 from classes.clip_utils import is_single_image_media
@@ -731,12 +732,7 @@ class TimelineWidgetBase(QWidget):
 
     def _load_razor_cursor(self):
         """Load the native razor cursor used by the legacy timeline."""
-        asset_path = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "../../../../timeline/media/images/razor_line_with_razor.png",
-            )
-        )
+        asset_path = os.path.join(PATH, "themes/humanity/images/razor_line_with_razor.png")
         pixmap = QPixmap(asset_path)
         if pixmap.isNull():
             return QCursor(Qt.CrossCursor)
@@ -762,16 +758,27 @@ class TimelineWidgetBase(QWidget):
     def run_js(self, code, callback=None, retries=0):
         """Compatibility placeholder for legacy timeline integration hooks."""
 
-    def apply_theme(self, css=None):
-        """Apply CSS theme to this widget."""
-        if not isinstance(css, str):
-            # Signal from ThemeChangedSignal passes the theme instance.
-            # The theme has already been applied directly, so simply
-            # refresh painters.
+    def apply_theme(self, theme=None):
+        """Apply a TimelineTheme instance to this widget."""
+        if not isinstance(theme, TimelineTheme):
+            # ThemeChangedSignal passes the Qt theme instance — just refresh painters.
             self._theme_changed()
             return
 
-        if parse_theme(self, css):
+        self.theme = theme
+
+        old = (self.track_height, self.track_name_width, self.ruler_height,
+               self.track_gap, self.track_margin_top)
+
+        self.track_height         = theme.track.height
+        self.track_name_width     = theme.track.name_width
+        self.track_gap            = theme.track.gap
+        self.track_margin_top     = theme.track.margin_top if theme.track.margin_top >= 0 else theme.track.gap
+        self.ruler_height         = theme.ruler.height
+        self.scroll_bar_thickness = theme.scrollbar_width
+
+        if old != (self.track_height, self.track_name_width, self.ruler_height,
+                   self.track_gap, self.track_margin_top):
             self.changed(None)
         self._theme_changed()
 
