@@ -61,7 +61,7 @@ class HumanityDarkTimelineTheme(TimelineTheme):
         self.clip.top_overlay2  = QColor(255, 255, 255, 0)
         self.clip.border_color  = QColor("#4B92AD")
         self.clip.border_radius = 8
-        self.clip.border_width  = 1.0
+        self.clip.border_width  = 2.0
         self.clip.font_color    = QColor("#FFFFFF")
         self.clip.font_size     = 9
         self.clip.height        = 64

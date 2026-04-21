@@ -2781,11 +2781,13 @@ class TimelineWidgetBase(QWidget):
                     self.setCursor(self.cursors.get("razor", Qt.CrossCursor))
                     return
 
-        # Clip menu icons
-        for rect, _clip, _selected in self.geometry.iter_clips(reverse=True):
-            if self._clip_menu_rect(rect).contains(pos):
-                self.setCursor(Qt.PointingHandCursor)
-                return
+        # Clip title container (dropdown click target)
+        for entry in reversed(self._clip_text_rects):
+            if isinstance(entry, dict) and entry.get("open_menu"):
+                rect = entry.get("rect")
+                if isinstance(rect, QRectF) and rect.contains(pos):
+                    self.setCursor(Qt.PointingHandCursor)
+                    return
 
         # Clip/transition edges and drags (transitions prioritized)
         edge = 5
@@ -2913,7 +2915,21 @@ class TimelineWidgetBase(QWidget):
             self._trigger_track_menu_icon(pos)
             or self._trigger_transition_menu_icon(pos)
             or self._trigger_clip_menu_icon(pos)
+            or self._trigger_clip_title_menu(pos)
         )
+
+    def _trigger_clip_title_menu(self, pos):
+        for entry in reversed(self._clip_text_rects):
+            if not isinstance(entry, dict) or not entry.get("open_menu"):
+                continue
+            rect = entry.get("rect")
+            if isinstance(rect, QRectF) and rect.contains(pos):
+                clip = entry.get("clip")
+                if clip and hasattr(self.win, "timeline"):
+                    self._select_timeline_item(clip.id, "clip", True)
+                    self.win.timeline.ShowClipMenu(clip.id)
+                    return True
+        return False
 
     def _trigger_track_menu_icon(self, pos):
         for _track_rect, track, name_rect in self.geometry.iter_tracks():
