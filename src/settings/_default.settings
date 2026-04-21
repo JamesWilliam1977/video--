@@ -25,7 +25,6 @@
     "setting": "ui-scale",
     "type": "dropdown",
     "restart": true,
-    "dependency": "!legacy-based-timeline",
     "values": [
       {
         "value": 0.75,
@@ -93,7 +92,6 @@
     "type": "dropdown",
     "restart": false,
     "category": "Timeline",
-    "dependency": "!legacy-based-timeline",
     "setting": "timeline-thumbnail-style",
     "translate_values": true,
     "values": [
@@ -544,14 +542,6 @@
     "restart": false,
     "category": "Timeline",
     "setting": "automatic_transitions"
-  },
-  {
-    "value": false,
-    "title": "Enable Legacy Timeline (web-based)",
-    "type": "bool",
-    "restart": true,
-    "category": "Timeline",
-    "setting": "legacy-based-timeline"
   },
   {
     "max": 4,

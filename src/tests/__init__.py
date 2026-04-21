@@ -11,5 +11,5 @@ os.environ.setdefault("QT_QPA_PLATFORM", "minimal")
 os.environ.setdefault("QT_OPENGL", "software")
 os.environ.setdefault("LIBGL_ALWAYS_SOFTWARE", "1")
 
-# QtWebEngine requires this attribute before any Qt application is created.
+# Qt requires this attribute before any Qt application is created.
 QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts, True)

@@ -166,6 +166,29 @@ def find_files(directory, patterns):
                         filename = os.path.join(root, basename)
                         yield filename
 
+
+def should_package_source_file(filename):
+    """Return True when a copied openshot_qt source file is needed at runtime."""
+    rel_path = os.path.relpath(filename, start=openshot_copy_path)
+    rel_parts = rel_path.split(os.sep)
+
+    if rel_parts[0] != "language":
+        return True
+
+    basename = rel_parts[-1]
+
+    # The compiled Qt resource module is the runtime source of OpenShot translations.
+    if basename in {"__init__.py", "openshot_lang.py"}:
+        return True
+
+    # Keep packaged Qt translations for native Qt dialogs/widgets.
+    if basename.endswith(".qm") and (basename.startswith("qt_") or basename.startswith("qtbase_")):
+        return True
+
+    # Everything else in src/language is build-time/test-time content or loose duplicate
+    # translations that are already embedded into openshot_lang.py.
+    return False
+
 # GUI applications require a different base on Windows
 iconFile = "openshot-qt"
 base = None
@@ -266,7 +289,8 @@ if sys.platform == "win32":
     # Append all source files
     src_files.append((os.path.join(PATH, "installer", "qt.conf"), "qt.conf"))
     for filename in find_files("openshot_qt", ["*"]):
-        src_files.append((filename, os.path.join(os.path.relpath(filename, start=openshot_copy_path))))
+        if should_package_source_file(filename):
+            src_files.append((filename, os.path.join(os.path.relpath(filename, start=openshot_copy_path))))
 
 elif sys.platform == "linux":
     # Find libopenshot.so path (GitLab copies artifacts into local build/install folder)
@@ -286,19 +310,6 @@ elif sys.platform == "linux":
     resvg_path = "/usr/lib/libresvg.so"
     if os.path.exists(resvg_path):
         external_so_files.append((resvg_path, os.path.basename(resvg_path)))
-
-    # Add QtWebEngineProcess (if found)
-    web_process_path = ARCHLIB + "qt5/libexec/QtWebEngineProcess"
-    if os.path.exists(web_process_path):
-        external_so_files.append(
-            (web_process_path, os.path.basename(web_process_path)))
-
-    # Add QtWebEngineProcess Resources & Local
-    qt5_path = "/usr/share/qt5/"
-    for filename in find_files(os.path.join(qt5_path, "resources"), ["*"]):
-        external_so_files.append((filename, os.path.relpath(filename, start=qt5_path)))
-    for filename in find_files(os.path.join(qt5_path, "translations", "qtwebengine_locales"), ["*"]):
-        external_so_files.append((filename, os.path.relpath(filename, start=qt5_path)))
 
     # Add Qt xcbglintegrations plugin
     xcbgl_path = ARCHLIB + "qt5/"
@@ -338,19 +349,6 @@ elif sys.platform == "linux":
         mod_name = "{}.{}".format(QT_BINDING_PACKAGE, submod)
         mod = import_module(mod_name)
         qt_mod_files.append(inspect.getfile(mod))
-    # Optional additions
-    for mod_name in [
-            '{}.QtWebEngine'.format(QT_BINDING_PACKAGE),
-            '{}.QtWebEngineWidgets'.format(QT_BINDING_PACKAGE),
-            '{}.QtWebKit'.format(QT_BINDING_PACKAGE),
-            '{}.QtWebKitWidgets'.format(QT_BINDING_PACKAGE),
-            ]:
-        try:
-            mod = import_module(mod_name)
-            qt_mod_files.append(inspect.getfile(mod))
-        except ImportError as ex:
-            log.warning("Skipping {}: {}".format(mod_name, ex))
-
     lib_list = qt_mod_files
     try:
         import _ssl
@@ -462,7 +460,8 @@ elif sys.platform == "linux":
     # Append all source files
     src_files.append((os.path.join(PATH, "installer", "qt.conf"), "qt.conf"))
     for filename in find_files("openshot_qt", ["*"]):
-        src_files.append((filename, os.path.join(os.path.relpath(filename, start=openshot_copy_path))))
+        if should_package_source_file(filename):
+            src_files.append((filename, os.path.join(os.path.relpath(filename, start=openshot_copy_path))))
 
 elif sys.platform == "darwin":
     # Copy Mac specific files that cx_Freeze misses
@@ -478,35 +477,27 @@ elif sys.platform == "darwin":
     iconFile += ".hqx"
     src_files.append((os.path.join(PATH, "xdg", iconFile), iconFile))
 
-    # Add QtWebEngineProcess (if found)
-    qt_install_path = "/usr/local/qt5.15.X/qt5.15/5.15.0/clang_64/"
-    qt_webengine_path = os.path.join(qt_install_path, "lib", "QtWebEngineCore.framework", "Versions", "5")
-    web_process_path = os.path.join(qt_webengine_path, "Helpers", "QtWebEngineProcess.app", "Contents", "MacOS", "QtWebEngineProcess")
-    web_core_path = os.path.join(qt_webengine_path, "QtWebEngineCore")
-    external_so_files.append((web_process_path, os.path.basename(web_process_path)))
-    external_so_files.append((web_core_path, os.path.basename(web_core_path)))
-
     # Manually add BABL extensions (used in ChromaKey effect) - these are loaded at runtime,
     # and thus cx_freeze is not able to detect them
     babl_ext_path = "/usr/local/lib/babl-0.1"
     for filename in find_files(babl_ext_path, ["*.dylib"]):
         src_files.append((filename, os.path.join("lib", "babl-ext", os.path.relpath(filename, start=babl_ext_path))))
 
-    # Add QtWebEngineProcess Resources & Local
-    for filename in find_files(os.path.join(qt_webengine_path, "Resources"), ["*"]):
-        external_so_files.append((filename, os.path.relpath(filename, start=os.path.join(qt_webengine_path, "Resources"))))
-    for filename in find_files(os.path.join(qt_webengine_path, "Resources", "qtwebengine_locales"), ["*"]):
-        external_so_files.append((filename, os.path.relpath(filename, start=os.path.join(qt_webengine_path, "Resources"))))
-    for filename in find_files(os.path.join(qt_install_path, "plugins"), ["*"]):
-        relative_filepath = os.path.relpath(filename, start=os.path.join(qt_install_path, "plugins"))
-        plugin_name = os.path.dirname(relative_filepath)
-        if plugin_name in ["imageformats", "platforms"]:
-            external_so_files.append((filename, relative_filepath))
+    qt_plugins_path = QLibraryInfo.location(QLibraryInfo.PluginsPath)
+    if os.path.exists(qt_plugins_path):
+        for filename in find_files(qt_plugins_path, ["*"]):
+            relative_filepath = os.path.relpath(filename, start=qt_plugins_path)
+            plugin_name = os.path.dirname(relative_filepath)
+            if plugin_name in ["imageformats", "platforms"]:
+                external_so_files.append((filename, relative_filepath))
+    else:
+        log.warning("Qt plugins path not found on macOS: %s", qt_plugins_path)
 
     # Append all source files
     src_files.append((os.path.join(PATH, "installer", "qt.conf"), "qt.conf"))
     for filename in find_files("openshot_qt", ["*"]):
-        src_files.append((filename, os.path.join("lib", os.path.relpath(filename, start=openshot_copy_path))))
+        if should_package_source_file(filename):
+            src_files.append((filename, os.path.join("lib", os.path.relpath(filename, start=openshot_copy_path))))
 
     # Exclude gif library which crashes on Mac
     build_exe_options["bin_excludes"] = ["/System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libGIF.dylib",
@@ -524,7 +515,14 @@ build_exe_options["excludes"] = ["distutils",
                                  "tkinter",
                                  "pydoc_data",
                                  "pycparser",
-                                 "pkg_resources"]
+                                 "pkg_resources",
+                                 "{}.QtWebChannel".format(QT_BINDING_PACKAGE),
+                                 "{}.QtWebEngine".format(QT_BINDING_PACKAGE),
+                                 "{}.QtWebEngineCore".format(QT_BINDING_PACKAGE),
+                                 "{}.QtWebEngineWidgets".format(QT_BINDING_PACKAGE),
+                                 "{}.QtWebSockets".format(QT_BINDING_PACKAGE),
+                                 "{}.QtWebKit".format(QT_BINDING_PACKAGE),
+                                 "{}.QtWebKitWidgets".format(QT_BINDING_PACKAGE)]
 if sys.platform == "darwin":
     build_exe_options["excludes"].append("sentry_sdk.integrations.django")
 
@@ -565,6 +563,21 @@ if os.path.exists(os.path.join(PATH, "src")):
 
 # Fix a few things on the frozen folder(s)
 build_path = os.path.join(PATH, "build")
+
+
+def prune_frozen_root(root_path, patterns):
+    """Remove files/directories matching glob patterns under a frozen output root."""
+    for pattern in patterns:
+        full_pattern = os.path.join(root_path, pattern)
+        for remove_path in glob.glob(full_pattern):
+            if os.path.isfile(remove_path):
+                log.info("Removing unneeded file: %s" % remove_path)
+                os.unlink(remove_path)
+            elif os.path.isdir(remove_path):
+                log.info("Removing unneeded folder: %s" % remove_path)
+                rmtree(remove_path)
+
+
 if sys.platform == "darwin":
     # Mac issues with frozen folder and *.app folder
     # We need to rewrite many dependency paths and library IDs
@@ -581,34 +594,67 @@ elif sys.platform == "linux":
     # We need to remove some excess folders/files that are unneeded bloat
     for frozen_path in os.listdir(build_path):
             if frozen_path.startswith("exe"):
-                paths = ["lib/openshot_qt/",
-                         "lib/*opencv*",
-                         "lib/libopenshot*",
-                         "translations/",
-                         "locales/",
-                         "libQt5WebKit.so.5"]
-                for path in paths:
-                    full_path = os.path.join(build_path, frozen_path, path)
-                    for remove_path in glob.glob(full_path):
-                        if os.path.isfile(remove_path):
-                            log.info("Removing unneeded file: %s" % remove_path)
-                            os.unlink(remove_path)
-                        elif os.path.isdir(remove_path):
-                            log.info("Removing unneeded folder: %s" % remove_path)
-                            rmtree(remove_path)
+                prune_frozen_root(os.path.join(build_path, frozen_path), [
+                    "lib/openshot_qt/",
+                    "lib/*opencv*",
+                    "lib/libopenshot*",
+                    "translations/",
+                    "locales/",
+                ])
 
 # We need to remove some excess folders/files that are unneeded bloat
 # All 3 OSes
+all_platform_prune_patterns = [
+    "lib/babl-ext/libbabl-0.1-0.*",
+    "lib/babl-ext/libgcc_s_seh-1.*",
+    "lib/babl-ext/liblcms2-2.*",
+    "lib/babl-ext/libwinpthread-1.*",
+    "lib/babl-ext/msvcrt.*",
+    "lib/PyQt5/QtWebChannel.*",
+    "lib/PyQt5/QtWebChannel-*",
+    "lib/PyQt5/QtWebEngine.*",
+    "lib/PyQt5/QtWebEngine-*",
+    "lib/PyQt5/QtWebEngineCore.*",
+    "lib/PyQt5/QtWebEngineCore-*",
+    "lib/PyQt5/QtWebEngineWidgets.*",
+    "lib/PyQt5/QtWebEngineWidgets-*",
+    "lib/PyQt5/QtWebKit.*",
+    "lib/PyQt5/QtWebKit-*",
+    "lib/PyQt5/QtWebKitWidgets.*",
+    "lib/PyQt5/QtWebKitWidgets-*",
+    "lib/PyQt5/QtWebSockets.*",
+    "lib/PyQt5/QtWebSockets-*",
+    "lib/PyQt5/bindings/QtWebChannel",
+    "lib/PyQt5/bindings/QtWebEngine",
+    "lib/PyQt5/bindings/QtWebEngineCore",
+    "lib/PyQt5/bindings/QtWebEngineWidgets",
+    "lib/PyQt5/bindings/QtWebKit",
+    "lib/PyQt5/bindings/QtWebKitWidgets",
+    "PyQt5.uic.widget-plugins/qtwebenginewidgets.py",
+    "PyQt5.uic.widget-plugins/qtwebkit.py",
+    "PyQt5.uic.widget-plugins/__pycache__/qtwebenginewidgets.*",
+    "PyQt5.uic.widget-plugins/__pycache__/qtwebkit.*",
+    "QtWebChannel",
+    "QtWebEngine",
+    "QtWebEngineCore",
+    "QtWebEngineWidgets",
+    "QtWebSockets",
+    "Qt5WebChannel.dll",
+    "Qt5WebEngine.dll",
+    "Qt5WebEngineCore.dll",
+    "Qt5WebEngineWidgets.dll",
+    "Qt5WebKit.dll",
+    "Qt5WebKitWidgets.dll",
+    "language/OpenShot_*.qm",
+    "lib/language/OpenShot_*.qm",
+    "lib/openshot_qt/language/OpenShot_*.qm",
+]
+
 for frozen_path in os.listdir(build_path):
         if frozen_path.startswith("exe"):
-            paths = ["lib/babl-ext/libbabl-0.1-0.*",
-                     "lib/babl-ext/libgcc_s_seh-1.*",
-                     "lib/babl-ext/liblcms2-2.*",
-                     "lib/babl-ext/libwinpthread-1.*",
-                     "lib/babl-ext/msvcrt.*"]
-            for path in paths:
-                full_path = os.path.join(build_path, frozen_path, path)
-                for remove_path in glob.glob(full_path):
-                    if os.path.isfile(remove_path):
-                        log.info("Removing unneeded file: %s" % remove_path)
-                        os.unlink(remove_path)
+            prune_frozen_root(os.path.join(build_path, frozen_path), all_platform_prune_patterns)
+        elif frozen_path.endswith(".app"):
+            prune_frozen_root(
+                os.path.join(build_path, frozen_path, "Contents", "MacOS"),
+                all_platform_prune_patterns,
+            )

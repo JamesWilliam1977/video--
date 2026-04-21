@@ -28,7 +28,7 @@
 import os
 from time import strftime
 
-VERSION = "3.5.1"
+VERSION = "3.5.1-dev"
 MINIMUM_LIBOPENSHOT_VERSION = "0.7.0"
 DATE = "20260402000000"
 NAME = "openshot-qt"
@@ -116,9 +116,6 @@ MODEL_TEST = False
 # Default/initial logging levels
 LOG_LEVEL_FILE = 'INFO'
 LOG_LEVEL_CONSOLE = 'INFO'
-
-# Web backend selection, overridable at launch
-WEB_BACKEND = 'auto'
 
 # Sentry.io error & transaction reporting rate (0.0 TO 1.0)
 # 0.0 = no error reporting to Sentry

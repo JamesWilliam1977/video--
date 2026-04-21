@@ -1,6 +1,6 @@
 """
  @file
- @brief This file loads the interactive HTML timeline
+ @brief This file loads the interactive timeline
  @author Jonathan Thomas <jonathan@openshot.org>
  @author Noah Figg <eggmunkee@hotmail.com>
  @author Olivier Girard <eolinwen@gmail.com>
@@ -69,32 +69,9 @@ from .repeat import apply_repeat, reset_repeat, RepeatDialog
 
 # Constants used by this file
 JS_SCOPE_SELECTOR = "$('body').scope()"
-ViewClass = None
+ViewClass = TimelineWidget
 
-# Setup timeline
-if info.WEB_BACKEND and info.WEB_BACKEND == "qwidget":
-    ViewClass = TimelineWidget
-elif info.WEB_BACKEND and info.WEB_BACKEND == "webkit":
-    from .timeline_backend.webkit import TimelineWebKitView
-    ViewClass = TimelineWebKitView
-elif info.WEB_BACKEND and info.WEB_BACKEND == "webengine":
-    from .timeline_backend.webengine import TimelineWebEngineView
-    ViewClass = TimelineWebEngineView
-else:
-    try:
-        from .timeline_backend.webengine import TimelineWebEngineView as ViewClass
-    except ImportError as ex:
-        try:
-            from .timeline_backend.webkit import TimelineWebKitView as ViewClass
-        except ImportError:
-            log.error("Import failure loading WebKit backend", exc_info=1)
-        finally:
-            if not ViewClass:
-                raise RuntimeError(
-                    "Need QtWebEngine for the active Qt binding."
-                ) from ex
-
-log.info("Timeline backend: %s (%s)", info.WEB_BACKEND, getattr(ViewClass, "__name__", "unknown"))
+log.info("Timeline backend: QWidget (%s)", getattr(ViewClass, "__name__", "unknown"))
 
 
 def _event_posf(event):
@@ -104,9 +81,9 @@ def _event_posf(event):
 
 
 class TimelineView(updates.UpdateInterface, ViewClass):
-    """ A Web(Engine/Kit)View QWidget used to load the Timeline """
+    """Timeline integration widget backed by the QWidget timeline."""
 
-    # Path to html file
+    # Path to timeline assets used by the QWidget theme parser.
     html_path = os.path.join(info.PATH, 'timeline', 'index.html')
 
     # Create signal for adding waveforms to clips
@@ -114,10 +91,8 @@ class TimelineView(updates.UpdateInterface, ViewClass):
     fileAudioDataReady = pyqtSignal(str, object, str)
 
     def connect_playback(self):
-        """Connect playback signals to new experimental qwidget based timeline"""
-        if ViewClass == TimelineWidget:
-            # Propagate to timeline qwidget
-            TimelineWidget.connect_playback(self)
+        """Connect playback signals to the QWidget timeline."""
+        TimelineWidget.connect_playback(self)
 
     @pyqtSlot()
     def page_ready(self):
@@ -499,9 +474,9 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             log.error("Error duplicating UpdateAction", exc_info=1)
             return
 
-        # Bail out if change unrelated to webview
+        # Bail out if change unrelated to the timeline widget
         if action and len(action.key) >= 1 and action.key[0] not in ["clips", "effects", "duration", "layers", "markers"]:
-            log.debug(f"Skipping unneeded webview update for '{action.key[0]}'")
+            log.debug(f"Skipping unneeded timeline update for '{action.key[0]}'")
             return
 
         redraw_waveforms = self._should_refresh_waveforms(action)
@@ -518,7 +493,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     TimelineWidget.setZoomFactor(self, initial_scale, emit=False)
             return
 
-        # Send a JSON version of the UpdateAction to the timeline webview method: applyJsonDiff()
+        # Send a JSON version of the UpdateAction to the timeline widget update method.
         if action.type == "load":
             # Set thumbnail server
             self.run_js(JS_SCOPE_SELECTOR + ".setThumbAddress('" + self.get_thumb_address() + "');")

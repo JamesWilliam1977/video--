@@ -45,7 +45,6 @@ if PATH not in sys.path:
 from qt_api import QCoreApplication, Qt
 from qt_api import QApplication
 
-from classes import info
 from classes.project_data import ProjectDataStore
 from classes.updates import UpdateManager
 from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
@@ -116,8 +115,6 @@ class MainWindowTests(unittest.TestCase):
     def setUpClass(cls):
         app, cls._owns_app = get_or_create_app(DummyApp)
         cls.app = ensure_app_state(app)
-        cls._web_backend_patcher = patch.object(info, "WEB_BACKEND", "qwidget")
-        cls._web_backend_patcher.start()
         metrics = types.ModuleType("classes.metrics")
         metrics.track_metric_session = lambda *args, **kwargs: None
         metrics.track_metric_screen = lambda *args, **kwargs: None
@@ -128,7 +125,6 @@ class MainWindowTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls._web_backend_patcher.stop()
         if getattr(cls, "_owns_app", False) and cls.app:
             cls.app.quit()
 
@@ -655,6 +651,27 @@ class MainWindowTests(unittest.TestCase):
 
         self.assertEqual(deleted, ["unlocked"])
         self.assertEqual(removed, [("T1", "transition")])
+        self.assertEqual(refreshed.calls, [()])
+        self.assertIsNone(self.app.updates.transaction_id)
+
+    def test_delete_item_removes_selected_effects(self):
+        calls = []
+        refreshed = SignalRecorder()
+
+        self.app.updates = types.SimpleNamespace(transaction_id=None)
+
+        fake_window = types.SimpleNamespace(
+            filesView=types.SimpleNamespace(hasFocus=lambda: False),
+            timeline=None,
+            refreshFrameSignal=refreshed,
+            actionRemoveEffect_trigger=lambda: calls.append("effect"),
+            actionRemoveClip_trigger=lambda refresh=False: calls.append(("clip", refresh)),
+            actionRemoveTransition_trigger=lambda refresh=False: calls.append(("transition", refresh)),
+        )
+
+        self.main_window_module.MainWindow.deleteItem(fake_window)
+
+        self.assertEqual(calls, ["effect", ("clip", False), ("transition", False)])
         self.assertEqual(refreshed.calls, [()])
         self.assertIsNone(self.app.updates.transaction_id)
 

@@ -57,7 +57,6 @@ class DummySettings:
             "default-profile": "HD 720p 30 fps",
             "default-samplerate": 48000,
             "default-channels": 2,
-            "legacy-based-timeline": False,
         }
 
     def get(self, key):
@@ -88,8 +87,6 @@ class TimelineHelperTests(unittest.TestCase):
     def setUpClass(cls):
         app, cls._owns_app = get_or_create_app(DummyApp)
         cls.app = ensure_app_state(app)
-        cls._web_backend_patcher = patch.object(info, "WEB_BACKEND", "qwidget")
-        cls._web_backend_patcher.start()
         sys.modules.pop("windows.views.timeline", None)
         cls.timeline_module = importlib.import_module("windows.views.timeline")
         cls.qwidget_base_module = importlib.import_module("windows.views.timeline_backend.qwidget.base")
@@ -123,7 +120,6 @@ class TimelineHelperTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls._web_backend_patcher.stop()
         if getattr(cls, "_owns_app", False) and cls.app:
             cls.app.quit()
 
@@ -3491,7 +3487,7 @@ class TimelineHelperTests(unittest.TestCase):
             html=lambda: "clip",
             text=lambda: '["F1","F2","F3","F4"]',
             hasUrls=lambda: True,
-            urls=lambda: ["file:///tmp/a.mp4", "file:///tmp/b.mp4"],
+            urls=lambda: ["file:///mock-media/a.mp4", "file:///mock-media/b.mp4"],
         )
         accepted = []
         event = types.SimpleNamespace(
@@ -3526,7 +3522,7 @@ class TimelineHelperTests(unittest.TestCase):
             html=lambda: "clip",
             text=lambda: '["F1","F2"]',
             hasUrls=lambda: True,
-            urls=lambda: ["file:///tmp/a.mp4"],
+            urls=lambda: ["file:///mock-media/a.mp4"],
         )
         event = types.SimpleNamespace(mimeData=lambda: mime)
 
@@ -3566,6 +3562,9 @@ class TimelineHelperTests(unittest.TestCase):
             inserted_clip.data["id"] = "C1-copy"
             saved.append(copy.deepcopy(inserted_clip.data))
 
+        def clipboard_stub():
+            return types.SimpleNamespace(mimeData=object)
+
         inserted_clip = FakeClip(
             "C1",
             {"id": "C1", "position": 5.0, "layer": 2, "start": 0.0, "end": 4.0},
@@ -3573,7 +3572,7 @@ class TimelineHelperTests(unittest.TestCase):
         inserted_clip.save = save_inserted_clip
         copied_objects = [inserted_clip]
         app = types.SimpleNamespace(
-            clipboard=lambda: types.SimpleNamespace(mimeData=lambda: object()),
+            clipboard=clipboard_stub,
             updates=types.SimpleNamespace(transaction_id=None),
         )
         helper = types.SimpleNamespace(

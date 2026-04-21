@@ -324,8 +324,8 @@ class TimelineTheme:
 
 DEFAULT_THEME = TimelineTheme()
 
-# Load the main timeline CSS used by the web backends. Many timeline style
-# values are defined here and are reused by the QWidget backend.
+# Load the historical timeline CSS. Many style values defined there are still
+# reused by the QWidget backend.
 _CSS_PATH = os.path.normpath(os.path.join(
     os.path.dirname(__file__),
     "../../..",

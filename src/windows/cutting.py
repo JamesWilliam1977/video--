@@ -62,6 +62,18 @@ class Cutting(QDialog):
     SpeedSignal = pyqtSignal(float)
     StopSignal = pyqtSignal()
 
+    @staticmethod
+    def _preview_window_title(file_obj, translate):
+        _ = translate
+        if not file_obj or not hasattr(file_obj, "data") or not isinstance(file_obj.data, dict):
+            return _("Preview")
+        friendly_name = str(file_obj.data.get("name") or "").strip()
+        if not friendly_name:
+            friendly_name = os.path.basename(str(file_obj.data.get("path") or "").strip())
+        if friendly_name:
+            return _("Preview: %s") % friendly_name
+        return _("Preview")
+
     def __init__(self, file=None, preview=False):
         _ = get_app()._tr
         self.is_preview_mode = preview
@@ -115,7 +127,7 @@ class Cutting(QDialog):
         if preview:
             self.lblInstructions.setVisible(False)
             self.widgetControls.setVisible(False)
-            self.setWindowTitle(_("Preview"))
+            self.setWindowTitle(self._preview_window_title(file, _))
 
         self.previous_start = 0.0
         if float(file.data.get("start", 0.0)) > 0.0:
@@ -513,6 +525,16 @@ class Cutting(QDialog):
             QTimer.singleShot(120, lambda: Cutting._start_preview_autoplay(self))
             return
         if not getattr(self, "preview_thread", None):
+            QTimer.singleShot(120, lambda: Cutting._start_preview_autoplay(self))
+            return
+        if (
+            getattr(self, "videoPreview", None) is not None
+            and getattr(self.videoPreview, "delayed_resize_timer", None) is not None
+            and self.videoPreview.delayed_resize_timer.isActive()
+        ):
+            # Let preview resize/max-size settling finish before forcing the
+            # first autoplay attempt, otherwise startup can pause/clear the
+            # preview cache mid-play and produce an audible glitch.
             QTimer.singleShot(120, lambda: Cutting._start_preview_autoplay(self))
             return
         if self._preview_autoplay_attempts >= 30:

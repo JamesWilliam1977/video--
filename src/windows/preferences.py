@@ -666,24 +666,6 @@ class Preferences(QDialog):
         """Apply current cache preference values to the active session."""
         get_app().window.InitCacheSettings()
 
-    def _set_ui_scale_to_default(self):
-        """Force the UI scale preference back to 100%."""
-        default_scale = 1.0
-        self.s.set("ui-scale", default_scale)
-
-        widget = self.setting_widgets.get("ui-scale")
-        if not widget or not isinstance(widget, QComboBox):
-            return
-
-        for index in range(widget.count()):
-            value = widget.itemData(index)
-            try:
-                if abs(float(value) - default_scale) < 0.001:
-                    widget.setCurrentIndex(index)
-                    break
-            except (TypeError, ValueError):
-                continue
-
     def bool_value_changed(self, widget, param, state):
         # Save setting
         if state == Qt.Checked:
@@ -708,9 +690,6 @@ class Preferences(QDialog):
             else:
                 # Stop autosave timer
                 get_app().window.auto_save_timer.stop()
-
-        elif param["setting"] == "legacy-based-timeline" and state == Qt.Checked:
-            self._set_ui_scale_to_default()
 
         # Check for restart
         self.check_for_restart(param)

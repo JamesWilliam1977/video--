@@ -7,7 +7,6 @@ import os
 import sys
 import types
 import unittest
-from unittest.mock import patch
 
 
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -17,7 +16,6 @@ if PATH not in sys.path:
 from qt_api import QCoreApplication, Qt
 from qt_api import QApplication
 
-from classes import info
 from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
 
 QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts, True)
@@ -64,14 +62,11 @@ class AddToTimelineTests(unittest.TestCase):
     def setUpClass(cls):
         app, cls._owns_app = get_or_create_app(DummyApp)
         cls.app = ensure_app_state(app)
-        cls._web_backend_patcher = patch.object(info, "WEB_BACKEND", "qwidget")
-        cls._web_backend_patcher.start()
         import windows.add_to_timeline as add_to_timeline_module
         cls.add_to_timeline_module = add_to_timeline_module
 
     @classmethod
     def tearDownClass(cls):
-        cls._web_backend_patcher.stop()
         if getattr(cls, "_owns_app", False) and cls.app:
             cls.app.quit()
 

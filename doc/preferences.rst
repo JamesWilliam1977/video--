@@ -100,8 +100,7 @@ Timeline
 
 .. image:: images/preferences-timeline.jpg
 
-The Timeline tab controls default timeline behavior, clip/transition insertion defaults, and whether
-to use the new timeline backend or the legacy web-based timeline.
+The Timeline tab controls default timeline behavior and clip/transition insertion defaults.
 
 .. table::
    :widths: 30 15 60
@@ -109,11 +108,10 @@ to use the new timeline backend or the legacy web-based timeline.
    ===================================  ==================  ===========
    Setting                              Default             Description
    ===================================  ==================  ===========
-   Thumbnail Style                      Entire Clip         Thumbnail density for the new timeline backend
+   Thumbnail Style                      Entire Clip         Thumbnail density for the timeline
    Image Length (seconds)               10.00               Default duration for still images added to the timeline
    Transition Length (seconds)          10.00               Default duration for newly added transitions
    Auto-Transition (overlap clips)      Enabled             Automatically create transitions when clips overlap
-   Enable Legacy Timeline (web-based)   Disabled            Use the legacy web timeline (WebEngine/WebKit auto-select)
    ===================================  ==================  ===========
 
 .. _preferences_preview_ref:

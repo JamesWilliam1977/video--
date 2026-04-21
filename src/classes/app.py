@@ -38,11 +38,6 @@ from qt_api import QT_API, QT_VERSION_STR, BINDING_VERSION_STR, Slot
 from qt_api import QApplication, QMessageBox, QTimer
 from qt_api import request_android_storage_permission_if_needed
 
-# Disable sandbox support for QtWebEngine (required on some Linux distros
-# for the QtWebEngineWidgets to be rendered, otherwise no timeline is visible).
-# https://doc.qt.io/qt-5/qtwebengine-platform-notes.html#sandboxing-support
-os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
-
 
 def get_app():
     """ Get the current QApplication instance of OpenShot """
@@ -135,7 +130,6 @@ class OpenShotApp(QApplication):
         # Init data objects
         self.settings = settings.SettingStore(parent=self)
         self.settings.load()
-        self.apply_timeline_backend_preference()
         self.project = project_data.ProjectDataStore()
         self.updates = updates.UpdateManager()
         # It is important that the project is the first listener if the key gets update
@@ -207,25 +201,6 @@ class OpenShotApp(QApplication):
                 },
             level="error",
         ))
-
-    def apply_timeline_backend_preference(self):
-        """Select timeline backend based on preferences, unless CLI overrides it."""
-        if not hasattr(self, "settings"):
-            return
-
-        # CLI flag overrides preference unless left as 'auto'
-        if getattr(self.info, "WEB_BACKEND", "auto") != "auto":
-            return
-
-        try:
-            use_legacy = bool(self.settings.get("legacy-based-timeline"))
-        except Exception:
-            self.log.debug("Unable to read legacy timeline setting", exc_info=True)
-            return
-
-        if not use_legacy:
-            self.info.WEB_BACKEND = "qwidget"
-            self.log.info("Legacy timeline disabled via preferences; using QWidget backend.")
 
     def gui(self):
         """
