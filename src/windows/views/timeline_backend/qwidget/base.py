@@ -2782,7 +2782,7 @@ class TimelineWidgetBase(QWidget):
                     return
 
         # Clip title container (dropdown click target)
-        for entry in reversed(self._clip_text_rects):
+        for entry in reversed(getattr(self, "_clip_text_rects", [])):
             if isinstance(entry, dict) and entry.get("open_menu"):
                 rect = entry.get("rect")
                 if isinstance(rect, QRectF) and rect.contains(pos):

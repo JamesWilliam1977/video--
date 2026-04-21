@@ -941,6 +941,7 @@ class ClipPainter(BasePainter):
         painter.setClipRect(inner)
 
         right = inner.right() - self.menu_margin
+        text_right = inner.right()
         icon_entries = []
         text_entry = None
         pending_thumbs = False
@@ -954,7 +955,14 @@ class ClipPainter(BasePainter):
 
         if includes_start:
             # Title container anchored at top-left, against the border
-            text_entry = self._draw_clip_text(painter, clip, inner, inner.x(), right)
+            text_entry = self._draw_clip_text(
+                painter,
+                clip,
+                inner,
+                inner.x(),
+                text_right,
+                visible_width=float(segment.get("segment_width") or inner_rect.width()) if isinstance(segment, dict) else float(inner_rect.width()),
+            )
 
             # Effect icons follow to the right of the title container
             effect_x = inner.x() + self.menu_margin
@@ -1600,7 +1608,7 @@ class ClipPainter(BasePainter):
         painter.setFont(original_font)
         return x
 
-    def _draw_clip_text(self, painter, clip, inner, x, right):
+    def _draw_clip_text(self, painter, clip, inner, x, right, visible_width=None):
         text_width = right - x
         if text_width <= 0:
             return None
@@ -1620,6 +1628,10 @@ class ClipPainter(BasePainter):
 
         # Minimum width needed to show the arrow alone (compact mode)
         compact_w = pad_x + icon_size + pad_x
+        # Keep the compact title container alive until clip thumbnails drop out,
+        # so the clip keeps a stable top-left affordance through the same LOD step.
+        compact_lod_w = max(compact_w, float(getattr(self, "_min_clip_thumb_width", 0.0) or 0.0))
+        visible_clip_w = float(visible_width if visible_width is not None else inner.width())
 
         # --- Mode selection ---
         # Try to fit elided title alongside the arrow.
@@ -1636,7 +1648,7 @@ class ClipPainter(BasePainter):
             container_w = min(pad_x + text_advance + icon_gap + icon_size + pad_x, text_width)
             container_w = max(container_h, container_w)
             mode = "full"
-        elif compact_w <= text_width:
+        elif compact_w <= text_width and compact_lod_w <= visible_clip_w:
             # Compact mode: arrow only, left-aligned (acts as a pure dropdown button)
             container_w = compact_w
             mode = "compact"
