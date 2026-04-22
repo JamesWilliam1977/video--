@@ -34,16 +34,18 @@ TRACK_TOOLBAR_BOTTOM_PADDING = 3.0
 
 
 class TrackInteractionMixin:
-    def _track_menu_rect(self, name_rect):
-        if not self.track_painter.menu_pix:
+    def _track_menu_rect(self, name_rect, track=None):
+        for entry in reversed(getattr(self, "_track_title_rects", [])):
+            entry_track = entry.get("track") if isinstance(entry, dict) else None
+            entry_rect = entry.get("rect") if isinstance(entry, dict) else None
+            if track is not None and entry_track is not track:
+                continue
+            if isinstance(entry_rect, QRectF):
+                return QRectF(entry_rect)
+        if not self.track_painter:
             return QRectF()
-        width, height = self.track_painter.logical_size(self.track_painter.menu_pix)
-        return QRectF(
-            name_rect.x() + self.track_painter.name_border_width + self.track_painter.menu_margin,
-            name_rect.y() + self.track_painter.menu_margin,
-            width,
-            height,
-        )
+        rect, _scaled_arrow, _arrow_rect, _title = self.track_painter.track_title_geometry(name_rect, track)
+        return rect
 
     def _track_toolbar_buttons(self, track, name_rect):
         painter = self.track_painter
@@ -55,10 +57,6 @@ class TrackInteractionMixin:
         margin = float(getattr(painter, "toggle_margin", 0.0) or 0.0)
         border = float(getattr(painter, "name_border_width", 0.0) or 0.0)
         menu_margin = float(getattr(painter, "menu_margin", 0.0) or 0.0)
-        menu_w = 0.0
-        if painter.menu_pix:
-            menu_w, _ = painter.logical_size(painter.menu_pix)
-
         track_num = self.normalize_track_number(track.data.get("number"))
 
         buttons = []
@@ -99,8 +97,8 @@ class TrackInteractionMixin:
         if not specs:
             return []
 
-        left_limit = name_rect.x() + border + menu_margin * 2.0 + menu_w
-        min_left = name_rect.x() + border + menu_margin + menu_w
+        left_limit = name_rect.x() + border + menu_margin
+        min_left = name_rect.x() + border + menu_margin
         left_limit = max(min_left, left_limit - TRACK_TOOLBAR_LEFT_SHIFT)
         right_limit = name_rect.right() - border - menu_margin
         if right_limit <= left_limit:

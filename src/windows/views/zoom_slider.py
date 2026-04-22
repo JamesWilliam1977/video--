@@ -312,7 +312,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
             self.scrollbar_position = [new_left_pos, new_right_pos, self.scrollbar_position[2], self.scrollbar_position[3]]
 
             # Trigger the resize and update
-            self.delayed_resize_timer.start()
+            self.delayed_resize_callback()
             self.update()
 
         # Finalize drag selection
@@ -322,6 +322,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         self.right_handle_dragging = False
         self.scroll_bar_dragging = False
         self.create_bar_dragging = False
+        self._emit_pending_zoom()
         self.update()
 
     def set_handle_limits(self, left_handle, right_handle, is_left=False):
@@ -406,7 +407,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
                 new_left_pos, new_right_pos = self.set_handle_limits(new_left_pos, new_right_pos, is_left)
 
                 self.scrollbar_position = [new_left_pos, new_right_pos, self.scrollbar_position[2], self.scrollbar_position[3]]
-                self.delayed_resize_timer.start()
+                self.delayed_resize_callback()
 
             elif self.right_handle_dragging:
                 # Dragging the right handle to resize the selection
@@ -429,7 +430,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
                 new_left_pos, new_right_pos = self.set_handle_limits(new_left_pos, new_right_pos, is_left)
 
                 self.scrollbar_position = [new_left_pos, new_right_pos, self.scrollbar_position[2], self.scrollbar_position[3]]
-                self.delayed_resize_timer.start()
+                self.delayed_resize_callback()
 
             elif self.scroll_bar_dragging:
                 # Dragging the entire selection (scrolling the timeline)
@@ -461,7 +462,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
                 # Enforce limits for the new selection
                 new_left_pos, new_right_pos = self.set_handle_limits(new_left_pos, new_right_pos)
                 self.scrollbar_position = [new_left_pos, new_right_pos, self.scrollbar_position[2], self.scrollbar_position[3]]
-                self.delayed_resize_timer.start()
+                self.delayed_resize_callback()
 
             # Force re-paint after any dragging
             self.update()
@@ -498,12 +499,7 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
 
             # Set scroll width (and send signal)
             if zoom_factor > 0.0:
-                self._syncing_backend = True
-                try:
-                    get_app().window.TimelineScroll.emit(self.scrollbar_position[0])
-                    self.setZoomFactor(zoom_factor)
-                finally:
-                    self._syncing_backend = False
+                self.setZoomFactor(zoom_factor)
 
     # Capture wheel event to alter zoom/scale of widget
     def wheelEvent(self, event):
@@ -516,12 +512,58 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         """Set the current zoom factor (do not clamp width here — backend owns authoritative geometry)."""
         self.zoom_factor = zoom_factor
         if emit:
-            get_app().window.TimelineZoom.emit(self.zoom_factor)
+            if not self._apply_zoom_to_backend(self.zoom_factor):
+                get_app().window.TimelineZoom.emit(self.zoom_factor)
+            else:
+                self._pending_zoom_emit = self.zoom_factor
+                self._pending_scroll_emit = list(self.scrollbar_position)
+                if self.mouse_dragging:
+                    self._zoom_emit_timer.stop()
+                else:
+                    self._zoom_emit_timer.start()
         if center:
             get_app().window.TimelineCenter.emit()
 
         # Force re-paint asynchronously
         self.update()
+
+    def _apply_zoom_to_backend(self, zoom_factor):
+        """Apply zoom directly to the QWidget timeline during slider drags."""
+        timeline = getattr(self.win, "timeline", None)
+        if not timeline or not hasattr(timeline, "_apply_external_zoom"):
+            return False
+
+        self._syncing_backend = True
+        try:
+            timeline._apply_external_zoom(zoom_factor)
+        finally:
+            self._syncing_backend = False
+        return True
+
+    def _emit_pending_zoom(self):
+        """Persist slider-driven zoom once the gesture settles."""
+        if self._pending_zoom_emit is None and self._pending_scroll_emit is None:
+            return
+
+        zoom_factor = (
+            float(self._pending_zoom_emit)
+            if self._pending_zoom_emit is not None
+            else None
+        )
+        self._pending_zoom_emit = None
+        self._pending_scroll_emit = None
+
+        if zoom_factor is not None:
+            current_scale = float(get_app().project.get("scale") or 15.0)
+            if abs(zoom_factor - current_scale) > 1e-6:
+                get_app().updates.ignore_history = True
+                get_app().updates.update(["scale"], zoom_factor)
+                get_app().updates.ignore_history = False
+
+        timeline = getattr(self.win, "timeline", None)
+        if timeline and hasattr(timeline, "scrollbar_position"):
+            self.scrollbar_position = list(timeline.scrollbar_position)
+            self.update()
 
     def zoomIn(self):
         """Zoom into timeline"""
@@ -632,6 +674,8 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         self.min_distance = 0.002
         self.ignore_updates = False
         self._syncing_backend = False
+        self._pending_zoom_emit = None
+        self._pending_scroll_emit = None
 
         # Load icon (using display DPI)
         self.cursors = {}
@@ -668,3 +712,8 @@ class ZoomSlider(QWidget, updates.UpdateInterface):
         self.delayed_resize_timer.setInterval(100)
         self.delayed_resize_timer.setSingleShot(True)
         self.delayed_resize_timer.timeout.connect(self.delayed_resize_callback)
+
+        self._zoom_emit_timer = QTimer(self)
+        self._zoom_emit_timer.setInterval(50)
+        self._zoom_emit_timer.setSingleShot(True)
+        self._zoom_emit_timer.timeout.connect(self._emit_pending_zoom)

@@ -31,6 +31,8 @@ import math
 from qt_api import (
     QBrush,
     QColor,
+    QFont,
+    QFontMetrics,
     QLinearGradient,
     QPainter,
     QPainterPath,
@@ -38,6 +40,7 @@ from qt_api import (
 )
 
 from .base import BasePainter
+from classes.qt_types import font_metrics_horizontal_advance
 
 
 class TrackPainter(BasePainter):
@@ -55,9 +58,9 @@ class TrackPainter(BasePainter):
         self.name_top_overlay = QColor(self.w.theme.track.name_top_overlay)
         self.name_top_overlay2 = QColor(self.w.theme.track.name_top_overlay2)
         self.menu_pix = None
-        if self.w.theme.menu_icon:
-            size = self.w.theme.menu_size or self.w.theme.menu_icon.width()
-            self.menu_pix = self.scaled_pixmap(self.w.theme.menu_icon, size, size)
+        from windows.views.timeline_backend.theme import _icon as _theme_icon
+        arrow = _theme_icon("themes/cosmic/images/dropdown-arrow.svg")
+        self.dropdown_arrow_pix = arrow if (arrow and not arrow.isNull()) else None
         self.menu_margin = self.w.theme.menu_margin
         self.toggle_off_pix = None
         self.toggle_on_pix = None
@@ -130,6 +133,59 @@ class TrackPainter(BasePainter):
             }
 
         self.toolbar_pixmaps = toolbar
+
+    def track_title_geometry(self, name_rect, track=None, *, painter=None):
+        if name_rect.isNull() or name_rect.width() <= 0.0 or name_rect.height() <= 0.0:
+            return QRectF(), None, QRectF(), ""
+
+        metrics = QFontMetrics(painter.font()) if painter is not None else None
+        font_h = float(metrics.height()) if metrics is not None else max(12.0, name_rect.height() - 4.0)
+        pad_x = 6.0
+        pad_y = 2.0
+        icon_gap = 4.0
+        border_left = float(self.name_border_width or 0.0)
+        border_top = float(self.name_border_top_width or 0.0)
+        border_bottom = float(self.name_border_bottom_width or 0.0)
+        available_w = max(0.0, name_rect.width() - border_left)
+        available_h = max(1.0, name_rect.height() - border_top - border_bottom)
+        container_h = min(available_h, font_h + pad_y * 2.0)
+        icon_size = max(8.0, font_h - 2.0)
+        label = self.w._track_display_label(track) if track is not None else ""
+
+        text_advance = 0.0
+        title_elided = ""
+        if metrics is not None:
+            avail_text_w = int(max(0.0, available_w - pad_x * 2.0 - icon_gap - icon_size))
+            if avail_text_w >= 4:
+                title_elided = metrics.elidedText(label, Qt.ElideRight, avail_text_w)
+                if title_elided:
+                    text_advance = float(font_metrics_horizontal_advance(metrics, title_elided))
+
+        if text_advance <= 0.0:
+            return QRectF(), None, QRectF(), ""
+
+        container_w = min(pad_x + text_advance + icon_gap + icon_size + pad_x, available_w)
+        container_w = max(container_h, container_w)
+        container_rect = QRectF(
+            name_rect.x() + border_left,
+            name_rect.y() + border_top,
+            container_w,
+            max(1.0, container_h),
+        )
+
+        scaled_arrow = None
+        arrow_rect = QRectF()
+        arrow_pix = self.dropdown_arrow_pix
+        if arrow_pix and not arrow_pix.isNull():
+            scaled_arrow = self.scaled_pixmap(arrow_pix, icon_size, icon_size)
+            if scaled_arrow and not scaled_arrow.isNull():
+                arrow_w, arrow_h = self.logical_size(scaled_arrow)
+                arrow_x = container_rect.x() + pad_x + text_advance + icon_gap
+                if arrow_x + arrow_w <= container_rect.x() + container_rect.width() - 3.0:
+                    arrow_y = container_rect.y() + max(0.0, (container_rect.height() - arrow_h) / 2.0)
+                    arrow_rect = QRectF(arrow_x, arrow_y, arrow_w, arrow_h)
+
+        return container_rect, scaled_arrow, arrow_rect, title_elided
 
     def _track_name_path(self, rect: QRectF) -> QPainterPath:
         r = QRectF(rect)
@@ -307,6 +363,14 @@ class TrackPainter(BasePainter):
         )
         painter.save()
         painter.setClipRect(area)
+        self.w._track_title_rects = []
+        original_font = painter.font()
+        track_font = QFont(original_font)
+        if track_font.pixelSize() > 0:
+            track_font.setPixelSize(track_font.pixelSize() + 1)
+        elif track_font.pointSizeF() > 0:
+            track_font.setPointSizeF(track_font.pointSizeF() + 1.0)
+        painter.setFont(track_font)
         for _track_rect, track, name_rect in self.w.geometry.iter_tracks():
             locked = bool((track.data if isinstance(track.data, dict) else {}).get("lock"))
             name_bg = QColor(self.w.theme.track.name_background)
@@ -409,7 +473,6 @@ class TrackPainter(BasePainter):
                 painter.drawArc(arc, 180 * 16, 90 * 16)
             painter.restore()
 
-            menu_w = 0.0
             metrics = painter.fontMetrics()
             text_height = float(metrics.height()) if metrics else 0.0
             text_top = name_rect.y() + self.menu_margin
@@ -417,17 +480,41 @@ class TrackPainter(BasePainter):
             if text_height > 0.0 and text_top + text_height > text_bottom_limit:
                 text_height = max(0.0, text_bottom_limit - text_top)
 
-            if self.menu_pix:
-                menu_x = name_rect.x() + self.name_border_width + self.menu_margin
-                menu_w, menu_h = self.logical_size(self.menu_pix)
-                menu_y = text_top
-                if text_height > 0.0:
-                    menu_y += max(0.0, (text_height - menu_h) / 2.0)
-                painter.drawPixmap(QPointF(menu_x, menu_y), self.menu_pix)
+            title_rect, scaled_arrow, arrow_rect, title_elided = self.track_title_geometry(
+                name_rect,
+                track,
+                painter=painter,
+            )
+            title_w = title_rect.width() if not title_rect.isNull() else 0.0
+            if not title_rect.isNull():
+                if title_elided:
+                    flags = Qt.AlignLeft | Qt.AlignTop
+                    pad_x = 6.0
+                    pad_y = 2.0
+                    text_draw_rect = QRectF(
+                        title_rect.x() + pad_x,
+                        title_rect.y() + pad_y,
+                        max(0.0, arrow_rect.x() - (title_rect.x() + pad_x + 4.0)) if not arrow_rect.isNull() else max(0.0, title_rect.width() - pad_x * 2.0),
+                        max(1.0, title_rect.height() - pad_y * 2.0),
+                    )
+                    painter.setPen(text_color)
+                    painter.drawText(text_draw_rect, flags, title_elided)
+                if scaled_arrow and not arrow_rect.isNull():
+                    painter.drawPixmap(arrow_rect.topLeft(), scaled_arrow)
+                self.w._track_title_rects.append(
+                    {
+                        "rect": QRectF(title_rect),
+                        "track": track,
+                        "title": str(title_elided or self.w._track_display_label(track) or ""),
+                        "open_menu": True,
+                    }
+                )
 
             buttons = self.w._track_toolbar_buttons(track, name_rect)
-            text_offset = self.name_border_width + self.menu_margin * 2 + menu_w
+            text_offset = self.name_border_width + self.menu_margin
             right_padding = self.name_border_width + self.menu_margin
+            if title_w > 0.0:
+                text_offset = max(text_offset, (title_rect.x() - name_rect.x()) + title_rect.width() + self.menu_margin)
             text_width = max(0.0, name_rect.width() - text_offset - right_padding)
             text_rect_height = text_height if text_height > 0.0 else max(0.0, name_rect.height() - self.menu_margin * 2)
             text_bottom = min(text_top + text_rect_height, text_bottom_limit)
@@ -438,7 +525,7 @@ class TrackPainter(BasePainter):
                 max(0.0, text_bottom - text_top),
             )
             painter.setPen(text_color)
-            if text_rect.width() > 0.0 and text_rect.height() > 0.0:
+            if title_rect.isNull() and text_rect.width() > 0.0 and text_rect.height() > 0.0:
                 painter.drawText(
                     text_rect,
                     Qt.AlignLeft | Qt.AlignTop,
@@ -468,4 +555,5 @@ class TrackPainter(BasePainter):
                 draw_y = button["rect"].y() + margin_y
                 painter.drawPixmap(QPointF(draw_x, draw_y), pix)
                 painter.restore()
+        painter.setFont(original_font)
         painter.restore()

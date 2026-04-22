@@ -25,16 +25,21 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+import functools
 import json
 import math
+import os
 import uuid
+import openshot
 from qt_api import QPointF, QRectF, QTimer, Qt
-from qt_api import QColor
+from qt_api import QColor, QIcon, QPixmap
 from classes.app import get_app
+from classes import info as class_info
 from classes.logger import log
 from classes.query import Clip, Transition, Effect
 from classes.query import Marker
 from ..colors import effect_color_qcolor
+from windows.views.menu import StyledContextMenu
 
 
 class KeyframeMixin:
@@ -1627,6 +1632,241 @@ class KeyframeMixin:
         self.update()
         if hasattr(self.win, "show_property_timeout"):
             QTimer.singleShot(0, self.win.show_property_timeout)
+        return True
+
+    def _keyframe_bezier_presets(self):
+        """Return the standard list of bezier easing presets (cp1x, cp1y, cp2x, cp2y, label)."""
+        _ = get_app()._tr
+        return [
+            (0.250, 0.100, 0.250, 1.000, _("Ease (Default)")),
+            (0.420, 0.000, 1.000, 1.000, _("Ease In")),
+            (0.000, 0.000, 0.580, 1.000, _("Ease Out")),
+            (0.420, 0.000, 0.580, 1.000, _("Ease In/Out")),
+
+            (0.550, 0.085, 0.680, 0.530, _("Ease In (Quad)")),
+            (0.550, 0.055, 0.675, 0.190, _("Ease In (Cubic)")),
+            (0.895, 0.030, 0.685, 0.220, _("Ease In (Quart)")),
+            (0.755, 0.050, 0.855, 0.060, _("Ease In (Quint)")),
+            (0.470, 0.000, 0.745, 0.715, _("Ease In (Sine)")),
+            (0.950, 0.050, 0.795, 0.035, _("Ease In (Expo)")),
+            (0.600, 0.040, 0.980, 0.335, _("Ease In (Circ)")),
+            (0.600, -0.280, 0.735, 0.045, _("Ease In (Back)")),
+
+            (0.250, 0.460, 0.450, 0.940, _("Ease Out (Quad)")),
+            (0.215, 0.610, 0.355, 1.000, _("Ease Out (Cubic)")),
+            (0.165, 0.840, 0.440, 1.000, _("Ease Out (Quart)")),
+            (0.230, 1.000, 0.320, 1.000, _("Ease Out (Quint)")),
+            (0.390, 0.575, 0.565, 1.000, _("Ease Out (Sine)")),
+            (0.190, 1.000, 0.220, 1.000, _("Ease Out (Expo)")),
+            (0.075, 0.820, 0.165, 1.000, _("Ease Out (Circ)")),
+            (0.175, 0.885, 0.320, 1.275, _("Ease Out (Back)")),
+
+            (0.455, 0.030, 0.515, 0.955, _("Ease In/Out (Quad)")),
+            (0.645, 0.045, 0.355, 1.000, _("Ease In/Out (Cubic)")),
+            (0.770, 0.000, 0.175, 1.000, _("Ease In/Out (Quart)")),
+            (0.860, 0.000, 0.070, 1.000, _("Ease In/Out (Quint)")),
+            (0.445, 0.050, 0.550, 0.950, _("Ease In/Out (Sine)")),
+            (1.000, 0.000, 0.000, 1.000, _("Ease In/Out (Expo)")),
+            (0.785, 0.135, 0.150, 0.860, _("Ease In/Out (Circ)")),
+            (0.680, -0.550, 0.265, 1.550, _("Ease In/Out (Back)")),
+        ]
+
+    def _set_keyframe_interpolation_at_path(self, data, path, interpolation, details):
+        """Set interpolation (and bezier handles) on a keyframe point located at path in data."""
+        point = self._resolve_data_path(data, path)
+        if not isinstance(point, dict) or "co" not in point:
+            return False
+        point["interpolation"] = interpolation
+        if interpolation == 0 and details:
+            rh = point.get("handle_right") or {"X": 0.0, "Y": 0.0}
+            rh["X"] = details[0]
+            rh["Y"] = details[1]
+            point["handle_right"] = rh
+            lh = point.get("handle_left") or {"X": 0.0, "Y": 0.0}
+            lh["X"] = details[2]
+            lh["Y"] = details[3]
+            point["handle_left"] = lh
+        else:
+            point.pop("handle_right", None)
+            point.pop("handle_left", None)
+        return True
+
+    def _apply_keyframe_interpolation(self, interpolation, details, marker, panel_targets):
+        """Apply interpolation change to a clip-bottom keyframe marker and/or panel targets."""
+        timeline = getattr(self.win, "timeline", None)
+        if not timeline:
+            return
+
+        changed_clips = {}
+        changed_trans = {}
+
+        def _ensure_clip(object_id, clip_obj):
+            if object_id not in changed_clips:
+                c = clip_obj or Clip.get(id=object_id)
+                if c and isinstance(getattr(c, "data", None), dict):
+                    changed_clips[object_id] = (c, json.loads(json.dumps(c.data)))
+            return changed_clips.get(object_id)
+
+        def _ensure_trans(object_id, trans_obj):
+            if object_id not in changed_trans:
+                t = trans_obj or Transition.get(id=object_id)
+                if t and isinstance(getattr(t, "data", None), dict):
+                    changed_trans[object_id] = (t, json.loads(json.dumps(t.data)))
+            return changed_trans.get(object_id)
+
+        if marker:
+            paths = tuple(marker.get("data_paths") or ())
+            if not paths and marker.get("data_path"):
+                paths = (marker["data_path"],)
+            object_id = marker.get("object_id", "")
+            if marker.get("object_type") == "transition":
+                pair = _ensure_trans(object_id, marker.get("transition"))
+            else:
+                pair = _ensure_clip(object_id, marker.get("clip"))
+            if pair:
+                _, data_copy = pair
+                for path in paths:
+                    self._set_keyframe_interpolation_at_path(data_copy, path, interpolation, details)
+
+        for target in (panel_targets or []):
+            owner_type = target.get("owner_type")
+            object_id = target.get("object_id", "")
+            paths = tuple(target.get("paths") or ())
+            if not paths or not object_id:
+                continue
+            if owner_type == "transition":
+                pair = _ensure_trans(object_id, target.get("transition"))
+            else:
+                pair = _ensure_clip(object_id, target.get("clip"))
+            if pair:
+                _, data_copy = pair
+                for path in paths:
+                    self._set_keyframe_interpolation_at_path(data_copy, path, interpolation, details)
+
+        for _clip, data_copy in changed_clips.values():
+            timeline.update_clip_data(data_copy, only_basic_props=False, ignore_reader=True, ignore_refresh=False)
+        for _trans, data_copy in changed_trans.values():
+            timeline.update_transition_data(data_copy, only_basic_props=False, ignore_refresh=False)
+
+        if changed_clips or changed_trans:
+            self.geometry.mark_dirty()
+            self._keyframes_dirty = True
+            self.update()
+
+    def _apply_keyframe_remove(self, marker, panel_targets):
+        """Remove keyframe(s) from context menu action."""
+        timeline = getattr(self.win, "timeline", None)
+        if not timeline:
+            return
+
+        changed = False
+
+        for target in (panel_targets or []):
+            owner_type = target.get("owner_type")
+            object_id = target.get("object_id", "")
+            paths = tuple(target.get("paths") or ())
+            if not paths or not object_id:
+                continue
+            if owner_type == "transition":
+                trans = target.get("transition") or Transition.get(id=object_id)
+                if not trans or not isinstance(getattr(trans, "data", None), dict):
+                    continue
+                data_copy = json.loads(json.dumps(trans.data))
+                if self._remove_keyframes_by_paths(data_copy, paths):
+                    self._remove_keyframes_by_paths(trans.data, paths)
+                    timeline.update_transition_data(data_copy, only_basic_props=False, ignore_refresh=False)
+                    changed = True
+            else:
+                clip = target.get("clip") or Clip.get(id=object_id)
+                if not clip or not isinstance(getattr(clip, "data", None), dict):
+                    continue
+                data_copy = json.loads(json.dumps(clip.data))
+                if self._remove_keyframes_by_paths(data_copy, paths):
+                    self._remove_keyframes_by_paths(clip.data, paths)
+                    timeline.update_clip_data(data_copy, only_basic_props=False, ignore_reader=True, ignore_refresh=False)
+                    changed = True
+
+        if not changed and marker:
+            changed = self._delete_keyframe_marker_target(marker)
+
+        if not changed:
+            return
+
+        self._active_keyframe_marker = None
+        self._press_keyframe = None
+        self._dragging_keyframe = None
+        self._dragging_panel_keyframes = None
+        self._clear_panel_selection(None)
+        self._snap_keyframe_seconds = []
+        self._update_track_panel_properties()
+        self.geometry.mark_dirty()
+        self._keyframes_dirty = True
+        self.update()
+        if hasattr(self.win, "show_property_timeout"):
+            QTimer.singleShot(0, self.win.show_property_timeout)
+
+    def show_keyframe_context_menu(self, pos, marker=None, panel_info=None):
+        """Build and show keyframe interpolation/remove context menu.
+
+        marker: clip-bottom keyframe marker dict (from _get_keyframe_at)
+        panel_info: panel keyframe info dict (from _panel_marker_at)
+        Returns True if the menu was shown.
+        """
+        _ = get_app()._tr
+
+        panel_targets = []
+        if panel_info:
+            panel_targets = self._panel_selected_keyframe_targets()
+            if not panel_targets:
+                point = panel_info.get("point") or {}
+                path = point.get("path") if isinstance(point, dict) else None
+                if path:
+                    prop = panel_info.get("property") or {}
+                    track_ctx = panel_info.get("context")
+                    prop_ctx = self._panel_property_context(prop, track_ctx)
+                    owner = self._panel_resolve_owner(prop, prop_ctx, point=point)
+                    otype = owner.get("owner_type") or "clip"
+                    oid = str(owner.get("object_id") or "")
+                    if oid:
+                        panel_targets = [{
+                            "owner_type": otype,
+                            "object_id": oid,
+                            "clip": owner.get("clip"),
+                            "transition": owner.get("transition"),
+                            "paths": {tuple(path)},
+                        }]
+
+        if not marker and not panel_targets:
+            return False
+
+        bezier_icon = QIcon(QPixmap(os.path.join(class_info.IMAGES_PATH, "keyframe-%s.png" % openshot.BEZIER)))
+        linear_icon = QIcon(QPixmap(os.path.join(class_info.IMAGES_PATH, "keyframe-%s.png" % openshot.LINEAR)))
+        constant_icon = QIcon(QPixmap(os.path.join(class_info.IMAGES_PATH, "keyframe-%s.png" % openshot.CONSTANT)))
+
+        presets = self._keyframe_bezier_presets()
+        menu = StyledContextMenu(parent=self)
+
+        bez_menu = menu.addMenu(bezier_icon, _("Bezier"))
+        for preset in presets:
+            a = bez_menu.addAction(preset[4])
+            a.triggered.connect(functools.partial(
+                self._apply_keyframe_interpolation, 0, preset, marker, panel_targets))
+
+        lin = menu.addAction(linear_icon, _("Linear"))
+        lin.triggered.connect(functools.partial(
+            self._apply_keyframe_interpolation, 1, None, marker, panel_targets))
+
+        con = menu.addAction(constant_icon, _("Constant"))
+        con.triggered.connect(functools.partial(
+            self._apply_keyframe_interpolation, 2, None, marker, panel_targets))
+
+        menu.addSeparator()
+
+        remove = menu.addAction(_("Remove Keyframe"))
+        remove.triggered.connect(functools.partial(self._apply_keyframe_remove, marker, panel_targets))
+
+        global_pos = self.mapToGlobal(pos.toPoint() if hasattr(pos, "toPoint") else pos)
+        menu.exec_(global_pos)
         return True
 
     def _begin_keyframe_transaction(self):

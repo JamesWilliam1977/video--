@@ -39,8 +39,12 @@ class BasePainter:
     def update_theme(self):
         pass
 
-    def scaled_pixmap(self, pixmap, width, height):
-        """Return *pixmap* scaled to the requested logical size."""
+    def scaled_pixmap(self, pixmap, width, height, fill=False):
+        """Return *pixmap* scaled to the requested logical size.
+
+        When *fill* is True the image is scaled to cover the target rectangle
+        (aspect-ratio preserved, excess cropped by the caller's clip rect).
+        """
         if pixmap is None or pixmap.isNull():
             return pixmap
         try:
@@ -111,7 +115,8 @@ class BasePainter:
                 cache[cache_key] = scaled
             return scaled
 
-        scaled = pixmap.scaled(target_w, target_h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        mode = Qt.KeepAspectRatioByExpanding if fill else Qt.KeepAspectRatio
+        scaled = pixmap.scaled(target_w, target_h, mode, Qt.SmoothTransformation)
         if ratio != 1.0:
             scaled.setDevicePixelRatio(ratio)
         if hasattr(pixmap, "svg_path") and not hasattr(scaled, "svg_path"):

@@ -3533,7 +3533,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         from windows.views.zoom_slider import ZoomSlider
         self.sliderZoomWidget = ZoomSlider(self)
         self.sliderZoomWidget.setMinimumHeight(20)
-        self.sliderZoomWidget.setZoomFactor(initial_scale)
+        self.sliderZoomWidget.setZoomFactor(initial_scale, emit=False)
 
         # add zoom widgets
         self.timelineToolbar.addWidget(self.sliderZoomWidget)

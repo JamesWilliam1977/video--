@@ -35,6 +35,7 @@ import openshot
 from qt_api import Qt, QRectF, QSize, QTimer, QPointF, QByteArray, pyqtSignal, pyqtSlot, QObject, QMetaMethod
 from qt_api import QtCore
 from qt_api import (
+    QApplication,
     QPainter,
     QCursor,
     QIcon,
@@ -59,10 +60,11 @@ from ..paint import (
     KeyframePainter,
 )
 from ..snap import SnapHelper
-from ..theme import DEFAULT_THEME, apply_theme as parse_theme
+from ..theme import DEFAULT_THEME, TimelineTheme
 from ..state import TimelineStateMachine
 from windows.views.menu import StyledContextMenu
 from classes.app import get_app
+from classes.info import PATH
 from classes.query import Clip, Transition, File
 from classes.logger import log
 from classes.clip_utils import is_single_image_media
@@ -253,6 +255,12 @@ class TimelineWidgetBase(QWidget):
         self._drag_moved = False
         self._drag_press_pos = None
         self._drag_threshold_met = False
+        self._pending_clip_menu_target = None
+        self._pending_clip_menu_press_pos = None
+        self._pending_clip_menu_dragged = False
+        self._pending_transition_menu_target = None
+        self._pending_transition_menu_press_pos = None
+        self._pending_transition_menu_dragged = False
         self._last_click_pos = None          # (position, layer) stored for SHIFT+Click range selection
         self._ctrl_just_selected_id = None   # ID of clip just CTRL-added; guards against double-click toggle
         self._ctrl_just_selected_time = 0.0
@@ -405,6 +413,8 @@ class TimelineWidgetBase(QWidget):
         # Effect icon hit targets (populated by the clip painter)
         self._effect_icon_rects = []
         self._clip_text_rects = []
+        self._transition_text_rects = []
+        self._track_title_rects = []
         self._hover_tooltip_text = ""
 
         # Middle-mouse panning helpers
@@ -724,12 +734,7 @@ class TimelineWidgetBase(QWidget):
 
     def _load_razor_cursor(self):
         """Load the native razor cursor used by the legacy timeline."""
-        asset_path = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "../../../../timeline/media/images/razor_line_with_razor.png",
-            )
-        )
+        asset_path = os.path.join(PATH, "themes/humanity/images/razor_line_with_razor.png")
         pixmap = QPixmap(asset_path)
         if pixmap.isNull():
             return QCursor(Qt.CrossCursor)
@@ -755,16 +760,27 @@ class TimelineWidgetBase(QWidget):
     def run_js(self, code, callback=None, retries=0):
         """Compatibility placeholder for legacy timeline integration hooks."""
 
-    def apply_theme(self, css=None):
-        """Apply CSS theme to this widget."""
-        if not isinstance(css, str):
-            # Signal from ThemeChangedSignal passes the theme instance.
-            # The theme has already been applied directly, so simply
-            # refresh painters.
+    def apply_theme(self, theme=None):
+        """Apply a TimelineTheme instance to this widget."""
+        if not isinstance(theme, TimelineTheme):
+            # ThemeChangedSignal passes the Qt theme instance — just refresh painters.
             self._theme_changed()
             return
 
-        if parse_theme(self, css):
+        self.theme = theme
+
+        old = (self.track_height, self.track_name_width, self.ruler_height,
+               self.track_gap, self.track_margin_top)
+
+        self.track_height         = theme.track.height
+        self.track_name_width     = theme.track.name_width
+        self.track_gap            = theme.track.gap
+        self.track_margin_top     = theme.track.margin_top if theme.track.margin_top >= 0 else theme.track.gap
+        self.ruler_height         = theme.ruler.height
+        self.scroll_bar_thickness = theme.scrollbar_width
+
+        if old != (self.track_height, self.track_name_width, self.ruler_height,
+                   self.track_gap, self.track_margin_top):
             self.changed(None)
         self._theme_changed()
 
@@ -933,7 +949,10 @@ class TimelineWidgetBase(QWidget):
                     continue
                 pix, includes_start, includes_end = result
                 if pix:
+                    painter.save()
+                    painter.setOpacity(self.transition_painter.DEFAULT_OPACITY)
                     painter.drawPixmap(rect.topLeft(), pix)
+                    painter.restore()
                 self.transition_painter._stroke_visible_border(
                     painter,
                     rect,
@@ -941,6 +960,19 @@ class TimelineWidgetBase(QWidget):
                     includes_start=includes_start,
                     includes_end=includes_end,
                 )
+                if includes_start:
+                    bw = max(float(self.transition_painter.border_width or 0.0), 0.0)
+                    title_rect = QRectF(rect)
+                    if bw > 0.0:
+                        inset_x = min(bw, max(title_rect.width() / 2.0 - 0.1, 0.0))
+                        inset_y = min(bw, max(title_rect.height() / 2.0 - 0.1, 0.0))
+                        title_rect.adjust(inset_x, inset_y, -inset_x, -inset_y)
+                    self.transition_painter._draw_transition_title(
+                        painter,
+                        model,
+                        title_rect,
+                        visible_width=float(title_rect.width()),
+                    )
             else:
                 self.clip_painter._draw_clip(
                     painter,
@@ -977,6 +1009,7 @@ class TimelineWidgetBase(QWidget):
                 "position": position,
                 "start": 0.0,
                 "end": duration,
+                "reader": {"path": str(source_id or "")},
             }
             model = SimpleNamespace(id=data["id"], data=data)
             entry["model"] = model
@@ -2488,6 +2521,120 @@ class TimelineWidgetBase(QWidget):
                 return entry
         return None
 
+    def _clip_menu_target_at(self, pos):
+        for entry in reversed(self._clip_text_rects):
+            if not isinstance(entry, dict) or not entry.get("open_menu"):
+                continue
+            rect = entry.get("rect")
+            clip = entry.get("clip")
+            if isinstance(rect, QRectF) and rect.contains(pos) and clip:
+                return {"clip": clip, "rect": QRectF(rect), "source": "title"}
+
+        for rect, clip, _selected in self.geometry.iter_clips(reverse=True):
+            menu_rect = self._clip_menu_rect(rect)
+            if not menu_rect.isNull() and menu_rect.contains(pos):
+                return {"clip": clip, "rect": QRectF(menu_rect), "source": "menu"}
+
+        return None
+
+    def _clear_pending_clip_menu_click(self):
+        self._pending_clip_menu_target = None
+        self._pending_clip_menu_press_pos = None
+        self._pending_clip_menu_dragged = False
+
+    def _transition_menu_target_at(self, pos):
+        for entry in reversed(getattr(self, "_transition_text_rects", [])):
+            if not isinstance(entry, dict) or not entry.get("open_menu"):
+                continue
+            rect = entry.get("rect")
+            tran = entry.get("transition")
+            if isinstance(rect, QRectF) and rect.contains(pos) and tran:
+                return {"transition": tran, "rect": QRectF(rect)}
+        return None
+
+    def _clear_pending_transition_menu_click(self):
+        self._pending_transition_menu_target = None
+        self._pending_transition_menu_press_pos = None
+        self._pending_transition_menu_dragged = False
+
+    def _begin_pending_transition_menu_click(self, pos):
+        target = self._transition_menu_target_at(pos)
+        if not target:
+            self._clear_pending_transition_menu_click()
+            return False
+        self._pending_transition_menu_target = target
+        self._pending_transition_menu_press_pos = QPointF(pos)
+        self._pending_transition_menu_dragged = False
+        return True
+
+    def _begin_pending_clip_menu_click(self, pos):
+        target = self._clip_menu_target_at(pos)
+        if not target:
+            self._clear_pending_clip_menu_click()
+            return False
+        self._pending_clip_menu_target = target
+        self._pending_clip_menu_press_pos = QPointF(pos)
+        self._pending_clip_menu_dragged = False
+        return True
+
+    def _update_pending_clip_menu_drag(self, pos):
+        target = getattr(self, "_pending_clip_menu_target", None)
+        anchor = getattr(self, "_pending_clip_menu_press_pos", None)
+        if not target or anchor is None:
+            return
+        if getattr(self, "_pending_clip_menu_dragged", False):
+            return
+        delta = QPointF(pos) - anchor
+        if delta.manhattanLength() >= QApplication.startDragDistance():
+            self._pending_clip_menu_dragged = True
+
+    def _update_pending_transition_menu_drag(self, pos):
+        target = getattr(self, "_pending_transition_menu_target", None)
+        anchor = getattr(self, "_pending_transition_menu_press_pos", None)
+        if not target or anchor is None:
+            return
+        if getattr(self, "_pending_transition_menu_dragged", False):
+            return
+        delta = QPointF(pos) - anchor
+        if delta.manhattanLength() >= QApplication.startDragDistance():
+            self._pending_transition_menu_dragged = True
+
+    def _handle_pending_clip_menu_release(self, pos):
+        target = getattr(self, "_pending_clip_menu_target", None)
+        dragged = bool(getattr(self, "_pending_clip_menu_dragged", False))
+        self._clear_pending_clip_menu_click()
+        if not target or dragged:
+            return False
+
+        rect = target.get("rect")
+        clip = target.get("clip")
+        if not clip or not isinstance(rect, QRectF) or not rect.contains(pos):
+            return False
+
+        if hasattr(self.win, "timeline"):
+            self._select_timeline_item(clip.id, "clip", True)
+            self.win.timeline.ShowClipMenu(clip.id)
+            return True
+        return False
+
+    def _handle_pending_transition_menu_release(self, pos):
+        target = getattr(self, "_pending_transition_menu_target", None)
+        dragged = bool(getattr(self, "_pending_transition_menu_dragged", False))
+        self._clear_pending_transition_menu_click()
+        if not target or dragged:
+            return False
+
+        rect = target.get("rect")
+        tran = target.get("transition")
+        if not tran or not isinstance(rect, QRectF) or not rect.contains(pos):
+            return False
+
+        if hasattr(self.win, "timeline"):
+            self._select_timeline_item(tran.id, "transition", True)
+            self.win.timeline.ShowTransitionMenu(tran.id)
+            return True
+        return False
+
     def _transition_at(self, pos):
         for rect, tran, _selected in self.geometry.iter_transitions(reverse=True):
             if rect.contains(pos):
@@ -2506,7 +2653,11 @@ class TimelineWidgetBase(QWidget):
             stem, ext = os.path.splitext(base)
             image_exts = {".svg", ".png", ".jpg", ".jpeg", ".bmp", ".webp"}
             if ext.lower() in image_exts and stem:
-                return stem.replace("_", " ")
+                label = stem.replace("_", " ").capitalize()
+                app = get_app()
+                if app and hasattr(app, "_tr"):
+                    return app._tr(label)
+                return label
             return base
         tran_type = str(data.get("type", "") or "").strip()
         if tran_type:
@@ -2740,9 +2891,10 @@ class TimelineWidgetBase(QWidget):
             self.setCursor(Qt.PointingHandCursor)
             return
 
-        # Transition menu icons
-        for rect, _tran, _selected in self.geometry.iter_transitions(reverse=True):
-            if self._transition_menu_rect(rect).contains(pos):
+        # Transition title container (dropdown click target)
+        for entry in reversed(getattr(self, "_transition_text_rects", [])):
+            rect = entry.get("rect") if isinstance(entry, dict) else None
+            if isinstance(rect, QRectF) and rect.contains(pos):
                 self.setCursor(Qt.PointingHandCursor)
                 return
 
@@ -2767,11 +2919,13 @@ class TimelineWidgetBase(QWidget):
                     self.setCursor(self.cursors.get("razor", Qt.CrossCursor))
                     return
 
-        # Clip menu icons
-        for rect, _clip, _selected in self.geometry.iter_clips(reverse=True):
-            if self._clip_menu_rect(rect).contains(pos):
-                self.setCursor(Qt.PointingHandCursor)
-                return
+        # Clip title container (dropdown click target)
+        for entry in reversed(getattr(self, "_clip_text_rects", [])):
+            if isinstance(entry, dict) and entry.get("open_menu"):
+                rect = entry.get("rect")
+                if isinstance(rect, QRectF) and rect.contains(pos):
+                    self.setCursor(Qt.PointingHandCursor)
+                    return
 
         # Clip/transition edges and drags (transitions prioritized)
         edge = 5
@@ -2788,9 +2942,9 @@ class TimelineWidgetBase(QWidget):
                 self.setCursor(self.cursors["hand"])
                 return
 
-        # Track menu icons
-        for _track_rect, _track, name_rect in self.geometry.iter_tracks():
-            mrect = self._track_menu_rect(name_rect)
+        # Track title container (dropdown click target)
+        for _track_rect, track, name_rect in self.geometry.iter_tracks():
+            mrect = self._track_menu_rect(name_rect, track)
             if mrect.contains(pos):
                 self.setCursor(Qt.PointingHandCursor)
                 return
@@ -2816,10 +2970,18 @@ class TimelineWidgetBase(QWidget):
     def mousePressEvent(self, event):
         self._reset_ctrl_mouse_zoom()
         self._press_marker = None
+        self._clear_pending_clip_menu_click()
+        self._clear_pending_transition_menu_click()
         posf = _event_posf(event)
         pos = posf
         if event.button() == Qt.RightButton:
             self._last_event = event
+            keyframe_marker = self._get_keyframe_at(posf)
+            if keyframe_marker:
+                self._active_keyframe_marker = keyframe_marker
+                if self.show_keyframe_context_menu(posf, marker=keyframe_marker):
+                    event.accept()
+                    return
             if self._panel_show_property_menu_at(posf):
                 event.accept()
                 return
@@ -2857,8 +3019,14 @@ class TimelineWidgetBase(QWidget):
                 self.update()
                 event.accept()
                 return
+            self._begin_pending_transition_menu_click(pos)
+            self._begin_pending_clip_menu_click(pos)
 
-        if self._handle_menu_icon_clicks(pos):
+        if (
+            not getattr(self, "_pending_clip_menu_target", None)
+            and not getattr(self, "_pending_transition_menu_target", None)
+            and self._handle_menu_icon_clicks(pos)
+        ):
             return
 
         if self.enable_razor and event.button() == Qt.LeftButton:
@@ -2899,11 +3067,27 @@ class TimelineWidgetBase(QWidget):
             self._trigger_track_menu_icon(pos)
             or self._trigger_transition_menu_icon(pos)
             or self._trigger_clip_menu_icon(pos)
+            or self._trigger_clip_title_menu(pos)
         )
 
+    def _trigger_clip_title_menu(self, pos):
+        for entry in reversed(self._clip_text_rects):
+            if not isinstance(entry, dict) or not entry.get("open_menu"):
+                continue
+            rect = entry.get("rect")
+            if isinstance(rect, QRectF) and rect.contains(pos):
+                clip = entry.get("clip")
+                if clip and hasattr(self.win, "timeline"):
+                    self._select_timeline_item(clip.id, "clip", True)
+                    self.win.timeline.ShowClipMenu(clip.id)
+                    return True
+        return False
+
     def _trigger_track_menu_icon(self, pos):
-        for _track_rect, track, name_rect in self.geometry.iter_tracks():
-            if self._track_menu_rect(name_rect).contains(pos) and hasattr(self.win, "timeline"):
+        for entry in reversed(getattr(self, "_track_title_rects", [])):
+            rect = entry.get("rect") if isinstance(entry, dict) else None
+            track = entry.get("track") if isinstance(entry, dict) else None
+            if isinstance(rect, QRectF) and rect.contains(pos) and track and hasattr(self.win, "timeline"):
                 self.win.timeline.ShowTrackMenu(track.id)
                 return True
         return False
@@ -3074,6 +3258,8 @@ class TimelineWidgetBase(QWidget):
     def mouseMoveEvent(self, event):
         self._last_event = event
         posf = _event_posf(event)
+        self._update_pending_clip_menu_drag(posf)
+        self._update_pending_transition_menu_drag(posf)
 
         if self._handle_ctrl_mouse_zoom(event):
             return
@@ -3175,6 +3361,16 @@ class TimelineWidgetBase(QWidget):
 
         self.events.released.emit(event)
 
+        if event.button() == Qt.LeftButton and self._handle_pending_transition_menu_release(posf):
+            self._press_hit = None
+            event.accept()
+            return
+
+        if event.button() == Qt.LeftButton and self._handle_pending_clip_menu_release(posf):
+            self._press_hit = None
+            event.accept()
+            return
+
         if press_hit == "panel-add":
             info = self._panel_press_info or add_info_initial or {}
             self._panel_press_info = None
@@ -3247,9 +3443,17 @@ class TimelineWidgetBase(QWidget):
             return
 
         self._press_hit = None
+        self._clear_pending_clip_menu_click()
+        self._clear_pending_transition_menu_click()
 
     def contextMenuEvent(self, event):
         posf = _event_posf(event)
+        keyframe_marker = self._get_keyframe_at(posf)
+        if keyframe_marker:
+            self._active_keyframe_marker = keyframe_marker
+            if self.show_keyframe_context_menu(posf, marker=keyframe_marker):
+                event.accept()
+                return
         if self._panel_show_property_menu_at(posf):
             event.accept()
             return
@@ -3264,6 +3468,11 @@ class TimelineWidgetBase(QWidget):
             event.ignore()
 
     def _panel_show_property_menu_at(self, pos):
+        panel_marker = self._panel_marker_at(pos)
+        if panel_marker and panel_marker.get("point"):
+            if self.show_keyframe_context_menu(pos, panel_info=panel_marker):
+                return True
+
         lane = self._panel_lane_at(pos)
         if not lane:
             lane = self._panel_lane_for_label_gap(pos)

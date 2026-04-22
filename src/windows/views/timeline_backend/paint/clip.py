@@ -221,12 +221,10 @@ class ClipPainter(BasePainter):
         self.sel_pen.setCosmetic(True)
         self.top_overlay = QColor(self.w.theme.clip.top_overlay)
         self.top_overlay2 = QColor(self.w.theme.clip.top_overlay2)
-        self.menu_pix = None
-        if self.w.theme.menu_icon:
-            size = self.w.theme.menu_size or self.w.theme.menu_icon.width()
-            self.menu_pix = self.w.theme.menu_icon.scaled(
-                size, size, Qt.KeepAspectRatio, Qt.SmoothTransformation
-            )
+        self.menu_pix = None  # menu icon removed; title container is now the click target
+        from windows.views.timeline_backend.theme import _icon as _theme_icon
+        _arrow = _theme_icon("themes/cosmic/images/dropdown-arrow.svg")
+        self.dropdown_arrow_pix = _arrow if (_arrow and not _arrow.isNull()) else None
         self.thumb_cache = {}
         self._thumb_pending = {}
         self._thumb_regions = {}
@@ -667,6 +665,16 @@ class ClipPainter(BasePainter):
 
         return start
 
+    def _clip_aspect_ratio(self, clip):
+        """Return the source aspect ratio of a clip, falling back to 16:9."""
+        data = clip.data if isinstance(clip.data, dict) else {}
+        reader = data.get("reader") if isinstance(data.get("reader"), dict) else {}
+        w = self._to_float(reader.get("width"))
+        h = self._to_float(reader.get("height"))
+        if w > 0 and h > 0:
+            return max(0.25, min(w / h, 4.0))  # clamp to sane range
+        return 16.0 / 9.0
+
     def _clip_media_fps(self, clip):
         data = clip.data if isinstance(clip.data, dict) else {}
         reader = data.get("reader") if isinstance(data.get("reader"), dict) else {}
@@ -756,7 +764,7 @@ class ClipPainter(BasePainter):
                 self.clip_cache[key] = cached
             return cached
 
-        small = w < 20
+        small = w < 10
         tiny = w < 2
         blur = self.w.theme.clip.shadow_blur if not small else 0
         if not includes_start or not includes_end:
@@ -848,7 +856,7 @@ class ClipPainter(BasePainter):
         if rect.width() <= 0.0 or rect.height() <= 0.0:
             return None
         radius = 0.0
-        if rect.width() >= 20.0 and rect.height() > 0.0:
+        if rect.width() >= 10.0 and rect.height() > 0.0:
             radius = min(float(self.border_radius or 0.0), min(rect.width(), rect.height()) / 2.0)
         if radius <= 0.0:
             return None
@@ -932,8 +940,8 @@ class ClipPainter(BasePainter):
         painter.save()
         painter.setClipRect(inner)
 
-        left = inner.x() + self.menu_margin
         right = inner.right() - self.menu_margin
+        text_right = inner.right()
         icon_entries = []
         text_entry = None
         pending_thumbs = False
@@ -945,16 +953,24 @@ class ClipPainter(BasePainter):
         if not has_waveform:
             pending_thumbs = self._draw_thumbnails(painter, clip, inner, segment)
 
-        content_x = left
         if includes_start:
-            menu_width = self._draw_menu_icon(painter, inner, left, 0)
-            if menu_width:
-                content_x += menu_width + self.menu_margin
-
-            content_x = self._draw_effect_icons(
-                painter, clip, inner, content_x, right, icon_entries
+            # Title container anchored at top-left, against the border
+            text_entry = self._draw_clip_text(
+                painter,
+                clip,
+                inner,
+                inner.x(),
+                text_right,
+                visible_width=float(segment.get("segment_width") or inner_rect.width()) if isinstance(segment, dict) else float(inner_rect.width()),
             )
-            text_entry = self._draw_clip_text(painter, clip, inner, content_x, right)
+
+            # Effect icons follow to the right of the title container
+            effect_x = inner.x() + self.menu_margin
+            if isinstance(text_entry, dict):
+                rect = text_entry.get("rect")
+                if isinstance(rect, QRectF) and rect.isValid():
+                    effect_x = rect.right() + self.menu_margin
+            self._draw_effect_icons(painter, clip, inner, effect_x, right, icon_entries)
 
         painter.restore()
         return icon_entries, pending_thumbs, text_entry
@@ -1068,25 +1084,13 @@ class ClipPainter(BasePainter):
         if clip_width <= 0.0:
             return [], None
 
-        # Slot dimensions
-        theme_thumb_w = float(self.w.theme.clip.thumb_width or inner.height())
-        thumb_w = theme_thumb_w
-        thumb_h = float(self.w.theme.clip.thumb_height or inner.height())
-        # Keep slot width at nominal thumbnail width even for small clips.
-        # This allows the clip bounds to crop thumbnails instead of shrinking them.
-        thumb_w = max(self._min_thumb_slot_width, thumb_w)
-        thumb_h = max(self._min_thumb_slot_width, min(thumb_h, inner.height()))
-        top = inner.y() + (inner.height() - thumb_h) / 2.0
-        # Keep legacy/default theme behavior while nudging thumbnails downward
-        # on taller tracks so they do not appear vertically centered too high.
-        baseline_clip_height = 48.0
-        if inner.height() > baseline_clip_height:
-            top += (inner.height() - baseline_clip_height) / 2.0
-            top += 3.0
-        max_top = inner.bottom() - thumb_h
-        if max_top < inner.y():
-            max_top = inner.y()
-        top = min(max(top, inner.y()), max_top)
+        # Slot dimensions — height fills the clip; width matches the clip's source AR.
+        thumb_h = max(self._min_thumb_slot_width, inner.height())
+        if self.w.theme.clip.thumb_width:
+            thumb_w = max(self._min_thumb_slot_width, float(self.w.theme.clip.thumb_width))
+        else:
+            thumb_w = max(self._min_thumb_slot_width, inner.height() * self._clip_aspect_ratio(clip))
+        top = inner.y()
 
         pixels_per_second = float(self.w.pixels_per_second or 0.0)
         if pixels_per_second <= 0.0:
@@ -1127,10 +1131,7 @@ class ClipPainter(BasePainter):
         # Slot spacing in time
         # Entire style keeps spacing tied to nominal thumb width (not the
         # shrinking clip width), which prevents end-of-trim slot oscillation.
-        if style == "entire":
-            interval_pixels = max(theme_thumb_w, self._min_thumb_slot_width)
-        else:
-            interval_pixels = max(thumb_w, self._min_thumb_slot_width)
+        interval_pixels = max(thumb_w, self._min_thumb_slot_width)
         interval_seconds = interval_pixels / pixels_per_second
         if interval_seconds <= 0.0:
             interval_seconds = 0.01
@@ -1462,14 +1463,14 @@ class ClipPainter(BasePainter):
         if rect_width <= 0.0:
             return
 
-        scaled = self.scaled_pixmap(pixmap, rect_width, rect.height())
+        scaled = self.scaled_pixmap(pixmap, rect_width, rect.height(), fill=True)
         if not scaled or scaled.isNull():
             return
         full_width, scaled_height = self.logical_size(scaled)
         if full_width <= 0.0 or scaled_height <= 0.0:
             return
 
-        target_x = rect.x()
+        target_x = rect.x() + (rect.width() - full_width) / 2.0
         target_y = rect.y() + (rect.height() - scaled_height) / 2.0
 
         had_hint = bool(painter.renderHints() & QPainter.SmoothPixmapTransform)
@@ -1607,33 +1608,98 @@ class ClipPainter(BasePainter):
         painter.setFont(original_font)
         return x
 
-    def _draw_clip_text(self, painter, clip, inner, x, right):
+    def _draw_clip_text(self, painter, clip, inner, x, right, visible_width=None):
         text_width = right - x
         if text_width <= 0:
             return None
-        text_rect = QRectF(x, inner.y(), text_width, inner.height())
         title_raw = str((clip.data.get("title", "") if isinstance(clip.data, dict) else "") or "")
         if text_width <= 4:
-            hit_rect = QRectF(text_rect.adjusted(2, 2, -2, -2))
-            if hit_rect.width() < 1.0:
-                hit_rect.setWidth(1.0)
-            if hit_rect.height() < 1.0:
-                hit_rect.setHeight(1.0)
-            return {"rect": hit_rect, "title": title_raw}
+            return {"rect": QRectF(x, inner.y(), max(1.0, text_width), max(1.0, inner.height())),
+                    "title": title_raw}
 
-        painter.setPen(self.w.theme.clip.font_color)
         metrics = QFontMetrics(painter.font())
-        title = metrics.elidedText(
-            title_raw, Qt.ElideRight, int(text_width - 4)
-        )
-        text_draw_rect = text_rect.adjusted(2, 2, -2, -2)
-        painter.drawText(text_draw_rect, self.w._clip_text_flags, title)
+        font_h = float(metrics.height())
 
-        # Restrict hover to actual rendered text, not the entire clip region.
-        text_advance = float(font_metrics_horizontal_advance(metrics, title))
-        hit_width = min(max(1.0, text_advance), max(1.0, text_draw_rect.width()))
-        hit_rect = QRectF(text_draw_rect.x(), text_draw_rect.y(), hit_width, max(1.0, text_draw_rect.height()))
-        return {"rect": hit_rect, "title": title_raw}
+        pad_x = 6.0
+        pad_y = 2.0
+        container_h = font_h + pad_y * 2.0
+        icon_size = max(8.0, font_h - 2.0)
+        icon_gap = 4.0
+
+        # Minimum width needed to show the arrow alone (compact mode)
+        compact_w = pad_x + icon_size + pad_x
+        # Keep the compact title container alive until clip thumbnails drop out,
+        # so the clip keeps a stable top-left affordance through the same LOD step.
+        compact_lod_w = max(compact_w, float(getattr(self, "_min_clip_thumb_width", 0.0) or 0.0))
+        visible_clip_w = float(visible_width if visible_width is not None else inner.width())
+
+        # --- Mode selection ---
+        # Try to fit elided title alongside the arrow.
+        avail_text_w = int(text_width - pad_x * 2.0 - icon_gap - icon_size)
+        title_elided = ""
+        text_advance = 0.0
+        if avail_text_w >= 4:
+            title_elided = metrics.elidedText(title_raw, Qt.ElideRight, avail_text_w)
+            if title_elided:
+                text_advance = float(font_metrics_horizontal_advance(metrics, title_elided))
+
+        if text_advance > 0:
+            # Full mode: title text + arrow
+            container_w = min(pad_x + text_advance + icon_gap + icon_size + pad_x, text_width)
+            container_w = max(container_h, container_w)
+            mode = "full"
+        elif compact_w <= text_width and compact_lod_w <= visible_clip_w:
+            # Compact mode: arrow only, left-aligned (acts as a pure dropdown button)
+            container_w = compact_w
+            mode = "compact"
+        else:
+            # Too narrow for even the compact arrow — hide container entirely
+            return None
+
+        container_x = inner.x()
+        container_y = inner.y()
+        container_rect = QRectF(container_x, container_y, container_w, container_h)
+
+        radius = min(4.0, container_rect.width() / 2.0, container_rect.height() / 2.0)
+        path = QPainterPath()
+        path.addRoundedRect(container_rect, radius, radius)
+        painter.save()
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        painter.fillPath(path, QColor(0, 0, 0, 140))
+        painter.restore()
+
+        # Pre-scale the arrow once for both modes
+        arrow_pix = self.dropdown_arrow_pix
+        scaled_arrow = None
+        arrow_w = arrow_h = 0.0
+        if arrow_pix and not arrow_pix.isNull():
+            scaled_arrow = self.scaled_pixmap(arrow_pix, icon_size, icon_size)
+            if scaled_arrow and not scaled_arrow.isNull():
+                arrow_w, arrow_h = self.logical_size(scaled_arrow)
+
+        if mode == "full":
+            # Title text with drop shadow
+            flags = Qt.AlignLeft | Qt.AlignVCenter
+            text_draw_rect = QRectF(container_x + pad_x, container_y + pad_y, text_advance, font_h)
+            painter.setPen(QColor(0, 0, 0, 120))
+            painter.drawText(text_draw_rect.translated(1, 1), flags, title_elided)
+            painter.setPen(self.w.theme.clip.font_color)
+            painter.drawText(text_draw_rect, flags, title_elided)
+
+            # Arrow after text — only if it clears the container edge by ≥3px
+            if scaled_arrow:
+                arrow_x = container_x + pad_x + text_advance + icon_gap
+                if arrow_x + arrow_w <= container_x + container_w - 3.0:
+                    arrow_y = container_y + (container_h - arrow_h) / 2.0
+                    painter.drawPixmap(QPointF(arrow_x, arrow_y), scaled_arrow)
+        else:
+            # Compact: arrow left-aligned, same position as text would be
+            if scaled_arrow:
+                arrow_x = container_x + pad_x
+                arrow_y = container_y + (container_h - arrow_h) / 2.0
+                painter.drawPixmap(QPointF(arrow_x, arrow_y), scaled_arrow)
+
+        return {"rect": container_rect, "title": title_raw, "open_menu": True}
 
     def _draw_waveform(self, painter, clip, inner, segment=None):
         data = clip.data if isinstance(clip.data, dict) else {}
@@ -1849,6 +1915,7 @@ class ClipPainter(BasePainter):
                             "rect": global_rect,
                             "clip": clip,
                             "title": str(text_entry.get("title", "") or ""),
+                            "open_menu": bool(text_entry.get("open_menu", False)),
                         }
                     )
         elif includes_start and segment_rect.width() <= 8.0:
@@ -1908,7 +1975,7 @@ class ClipPainter(BasePainter):
             return
 
         radius = 0.0
-        if rect.width() >= 20.0 and rect.height() > 0.0:
+        if rect.width() >= 10.0 and rect.height() > 0.0:
             radius = min(self.border_radius, min(rect.width(), rect.height()) / 2.0)
 
         painter.setRenderHint(QPainter.Antialiasing, True)

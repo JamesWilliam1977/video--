@@ -78,21 +78,8 @@ QLabel#lblMissingFilePath {
         self.app.setPalette(dark_palette)
         self.app.setStyleSheet(self.compose_stylesheet())
 
-        # Apply timeline theme
-        self.app.window.timeline.apply_theme("""
-            .keyframe-panel-row {
-              background: #2f2f2f;
-              border: 0px solid transparent;
-            }
-            .keyframe-panel-curve {
-              color: #4b92ad;
-            }
-            .keyframe-panel-point {
-              background: #4b92ad;
-              border: 1px solid #7dc3dd;
-              opacity: 0.70;
-            }
-        """)
+        from .styles import HumanityDarkTimelineTheme
+        self.app.window.timeline.apply_theme(HumanityDarkTimelineTheme())
 
         # Emit signal
         self.app.window.ThemeChangedSignal.emit(self)
@@ -135,128 +122,8 @@ QComboBox {
     def apply_theme(self):
         super().apply_theme()
 
-        # Apply timeline theme
-        self.app.window.timeline.apply_theme("""
-            body {
-              background: #f0f0f0;
-            }
-            #ruler_time {
-              color: #c9c9c9;
-            }
-           .ruler_time {
-              color: #c9c9c9;
-            }
-            #ruler_label {
-              height: 43px;
-              background: linear-gradient(to bottom, #3c3c3c, #0a070a);
-              margin-bottom: 0px;
-            }
-            #scrolling_ruler {
-              background: linear-gradient(to bottom, #3c3c3c, #0a070a);
-              margin-bottom: 0px;
-            }
-            .track_name {
-              margin-top: 8px;
-              color: #000000;
-              background: linear-gradient(to bottom, #dedddd, #d2d2d3);
-              box-shadow: none;
-            }
-            .track {
-              margin-top: 8px;
-              background: #e5e7ea;
-              box-shadow: none;
-            }
-            .track-resize-handle {
-              background-color: #BEBFC1;
-            }
-            .track-resize-handle:hover {
-              background-color: #F7F8FA;
-            }
-            .transition_top {
-              background: none;
-              border-radius: 0px;
-            }
-            .transition {
-              border: 1px solid #0192c1;
-              border-radius: 0px;
-              box-shadow: none;
-            }
-            .clip {
-              border-radius: 0px;
-              background: #fedc66;
-              border: 1px solid #cd8d00;
-              box-shadow: none;
-            }
-            .ui-selected {
-                filter: brightness(1.1);
-            }
-            .clip_label {
-              color: #383730;
-            }
-            .clip_effects {
-              background: rgba(54, 25, 25, 0.6);
-            }
-            .point_bezier {
-              background-image: url(../themes/humanity/images/keyframe-bezier.svg);
-            }
-            .point_linear {
-              background-image: url(../themes/humanity/images/keyframe-linear.svg);
-            }
-            .point_constant {
-              background-image: url(../themes/humanity/images/keyframe-constant.svg);
-            }
-            .track-keyframe-panel-disabled {
-              background-image: url(../themes/humanity/images/retro-track-keyframe-panel-show-disabled.svg);
-            }
-            .track-keyframe-panel-enabled {
-              background-image: url(../themes/humanity/images/retro-track-keyframe-panel-show-enabled.svg);
-            }
-            .track-add-above-disabled {
-              background-image: url(../themes/humanity/images/track-add-above-disabled.svg);
-            }
-            .track-add-above-enabled {
-              background-image: url(../themes/humanity/images/track-add-above-enabled.svg);
-            }
-            .track-add-below-disabled {
-              background-image: url(../themes/humanity/images/track-add-below-disabled.svg);
-            }
-            .track-add-below-enabled {
-              background-image: url(../themes/humanity/images/track-add-below-enabled.svg);
-            }
-            .track-delete-disabled {
-              background-image: url(../themes/humanity/images/track-delete-disabled.svg);
-            }
-            .track-delete-enabled {
-              background-image: url(../themes/humanity/images/track-delete-enabled.svg);
-            }
-            .track-locked-disabled {
-              background-image: url(../themes/humanity/images/retro-track-locked-disabled.svg);
-            }
-            .track-locked-enabled {
-              background-image: url(../themes/humanity/images/retro-track-locked-enabled.svg);
-            }
-            .track-unlocked-disabled {
-              background-image: url(../themes/humanity/images/retro-track-unlocked-disabled.svg);
-            }
-            .track-unlocked-enabled {
-              background-image: url(../themes/humanity/images/retro-track-unlocked-enabled.svg);
-            }
-            .keyframe-panel-add {
-              background-image: url(../themes/humanity/images/keyframe-panel-add.svg);
-            }
-            .keyframe-panel-row {
-              background: #e5e7ea;
-              border: 0px solid transparent;
-            }
-            .keyframe-panel-curve {
-              color: #4b92ad;
-            }
-            .keyframe-panel-point {
-              background: #4b92ad;
-              border: 1px solid #3a748a;
-              opacity: 0.72;
-            }
-        """)
+        from .styles import RetroTimelineTheme
+        self.app.window.timeline.apply_theme(RetroTimelineTheme())
 
         # Emit signal
         self.app.window.ThemeChangedSignal.emit(self)

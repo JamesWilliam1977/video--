@@ -35,7 +35,6 @@ mv "$OS_PATH/MacOS/lib/settings" "$OS_PATH/Resources/settings"; ln -s "../../Res
 cp "$OS_PATH/MacOS/settings/"* "$OS_PATH/Resources/settings/"; # Copy *.log files into settings
 rm -r "$OS_PATH/MacOS/settings/" # remove old settings folder
 mv "$OS_PATH/MacOS/lib/tests" "$OS_PATH/Resources/tests"; ln -s "../../Resources/tests" "$OS_PATH/MacOS/lib/tests";
-mv "$OS_PATH/MacOS/lib/timeline" "$OS_PATH/Resources/timeline"; ln -s "../../Resources/timeline" "$OS_PATH/MacOS/lib/timeline";
 mv "$OS_PATH/MacOS/lib/titles" "$OS_PATH/Resources/titles"; ln -s "../../Resources/titles" "$OS_PATH/MacOS/lib/titles";
 mv "$OS_PATH/MacOS/lib/transitions" "$OS_PATH/Resources/transitions"; ln -s "../../Resources/transitions" "$OS_PATH/MacOS/lib/transitions";
 mv "$OS_PATH/MacOS/lib/windows" "$OS_PATH/Resources/windows"; ln -s "../../Resources/windows" "$OS_PATH/MacOS/lib/windows";
