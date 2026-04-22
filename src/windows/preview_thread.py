@@ -383,6 +383,11 @@ class PlayerWorker(QObject):
         """Compute FrameScope data on the worker thread and emit scope_ready.
 
         Running here keeps scope analysis work off the UI thread.
+
+        Channel key contract: libopenshot frames are stored as
+        QImage::Format_RGBA8888_Premultiplied ([R=0, G=1, B=2, A=3]).
+        FrameScope exposes per-channel data under the keys "red", "green",
+        and "blue" matching that order. scope_panel.py reads those same keys.
         """
         timeline = getattr(getattr(get_app().window, "timeline_sync", None), "timeline", None)
         if not timeline:
