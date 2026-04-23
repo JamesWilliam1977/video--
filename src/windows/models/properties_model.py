@@ -953,6 +953,15 @@ class PropertiesModel(updates.UpdateInterface):
         keyframe = property[1]["keyframe"]
         points = property[1]["points"]
         interpolation = property[1]["interpolation"]
+
+        # Colorgrade types store nested keyframe structures libopenshot doesn't parse,
+        # so compute keyframe/points from the actual nested data.
+        if type in ["colorgrade_curve", "colorgrade_wheels"]:
+            from windows.color_grade_editor import colorgrade_keyframe_frames
+            data_key = "curve" if type == "colorgrade_curve" else "wheels"
+            frame_set = colorgrade_keyframe_frames(property[1].get(data_key), type)
+            points = max(1, len(frame_set))
+            keyframe = int(round(self.frame_number)) in frame_set
         choices = property[1]["choices"]
         # Add object id reference to QStandardItem
         property[1]["object_id"] = object_id

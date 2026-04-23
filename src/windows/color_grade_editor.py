@@ -183,15 +183,15 @@ def _set_color_value(data, frame_number, color):
     }
 
 
-def _default_curve_node(node_id, x_value, y_value):
+def _default_curve_node(node_id, x_value, y_value, frame_number=1):
     return {
         "id": int(node_id),
-        "x": _keyframe_value(value=x_value),
-        "y": _keyframe_value(value=y_value),
-        "left_handle_x": _keyframe_value(value=0.5),
-        "left_handle_y": _keyframe_value(value=1.0),
-        "right_handle_x": _keyframe_value(value=0.5),
-        "right_handle_y": _keyframe_value(value=0.0),
+        "x": _keyframe_value(frame_number=frame_number, value=x_value),
+        "y": _keyframe_value(frame_number=frame_number, value=y_value),
+        "left_handle_x": _keyframe_value(frame_number=frame_number, value=0.5),
+        "left_handle_y": _keyframe_value(frame_number=frame_number, value=1.0),
+        "right_handle_x": _keyframe_value(frame_number=frame_number, value=0.5),
+        "right_handle_y": _keyframe_value(frame_number=frame_number, value=0.0),
         "interpolation": int(openshot.LINEAR),
         "handle_type": int(openshot.AUTO),
     }
@@ -348,6 +348,37 @@ def normalize_wheels_data(data):
         wheel["amount_keyframes"] = _normalize_keyframe_data(source.get("amount_keyframes", source.get("amount")), 0.0)
         wheel["luma_keyframes"] = _normalize_keyframe_data(source.get("luma_keyframes", source.get("luma")), 0.0)
     return normalized
+
+
+def colorgrade_keyframe_frames(data, property_type):
+    """Return the set of unique frame numbers that have keyframes for a colorgrade property."""
+    frame_set = set()
+
+    def _collect(kf_data):
+        if isinstance(kf_data, dict):
+            for pt in kf_data.get("Points", []):
+                try:
+                    frame_set.add(int(round(float(pt["co"]["X"]))))
+                except (KeyError, TypeError, ValueError):
+                    pass
+
+    if property_type == "colorgrade_curve":
+        curve = normalize_curve_data(data)
+        _collect(curve.get("enabled"))
+        for node in curve.get("nodes", []):
+            for k in ("x", "y", "left_handle_x", "left_handle_y", "right_handle_x", "right_handle_y"):
+                _collect(node.get(k))
+    elif property_type == "colorgrade_wheels":
+        wheels = normalize_wheels_data(data)
+        _collect(wheels.get("enabled_keyframes"))
+        for section in ("global", "shadows", "midtones", "highlights"):
+            wheel = wheels.get(section, {})
+            color_kf = wheel.get("color_keyframes") or {}
+            for channel in ("red", "green", "blue", "alpha"):
+                _collect(color_kf.get(channel))
+            _collect(wheel.get("amount_keyframes"))
+            _collect(wheel.get("luma_keyframes"))
+    return frame_set
 
 
 def wheels_enabled_at_frame(data, frame_number):
@@ -750,7 +781,7 @@ class CurvePreviewWidget(QWidget):
 
         new_point = self._screen_to_point(pos)
         next_id = max([node["id"] for node in self._curve_data["nodes"]] + [-1]) + 1
-        new_node = _default_curve_node(next_id, new_point["x"], new_point["y"])
+        new_node = _default_curve_node(next_id, new_point["x"], new_point["y"], self._frame_number)
         self._curve_data["nodes"].append(new_node)
         self._curve_data = normalize_curve_data(self._curve_data)
         self._drag_target = {"type": "node", "node_id": next_id}
