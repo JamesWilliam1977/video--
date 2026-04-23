@@ -1201,6 +1201,7 @@ class PropertiesModel(updates.UpdateInterface):
     def update_model(self, filter=""):
         app = get_app()
         _ = app._tr
+        refreshed = False
 
         if self.ignore_update_signal:
             log.debug("ignoring update signal, because we are already in an update...")
@@ -1299,6 +1300,7 @@ class PropertiesModel(updates.UpdateInterface):
 
                 # After first render, future calls will update in place
                 self.new_item = False
+                refreshed = True
 
             else:
                 # Clear previous model data (if any)
@@ -1306,9 +1308,15 @@ class PropertiesModel(updates.UpdateInterface):
 
                 # Add Headers
                 self.model.setHorizontalHeaderLabels([_("Property"), _("Value")])
+                refreshed = True
         finally:
             # Done updating model (even if we returned early)
             self.ignore_update_signal = False
+
+        if refreshed:
+            refresh_callback = getattr(self.parent, "property_model_refreshed", None)
+            if callable(refresh_callback):
+                refresh_callback()
 
     def __init__(self, parent, *args):
 

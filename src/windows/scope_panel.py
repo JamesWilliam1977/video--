@@ -93,6 +93,13 @@ class WaveformWidget(QWidget):
 
     # ── helpers ──────────────────────────────────────────────────────────────
 
+    @staticmethod
+    def _density_to_byte(count, max_val):
+        """Boost low-density samples so sparse scopes stay visible."""
+        if count <= 0 or max_val <= 0:
+            return 0
+        return min(255, int(math.sqrt(count / max_val) * 255))
+
     def _build_img(self, flat, columns, bins, rgb):
         """Build a columns×bins RGB888 QImage from a waveform flat array."""
         if not flat or len(flat) != columns * bins:
@@ -106,19 +113,21 @@ class WaveformWidget(QWidget):
                 count = flat[base + b]
                 if not count:
                     continue
-                t = min(255, count * 255 // max_val)
+                t = self._density_to_byte(count, max_val)
                 row = bins - 1 - b
                 idx = (row * columns + col) * 3
                 buf[idx]     = r0 * t // 255
                 buf[idx + 1] = g0 * t // 255
                 buf[idx + 2] = b0 * t // 255
-        return QImage(bytes(buf), columns, bins, columns * 3, QImage.Format_RGB888)
+        # Detach from the temporary Python buffer so paint reads stable pixels.
+        return QImage(bytes(buf), columns, bins, columns * 3, QImage.Format_RGB888).copy()
 
     # ── paint ────────────────────────────────────────────────────────────────
 
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing, False)
+        painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
         w, h = self.width(), self.height()
         painter.fillRect(0, 0, w, h, QColor(0, 0, 0))
 
@@ -166,11 +175,11 @@ class WaveformWidget(QWidget):
                             continue
                         row = bins - 1 - b
                         idx = (row * columns + col) * 3
-                        buf[idx]     = min(255, rv * 220 // max_val)
-                        buf[idx + 1] = min(255, gv * 190 // max_val)
-                        buf[idx + 2] = min(255, bv * 220 // max_val)
+                        buf[idx]     = min(255, self._density_to_byte(rv, max_val) * 220 // 255)
+                        buf[idx + 1] = min(255, self._density_to_byte(gv, max_val) * 190 // 255)
+                        buf[idx + 2] = min(255, self._density_to_byte(bv, max_val) * 220 // 255)
                 img = QImage(bytes(buf), columns, bins, columns * 3,
-                             QImage.Format_RGB888)
+                             QImage.Format_RGB888).copy()
                 painter.drawImage(self.rect(), img)
 
         else:
@@ -214,6 +223,15 @@ class HistogramWidget(QWidget):
     def update_data(self, video_data):
         self._data = video_data
         self.update()
+
+    @staticmethod
+    def _bin_span(index, bins, width):
+        """Map one source bin to an exact on-screen span without gaps."""
+        x0 = index * width // bins
+        x1 = (index + 1) * width // bins
+        if x1 <= x0:
+            x1 = min(width, x0 + 1)
+        return x0, x1
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -261,17 +279,19 @@ class HistogramWidget(QWidget):
         use_log  = (self._scale == "log")
         log_max  = math.log1p(max_val)
         bins     = len(luma)
-        bar_w    = max(1, w // bins)
 
         painter.setPen(Qt.NoPen)
+        if ch == "rgba":
+            painter.setCompositionMode(QPainter.CompositionMode_Plus)
         for vals, color in to_draw:
             painter.setBrush(QBrush(color))
             for i, v in enumerate(vals):
                 if not v:
                     continue
-                x     = i * w // bins
+                x, x2 = self._bin_span(i, bins, w)
                 bar_h = int(math.log1p(v) / log_max * h) if use_log else v * h // max_val
-                painter.drawRect(x, h - bar_h, bar_w, bar_h)
+                painter.drawRect(x, h - bar_h, x2 - x, bar_h)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
 
 
 # ─── Audio meter painter ─────────────────────────────────────────────────────

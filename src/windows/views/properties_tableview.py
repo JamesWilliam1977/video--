@@ -535,6 +535,7 @@ class PropertiesTableView(QTableView):
             self.start_transaction(item)
         self.live_property_session = {
             "item": item,
+            "item_data": copy.deepcopy(item.data()) if item else None,
             "property_type": property_type,
             "property_key": property_key,
             "original_value": copy.deepcopy(original_value),
@@ -610,6 +611,26 @@ class PropertiesTableView(QTableView):
 
         self.viewport().update()
 
+    def _find_property_value_item(self, property_key, property_type=None, item_data=None):
+        model = self.clip_properties_model.model
+        for row in range(model.rowCount()):
+            label_item = model.item(row, 0)
+            value_item = model.item(row, 1)
+            if not label_item or not value_item:
+                continue
+            cur_property = label_item.data()
+            if not isinstance(cur_property, tuple) or len(cur_property) != 2:
+                continue
+            row_property_key, property_meta = cur_property
+            if row_property_key != property_key:
+                continue
+            if property_type and property_meta.get("type") != property_type:
+                continue
+            if item_data is not None and value_item.data() != item_data:
+                continue
+            return value_item, property_meta
+        return None, None
+
     def _sync_color_grade_editors(self, property_type, property_key, value):
         item = self.selected_item
         item_data = item.data() if item else None
@@ -639,6 +660,8 @@ class PropertiesTableView(QTableView):
                 self.color_grade_wheels_panel.set_wheels_data(value)
 
     def _sync_color_grade_editors_to_current_frame(self):
+        if not hasattr(self, "color_grade_wheels_panel"):
+            return
         model = self.clip_properties_model.model
         self.color_grade_wheels_panel.set_frame_number(self.clip_properties_model.frame_number)
 
@@ -670,6 +693,33 @@ class PropertiesTableView(QTableView):
             elif property_type == "colorgrade_wheels":
                 self._update_color_grade_preview_meta(property_meta)
         self.viewport().update()
+
+    def property_model_refreshed(self):
+        """Rebind editor sessions after property rows are rebuilt by undo/redo or selection changes."""
+        if not hasattr(self, "color_grade_wheels_panel"):
+            return
+        session = self.live_property_session or {}
+        property_type = session.get("property_type")
+        property_key = session.get("property_key")
+        item_data = session.get("item_data")
+
+        if property_type in ["colorgrade_curve", "colorgrade_wheels"] and property_key:
+            item, property_meta = self._find_property_value_item(
+                property_key,
+                property_type=property_type,
+                item_data=item_data,
+            )
+            if item:
+                session["item"] = item
+                session["item_data"] = copy.deepcopy(item.data())
+                self.selected_item = item
+                if property_type == "colorgrade_wheels":
+                    self.color_grade_wheels_panel.set_frame_number(self.clip_properties_model.frame_number)
+                    self.color_grade_wheels_panel.set_wheels_data(
+                        normalize_wheels_data(property_meta.get("wheels"))
+                    )
+
+        self._sync_color_grade_editors_to_current_frame()
 
     def pause_live_property_caching(self):
         if self.live_property_cache_paused:
