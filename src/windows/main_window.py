@@ -48,7 +48,7 @@ from qt_api import QIcon, QCursor, QKeySequence, QTextCursor
 from qt_api import show_open_file_dialog, show_save_file_dialog, file_exists, ensure_extension, path_basename
 from qt_api import (
     QMainWindow, QWidget, QDockWidget,
-    QMessageBox, QDialog, QFileDialog, QInputDialog,
+    QMenu, QMessageBox, QDialog, QFileDialog, QInputDialog,
     QAction, QActionGroup, QSizePolicy,
     QStatusBar, QToolBar, QToolButton,
     QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar, QTabWidget, QAbstractButton,
@@ -1378,6 +1378,43 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self.histogram_content.update_data(video)
         if audio and getattr(self, "_scope_aud_vis", False):
             self.audio_meter.update_data(audio)
+
+    def _anchor_and_show_scope_dock(self, dock):
+        """Ensure a scope dock lands in the bottom-right group (below Color Wheels)."""
+        color_grade_dock = getattr(
+            getattr(self, "propertyTableView", None), "color_grade_wheels_dock", None)
+        scope_docks = [self.dockLumaWaveform, self.dockHistogram, self.dockAudio]
+
+        if self.dockWidgetArea(dock) == Qt.NoDockWidgetArea:
+            self.addDockWidget(Qt.RightDockWidgetArea, dock)
+            anchored = [d for d in scope_docks if d is not dock
+                        and self.dockWidgetArea(d) != Qt.NoDockWidgetArea
+                        and d.isVisible()]
+            if anchored:
+                # Join the existing bottom scope group
+                self.tabifyDockWidget(anchored[-1], dock)
+            elif (color_grade_dock and
+                  self.dockWidgetArea(color_grade_dock) != Qt.NoDockWidgetArea):
+                # First scope dock: split Color Wheels so scope lands below it
+                self.splitDockWidget(color_grade_dock, dock, Qt.Vertical)
+            self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
+        dock.show()
+        dock.raise_()
+
+    def _on_scope_dock_toggled(self, checked, dock):
+        """Called when a scope dock's toggle action fires; re-anchor if needed."""
+        if checked:
+            self._anchor_and_show_scope_dock(dock)
+
+    def show_scope_video_docks(self):
+        """Show Luma Waveform and Histogram docks, anchoring to right if needed."""
+        self._anchor_and_show_scope_dock(self.dockLumaWaveform)
+        self._anchor_and_show_scope_dock(self.dockHistogram)
+        self.dockLumaWaveform.raise_()
+
+    def show_scope_audio_dock(self):
+        """Show Audio Levels dock, anchoring to right if needed."""
+        self._anchor_and_show_scope_dock(self.dockAudio)
 
     def actionSaveFrame_trigger(self, checked=True):
         log.info("actionSaveFrame_trigger")
@@ -2739,16 +2776,27 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self.toolBar.setMovable(not frozen)
 
     def addViewDocksMenu(self):
-        """ Insert a Docks submenu into the View menu """
+        """ Insert a Docks submenu into the View menu, rebuilt dynamically on each open """
         _ = get_app()._tr
-
         self.docks_menu = self.menuView.addMenu(_("Docks"))
+        self.docks_menu.aboutToShow.connect(self._rebuild_docks_menu)
+
+    def _rebuild_docks_menu(self):
+        """Repopulate the Docks menu so late-created docks (e.g. Color Wheels) are included."""
+        self.docks_menu.clear()
         for dock in sorted(self.getDocks(), key=lambda d: d.windowTitle()):
-            if (dock.features() & QDockWidget.DockWidgetClosable
-               != QDockWidget.DockWidgetClosable):
-                # Skip non-closable docs
-                continue
-            self.docks_menu.addAction(dock.toggleViewAction())
+            if dock.features() & QDockWidget.DockWidgetClosable:
+                self.docks_menu.addAction(dock.toggleViewAction())
+
+    def createPopupMenu(self):
+        """Override Qt's right-click context menu to include all closable docks."""
+        menu = QMenu(self)
+        for dock in sorted(self.getDocks(), key=lambda d: d.windowTitle()):
+            if dock.features() & QDockWidget.DockWidgetClosable:
+                menu.addAction(dock.toggleViewAction())
+        menu.addSeparator()
+        menu.addAction(self.actionView_Toolbar)
+        return menu
 
     def actionSimple_View_trigger(self):
         """ Switch to the default / simple view  """
@@ -2832,16 +2880,15 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         self.addDocks([self.dockProperties], Qt.LeftDockWidgetArea)
         self.addDocks([self.dockVideo], Qt.TopDockWidgetArea)
-        # Tabify order (right side): Wheels → Luma Waveform → Histogram → Audio Levels
+        # Right side: Color Wheels top, scope docks tabified below.
+        # Order matters: split FIRST, then tabify so the bottom group stays intact.
         if color_grade_dock:
             self.addDocks([color_grade_dock], Qt.RightDockWidgetArea)
         self.addDocks([self.dockLumaWaveform], Qt.RightDockWidgetArea)
-        self.addDocks([self.dockHistogram],    Qt.RightDockWidgetArea)
-        self.addDocks([self.dockAudio],        Qt.RightDockWidgetArea)
         if color_grade_dock:
-            self.tabifyDockWidget(color_grade_dock, self.dockLumaWaveform)
+            self.splitDockWidget(color_grade_dock, self.dockLumaWaveform, Qt.Vertical)
+        self.addDocks([self.dockHistogram], Qt.RightDockWidgetArea)
         self.tabifyDockWidget(self.dockLumaWaveform, self.dockHistogram)
-        self.tabifyDockWidget(self.dockHistogram,    self.dockAudio)
         self.splitDockWidget(self.dockVideo, self.dockTimeline, Qt.Vertical)
         self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
 
@@ -2853,30 +2900,30 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self.dockTimeline,
             self.dockLumaWaveform,
             self.dockHistogram,
-            self.dockAudio,
         ]
         if color_grade_dock:
             docks_to_show.append(color_grade_dock)
 
         self.showDocks(docks_to_show)
         QCoreApplication.processEvents()
-        # Raise Wheels (color grade) to front of the tabified group
         if color_grade_dock:
             color_grade_dock.raise_()
+        self.dockLumaWaveform.raise_()
         self.style_dock_widgets()
 
-    def actionAnalysis_View_trigger(self):
-        """Show scope docks without disturbing the existing layout."""
-        self.addDocks([self.dockLumaWaveform], Qt.RightDockWidgetArea)
-        self.addDocks([self.dockHistogram],    Qt.RightDockWidgetArea)
-        self.addDocks([self.dockAudio],        Qt.RightDockWidgetArea)
-        self.tabifyDockWidget(self.dockLumaWaveform, self.dockHistogram)
-        self.tabifyDockWidget(self.dockHistogram,    self.dockAudio)
-        self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
-        self.showDocks([self.dockLumaWaveform, self.dockHistogram, self.dockAudio])
-        self.dockLumaWaveform.raise_()
-        QCoreApplication.processEvents()
-        self.style_dock_widgets()
+        # Defer size adjustment so Qt has finished its layout pass first.
+        # Give Color Wheels ~75% of the right column height, scope tab ~25%.
+        if color_grade_dock:
+            def _resize_right_column():
+                available = self.height()
+                scope_h = max(120, available // 4)
+                wheels_h = available - scope_h
+                self.resizeDocks(
+                    [color_grade_dock, self.dockLumaWaveform],
+                    [wheels_h, scope_h],
+                    Qt.Vertical,
+                )
+            QTimer.singleShot(0, _resize_right_column)
 
     def actionFreeze_View_trigger(self):
         """ Freeze all dockable widgets on the main screen """
@@ -4355,8 +4402,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 dw._titlebar_state = None
 
         for dock_widget in self.getDocks():
-            # Check if dock is tabbed with other widgets
-            tabified_widgets = self.tabifiedDockWidgets(dock_widget)
+            # Only count visible tabified siblings — hidden docks in the same group
+            # would otherwise make a lone visible dock appear "tabbed".
+            tabified_widgets = [w for w in self.tabifiedDockWidgets(dock_widget) if w.isVisible()]
 
             # Compute the required title-bar state key. setTitleBarWidget internally
             # calls QWidget::setParent → reparentFocusWidgets, which iterates the
@@ -4383,7 +4431,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             if required_state == "timeline":
                 dock_widget.setTitleBarWidget(QWidget())
             elif required_state == "tabbed":
-                dock_widget.setTitleBarWidget(HiddenTitleBar(dock_widget, "", show_buttons=False))
+                dock_widget.setTitleBarWidget(HiddenTitleBar(dock_widget, "", show_buttons=True))
             elif required_state == "floating" or required_state == "system":
                 dock_widget.setTitleBarWidget(None)
             else:  # "docked:<title>"
@@ -4785,6 +4833,13 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             dock_widget.dockLocationChanged.connect(self._schedule_dock_style_update)
             dock_widget.dockLocationChanged.connect(self._mark_dock_interaction_active)
             dock_widget.topLevelChanged.connect(self._mark_dock_interaction_active)
+            # Re-style siblings when any dock is shown/hidden (tab group may shrink to 1)
+            dock_widget.visibilityChanged.connect(self._schedule_dock_style_update)
+
+        # Re-anchor scope docks when manually enabled after a view switch removed them
+        for _dock in [self.dockLumaWaveform, self.dockHistogram, self.dockAudio]:
+            _dock.toggleViewAction().triggered.connect(
+                functools.partial(self._on_scope_dock_toggled, dock=_dock))
 
         # Ensure toolbar is movable when floated (even with docks frozen)
         self.toolBar.topLevelChanged.connect(

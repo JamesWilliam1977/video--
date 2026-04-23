@@ -171,7 +171,7 @@ class PropertyDelegate(QItemDelegate):
                 painter.setPen(QPen(get_app().window.palette().color(QPalette.Disabled, QPalette.Text)))
             else:
                 path = QPainterPath()
-                path.addRoundedRect(QRectF(option.rect), 15, 15)
+                path.addRoundedRect(QRectF(option.rect), 6, 6)
                 painter.fillPath(path, background_color)
                 painter.drawPath(path)
 
@@ -190,7 +190,7 @@ class PropertyDelegate(QItemDelegate):
                 painter.setBrush(gradient)
                 path = QPainterPath()
                 value_rect = QRectF(option.rect)
-                path.addRoundedRect(value_rect, 15, 15)
+                path.addRoundedRect(value_rect, 6, 6)
                 painter.fillPath(path, gradient)
                 painter.drawPath(path)
                 painter.setClipping(False)
@@ -845,14 +845,33 @@ class PropertiesTableView(QTableView):
         model = self.clip_properties_model.model
         if model.item(row, 1):
             self.selected_item = model.item(row, 1)
-            if not self.clip_properties_model.ignore_update_signal:
-                self.start_transaction(self.selected_item)
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         # Get data model and selection
         model = self.clip_properties_model.model
         posf = _event_posf(event)
+        pos = posf.toPoint()
+
+        # Show resize cursor only over slider-type value cells (float/int, not read-only).
+        # When not dragging (hover only), update cursor and return — don't touch drag state.
+        idx = self.indexAt(pos)
+        show_slider_cursor = False
+        if idx.isValid() and idx.column() == 1:
+            label_item = self.clip_properties_model.model.item(idx.row(), 0)
+            if label_item:
+                prop = label_item.data()
+                if prop and isinstance(prop, tuple) and len(prop) > 1:
+                    ptype = prop[1].get("type", "")
+                    readonly = prop[1].get("readonly", False)
+                    show_slider_cursor = ptype in ("float", "int") and not readonly
+        if show_slider_cursor:
+            self.viewport().setCursor(Qt.SizeHorCursor)
+        else:
+            self.viewport().unsetCursor()
+
+        if not self.mouse_pressed:
+            return
 
         # Do not change selected row during mouse move
         if self.lock_selection and self.prev_row:
@@ -919,14 +938,6 @@ class PropertiesTableView(QTableView):
             if readonly:
                 return
 
-            if (
-                not self.transaction_id
-                and not self.clip_properties_model.ignore_update_signal
-            ):
-                # Start transaction on first movement
-                self.start_transaction(self.selected_item)
-            self.update_in_progress = True
-
             # For numeric values, apply percentage within parameter's allowable range
             if property_type in ["float", "int"] and property_name != "Track":
 
@@ -946,6 +957,14 @@ class PropertiesTableView(QTableView):
                     # Lower threshold to 0 incrementally, to guarantee it'll eventually be exceeded
                     self.diff_length = max(0, self.diff_length - 1)
                     return
+
+                # Threshold cleared — start/continue transaction on first actual value change
+                if (
+                    not self.transaction_id
+                    and not self.clip_properties_model.ignore_update_signal
+                ):
+                    self.start_transaction(self.selected_item)
+                self.update_in_progress = True
 
                 # Compute size of property's possible values range
                 min_max_range = float(property_max) - float(property_min)
@@ -978,6 +997,10 @@ class PropertiesTableView(QTableView):
 
                 # Repaint
                 self.viewport().update()
+
+    def leaveEvent(self, event):
+        self.viewport().unsetCursor()
+        super().leaveEvent(event)
 
     def mouseReleaseEvent(self, event):
         # Inform UpdateManager to accept updates, and only store our final update
@@ -1075,41 +1098,66 @@ class PropertiesTableView(QTableView):
                         self.finalize_transaction()
 
             elif property_type == "colorgrade_curve":
-                curve_data = normalize_curve_data(cur_property[1].get("curve"))
-                property_key = cur_property[0]
-                dialog = ColorGradeCurveDialog(curve_data, cur_property[1].get("channel", "all"),
-                                               self.clip_properties_model.frame_number, self.win,
-                                               title=cur_property[1].get("name"))
-                item = self.selected_item
-                dialog._property_key = property_key
-                dialog._item_data = copy.deepcopy(item.data()) if item else None
-                self.color_grade_curve_dialogs.add(dialog)
-                dialog.destroyed.connect(lambda *_args, dlg=dialog: self.color_grade_curve_dialogs.discard(dlg))
-                dialog.curve_widget().curveChanged.connect(
-                    lambda value, item=item, key=property_key: self.preview_curve_property_value(item, key, value)
-                )
-                dialog.changeStarted.connect(lambda item=item: self.start_property_change(item))
-                dialog.changeStarted.connect(self.pause_live_property_caching)
-                dialog.changeFinished.connect(self.resume_live_property_caching)
-                dialog.changeFinished.connect(self.finish_property_change)
-                dialog.setAttribute(Qt.WA_DeleteOnClose, True)
-                self._place_curve_dialog_near_index(dialog, model_index)
-                dialog.show()
-                dialog.raise_()
-                dialog.activateWindow()
+                self._open_curve_editor(cur_property, model_index)
 
             elif property_type == "colorgrade_wheels":
-                wheels_data = normalize_wheels_data(cur_property[1].get("wheels"))
-                property_key = cur_property[0]
-                self._ensure_color_grade_wheels_dock_attached()
-                self.color_grade_wheels_panel.setEnabled(True)
-                if self.live_property_session and self.live_property_session.get("property_type") == "colorgrade_wheels":
-                    self.color_grade_wheels_dock.show()
-                    self.color_grade_wheels_dock.raise_()
-                    return
-                self._activate_color_grade_wheels_session(self.selected_item, property_key, wheels_data)
-                self.color_grade_wheels_dock.show()
-                self.color_grade_wheels_dock.raise_()
+                self._open_wheels_editor(cur_property)
+
+    def _open_curve_editor(self, cur_property, model_index):
+        """Open the curve editor dialog for a colorgrade_curve property."""
+        curve_data = normalize_curve_data(cur_property[1].get("curve"))
+        property_key = cur_property[0]
+        dialog = ColorGradeCurveDialog(curve_data, cur_property[1].get("channel", "all"),
+                                       self.clip_properties_model.frame_number, self.win,
+                                       title=cur_property[1].get("name"))
+        item = self.selected_item
+        dialog._property_key = property_key
+        dialog._item_data = copy.deepcopy(item.data()) if item else None
+        self.color_grade_curve_dialogs.add(dialog)
+        dialog.destroyed.connect(lambda *_args, dlg=dialog: self.color_grade_curve_dialogs.discard(dlg))
+        dialog.curve_widget().curveChanged.connect(
+            lambda value, item=item, key=property_key: self.preview_curve_property_value(item, key, value)
+        )
+        dialog.changeStarted.connect(lambda item=item: self.start_property_change(item))
+        dialog.changeStarted.connect(self.pause_live_property_caching)
+        dialog.changeFinished.connect(self.resume_live_property_caching)
+        dialog.changeFinished.connect(self.finish_property_change)
+        dialog.setAttribute(Qt.WA_DeleteOnClose, True)
+        self._place_curve_dialog_near_index(dialog, model_index)
+        dialog.show()
+        dialog.raise_()
+        dialog.activateWindow()
+
+    def _open_wheels_editor(self, cur_property):
+        """Open (or raise) the color wheels dock for a colorgrade_wheels property."""
+        wheels_data = normalize_wheels_data(cur_property[1].get("wheels"))
+        property_key = cur_property[0]
+        self._ensure_color_grade_wheels_dock_attached()
+        self.color_grade_wheels_panel.setEnabled(True)
+        if self.live_property_session and self.live_property_session.get("property_type") == "colorgrade_wheels":
+            self.color_grade_wheels_dock.show()
+            self.color_grade_wheels_dock.raise_()
+            return
+        self._activate_color_grade_wheels_session(self.selected_item, property_key, wheels_data)
+        self.color_grade_wheels_dock.show()
+        self.color_grade_wheels_dock.raise_()
+
+    def Edit_Color_Grade_Action_Triggered(self):
+        """Context menu handler: open the curve or wheels editor for the selected property."""
+        row = self.selected_item.row() if self.selected_item else None
+        if row is None:
+            return
+        model = self.clip_properties_model.model
+        selected_label = model.item(row, 0)
+        if not selected_label or not selected_label.data():
+            return
+        cur_property = selected_label.data()
+        # Use cell rect centre as a stand-in model_index for dialog placement
+        model_index = model.index(row, 1)
+        if self.property_type == "colorgrade_curve":
+            self._open_curve_editor(cur_property, model_index)
+        elif self.property_type == "colorgrade_wheels":
+            self._open_wheels_editor(cur_property)
 
     def caption_text_updated(self, new_caption_text, caption_model_row):
         """Caption text has been updated in the caption editor, and needs saving"""
@@ -1504,6 +1552,9 @@ class PropertiesTableView(QTableView):
                 Color_Action.triggered.connect(functools.partial(self.Color_Picker_Triggered, cur_property))
                 menu.addSeparator()
             if self.property_type in ["colorgrade_curve", "colorgrade_wheels"]:
+                Edit_Action = menu.addAction(_("Edit"))
+                Edit_Action.triggered.connect(self.Edit_Color_Grade_Action_Triggered)
+                menu.addSeparator()
                 Reset_Action = menu.addAction(_("Reset"))
                 Reset_Action.triggered.connect(self.Reset_Color_Grade_Action_Triggered)
                 menu.addSeparator()
@@ -1757,6 +1808,9 @@ class PropertiesTableView(QTableView):
         self.setItemDelegateForColumn(1, delegate)
         self.previous_x = -1
 
+        # Enable hover cursor updates without requiring a button press
+        self.viewport().setMouseTracking(True)
+
         # Get table header
         horizontal_header = self.horizontalHeader()
         horizontal_header.setSectionResizeMode(QHeaderView.Stretch)
@@ -1823,6 +1877,20 @@ class PropertiesTableView(QTableView):
 
     def _color_grade_wheels_visibility_changed(self, visible):
         if visible:
+            if self.win.dockWidgetArea(self.color_grade_wheels_dock) == Qt.NoDockWidgetArea:
+                self.win.addDockWidget(Qt.RightDockWidgetArea, self.color_grade_wheels_dock)
+                # If scope docks are already at bottom-right, split so Wheels sits above them
+                scope_docks = [self.win.dockLumaWaveform,
+                               self.win.dockHistogram,
+                               self.win.dockAudio]
+                anchored_scope = [d for d in scope_docks
+                                  if self.win.dockWidgetArea(d) != Qt.NoDockWidgetArea
+                                  and d.isVisible()]
+                if anchored_scope:
+                    self.win.splitDockWidget(
+                        self.color_grade_wheels_dock, anchored_scope[0], Qt.Vertical)
+                self.color_grade_wheels_dock.show()
+                self.color_grade_wheels_dock.raise_()
             self._update_color_grade_wheels_enabled()
             QTimer.singleShot(125, self._reconnect_color_grade_wheels_session)
             return

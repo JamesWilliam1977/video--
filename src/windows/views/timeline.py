@@ -40,7 +40,7 @@ from random import uniform
 import openshot
 from qt_api import pyqtSlot, Qt, QCoreApplication, QTimer, pyqtSignal, QPointF
 from qt_api import modifiers_has
-from qt_api import QCursor, QKeySequence
+from qt_api import QCursor, QKeySequence, QIcon
 from qt_api import QDialog
 
 from classes import info, updates
@@ -1574,6 +1574,11 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             Warm_Up.triggered.connect(partial(self.Color_Triggered, COLOR_PRESET_WARM_UP, clip_ids))
             Boost_Color = Color_Menu.addAction(_("Boost Color"))
             Boost_Color.triggered.connect(partial(self.Color_Triggered, COLOR_PRESET_BOOST_COLOR, clip_ids))
+            Color_Menu.addSeparator()
+            Analyze_Colors = Color_Menu.addAction(
+                QIcon(os.path.join(info.PATH, "themes/cosmic/images/view-analysis.svg")),
+                _("Analyze Colors"))
+            Analyze_Colors.triggered.connect(lambda: get_app().window.show_scope_video_docks())
             menu.addMenu(Color_Menu)
 
         # Layout Menu
@@ -1729,6 +1734,11 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                 action.triggered.connect(partial(self.Volume_Triggered, MenuVolume.LEVEL, clip_ids, position, level))
 
             Volume_Menu.addMenu(Position_Menu)
+        Volume_Menu.addSeparator()
+        Analyze_Audio = Volume_Menu.addAction(
+            QIcon(os.path.join(info.PATH, "themes/cosmic/images/view-analysis.svg")),
+            _("Audio Levels"))
+        Analyze_Audio.triggered.connect(lambda: get_app().window.show_scope_audio_dock())
         menu.addMenu(Volume_Menu)
 
         # Add separate audio menu

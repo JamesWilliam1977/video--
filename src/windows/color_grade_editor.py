@@ -32,8 +32,9 @@ import math
 from qt_api import Qt, QPointF, QRectF, QSize, pyqtSignal, QShortcut, QKeySequence, QTimer
 from qt_api import QColor, QPainter, QPen, QBrush, QPainterPath, QConicalGradient, QPixmap, QIcon
 from qt_api import QWidget, QDialog, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QAction
-from qt_api import QDialogButtonBox, QFrame, QSlider, QDoubleSpinBox, QGridLayout
+from qt_api import QDialogButtonBox, QFrame, QGridLayout
 from qt_api import QFontMetrics, QSizePolicy
+from qt_api import QLineEdit, QEvent, QLinearGradient
 
 from classes.app import get_app
 from windows.views.menu import StyledContextMenu, populate_keyframe_context_menu
@@ -1088,6 +1089,174 @@ class WheelsPreviewWidget(QWidget):
         painter.end()
 
 
+class PropertySlider(QWidget):
+    """Compact filled-bar slider with inline keyboard editing.
+
+    Visually matches the properties-table slider style. Supports mouse drag to
+    adjust the value and numeric key presses to enter a direct-type edit mode.
+    """
+
+    valueChanged = pyqtSignal(float)
+    dragStarted = pyqtSignal()
+    dragFinished = pyqtSignal()
+
+    def __init__(self, min_val=0.0, max_val=1.0, value=0.0, decimals=2, parent=None):
+        super().__init__(parent)
+        self._min = float(min_val)
+        self._max = float(max_val)
+        self._value = max(self._min, min(self._max, float(value)))
+        self._decimals = decimals
+        self._drag_active = False
+        self._editing = False
+
+        self.setFocusPolicy(Qt.ClickFocus)
+        self.setFixedHeight(30)
+        self.setCursor(Qt.SizeHorCursor)
+        self.setMinimumWidth(60)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        self._edit = QLineEdit(self)
+        self._edit.setAlignment(Qt.AlignCenter)
+        self._edit.setFrame(False)
+        self._edit.setStyleSheet("background: transparent; color: white; border: none; font-size: 11px;")
+        self._edit.hide()
+        self._edit.installEventFilter(self)
+
+    def value(self):
+        return self._value
+
+    def setValue(self, value):
+        self._value = max(self._min, min(self._max, float(value)))
+        if not self._editing:
+            self.update()
+
+    def _value_percent(self):
+        span = self._max - self._min
+        if abs(span) < 1e-12:
+            return 0.0
+        return (self._value - self._min) / span
+
+    def _fmt(self, v):
+        return f"{v:.{self._decimals}f}"
+
+    def paintEvent(self, event):
+        if self._editing:
+            return
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        rect = QRectF(self.rect())
+
+        bg = QColor("#1e2433")
+        fg = QColor("#4a6fa5")
+        app = get_app()
+        if app.theme_manager:
+            theme = app.theme_manager.get_current_theme()
+            if theme:
+                bg = theme.get_color(".property_value", "background-color")
+                fg = theme.get_color(".property_value", "foreground-color")
+
+        path = QPainterPath()
+        path.addRoundedRect(rect, 6, 6)
+        painter.fillPath(path, bg)
+
+        pct = self._value_percent()
+        if pct > 1e-6:
+            fill_rect = QRectF(rect.x(), rect.y(), rect.width() * pct, rect.height())
+            painter.setClipRect(fill_rect, Qt.IntersectClip)
+            gradient = QLinearGradient(rect.topLeft(), rect.topRight())
+            gradient.setColorAt(0, fg)
+            gradient.setColorAt(1, fg)
+            fill_path = QPainterPath()
+            fill_path.addRoundedRect(rect, 6, 6)
+            painter.fillPath(fill_path, gradient)
+            painter.setClipping(False)
+
+        painter.setPen(QPen(Qt.white))
+        painter.drawText(rect, Qt.AlignCenter, self._fmt(self._value))
+        painter.end()
+
+    def resizeEvent(self, event):
+        self._edit.setGeometry(self.rect())
+        super().resizeEvent(event)
+
+    def _x_to_value(self, x):
+        pct = max(0.0, min(1.0, x / max(self.width(), 1)))
+        return self._min + pct * (self._max - self._min)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._drag_active = True
+            self.dragStarted.emit()
+            self.setValue(self._x_to_value(event.x()))
+            self.valueChanged.emit(self._value)
+            self.update()
+
+    def mouseMoveEvent(self, event):
+        if not self._drag_active:
+            return
+        self.setValue(self._x_to_value(event.x()))
+        self.valueChanged.emit(self._value)
+        self.update()
+
+    def mouseReleaseEvent(self, event):
+        if self._drag_active:
+            self._drag_active = False
+            self.dragFinished.emit()
+
+    def mouseDoubleClickEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._enter_edit_mode()
+
+    def keyPressEvent(self, event):
+        text = event.text()
+        if text and (text.isdigit() or text in ('.', ',', '-')):
+            self._enter_edit_mode(text)
+        else:
+            super().keyPressEvent(event)
+
+    def _enter_edit_mode(self, initial_char=""):
+        self._editing = True
+        self._edit.setGeometry(self.rect())
+        if initial_char:
+            self._edit.setText(initial_char)
+        else:
+            self._edit.setText(self._fmt(self._value))
+            self._edit.selectAll()
+        self._edit.show()
+        self._edit.setFocus()
+        self.update()
+
+    def _accept_edit(self):
+        text = self._edit.text().replace(',', '.')
+        self._edit.hide()
+        self._editing = False
+        try:
+            new_val = max(self._min, min(self._max, float(text)))
+        except ValueError:
+            self.update()
+            return
+        old = self._value
+        self._value = new_val
+        if new_val != old:
+            self.dragStarted.emit()
+            self.valueChanged.emit(self._value)
+            self.dragFinished.emit()
+        self.update()
+
+    def eventFilter(self, obj, event):
+        if obj is self._edit and event.type() == QEvent.KeyPress:
+            key = event.key()
+            if key in (Qt.Key_Return, Qt.Key_Enter):
+                self._accept_edit()
+                return True
+            if key == Qt.Key_Escape:
+                self._edit.hide()
+                self._editing = False
+                self.update()
+                return True
+        return super().eventFilter(obj, event)
+
+
 class WheelRow(QWidget):
     changed = pyqtSignal()
     dragStarted = pyqtSignal()
@@ -1098,13 +1267,10 @@ class WheelRow(QWidget):
         self.title = title
         self._data = normalize_wheels_data({"global": wheel_data})["global"]
         self._frame_number = int(frame_number)
-        self._spin_change_active = False
-        self._spin_change_timer = QTimer(self)
-        self._spin_change_timer.setSingleShot(True)
-        self._spin_change_timer.setInterval(500)
-        self._spin_change_timer.timeout.connect(self._finish_spin_change_burst)
 
         layout = QGridLayout(self)
+        layout.setColumnStretch(1, 1)  # wheel column
+        layout.setColumnStretch(2, 1)  # slider column expands with widget width
         title_label = QLabel(title, self)
         title_label.setStyleSheet("font-weight: bold;")
         layout.addWidget(title_label, 0, 0)
@@ -1121,46 +1287,22 @@ class WheelRow(QWidget):
         self.color_button.customContextMenuRequested.connect(self._show_color_button_menu)
         layout.addWidget(self.color_button, 0, 2)
 
-        self.amount_slider, self.amount_spin = self._make_slider_pair()
-        self.luma_slider, self.luma_spin = self._make_luma_pair()
+        self.amount_input = PropertySlider(0.0, 1.0, decimals=2, parent=self)
+        self.luma_input = PropertySlider(-1.0, 1.0, decimals=2, parent=self)
 
         layout.addWidget(QLabel("Amount", self), 1, 0)
-        layout.addWidget(self.amount_slider, 1, 2)
-        layout.addWidget(self.amount_spin, 1, 3)
+        layout.addWidget(self.amount_input, 1, 2)
         layout.addWidget(QLabel("Luma", self), 2, 0)
-        layout.addWidget(self.luma_slider, 2, 2)
-        layout.addWidget(self.luma_spin, 2, 3)
+        layout.addWidget(self.luma_input, 2, 2)
 
-        self.amount_slider.valueChanged.connect(lambda value: self._on_slider_changed("amount", value))
-        self.luma_slider.valueChanged.connect(lambda value: self._on_slider_changed("luma", value))
-        self.amount_spin.valueChanged.connect(lambda value: self._on_spin_changed("amount", value))
-        self.luma_spin.valueChanged.connect(lambda value: self._on_spin_changed("luma", value))
-        self.amount_slider.sliderPressed.connect(self.dragStarted)
-        self.amount_slider.sliderReleased.connect(self.dragFinished)
-        self.luma_slider.sliderPressed.connect(self.dragStarted)
-        self.luma_slider.sliderReleased.connect(self.dragFinished)
+        self.amount_input.valueChanged.connect(lambda v: self._on_input_changed("amount", v))
+        self.luma_input.valueChanged.connect(lambda v: self._on_input_changed("luma", v))
+        self.amount_input.dragStarted.connect(self.dragStarted)
+        self.amount_input.dragFinished.connect(self.dragFinished)
+        self.luma_input.dragStarted.connect(self.dragStarted)
+        self.luma_input.dragFinished.connect(self.dragFinished)
 
         self._apply_data()
-
-    def _make_slider_pair(self):
-        slider = QSlider(Qt.Horizontal, self)
-        slider.setRange(0, 100)
-        spin = QDoubleSpinBox(self)
-        spin.setObjectName("colorGradeSpinBox")
-        spin.setDecimals(2)
-        spin.setSingleStep(0.05)
-        spin.setRange(0.0, 1.0)
-        return slider, spin
-
-    def _make_luma_pair(self):
-        slider = QSlider(Qt.Horizontal, self)
-        slider.setRange(-100, 100)
-        spin = QDoubleSpinBox(self)
-        spin.setObjectName("colorGradeSpinBox")
-        spin.setDecimals(2)
-        spin.setSingleStep(0.05)
-        spin.setRange(-1.0, 1.0)
-        return slider, spin
 
     def set_frame_number(self, frame_number):
         self._frame_number = int(frame_number)
@@ -1181,52 +1323,29 @@ class WheelRow(QWidget):
         self.wheel_control.blockSignals(True)
         self.wheel_control.set_wheel_data(data)
         self.wheel_control.blockSignals(False)
+        self.amount_input.blockSignals(True)
+        self.luma_input.blockSignals(True)
+        self.amount_input.setValue(float(data["amount"]))
+        self.luma_input.setValue(float(data["luma"]))
+        self.amount_input.blockSignals(False)
+        self.luma_input.blockSignals(False)
 
-        amount = float(data["amount"])
-        luma = float(data["luma"])
-        for value, slider, spin in (
-            (amount, self.amount_slider, self.amount_spin),
-            (luma, self.luma_slider, self.luma_spin),
-        ):
-            slider.blockSignals(True)
-            spin.blockSignals(True)
-            slider.setValue(int(round(value * 100.0)))
-            spin.setValue(value)
-            slider.blockSignals(False)
-            spin.blockSignals(False)
-
-    def _on_slider_changed(self, key, value):
+    def _on_input_changed(self, key, value):
         key_name = f"{key}_keyframes"
-        self._data[key_name] = _set_keyframe_value(self._data.get(key_name), self._frame_number, value / 100.0)
-        spin = self.amount_spin if key == "amount" else self.luma_spin
-        spin.blockSignals(True)
-        spin.setValue(value / 100.0)
-        spin.blockSignals(False)
+        self._data[key_name] = _set_keyframe_value(
+            self._data.get(key_name), self._frame_number, value)
         if key == "amount":
             self.wheel_control.blockSignals(True)
             self.wheel_control.set_wheel_data(self._snapshot())
             self.wheel_control.blockSignals(False)
         self.changed.emit()
-
-    def _on_spin_changed(self, key, value):
-        self._start_spin_change_burst()
-        key_name = f"{key}_keyframes"
-        self._data[key_name] = _set_keyframe_value(self._data.get(key_name), self._frame_number, float(value))
-        slider = self.amount_slider if key == "amount" else self.luma_slider
-        slider.blockSignals(True)
-        slider.setValue(int(round(value * 100.0)))
-        slider.blockSignals(False)
-        if key == "amount":
-            self.wheel_control.blockSignals(True)
-            self.wheel_control.set_wheel_data(self._snapshot())
-            self.wheel_control.blockSignals(False)
-        self.changed.emit()
-        self._spin_change_timer.start()
 
     def _on_wheel_control_changed(self):
         snapshot = self.wheel_control.wheel_data()
-        self._data["color_keyframes"] = _set_color_value(self._data.get("color_keyframes"), self._frame_number, QColor(snapshot["color"]))
-        self._data["amount_keyframes"] = _set_keyframe_value(self._data.get("amount_keyframes"), self._frame_number, snapshot["amount"])
+        self._data["color_keyframes"] = _set_color_value(
+            self._data.get("color_keyframes"), self._frame_number, QColor(snapshot["color"]))
+        self._data["amount_keyframes"] = _set_keyframe_value(
+            self._data.get("amount_keyframes"), self._frame_number, snapshot["amount"])
         self._apply_data()
         self.changed.emit()
 
@@ -1235,18 +1354,23 @@ class WheelRow(QWidget):
 
         def callback(color):
             if is_achromatic_color(color):
-                self._data["color_keyframes"] = _set_color_value(self._data.get("color_keyframes"), self._frame_number, QColor(NEUTRAL_WHEEL_COLOR))
-                self._data["amount_keyframes"] = _set_keyframe_value(self._data.get("amount_keyframes"), self._frame_number, 0.0)
+                self._data["color_keyframes"] = _set_color_value(
+                    self._data.get("color_keyframes"), self._frame_number, QColor(NEUTRAL_WHEEL_COLOR))
+                self._data["amount_keyframes"] = _set_keyframe_value(
+                    self._data.get("amount_keyframes"), self._frame_number, 0.0)
             else:
-                self._data["color_keyframes"] = _set_color_value(self._data.get("color_keyframes"), self._frame_number, color)
+                self._data["color_keyframes"] = _set_color_value(
+                    self._data.get("color_keyframes"), self._frame_number, color)
             self._apply_data()
             self.changed.emit()
 
         ColorPicker(current, parent=self, title=get_app()._tr("Select a Color"), callback=callback)
 
     def reset_to_neutral(self):
-        self._data["color_keyframes"] = _set_color_value(self._data.get("color_keyframes"), self._frame_number, QColor(NEUTRAL_WHEEL_COLOR))
-        self._data["amount_keyframes"] = _set_keyframe_value(self._data.get("amount_keyframes"), self._frame_number, 0.0)
+        self._data["color_keyframes"] = _set_color_value(
+            self._data.get("color_keyframes"), self._frame_number, QColor(NEUTRAL_WHEEL_COLOR))
+        self._data["amount_keyframes"] = _set_keyframe_value(
+            self._data.get("amount_keyframes"), self._frame_number, 0.0)
         self._apply_data()
         self.changed.emit()
 
@@ -1260,18 +1384,6 @@ class WheelRow(QWidget):
 
     def value(self):
         return copy.deepcopy(self._data)
-
-    def _start_spin_change_burst(self):
-        if self._spin_change_active:
-            return
-        self._spin_change_active = True
-        self.dragStarted.emit()
-
-    def _finish_spin_change_burst(self):
-        if not self._spin_change_active:
-            return
-        self._spin_change_active = False
-        self.dragFinished.emit()
 
 
 class ColorGradeWheelsDialog(QDialog):
