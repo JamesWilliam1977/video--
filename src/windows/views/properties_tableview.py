@@ -839,7 +839,8 @@ class PropertiesTableView(QTableView):
             self.finalize_transaction()
 
     def mousePressEvent(self, event):
-        self.mouse_pressed = True
+        if event.button() == Qt.LeftButton:
+            self.mouse_pressed = True
         pos = _event_posf(event).toPoint()
         row = self.indexAt(pos).row()
         model = self.clip_properties_model.model

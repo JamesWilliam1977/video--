@@ -456,6 +456,7 @@ class ColorWheelControl(QWidget):
         self._data = normalize_single_wheel_data(wheel_data)
         self._dragging = False
         self.setMinimumSize(QSize(96, 96))
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
 
     def wheel_data(self):
         return copy.deepcopy(self._data)
@@ -507,6 +508,9 @@ class ColorWheelControl(QWidget):
         self.changed.emit()
 
     def mousePressEvent(self, event):
+        if event.button() != Qt.LeftButton:
+            super().mousePressEvent(event)
+            return
         self._dragging = True
         self.dragStarted.emit()
         pos = event.position() if hasattr(event, "position") else QPointF(event.pos())
@@ -1310,6 +1314,7 @@ class WheelRow(QWidget):
         self.wheel_control.changed.connect(self._on_wheel_control_changed)
         self.wheel_control.dragStarted.connect(self.dragStarted)
         self.wheel_control.dragFinished.connect(self.dragFinished)
+        self.wheel_control.customContextMenuRequested.connect(self._show_wheel_menu)
         layout.addWidget(self.wheel_control, 0, 1, 3, 1)
 
         self.color_button = QPushButton(self)
@@ -1398,12 +1403,23 @@ class WheelRow(QWidget):
         ColorPicker(current, parent=self, title=get_app()._tr("Select a Color"), callback=callback)
 
     def reset_to_neutral(self):
+        self.dragStarted.emit()
         self._data["color_keyframes"] = _set_color_value(
             self._data.get("color_keyframes"), self._frame_number, QColor(NEUTRAL_WHEEL_COLOR))
         self._data["amount_keyframes"] = _set_keyframe_value(
             self._data.get("amount_keyframes"), self._frame_number, 0.0)
+        self._data["luma_keyframes"] = _set_keyframe_value(
+            self._data.get("luma_keyframes"), self._frame_number, 0.0)
         self._apply_data()
         self.changed.emit()
+        self.dragFinished.emit()
+
+    def _show_wheel_menu(self, pos):
+        menu = StyledContextMenu(parent=self)
+        reset_action = QAction(get_app()._tr("Reset"), self)
+        reset_action.triggered.connect(self.reset_to_neutral)
+        menu.addAction(reset_action)
+        menu.exec_(self.wheel_control.mapToGlobal(pos))
 
     def _show_color_button_menu(self, pos):
         menu = StyledContextMenu(parent=self)
