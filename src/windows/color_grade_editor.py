@@ -42,6 +42,71 @@ from windows.color_picker import ColorPicker
 import openshot
 
 
+BROADCAST_HUE_ANCHORS = [
+    (51.65, 300.0),
+    (108.65, 360.0),
+    (170.76, 420.0),
+    (231.65, 480.0),
+    (288.65, 540.0),
+    (350.76, 600.0),
+]
+
+
+def _wrap_angle(angle):
+    return (angle + 360.0) % 360.0
+
+
+def _display_hue_for_scope_angle(angle_deg):
+    wrapped = _wrap_angle(angle_deg)
+    if wrapped < BROADCAST_HUE_ANCHORS[0][0]:
+        wrapped += 360.0
+    extended = BROADCAST_HUE_ANCHORS + [(BROADCAST_HUE_ANCHORS[0][0] + 360.0, BROADCAST_HUE_ANCHORS[0][1] + 360.0)]
+    for index in range(len(BROADCAST_HUE_ANCHORS)):
+        a0, h0 = extended[index]
+        a1, h1 = extended[index + 1]
+        if a0 <= wrapped <= a1:
+            span = max(1e-6, a1 - a0)
+            t = (wrapped - a0) / span
+            return (h0 + ((h1 - h0) * t)) % 360.0
+    return BROADCAST_HUE_ANCHORS[0][1] % 360.0
+
+
+def scope_angle_for_display_hue(hue_deg):
+    display_hue = hue_deg % 360.0
+    if display_hue < 300.0:
+        display_hue += 360.0
+    anchors = [(display, angle) for angle, display in BROADCAST_HUE_ANCHORS]
+    extended = anchors + [(anchors[0][0] + 360.0, anchors[0][1] + 360.0)]
+    for index in range(len(anchors)):
+        h0, a0 = extended[index]
+        h1, a1 = extended[index + 1]
+        if h0 <= display_hue <= h1:
+            span = max(1e-6, h1 - h0)
+            t = (display_hue - h0) / span
+            return _wrap_angle(a0 + ((a1 - a0) * t))
+    return _wrap_angle(BROADCAST_HUE_ANCHORS[0][0])
+
+
+def draw_broadcast_hue_ring(painter, center, radius, ring_width, alpha=255):
+    painter.save()
+    pen = QPen(QColor(255, 255, 255, alpha), ring_width)
+    pen.setCapStyle(Qt.FlatCap)
+    painter.setPen(pen)
+    for step in range(720):
+        scope_angle = step * 0.5
+        color = QColor.fromHsv(int(_display_hue_for_scope_angle(scope_angle)) % 360, 255, 255, alpha)
+        pen.setColor(color)
+        painter.setPen(pen)
+        angle0 = math.radians(scope_angle)
+        angle1 = math.radians(scope_angle + 0.75)
+        x0 = center.x() + (math.cos(angle0) * radius)
+        y0 = center.y() - (math.sin(angle0) * radius)
+        x1 = center.x() + (math.cos(angle1) * radius)
+        y1 = center.y() - (math.sin(angle1) * radius)
+        painter.drawLine(QPointF(x0, y0), QPointF(x1, y1))
+    painter.restore()
+
+
 def _keyframe_value(frame_number=1.0, value=0.0, interpolation=openshot.CONSTANT):
     return {
         "Points": [{
@@ -457,6 +522,8 @@ class ColorWheelControl(QWidget):
         self._dragging = False
         self.setMinimumSize(QSize(96, 96))
         self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.setAutoFillBackground(False)
 
     def wheel_data(self):
         return copy.deepcopy(self._data)
@@ -481,7 +548,7 @@ class ColorWheelControl(QWidget):
         radius = self._inner_radius()
         color = display_wheel_color(self._data)
         hue = color.hueF() if color.hueF() >= 0 else 0.0
-        angle = math.radians(hue * 360.0)
+        angle = math.radians(scope_angle_for_display_hue(hue * 360.0))
         amount = float(self._data["amount"]) * radius
         return QPointF(center.x() + math.cos(angle) * amount, center.y() - math.sin(angle) * amount)
 
@@ -499,7 +566,7 @@ class ColorWheelControl(QWidget):
         if angle < 0:
             angle += math.tau
         distance = min(radius, math.hypot(dx, dy))
-        hue = angle / math.tau
+        hue = _display_hue_for_scope_angle(math.degrees(angle)) / 360.0
         color = QColor.fromHsvF(hue, 1.0, 1.0)
         self._data["color"] = color.name()
         self._data["amount"] = 0.0 if radius <= 0 else (distance / radius)
@@ -540,28 +607,22 @@ class ColorWheelControl(QWidget):
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.fillRect(self.rect(), self.palette().window())
 
         center, radius = self._center_and_radius()
         color = display_wheel_color(self._data)
 
         ring_rect = QRectF(center.x() - radius, center.y() - radius, radius * 2.0, radius * 2.0)
         ring_width = max(6.0, radius * 0.16)
-        hue_ring = QConicalGradient(center, 0.0)
-        for stop, hue in (
-            (0.00, 0), (1.0 / 6.0, 60), (2.0 / 6.0, 120),
-            (3.0 / 6.0, 180), (4.0 / 6.0, 240), (5.0 / 6.0, 300),
-            (1.00, 360),
-        ):
-            hue_ring.setColorAt(stop, QColor.fromHsv(hue % 360, 255, 255))
         ring_path = QPainterPath()
         ring_path.addEllipse(ring_rect)
         inner_path = QPainterPath()
         inner_radius = radius - ring_width
         inner_path.addEllipse(QRectF(center.x() - inner_radius, center.y() - inner_radius, inner_radius * 2.0, inner_radius * 2.0))
         ring_path = ring_path.subtracted(inner_path)
-        painter.setPen(Qt.NoPen)
-        painter.fillPath(ring_path, QBrush(hue_ring))
+        painter.save()
+        painter.setClipPath(ring_path)
+        draw_broadcast_hue_ring(painter, center, radius - (ring_width * 0.5), ring_width + 1.0)
+        painter.restore()
 
         painter.setPen(QPen(self.palette().mid().color(), 1.0))
         painter.setBrush(QBrush(self.palette().base()))
@@ -1103,7 +1164,7 @@ class WheelsPreviewWidget(QWidget):
             painter.drawEllipse(center, radius * 0.92, radius * 0.92)
 
             wheel_color = display_wheel_color(wheel)
-            angle = math.radians((wheel_color.hueF() if wheel_color.hueF() >= 0 else 0.0) * 360.0)
+            angle = math.radians(scope_angle_for_display_hue((wheel_color.hueF() if wheel_color.hueF() >= 0 else 0.0) * 360.0))
             amount = float(wheel["amount"]) * radius * 0.85
             puck = QPointF(center.x() + math.cos(angle) * amount, center.y() - math.sin(angle) * amount)
             painter.setPen(QPen(Qt.white, 1.0))

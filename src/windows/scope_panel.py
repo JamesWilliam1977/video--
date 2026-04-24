@@ -1,6 +1,6 @@
 """
  @file
- @brief Scope dock panels: luma/RGB waveform, RGB histogram, and audio meters.
+ @brief Scope dock panels: waveform, histogram, vectorscope, and audio meters.
  @author Jonathan Thomas <jonathan@openshot.org>
 
  @section LICENSE
@@ -26,19 +26,24 @@
  """
 
 import math
+import os
 
 from qt_api import (
-    Qt, pyqtSlot,
+    Qt, pyqtSignal, pyqtSlot,
     QWidget, QVBoxLayout, QHBoxLayout, QSizePolicy,
-    QImage, QPainter, QColor, QPen, QBrush,
-    QComboBox, QRect,
+    QImage, QPainter, QColor, QPen, QBrush, QIcon,
+    QComboBox, QToolButton, QRect, QPainterPath, QPointF,
 )
+from classes import info
+from windows.color_grade_editor import draw_broadcast_hue_ring
 
 # ─── Persistent settings keys ────────────────────────────────────────────────
 _S_WAVE_MODE  = "scope-waveform-mode"     # luma|red|green|blue|rgb_overlay|rgb_parade
 _S_WAVE_COLOR = "scope-waveform-color"    # green|white|orange
 _S_HIST_CH    = "scope-histogram-channel" # rgba|luma|red|green|blue
 _S_HIST_SCALE = "scope-histogram-scale"   # log|linear
+_S_VEC_DISPLAY = "scope-vectorscope-display"  # colorized|density|intensity
+_S_VEC_ZOOM    = "scope-vectorscope-zoom"     # 100|200|400
 
 
 def _settings():
@@ -60,7 +65,25 @@ def _get(key, default):
 def _set(key, value):
     s = _settings()
     if s is not None:
-        s.set(key, value)
+        try:
+            s.set(key, value)
+        except Exception:
+            pass
+
+
+def _scope_region_icon(size=16):
+    icon_path = os.path.join(info.PATH, "themes", "cosmic", "images", "tool-scope-region.svg")
+    return QIcon(icon_path)
+
+
+def _make_scope_region_button(parent):
+    button = QToolButton(parent)
+    button.setCheckable(True)
+    button.setAutoRaise(True)
+    button.setIcon(_scope_region_icon())
+    button.setToolTip("Analyze selected preview region")
+    button.setFocusPolicy(Qt.NoFocus)
+    return button
 
 
 # ─── Waveform painter ────────────────────────────────────────────────────────
@@ -294,6 +317,335 @@ class HistogramWidget(QWidget):
         painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
 
 
+# ─── Vectorscope painter ─────────────────────────────────────────────────────
+
+class VectorscopeWidget(QWidget):
+    """2D chroma density plot with a lightweight vectorscope graticule."""
+
+    _HUE_LABELS = (
+        ("R", 108.65, 360.0),
+        ("Mg", 51.65, 300.0),
+        ("B", 350.76, 240.0),
+        ("Cy", 288.65, 180.0),
+        ("G", 231.65, 120.0),
+        ("Yi", 170.76, 60.0 + 360.0),
+    )
+    _SKIN_TONE_ANGLE = 123.0
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._data = None
+        self._display = _get(_S_VEC_DISPLAY, "colorized")
+        self._zoom = _get(_S_VEC_ZOOM, "100")
+        self._render_token = 0
+        self._cached_scope_image = None
+        self._cached_scope_key = None
+        self._cached_overlay_image = None
+        self._cached_overlay_key = None
+        self.setMinimumSize(120, 100)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setFocusPolicy(Qt.NoFocus)
+
+    def set_display(self, value):
+        if value == "monochrome":
+            value = "density"
+        elif value == "heatmap":
+            value = "intensity"
+        self._display = value
+        self._render_token += 1
+        self._cached_scope_image = None
+        self._cached_scope_key = None
+        _set(_S_VEC_DISPLAY, value)
+        self.update()
+
+    def set_zoom(self, value):
+        self._zoom = value
+        self._render_token += 1
+        self._cached_scope_image = None
+        self._cached_scope_key = None
+        _set(_S_VEC_ZOOM, value)
+        self.update()
+
+    def update_data(self, video_data):
+        self._data = video_data
+        self._render_token += 1
+        self._cached_scope_image = None
+        self._cached_scope_key = None
+        self.update()
+
+    def resizeEvent(self, event):
+        self._cached_scope_image = None
+        self._cached_scope_key = None
+        self._cached_overlay_image = None
+        self._cached_overlay_key = None
+        super().resizeEvent(event)
+
+    @staticmethod
+    def _wrap_angle(angle):
+        return (angle + 360.0) % 360.0
+
+    @classmethod
+    def _display_hue_for_scope_angle(cls, angle_deg):
+        anchors = sorted((cls._wrap_angle(scope_angle), display_hue)
+                         for _, scope_angle, display_hue in cls._HUE_LABELS)
+        wrapped = cls._wrap_angle(angle_deg)
+        normalized = []
+        previous_hue = None
+        for scope_angle, display_hue in anchors:
+            hue = display_hue
+            if previous_hue is not None:
+                while hue < previous_hue:
+                    hue += 360.0
+            normalized.append((scope_angle, hue))
+            previous_hue = hue
+        if wrapped < normalized[0][0]:
+            wrapped += 360.0
+        extended = normalized + [(normalized[0][0] + 360.0, normalized[0][1] + 360.0)]
+
+        for index in range(len(normalized)):
+            a0, h0 = extended[index]
+            a1, h1 = extended[index + 1]
+            if a0 <= wrapped <= a1:
+                span = max(1e-6, a1 - a0)
+                t = (wrapped - a0) / span
+                return (h0 + ((h1 - h0) * t)) % 360.0
+
+        return normalized[0][1] % 360.0
+
+    @staticmethod
+    def _density_to_byte(count, max_val):
+        if count <= 0 or max_val <= 0:
+            return 0
+        return min(255, int(math.sqrt(count / max_val) * 255))
+
+    @staticmethod
+    def _angle_from_position(x, y, center, radius):
+        u = (x - center) / max(1.0, radius)
+        v = (center - y) / max(1.0, radius)
+        return math.atan2(v, u)
+
+    @staticmethod
+    def _normalized_distance(x, y, center, radius):
+        dx = x - center
+        dy = y - center
+        return math.sqrt(dx * dx + dy * dy) / max(1.0, radius)
+
+    def _build_img(self, flat, size, zoom_factor):
+        if not flat or len(flat) != size * size:
+            return None
+
+        max_val = max(flat) or 1
+        buf = bytearray(size * size * 3)
+        center = (size - 1) * 0.5
+        radius = center
+        for y in range(size):
+            row_offset = y * size
+            for x in range(size):
+                source_x = int(round(center + ((x - center) / max(1.0, zoom_factor))))
+                source_y = int(round(center + ((y - center) / max(1.0, zoom_factor))))
+                if source_x < 0 or source_x >= size or source_y < 0 or source_y >= size:
+                    continue
+                count = flat[source_y * size + source_x]
+                if not count:
+                    continue
+                t = self._density_to_byte(count, max_val)
+                idx = (row_offset + x) * 3
+                if self._display == "density":
+                    value = min(255, 24 + (t * 231 // 255))
+                    buf[idx] = value
+                    buf[idx + 1] = value
+                    buf[idx + 2] = value
+                elif self._display == "intensity":
+                    hue = int(max(0, 240 - (t * 240 / 255)))
+                    saturation = min(255, 180 + (t * 75 // 255))
+                    value = min(255, 56 + (t * 199 // 255))
+                    color = QColor.fromHsv(hue, saturation, value)
+                    buf[idx] = color.red()
+                    buf[idx + 1] = color.green()
+                    buf[idx + 2] = color.blue()
+                else:
+                    angle = self._angle_from_position(x, y, center, radius)
+                    hue = self._display_hue_for_scope_angle(math.degrees(angle))
+                    saturation = min(1.0, self._normalized_distance(x, y, center, radius))
+                    value = min(255, 80 + (t * 175 // 255))
+                    color = QColor.fromHsv(
+                        int(hue) % 360,
+                        int(255 * saturation),
+                        value,
+                    )
+                    buf[idx] = color.red()
+                    buf[idx + 1] = color.green()
+                    buf[idx + 2] = color.blue()
+        return QImage(bytes(buf), size, size, size * 3, QImage.Format_RGB888).copy()
+
+    def _draw_guides(self, painter, center_x, center_y, radius):
+        painter.save()
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        ring_pen = QPen(QColor(90, 98, 110, 88), 1)
+        spoke_pen = QPen(QColor(90, 98, 110, 68), 1)
+        label_pen = QPen(QColor(160, 168, 176, 120), 1)
+        skin_pen = QPen(QColor(210, 170, 120, 110), 1, Qt.DashLine)
+
+        painter.setPen(ring_pen)
+        for step in range(1, 7):
+            r = radius * step / 6.0
+            painter.drawEllipse(QRect(
+                int(center_x - r), int(center_y - r),
+                int(r * 2), int(r * 2),
+            ))
+
+        painter.setPen(spoke_pen)
+        for _, angle_deg, _ in self._HUE_LABELS:
+            angle = math.radians(angle_deg)
+            x = center_x + (math.cos(angle) * radius)
+            y = center_y - (math.sin(angle) * radius)
+            painter.drawLine(int(center_x), int(center_y), int(x), int(y))
+
+        painter.drawLine(int(center_x - radius), int(center_y), int(center_x + radius), int(center_y))
+        painter.drawLine(int(center_x), int(center_y - radius), int(center_x), int(center_y + radius))
+
+        painter.setPen(skin_pen)
+        skin_angle = math.radians(self._SKIN_TONE_ANGLE)
+        skin_x = center_x + (math.cos(skin_angle) * radius)
+        skin_y = center_y - (math.sin(skin_angle) * radius)
+        painter.drawLine(int(center_x), int(center_y), int(skin_x), int(skin_y))
+
+        painter.setPen(label_pen)
+        for label, angle_deg, _ in self._HUE_LABELS:
+            angle = math.radians(angle_deg)
+            label_radius = radius * 0.82
+            x = center_x + (math.cos(angle) * label_radius)
+            y = center_y - (math.sin(angle) * label_radius)
+            text_rect = QRect(int(x - 18), int(y - 10), 36, 20)
+            painter.drawText(text_rect, Qt.AlignCenter, label)
+        painter.restore()
+
+    def _layout_info(self):
+        w, h = self.width(), self.height()
+        side = max(10, min(w, h) - 12)
+        left = (w - side) // 2
+        top = (h - side) // 2
+        center_x = left + side / 2.0
+        center_y = top + side / 2.0
+        radius = side / 2.0
+        ring_margin = max(8.0, radius * 0.075)
+        plot_radius = max(8.0, radius - ring_margin)
+        plot_left = center_x - plot_radius
+        plot_top = center_y - plot_radius
+        plot_size = plot_radius * 2.0
+        plot_rect = QRect(
+            int(plot_left),
+            int(plot_top),
+            int(plot_size),
+            int(plot_size),
+        )
+        return {
+            "widget_width": w,
+            "widget_height": h,
+            "center_x": center_x,
+            "center_y": center_y,
+            "radius": radius,
+            "plot_radius": plot_radius,
+            "plot_left": plot_left,
+            "plot_top": plot_top,
+            "plot_size": plot_size,
+            "plot_rect": plot_rect,
+        }
+
+    def _ensure_overlay_cache(self, layout):
+        key = (
+            layout["widget_width"],
+            layout["widget_height"],
+            int(layout["center_x"] * 10),
+            int(layout["center_y"] * 10),
+            int(layout["radius"] * 10),
+            int(layout["plot_radius"] * 10),
+        )
+        if self._cached_overlay_key == key and self._cached_overlay_image is not None:
+            return
+
+        overlay = QImage(layout["widget_width"], layout["widget_height"], QImage.Format_ARGB32_Premultiplied)
+        overlay.fill(QColor(0, 0, 0, 0))
+        painter = QPainter(overlay)
+        try:
+            painter.setRenderHint(QPainter.Antialiasing, True)
+            self._draw_guides(painter, layout["center_x"], layout["center_y"], layout["plot_radius"])
+            draw_broadcast_hue_ring(
+                painter,
+                QPointF(layout["center_x"], layout["center_y"]),
+                layout["radius"] - 2.0,
+                3.0,
+                alpha=220,
+            )
+            painter.setPen(QPen(QColor(120, 128, 138, 110), 1))
+            painter.drawEllipse(layout["plot_rect"])
+        finally:
+            painter.end()
+
+        self._cached_overlay_image = overlay
+        self._cached_overlay_key = key
+
+    def _ensure_scope_cache(self, layout):
+        vectorscope = self._data.get("vectorscope", {}) if self._data else {}
+        size = vectorscope.get("size", 256)
+        flat = vectorscope.get("density", [])
+        zoom_factor = {"100": 1.0, "200": 2.0, "400": 4.0}.get(str(self._zoom), 1.0)
+        key = (
+            self._render_token,
+            layout["plot_rect"].width(),
+            layout["plot_rect"].height(),
+            self._display,
+            self._zoom,
+            size,
+            len(flat),
+        )
+        if self._cached_scope_key == key and self._cached_scope_image is not None:
+            return
+
+        self._cached_scope_image = None
+        self._cached_scope_key = key
+        img = self._build_img(flat, size, zoom_factor)
+        if img is None:
+            return
+
+        scope_image = QImage(layout["widget_width"], layout["widget_height"], QImage.Format_ARGB32_Premultiplied)
+        scope_image.fill(QColor(0, 0, 0, 0))
+        painter = QPainter(scope_image)
+        try:
+            painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+            clip_path = QPainterPath()
+            clip_path.addEllipse(layout["plot_left"], layout["plot_top"], layout["plot_size"], layout["plot_size"])
+            painter.setClipPath(clip_path)
+            painter.drawImage(layout["plot_rect"], img)
+        finally:
+            painter.end()
+        self._cached_scope_image = scope_image
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        try:
+            painter.setRenderHint(QPainter.Antialiasing, True)
+            painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+            w, h = self.width(), self.height()
+            painter.fillRect(0, 0, w, h, QColor(0, 0, 0))
+
+            if not self._data or not self._data.get("present"):
+                painter.setPen(QColor(80, 80, 80))
+                painter.drawText(self.rect(), Qt.AlignCenter, "No Video")
+                return
+
+            layout = self._layout_info()
+            self._ensure_scope_cache(layout)
+            self._ensure_overlay_cache(layout)
+
+            if self._cached_scope_image is not None:
+                painter.drawImage(0, 0, self._cached_scope_image)
+            if self._cached_overlay_image is not None:
+                painter.drawImage(0, 0, self._cached_overlay_image)
+        finally:
+            painter.end()
+
+
 # ─── Audio meter painter ─────────────────────────────────────────────────────
 
 class AudioMeterWidget(QWidget):
@@ -383,6 +735,7 @@ def _restore_combo(combo, value):
 
 class WaveformDockContent(QWidget):
     """Waveform dock widget: filter toolbar above the waveform painter."""
+    scopeRegionToggled = pyqtSignal(bool)
 
     _MODES = [
         ("luma",        "Luma"),
@@ -412,9 +765,11 @@ class WaveformDockContent(QWidget):
 
         self._mode_cb  = _make_combo(toolbar, self._MODES)
         self._color_cb = _make_combo(toolbar, self._COLORS)
+        self._region_btn = _make_scope_region_button(toolbar)
         tl.addWidget(self._mode_cb)
         tl.addWidget(self._color_cb)
         tl.addStretch()
+        tl.addWidget(self._region_btn)
 
         self.waveform = WaveformWidget(self)
         layout.addWidget(toolbar)
@@ -427,6 +782,7 @@ class WaveformDockContent(QWidget):
 
         self._mode_cb.currentIndexChanged.connect(self._on_mode)
         self._color_cb.currentIndexChanged.connect(self._on_color)
+        self._region_btn.toggled.connect(self.scopeRegionToggled.emit)
 
     def _sync_color_visibility(self):
         self._color_cb.setVisible(self._mode_cb.currentData() == "luma")
@@ -438,6 +794,11 @@ class WaveformDockContent(QWidget):
     def _on_color(self):
         self.waveform.set_color(self._color_cb.currentData())
 
+    def set_scope_region_enabled(self, enabled):
+        self._region_btn.blockSignals(True)
+        self._region_btn.setChecked(bool(enabled))
+        self._region_btn.blockSignals(False)
+
     @pyqtSlot(dict)
     def update_data(self, video_data):
         self.waveform.update_data(video_data)
@@ -447,6 +808,7 @@ class WaveformDockContent(QWidget):
 
 class HistogramDockContent(QWidget):
     """Histogram dock widget: filter toolbar above the histogram painter."""
+    scopeRegionToggled = pyqtSignal(bool)
 
     _CHANNELS = [
         ("rgba",  "All Channels"),
@@ -475,9 +837,11 @@ class HistogramDockContent(QWidget):
 
         self._ch_cb    = _make_combo(toolbar, self._CHANNELS)
         self._scale_cb = _make_combo(toolbar, self._SCALES)
+        self._region_btn = _make_scope_region_button(toolbar)
         tl.addWidget(self._ch_cb)
         tl.addWidget(self._scale_cb)
         tl.addStretch()
+        tl.addWidget(self._region_btn)
 
         self.histogram = HistogramWidget(self)
         layout.addWidget(toolbar)
@@ -488,6 +852,7 @@ class HistogramDockContent(QWidget):
 
         self._ch_cb.currentIndexChanged.connect(self._on_channel)
         self._scale_cb.currentIndexChanged.connect(self._on_scale)
+        self._region_btn.toggled.connect(self.scopeRegionToggled.emit)
 
     def _on_channel(self):
         self.histogram.set_channel(self._ch_cb.currentData())
@@ -495,6 +860,74 @@ class HistogramDockContent(QWidget):
     def _on_scale(self):
         self.histogram.set_scale(self._scale_cb.currentData())
 
+    def set_scope_region_enabled(self, enabled):
+        self._region_btn.blockSignals(True)
+        self._region_btn.setChecked(bool(enabled))
+        self._region_btn.blockSignals(False)
+
     @pyqtSlot(dict)
     def update_data(self, video_data):
         self.histogram.update_data(video_data)
+
+
+class VectorscopeDockContent(QWidget):
+    """Vectorscope dock widget with a minimal toolbar."""
+    scopeRegionToggled = pyqtSignal(bool)
+
+    _DISPLAYS = [
+        ("colorized", "Colorized"),
+        ("density", "Density"),
+        ("intensity", "Intensity"),
+    ]
+    _ZOOMS = [
+        ("100", "100%"),
+        ("200", "200%"),
+        ("400", "400%"),
+    ]
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFocusPolicy(Qt.NoFocus)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(8, 4, 8, 6)
+        layout.setSpacing(4)
+
+        toolbar = QWidget(self)
+        toolbar.setFocusPolicy(Qt.NoFocus)
+        tl = QHBoxLayout(toolbar)
+        tl.setContentsMargins(0, 0, 0, 0)
+        tl.setSpacing(6)
+
+        self._display_cb = _make_combo(toolbar, self._DISPLAYS)
+        self._zoom_cb = _make_combo(toolbar, self._ZOOMS)
+        self._region_btn = _make_scope_region_button(toolbar)
+        tl.addWidget(self._display_cb)
+        tl.addWidget(self._zoom_cb)
+        tl.addStretch()
+        tl.addWidget(self._region_btn)
+
+        self.vectorscope = VectorscopeWidget(self)
+        layout.addWidget(toolbar)
+        layout.addWidget(self.vectorscope)
+
+        _restore_combo(self._display_cb, _get(_S_VEC_DISPLAY, "colorized"))
+        _restore_combo(self._zoom_cb, _get(_S_VEC_ZOOM, "100"))
+
+        self._display_cb.currentIndexChanged.connect(self._on_display)
+        self._zoom_cb.currentIndexChanged.connect(self._on_zoom)
+        self._region_btn.toggled.connect(self.scopeRegionToggled.emit)
+
+    def _on_display(self):
+        self.vectorscope.set_display(self._display_cb.currentData())
+
+    def _on_zoom(self):
+        self.vectorscope.set_zoom(self._zoom_cb.currentData())
+
+    def set_scope_region_enabled(self, enabled):
+        self._region_btn.blockSignals(True)
+        self._region_btn.setChecked(bool(enabled))
+        self._region_btn.blockSignals(False)
+
+    @pyqtSlot(dict)
+    def update_data(self, video_data):
+        self.vectorscope.update_data(video_data)

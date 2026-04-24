@@ -28,6 +28,8 @@
 import time
 import threading
 import math
+import json
+import traceback
 
 from qt_api import QObject, QThread, QTimer, pyqtSlot, pyqtSignal, QCoreApplication
 from qt_api import QMessageBox
@@ -379,7 +381,8 @@ class PlayerWorker(QObject):
         self.Seek(refresh_frame, False)
 
     @pyqtSlot(int, bool, bool)
-    def run_scope_analysis(self, frame_number, need_video, need_audio):
+    @pyqtSlot(int, bool, bool, object)
+    def run_scope_analysis(self, frame_number, need_video, need_audio, scope_region):
         """Compute FrameScope data on the worker thread and emit scope_ready.
 
         Running here keeps scope analysis work off the UI thread.
@@ -396,9 +399,30 @@ class PlayerWorker(QObject):
         video, audio = {}, {}
         try:
             frame = timeline.GetFrame(frame_number)
-            scope = openshot.FrameScope(frame, 256, 256)
+            scope = openshot.FrameScope()
+            if need_video and isinstance(scope_region, dict):
+                scope.SetVideoRegionNormalized(
+                    float(scope_region.get("x", 0.0)),
+                    float(scope_region.get("y", 0.0)),
+                    float(scope_region.get("width", 0.0)),
+                    float(scope_region.get("height", 0.0)),
+                )
+            scope.SetFrame(frame)
             if need_video:
                 if scope.HasVideo():
+                    vectorscope = {
+                        "size": scope.GetVectorscopeSize(),
+                        "density": [],
+                    }
+                    try:
+                        vectorscope["density"] = list(scope.GetVideoVectorscope())
+                    except Exception:
+                        try:
+                            root = json.loads(scope.Json())
+                            vectorscope = root.get("video", {}).get("vectorscope", vectorscope)
+                        except Exception:
+                            pass
+
                     video = {
                         "present": True,
                         "waveform": {
@@ -415,6 +439,7 @@ class PlayerWorker(QObject):
                             "green": list(scope.GetVideoHistogramGreen()),
                             "blue":  list(scope.GetVideoHistogramBlue()),
                         },
+                        "vectorscope": vectorscope,
                         "summary": {
                             "avg_luma":           scope.GetVideoAverageLuma(),
                             "clipped_shadows":    scope.GetVideoClippedShadows(),
@@ -442,7 +467,7 @@ class PlayerWorker(QObject):
                 else:
                     audio = {"present": False}
         except Exception:
-            pass
+            log.error("Scope analysis failed for frame %s\n%s", frame_number, traceback.format_exc())
         self.scope_ready.emit(video, audio)
 
     def LoadFile(self, path=None):

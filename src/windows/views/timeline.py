@@ -1575,10 +1575,14 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             Boost_Color = Color_Menu.addAction(_("Boost Color"))
             Boost_Color.triggered.connect(partial(self.Color_Triggered, COLOR_PRESET_BOOST_COLOR, clip_ids))
             Color_Menu.addSeparator()
+            Adjust_Colors = Color_Menu.addAction(
+                QIcon(os.path.join(info.PATH, "themes/cosmic/images/view-color.svg")),
+                _("Adjust Colors"))
+            Adjust_Colors.triggered.connect(partial(self.Adjust_Colors_Triggered, clip_ids))
             Analyze_Colors = Color_Menu.addAction(
                 QIcon(os.path.join(info.PATH, "themes/cosmic/images/view-analysis.svg")),
                 _("Analyze Colors"))
-            Analyze_Colors.triggered.connect(lambda: get_app().window.show_scope_video_docks())
+            Analyze_Colors.triggered.connect(lambda: get_app().window.show_color_grading_docks())
             menu.addMenu(Color_Menu)
 
         # Layout Menu
@@ -2189,6 +2193,23 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         effect.Id(get_app().project.generate_id())
         return json.loads(effect.Json())
 
+    def _ensure_color_grade_effect(self, clip):
+        if not clip or not self._clip_has_video(clip):
+            return None, False
+
+        effects = clip.data.get("effects")
+        if not isinstance(effects, list):
+            effects = list(effects) if effects else []
+            clip.data["effects"] = effects
+
+        for effect_json in effects:
+            if is_color_grade_effect(effect_json):
+                return effect_json, False
+
+        effect_json = self._create_color_grade_effect_json()
+        effects.append(effect_json)
+        return effect_json, True
+
     def Color_Triggered(self, preset_name, clip_ids):
         """Apply or reset Color Grade presets for selected clips."""
         for clip_id in clip_ids:
@@ -2237,6 +2258,29 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
             self.update_clip_data(clip.data, only_basic_props=False, ignore_reader=True)
             get_app().updates.apply_last_action_to_history(original_clip_data)
+
+    def Adjust_Colors_Triggered(self, clip_ids):
+        """Ensure a Color Grade effect exists and open the video scopes."""
+        first_effect_id = None
+        first_clip_id = None
+        for clip_id in clip_ids:
+            clip = Clip.get(id=clip_id)
+            if not clip or not self._clip_has_video(clip):
+                continue
+
+            original_clip_data = json.loads(json.dumps(clip.data))
+            effect_json, changed = self._ensure_color_grade_effect(clip)
+            if not first_effect_id and effect_json and effect_json.get("id"):
+                first_effect_id = effect_json.get("id")
+                first_clip_id = clip_id
+            if changed:
+                self.update_clip_data(clip.data, only_basic_props=False, ignore_reader=True)
+                get_app().updates.apply_last_action_to_history(original_clip_data)
+
+        get_app().window.show_color_grading_docks()
+        if first_effect_id:
+            self.addSelection(first_effect_id, "effect", True)
+            self.window.KeyFrameTransformSignal.emit(first_effect_id, first_clip_id)
 
     def Layout_Triggered(self, action, clip_ids):
         """Callback for the layout context menus"""

@@ -81,7 +81,7 @@ from windows.models.files_model import FilesModel
 from windows.views.optimized_preview_menu import populate_optimized_preview_menu
 from windows.models.transition_model import TransitionsModel
 from windows.preview_thread import PreviewParent
-from windows.scope_panel import WaveformDockContent, HistogramDockContent, AudioMeterWidget
+from windows.scope_panel import WaveformDockContent, HistogramDockContent, VectorscopeDockContent, AudioMeterWidget
 from windows.video_widget import VideoWidget
 from windows.views.effects_listview import EffectsListView
 from windows.views.effects_treeview import EffectsTreeView
@@ -124,7 +124,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     KeyFrameTransformSignal = pyqtSignal(str, str)
     SelectRegionSignal = pyqtSignal(str)
     MaxSizeChanged = pyqtSignal(object)
-    RunScopeSignal = pyqtSignal(int, bool, bool)   # Route scope GetFrame to worker thread to avoid mutex contention
+    RunScopeSignal = pyqtSignal(int, bool, bool, object)   # Route scope GetFrame to worker thread to avoid mutex contention
     InsertKeyframe = pyqtSignal()
     OpenProjectSignal = pyqtSignal(str)
     ThumbnailUpdated = pyqtSignal(str, int)
@@ -1337,7 +1337,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         """Record the latest frame number and arm the debounce timer."""
         if not any(
             getattr(self, d, None) and getattr(self, d).isVisible()
-            for d in ("dockLumaWaveform", "dockHistogram", "dockAudio")
+            for d in ("dockLumaWaveform", "dockHistogram", "dockVectorscope", "dockAudio")
         ):
             return
         self._scope_pending_frame = frame_number
@@ -1349,6 +1349,44 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         """Catch manual seeks (scrubbing, step buttons) that may not emit position_changed."""
         self._on_scope_frame(frame_number)
 
+    def _scope_region_payload(self):
+        if not getattr(self, "_scope_region_enabled", False):
+            return None
+        preview = getattr(self, "videoPreview", None)
+        if not preview:
+            return None
+        return preview.scopeRegionNormalizedRect()
+
+    @pyqtSlot(bool)
+    def _on_scope_region_toggled(self, enabled):
+        enabled = bool(enabled)
+        self._scope_region_enabled = enabled
+        preview = getattr(self, "videoPreview", None)
+        if preview:
+            preview.setScopeRegionEnabled(enabled)
+        for content in (
+            getattr(self, "waveform_content", None),
+            getattr(self, "histogram_content", None),
+            getattr(self, "vectorscope_content", None),
+        ):
+            if content:
+                content.set_scope_region_enabled(enabled)
+        self._request_scope_refresh()
+
+    @pyqtSlot()
+    def _on_scope_region_changed(self):
+        if getattr(self, "_scope_region_enabled", False):
+            self._request_scope_refresh()
+
+    @pyqtSlot()
+    def _clear_scope_region_mode(self):
+        if getattr(self, "_scope_region_enabled", False):
+            self._on_scope_region_toggled(False)
+
+    @pyqtSlot(str, str, bool)
+    def _clear_scope_region_on_selection(self, _item_id, _item_type, _clear_existing=False):
+        self._clear_scope_region_mode()
+
     def _run_scope_analysis(self):
         """Dispatch FrameScope analysis to the worker thread (timer-debounced).
 
@@ -1359,15 +1397,17 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             return
         wf_vis   = getattr(self, "dockLumaWaveform", None) and self.dockLumaWaveform.isVisible()
         hist_vis = getattr(self, "dockHistogram",    None) and self.dockHistogram.isVisible()
+        vec_vis  = getattr(self, "dockVectorscope",  None) and self.dockVectorscope.isVisible()
         aud_vis  = getattr(self, "dockAudio",        None) and self.dockAudio.isVisible()
-        need_video = bool(wf_vis or hist_vis)
+        need_video = bool(wf_vis or hist_vis or vec_vis)
         need_audio = bool(aud_vis)
         if not (need_video or need_audio):
             return
         self._scope_wf_vis   = wf_vis
         self._scope_hist_vis = hist_vis
+        self._scope_vec_vis  = vec_vis
         self._scope_aud_vis  = aud_vis
-        self.RunScopeSignal.emit(frame_number, need_video, need_audio)
+        self.RunScopeSignal.emit(frame_number, need_video, need_audio, self._scope_region_payload())
 
     @pyqtSlot(dict, dict)
     def _on_scope_ready(self, video, audio):
@@ -1376,14 +1416,29 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self.waveform_content.update_data(video)
         if video and getattr(self, "_scope_hist_vis", False):
             self.histogram_content.update_data(video)
+        if video and getattr(self, "_scope_vec_vis", False):
+            self.vectorscope_content.update_data(video)
         if audio and getattr(self, "_scope_aud_vis", False):
             self.audio_meter.update_data(audio)
+
+    def _request_scope_refresh(self):
+        """Analyze the current preview frame immediately after scope docks are shown."""
+        preview_thread = getattr(self, "preview_thread", None)
+        if not preview_thread or not getattr(preview_thread, "player", None):
+            return
+        try:
+            frame_number = int(preview_thread.player.Position())
+        except Exception:
+            return
+        if frame_number <= 0:
+            frame_number = 1
+        self._on_scope_frame(frame_number)
 
     def _anchor_and_show_scope_dock(self, dock):
         """Ensure a scope dock lands in the bottom-right group (below Color Wheels)."""
         color_grade_dock = getattr(
             getattr(self, "propertyTableView", None), "color_grade_wheels_dock", None)
-        scope_docks = [self.dockLumaWaveform, self.dockHistogram, self.dockAudio]
+        scope_docks = [self.dockLumaWaveform, self.dockHistogram, self.dockVectorscope, self.dockAudio]
 
         if self.dockWidgetArea(dock) == Qt.NoDockWidgetArea:
             self.addDockWidget(Qt.RightDockWidgetArea, dock)
@@ -1400,6 +1455,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
         dock.show()
         dock.raise_()
+        self._request_scope_refresh()
 
     def _on_scope_dock_toggled(self, checked, dock):
         """Called when a scope dock's toggle action fires; re-anchor if needed."""
@@ -1407,10 +1463,22 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self._anchor_and_show_scope_dock(dock)
 
     def show_scope_video_docks(self):
-        """Show Luma Waveform and Histogram docks, anchoring to right if needed."""
+        """Show video scope docks, anchoring to right if needed."""
         self._anchor_and_show_scope_dock(self.dockLumaWaveform)
         self._anchor_and_show_scope_dock(self.dockHistogram)
+        self._anchor_and_show_scope_dock(self.dockVectorscope)
         self.dockLumaWaveform.raise_()
+
+    def show_color_grading_docks(self):
+        """Show Color Wheels above the video scope docks on the right side."""
+        property_view = getattr(self, "propertyTableView", None)
+        color_grade_dock = getattr(property_view, "color_grade_wheels_dock", None)
+        if color_grade_dock and property_view:
+            if hasattr(property_view, "_ensure_color_grade_wheels_dock_attached"):
+                property_view._ensure_color_grade_wheels_dock_attached()
+            color_grade_dock.show()
+            color_grade_dock.raise_()
+        self.show_scope_video_docks()
 
     def show_scope_audio_dock(self):
         """Show Audio Levels dock, anchoring to right if needed."""
@@ -2888,7 +2956,9 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         if color_grade_dock:
             self.splitDockWidget(color_grade_dock, self.dockLumaWaveform, Qt.Vertical)
         self.addDocks([self.dockHistogram], Qt.RightDockWidgetArea)
+        self.addDocks([self.dockVectorscope], Qt.RightDockWidgetArea)
         self.tabifyDockWidget(self.dockLumaWaveform, self.dockHistogram)
+        self.tabifyDockWidget(self.dockHistogram, self.dockVectorscope)
         self.splitDockWidget(self.dockVideo, self.dockTimeline, Qt.Vertical)
         self.setTabPosition(Qt.RightDockWidgetArea, QTabWidget.North)
 
@@ -2900,6 +2970,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self.dockTimeline,
             self.dockLumaWaveform,
             self.dockHistogram,
+            self.dockVectorscope,
         ]
         if color_grade_dock:
             docks_to_show.append(color_grade_dock)
@@ -4613,6 +4684,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         # Create individual scope docks (before addViewDocksMenu so they appear in Docks menu)
         self.waveform_content = WaveformDockContent()
+        self.waveform_content.scopeRegionToggled.connect(self._on_scope_region_toggled)
         self.dockLumaWaveform = QDockWidget(_("Luma Waveform"), self)
         self.dockLumaWaveform.setObjectName("dockLumaWaveform")
         self.dockLumaWaveform.setProperty("_skip_auto_tab_order", True)
@@ -4622,6 +4694,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.dockLumaWaveform)
 
         self.histogram_content = HistogramDockContent()
+        self.histogram_content.scopeRegionToggled.connect(self._on_scope_region_toggled)
         self.dockHistogram = QDockWidget(_("Histogram"), self)
         self.dockHistogram.setObjectName("dockHistogram")
         self.dockHistogram.setProperty("_skip_auto_tab_order", True)
@@ -4629,6 +4702,16 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self.dockHistogram.setWidget(self.histogram_content)
         self.dockHistogram.hide()
         self.addDockWidget(Qt.RightDockWidgetArea, self.dockHistogram)
+
+        self.vectorscope_content = VectorscopeDockContent()
+        self.vectorscope_content.scopeRegionToggled.connect(self._on_scope_region_toggled)
+        self.dockVectorscope = QDockWidget(_("Vectorscope"), self)
+        self.dockVectorscope.setObjectName("dockVectorscope")
+        self.dockVectorscope.setProperty("_skip_auto_tab_order", True)
+        self.dockVectorscope.setFocusPolicy(Qt.NoFocus)
+        self.dockVectorscope.setWidget(self.vectorscope_content)
+        self.dockVectorscope.hide()
+        self.addDockWidget(Qt.RightDockWidgetArea, self.dockVectorscope)
 
         self.audio_meter = AudioMeterWidget()
         self.dockAudio = QDockWidget(_("Audio Levels"), self)
@@ -4684,6 +4767,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Setup video preview QWidget
         self.videoPreview = VideoWidget(self.dockVideoContents)
         self.videoPreview.setObjectName("videoPreview")
+        self.videoPreview.regionRectChanged.connect(self._on_scope_region_changed)
+        self.videoPreview.scopeRegionCancelled.connect(self._clear_scope_region_mode)
         self.tabVideo.insertWidget(0, self.videoPreview)
         self.videoPreview.show()
 
@@ -4708,7 +4793,8 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Scope analysis: debounced timer dispatches GetFrame+FrameScope to the
         # PlayerWorker thread so the UI thread only handles paint/update work.
         self._scope_pending_frame = None
-        self._scope_wf_vis = self._scope_hist_vis = self._scope_aud_vis = False
+        self._scope_wf_vis = self._scope_hist_vis = self._scope_vec_vis = self._scope_aud_vis = False
+        self._scope_region_enabled = False
         self._dock_interaction_active = False
         self._pending_preview_size = None
         self._scope_timer = QTimer(self)
@@ -4812,6 +4898,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Connect Selection signals
         self.SelectionAdded.connect(self.addSelection)
         self.SelectionRemoved.connect(self.removeSelection)
+        self.SelectionAdded.connect(self._clear_scope_region_on_selection)
         self._init_ui_trace_recorder()
 
         # Connect 'ignore update' signal
@@ -4837,7 +4924,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             dock_widget.visibilityChanged.connect(self._schedule_dock_style_update)
 
         # Re-anchor scope docks when manually enabled after a view switch removed them
-        for _dock in [self.dockLumaWaveform, self.dockHistogram, self.dockAudio]:
+        for _dock in [self.dockLumaWaveform, self.dockHistogram, self.dockVectorscope, self.dockAudio]:
             _dock.toggleViewAction().triggered.connect(
                 functools.partial(self._on_scope_dock_toggled, dock=_dock))
 

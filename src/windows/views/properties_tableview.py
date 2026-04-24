@@ -67,6 +67,7 @@ from windows.color_grade_editor import (
     normalize_curve_data,
     normalize_wheels_data,
     puck_display_color,
+    scope_angle_for_display_hue,
     wheels_enabled_at_frame,
     wheels_snapshot,
     wheels_summary,
@@ -282,7 +283,7 @@ class PropertyDelegate(QItemDelegate):
                     painter.drawEllipse(center, radius * 0.92, radius * 0.92)
                     amount = float(wheel["amount"]) * radius * 0.85
                     hue = color.hueF() if color.hueF() >= 0 else 0.0
-                    angle = math.radians(hue * 360.0)
+                    angle = math.radians(scope_angle_for_display_hue(hue * 360.0))
                     puck = QPointF(center.x() + math.cos(angle) * amount, center.y() - math.sin(angle) * amount)
                     painter.setPen(QPen(circle_color, 1.0))
                     painter.setBrush(QBrush(puck_color))
@@ -1927,9 +1928,9 @@ class PropertiesTableView(QTableView):
         self.color_grade_wheels_dock.visibilityChanged.connect(self._color_grade_wheels_visibility_changed)
 
     def _show_scope_docks_if_hidden(self):
-        """Show Luma Waveform, Histogram, and Audio Levels docks if currently hidden."""
+        """Show scope docks if currently hidden."""
         win = self.win
-        for attr in ("dockLumaWaveform", "dockHistogram", "dockAudio"):
+        for attr in ("dockLumaWaveform", "dockHistogram", "dockVectorscope", "dockAudio"):
             dock = getattr(win, attr, None)
             if dock and not dock.isVisible():
                 dock.show()
@@ -1950,6 +1951,7 @@ class PropertiesTableView(QTableView):
                 # If scope docks are already at bottom-right, split so Wheels sits above them
                 scope_docks = [self.win.dockLumaWaveform,
                                self.win.dockHistogram,
+                               self.win.dockVectorscope,
                                self.win.dockAudio]
                 anchored_scope = [d for d in scope_docks
                                   if self.win.dockWidgetArea(d) != Qt.NoDockWidgetArea
