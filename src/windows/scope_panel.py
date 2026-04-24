@@ -45,6 +45,17 @@ _S_HIST_SCALE = "scope-histogram-scale"   # log|linear
 _S_VEC_DISPLAY = "scope-vectorscope-display"  # colorized|density|intensity
 _S_VEC_ZOOM    = "scope-vectorscope-zoom"     # 100|200|400
 
+_VECTORSCOPE_HUE_LABELS = (
+    ("R", 108.65, 360.0),
+    ("Mg", 51.65, 300.0),
+    ("B", 350.76, 240.0),
+    ("Cy", 288.65, 180.0),
+    ("G", 231.65, 120.0),
+    ("Yi", 170.76, 60.0 + 360.0),
+)
+_vectorscope_geometry_cache = {}
+_vectorscope_intensity_lut = None
+
 
 def _settings():
     try:
@@ -84,6 +95,147 @@ def _make_scope_region_button(parent):
     button.setToolTip("Analyze selected preview region")
     button.setFocusPolicy(Qt.NoFocus)
     return button
+
+
+def normalize_vectorscope_display(value):
+    if value == "monochrome":
+        return "density"
+    if value == "heatmap":
+        return "intensity"
+    return value or "colorized"
+
+
+def _vectorscope_wrap_angle(angle):
+    return (angle + 360.0) % 360.0
+
+
+def _vectorscope_display_hue_for_scope_angle(angle_deg):
+    anchors = sorted((_vectorscope_wrap_angle(scope_angle), display_hue)
+                     for _, scope_angle, display_hue in _VECTORSCOPE_HUE_LABELS)
+    wrapped = _vectorscope_wrap_angle(angle_deg)
+    normalized = []
+    previous_hue = None
+    for scope_angle, display_hue in anchors:
+        hue = display_hue
+        if previous_hue is not None:
+            while hue < previous_hue:
+                hue += 360.0
+        normalized.append((scope_angle, hue))
+        previous_hue = hue
+    if wrapped < normalized[0][0]:
+        wrapped += 360.0
+    extended = normalized + [(normalized[0][0] + 360.0, normalized[0][1] + 360.0)]
+
+    for index in range(len(normalized)):
+        a0, h0 = extended[index]
+        a1, h1 = extended[index + 1]
+        if a0 <= wrapped <= a1:
+            span = max(1e-6, a1 - a0)
+            t = (wrapped - a0) / span
+            return (h0 + ((h1 - h0) * t)) % 360.0
+
+    return normalized[0][1] % 360.0
+
+
+def _vectorscope_density_to_byte(count, max_val):
+    if count <= 0 or max_val <= 0:
+        return 0
+    return min(255, int(math.sqrt(count / max_val) * 255))
+
+
+def _vectorscope_geometry_info(size, zoom_factor):
+    key = (int(size), int(round(zoom_factor * 100)))
+    cached = _vectorscope_geometry_cache.get(key)
+    if cached is not None:
+        return cached
+
+    source_indices = [-1] * (size * size)
+    colorized_base = bytearray(size * size * 3)
+    center = (size - 1) * 0.5
+    radius = center
+    inv_zoom = 1.0 / max(1.0, zoom_factor)
+
+    for y in range(size):
+        row_offset = y * size
+        source_y = int(round(center + ((y - center) * inv_zoom)))
+        for x in range(size):
+            source_x = int(round(center + ((x - center) * inv_zoom)))
+            if source_x < 0 or source_x >= size or source_y < 0 or source_y >= size:
+                continue
+
+            pixel_index = row_offset + x
+            source_indices[pixel_index] = (source_y * size) + source_x
+
+            u = (x - center) / max(1.0, radius)
+            v = (center - y) / max(1.0, radius)
+            hue = _vectorscope_display_hue_for_scope_angle(math.degrees(math.atan2(v, u)))
+            saturation = min(1.0, math.sqrt((u * u) + (v * v)))
+            color = QColor.fromHsv(int(hue) % 360, int(255 * saturation), 255)
+            color_index = pixel_index * 3
+            colorized_base[color_index] = color.red()
+            colorized_base[color_index + 1] = color.green()
+            colorized_base[color_index + 2] = color.blue()
+
+    cached = (source_indices, colorized_base)
+    _vectorscope_geometry_cache[key] = cached
+    return cached
+
+
+def _vectorscope_intensity_lut_bytes():
+    global _vectorscope_intensity_lut
+    if _vectorscope_intensity_lut is not None:
+        return _vectorscope_intensity_lut
+
+    lut = bytearray(256 * 3)
+    for t in range(256):
+        hue = int(max(0, 240 - (t * 240 / 255)))
+        saturation = min(255, 180 + (t * 75 // 255))
+        value = min(255, 56 + (t * 199 // 255))
+        color = QColor.fromHsv(hue, saturation, value)
+        idx = t * 3
+        lut[idx] = color.red()
+        lut[idx + 1] = color.green()
+        lut[idx + 2] = color.blue()
+    _vectorscope_intensity_lut = lut
+    return _vectorscope_intensity_lut
+
+
+def build_vectorscope_image(flat, size, zoom_factor, display):
+    display = normalize_vectorscope_display(display)
+    if not flat or len(flat) != size * size:
+        return None
+
+    max_val = max(flat) or 1
+    buf = bytearray(size * size * 3)
+    source_indices, colorized_base = _vectorscope_geometry_info(size, zoom_factor)
+    intensity_lut = _vectorscope_intensity_lut_bytes() if display == "intensity" else None
+
+    for pixel_index, source_index in enumerate(source_indices):
+        if source_index < 0:
+            continue
+
+        count = flat[source_index]
+        if not count:
+            continue
+
+        t = _vectorscope_density_to_byte(count, max_val)
+        idx = pixel_index * 3
+        if display == "density":
+            value = min(255, 24 + (t * 231 // 255))
+            buf[idx] = value
+            buf[idx + 1] = value
+            buf[idx + 2] = value
+        elif display == "intensity":
+            lut_index = t * 3
+            buf[idx] = intensity_lut[lut_index]
+            buf[idx + 1] = intensity_lut[lut_index + 1]
+            buf[idx + 2] = intensity_lut[lut_index + 2]
+        else:
+            value = min(255, 80 + (t * 175 // 255))
+            buf[idx] = (colorized_base[idx] * value) // 255
+            buf[idx + 1] = (colorized_base[idx + 1] * value) // 255
+            buf[idx + 2] = (colorized_base[idx + 2] * value) // 255
+    return QImage(bytes(buf), size, size, size * 3, QImage.Format_RGB888).copy()
 
 
 # ─── Waveform painter ────────────────────────────────────────────────────────
@@ -322,20 +474,13 @@ class HistogramWidget(QWidget):
 class VectorscopeWidget(QWidget):
     """2D chroma density plot with a lightweight vectorscope graticule."""
 
-    _HUE_LABELS = (
-        ("R", 108.65, 360.0),
-        ("Mg", 51.65, 300.0),
-        ("B", 350.76, 240.0),
-        ("Cy", 288.65, 180.0),
-        ("G", 231.65, 120.0),
-        ("Yi", 170.76, 60.0 + 360.0),
-    )
+    _HUE_LABELS = _VECTORSCOPE_HUE_LABELS
     _SKIN_TONE_ANGLE = 123.0
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self._data = None
-        self._display = _get(_S_VEC_DISPLAY, "colorized")
+        self._display = normalize_vectorscope_display(_get(_S_VEC_DISPLAY, "colorized"))
         self._zoom = _get(_S_VEC_ZOOM, "100")
         self._render_token = 0
         self._cached_scope_image = None
@@ -347,15 +492,11 @@ class VectorscopeWidget(QWidget):
         self.setFocusPolicy(Qt.NoFocus)
 
     def set_display(self, value):
-        if value == "monochrome":
-            value = "density"
-        elif value == "heatmap":
-            value = "intensity"
-        self._display = value
+        self._display = normalize_vectorscope_display(value)
         self._render_token += 1
         self._cached_scope_image = None
         self._cached_scope_key = None
-        _set(_S_VEC_DISPLAY, value)
+        _set(_S_VEC_DISPLAY, self._display)
         self.update()
 
     def set_zoom(self, value):
@@ -380,103 +521,8 @@ class VectorscopeWidget(QWidget):
         self._cached_overlay_key = None
         super().resizeEvent(event)
 
-    @staticmethod
-    def _wrap_angle(angle):
-        return (angle + 360.0) % 360.0
-
-    @classmethod
-    def _display_hue_for_scope_angle(cls, angle_deg):
-        anchors = sorted((cls._wrap_angle(scope_angle), display_hue)
-                         for _, scope_angle, display_hue in cls._HUE_LABELS)
-        wrapped = cls._wrap_angle(angle_deg)
-        normalized = []
-        previous_hue = None
-        for scope_angle, display_hue in anchors:
-            hue = display_hue
-            if previous_hue is not None:
-                while hue < previous_hue:
-                    hue += 360.0
-            normalized.append((scope_angle, hue))
-            previous_hue = hue
-        if wrapped < normalized[0][0]:
-            wrapped += 360.0
-        extended = normalized + [(normalized[0][0] + 360.0, normalized[0][1] + 360.0)]
-
-        for index in range(len(normalized)):
-            a0, h0 = extended[index]
-            a1, h1 = extended[index + 1]
-            if a0 <= wrapped <= a1:
-                span = max(1e-6, a1 - a0)
-                t = (wrapped - a0) / span
-                return (h0 + ((h1 - h0) * t)) % 360.0
-
-        return normalized[0][1] % 360.0
-
-    @staticmethod
-    def _density_to_byte(count, max_val):
-        if count <= 0 or max_val <= 0:
-            return 0
-        return min(255, int(math.sqrt(count / max_val) * 255))
-
-    @staticmethod
-    def _angle_from_position(x, y, center, radius):
-        u = (x - center) / max(1.0, radius)
-        v = (center - y) / max(1.0, radius)
-        return math.atan2(v, u)
-
-    @staticmethod
-    def _normalized_distance(x, y, center, radius):
-        dx = x - center
-        dy = y - center
-        return math.sqrt(dx * dx + dy * dy) / max(1.0, radius)
-
     def _build_img(self, flat, size, zoom_factor):
-        if not flat or len(flat) != size * size:
-            return None
-
-        max_val = max(flat) or 1
-        buf = bytearray(size * size * 3)
-        center = (size - 1) * 0.5
-        radius = center
-        for y in range(size):
-            row_offset = y * size
-            for x in range(size):
-                source_x = int(round(center + ((x - center) / max(1.0, zoom_factor))))
-                source_y = int(round(center + ((y - center) / max(1.0, zoom_factor))))
-                if source_x < 0 or source_x >= size or source_y < 0 or source_y >= size:
-                    continue
-                count = flat[source_y * size + source_x]
-                if not count:
-                    continue
-                t = self._density_to_byte(count, max_val)
-                idx = (row_offset + x) * 3
-                if self._display == "density":
-                    value = min(255, 24 + (t * 231 // 255))
-                    buf[idx] = value
-                    buf[idx + 1] = value
-                    buf[idx + 2] = value
-                elif self._display == "intensity":
-                    hue = int(max(0, 240 - (t * 240 / 255)))
-                    saturation = min(255, 180 + (t * 75 // 255))
-                    value = min(255, 56 + (t * 199 // 255))
-                    color = QColor.fromHsv(hue, saturation, value)
-                    buf[idx] = color.red()
-                    buf[idx + 1] = color.green()
-                    buf[idx + 2] = color.blue()
-                else:
-                    angle = self._angle_from_position(x, y, center, radius)
-                    hue = self._display_hue_for_scope_angle(math.degrees(angle))
-                    saturation = min(1.0, self._normalized_distance(x, y, center, radius))
-                    value = min(255, 80 + (t * 175 // 255))
-                    color = QColor.fromHsv(
-                        int(hue) % 360,
-                        int(255 * saturation),
-                        value,
-                    )
-                    buf[idx] = color.red()
-                    buf[idx + 1] = color.green()
-                    buf[idx + 2] = color.blue()
-        return QImage(bytes(buf), size, size, size * 3, QImage.Format_RGB888).copy()
+        return build_vectorscope_image(flat, size, zoom_factor, self._display)
 
     def _draw_guides(self, painter, center_x, center_y, radius):
         painter.save()
@@ -604,7 +650,9 @@ class VectorscopeWidget(QWidget):
 
         self._cached_scope_image = None
         self._cached_scope_key = key
-        img = self._build_img(flat, size, zoom_factor)
+        img = vectorscope.get("image")
+        if not isinstance(img, QImage) or img.isNull():
+            img = self._build_img(flat, size, zoom_factor)
         if img is None:
             return
 
@@ -873,6 +921,7 @@ class HistogramDockContent(QWidget):
 class VectorscopeDockContent(QWidget):
     """Vectorscope dock widget with a minimal toolbar."""
     scopeRegionToggled = pyqtSignal(bool)
+    renderSettingsChanged = pyqtSignal()
 
     _DISPLAYS = [
         ("colorized", "Colorized"),
@@ -919,9 +968,17 @@ class VectorscopeDockContent(QWidget):
 
     def _on_display(self):
         self.vectorscope.set_display(self._display_cb.currentData())
+        self.renderSettingsChanged.emit()
 
     def _on_zoom(self):
         self.vectorscope.set_zoom(self._zoom_cb.currentData())
+        self.renderSettingsChanged.emit()
+
+    def render_settings(self):
+        return {
+            "display": normalize_vectorscope_display(self._display_cb.currentData()),
+            "zoom": str(self._zoom_cb.currentData() or "100"),
+        }
 
     def set_scope_region_enabled(self, enabled):
         self._region_btn.blockSignals(True)

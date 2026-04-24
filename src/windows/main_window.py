@@ -124,7 +124,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     KeyFrameTransformSignal = pyqtSignal(str, str)
     SelectRegionSignal = pyqtSignal(str)
     MaxSizeChanged = pyqtSignal(object)
-    RunScopeSignal = pyqtSignal(int, bool, bool, object)   # Route scope GetFrame to worker thread to avoid mutex contention
+    RunScopeSignal = pyqtSignal(int, bool, bool, bool, bool, object, object)   # Route scope GetFrame to worker thread to avoid mutex contention
     InsertKeyframe = pyqtSignal()
     OpenProjectSignal = pyqtSignal(str)
     ThumbnailUpdated = pyqtSignal(str, int)
@@ -1407,11 +1407,19 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self._scope_hist_vis = hist_vis
         self._scope_vec_vis  = vec_vis
         self._scope_aud_vis  = aud_vis
-        self.RunScopeSignal.emit(frame_number, need_video, need_audio, self._scope_region_payload())
+        vectorscope_render = None
+        if vec_vis and getattr(self, "vectorscope_content", None):
+            vectorscope_render = self.vectorscope_content.render_settings()
+        self.RunScopeSignal.emit(
+            frame_number, wf_vis, hist_vis, vec_vis, aud_vis,
+            self._scope_region_payload(), vectorscope_render)
 
-    @pyqtSlot(dict, dict)
-    def _on_scope_ready(self, video, audio):
+    @pyqtSlot(int, dict, dict)
+    def _on_scope_ready(self, frame_number, video, audio):
         """Receive FrameScope results from the worker thread and update scope widgets."""
+        current_frame = getattr(self, "_scope_pending_frame", None)
+        if current_frame is not None and frame_number < current_frame:
+            return
         if video and getattr(self, "_scope_wf_vis", False):
             self.waveform_content.update_data(video)
         if video and getattr(self, "_scope_hist_vis", False):
@@ -4705,6 +4713,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         self.vectorscope_content = VectorscopeDockContent()
         self.vectorscope_content.scopeRegionToggled.connect(self._on_scope_region_toggled)
+        self.vectorscope_content.renderSettingsChanged.connect(self._request_scope_refresh)
         self.dockVectorscope = QDockWidget(_("Vectorscope"), self)
         self.dockVectorscope.setObjectName("dockVectorscope")
         self.dockVectorscope.setProperty("_skip_auto_tab_order", True)
@@ -4799,7 +4808,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         self._pending_preview_size = None
         self._scope_timer = QTimer(self)
         self._scope_timer.setSingleShot(True)
-        self._scope_timer.setInterval(50)   # 50 ms → ~20 fps max
+        self._scope_timer.setInterval(0)   # latest-wins worker path handles stale frame dropping
         self._scope_timer.timeout.connect(self._run_scope_analysis)
         self.preview_thread.position_changed.connect(self._on_scope_frame)
         self.SeekSignal.connect(self._on_scope_seek)
