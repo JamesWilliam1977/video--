@@ -30,9 +30,9 @@ import json
 import math
 
 from qt_api import Qt, QPointF, QRectF, QSize, pyqtSignal, QShortcut, QKeySequence, QTimer
-from qt_api import QColor, QPainter, QPen, QBrush, QPainterPath, QConicalGradient, QPixmap, QIcon
+from qt_api import QColor, QPainter, QPen, QBrush, QPainterPath, QPixmap, QIcon
 from qt_api import QWidget, QDialog, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QAction
-from qt_api import QDialogButtonBox, QFrame, QGridLayout
+from qt_api import QDialogButtonBox, QFrame
 from qt_api import QFontMetrics, QSizePolicy
 from qt_api import QLineEdit, QEvent, QLinearGradient
 
@@ -516,14 +516,25 @@ class ColorWheelControl(QWidget):
     dragStarted = pyqtSignal()
     dragFinished = pyqtSignal()
 
-    def __init__(self, wheel_data=None, parent=None):
+    def __init__(self, wheel_data=None, parent=None, title=""):
         super().__init__(parent)
         self._data = normalize_single_wheel_data(wheel_data)
         self._dragging = False
-        self.setMinimumSize(QSize(96, 96))
+        self._title = title
+        self.setMinimumSize(QSize(120, 120))
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setAutoFillBackground(False)
+
+    def hasHeightForWidth(self):
+        return True
+
+    def heightForWidth(self, width):
+        return width
+
+    def sizeHint(self):
+        return QSize(120, 120)
 
     def wheel_data(self):
         return copy.deepcopy(self._data)
@@ -534,7 +545,7 @@ class ColorWheelControl(QWidget):
         self.changed.emit()
 
     def _center_and_radius(self):
-        radius = min(self.width(), self.height()) * 0.42
+        radius = min(self.width(), self.height()) * 0.47
         center = QPointF(self.width() / 2.0, self.height() / 2.0)
         return center, radius
 
@@ -636,6 +647,15 @@ class ColorWheelControl(QWidget):
         painter.setPen(QPen(Qt.white, 1.0))
         painter.setBrush(QBrush(puck_display_color(self._data)))
         painter.drawEllipse(puck, 5.0, 5.0)
+
+        if self._title:
+            font = painter.font()
+            font.setBold(True)
+            painter.setFont(font)
+            painter.setPen(QPen(Qt.white))
+            text_rect = QRectF(center.x() - radius, center.y() - radius, radius * 2.0, ring_width)
+            painter.drawText(text_rect, Qt.AlignCenter, self._title)
+
         painter.end()
 
 
@@ -1364,33 +1384,33 @@ class WheelRow(QWidget):
         self._data = normalize_wheels_data({"global": wheel_data})["global"]
         self._frame_number = int(frame_number)
 
-        layout = QGridLayout(self)
-        layout.setColumnStretch(1, 1)  # wheel column
-        layout.setColumnStretch(2, 1)  # slider column expands with widget width
-        title_label = QLabel(title, self)
-        title_label.setStyleSheet("font-weight: bold;")
-        layout.addWidget(title_label, 0, 0)
+        layout = QVBoxLayout(self)
+        layout.setSpacing(2)
+        layout.setContentsMargins(0, 0, 0, 12)
 
-        self.wheel_control = ColorWheelControl(self._data, self)
+        self.wheel_control = ColorWheelControl(self._data, self, title=title)
         self.wheel_control.changed.connect(self._on_wheel_control_changed)
         self.wheel_control.dragStarted.connect(self.dragStarted)
         self.wheel_control.dragFinished.connect(self.dragFinished)
         self.wheel_control.customContextMenuRequested.connect(self._show_wheel_menu)
-        layout.addWidget(self.wheel_control, 0, 1, 3, 1)
-
-        self.color_button = QPushButton(self)
-        self.color_button.clicked.connect(self.pick_color)
-        self.color_button.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.color_button.customContextMenuRequested.connect(self._show_color_button_menu)
-        layout.addWidget(self.color_button, 0, 2)
+        layout.addWidget(self.wheel_control)
 
         self.amount_input = PropertySlider(0.0, 1.0, decimals=2, parent=self)
         self.luma_input = PropertySlider(-1.0, 1.0, decimals=2, parent=self)
 
-        layout.addWidget(QLabel("Amount", self), 1, 0)
-        layout.addWidget(self.amount_input, 1, 2)
-        layout.addWidget(QLabel("Luma", self), 2, 0)
-        layout.addWidget(self.luma_input, 2, 2)
+        amount_row = QHBoxLayout()
+        amount_label = QLabel("Amount", self)
+        amount_label.setFixedWidth(50)
+        amount_row.addWidget(amount_label)
+        amount_row.addWidget(self.amount_input)
+        layout.addLayout(amount_row)
+
+        luma_row = QHBoxLayout()
+        luma_label = QLabel("Luma", self)
+        luma_label.setFixedWidth(50)
+        luma_row.addWidget(luma_label)
+        luma_row.addWidget(self.luma_input)
+        layout.addLayout(luma_row)
 
         self.amount_input.valueChanged.connect(lambda v: self._on_input_changed("amount", v))
         self.luma_input.valueChanged.connect(lambda v: self._on_input_changed("luma", v))
@@ -1410,13 +1430,6 @@ class WheelRow(QWidget):
 
     def _apply_data(self):
         data = self._snapshot()
-        color = selected_wheel_color(data)
-        if is_achromatic_color(color):
-            self.color_button.setText(get_app()._tr("Neutral"))
-            self.color_button.setStyleSheet("")
-        else:
-            self.color_button.setText(color.name())
-            self.color_button.setStyleSheet("background-color: %s;" % color.name())
         self.wheel_control.blockSignals(True)
         self.wheel_control.set_wheel_data(data)
         self.wheel_control.blockSignals(False)
@@ -1476,19 +1489,16 @@ class WheelRow(QWidget):
         self.dragFinished.emit()
 
     def _show_wheel_menu(self, pos):
+        _ = get_app()._tr
         menu = StyledContextMenu(parent=self)
-        reset_action = QAction(get_app()._tr("Reset"), self)
+        color_action = QAction(_("Choose Color..."), self)
+        color_action.triggered.connect(self.pick_color)
+        menu.addAction(color_action)
+        menu.addSeparator()
+        reset_action = QAction(_("Reset"), self)
         reset_action.triggered.connect(self.reset_to_neutral)
         menu.addAction(reset_action)
         menu.exec_(self.wheel_control.mapToGlobal(pos))
-
-    def _show_color_button_menu(self, pos):
-        menu = StyledContextMenu(parent=self)
-        menu.setStyleSheet("")
-        reset_action = QAction(get_app()._tr("Reset"), self)
-        reset_action.triggered.connect(self.reset_to_neutral)
-        menu.addAction(reset_action)
-        menu.exec_(self.color_button.mapToGlobal(pos))
 
     def value(self):
         return copy.deepcopy(self._data)

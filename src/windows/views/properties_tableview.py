@@ -1297,6 +1297,7 @@ class PropertiesTableView(QTableView):
         selected_label = idx.model().item(row, 0)
         selected_value = idx.model().item(row, 1)
         self.selected_item = selected_value
+        self.selected_label = selected_label
         frame_number = self.clip_properties_model.frame_number
 
         # Skip any read-only properties
@@ -1907,12 +1908,10 @@ class PropertiesTableView(QTableView):
             parent=self.color_grade_wheels_dock,
         )
         self.color_grade_wheels_scroll = QScrollArea(self.color_grade_wheels_dock)
-        self.color_grade_wheels_panel.adjustSize()
-        self.color_grade_wheels_panel.setMinimumSize(self.color_grade_wheels_panel.sizeHint())
-        self.color_grade_wheels_scroll.setWidgetResizable(False)
+        self.color_grade_wheels_scroll.setWidgetResizable(True)
         self.color_grade_wheels_scroll.setFrameShape(QFrame.NoFrame)
         self.color_grade_wheels_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.color_grade_wheels_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.color_grade_wheels_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.color_grade_wheels_scroll.setStyleSheet(
             "QScrollArea { border: none; background: transparent; }"
             "QScrollArea > QWidget { background: transparent; }"
