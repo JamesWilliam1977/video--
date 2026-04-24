@@ -134,6 +134,10 @@ The Luma Waveform maps every pixel by horizontal position (X axis = left-to-righ
 and brightness (Y axis = 0% at bottom to 100% at top). Where many pixels share the same brightness
 at the same horizontal position, the trace glows brighter.
 
+.. image:: images/luma-waveform-rgb-parade.jpg
+
+*The Luma Waveform in RGB Parade mode, showing red, green, and blue channels side by side.*
+
 **How to read it:**
 
 - Waveform clustered near the **bottom** → underexposed. Raise Exposure.
@@ -172,6 +176,10 @@ The Histogram
 The Histogram sorts all pixels by brightness (0 = black on the left, 255 = white on the right) and
 shows how many pixels exist at each level as a bar chart. Red, green, blue, and luma are overlaid.
 
+.. image:: images/histogram-log.jpg
+
+*The Histogram in All Channels / Logarithmic mode.*
+
 **How to read it:**
 
 - Bars **clustered left** → underexposed.
@@ -194,6 +202,10 @@ The Vectorscope
 The Vectorscope is a 2D chroma plot. Each pixel is placed on a circular graph by its **hue**
 (direction from center) and **saturation** (distance from center). A pixel at dead center is
 colorless (gray or black); one at the edge is fully saturated.
+
+.. image:: images/vectorscope.jpg
+
+*The Vectorscope in Colorized mode, with the skin tone cluster visible near the center.*
 
 The outer ring shows broadcast hue labels — **R** (red), **Mg** (magenta), **B** (blue), **Cy**
 (cyan), **G** (green), **Yi** (yellow) — at their positions around the color wheel. The **dashed
