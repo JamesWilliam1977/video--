@@ -55,6 +55,7 @@ _VECTORSCOPE_HUE_LABELS = (
 )
 _vectorscope_geometry_cache = {}
 _vectorscope_intensity_lut = None
+_vectorscope_label_lut_cache = {}   # size → (6, size*size) float32 numpy array
 
 
 def _settings():
@@ -141,6 +142,49 @@ def _vectorscope_density_to_byte(count, max_val):
     if count <= 0 or max_val <= 0:
         return 0
     return min(255, int(math.sqrt(count / max_val) * 255))
+
+
+def _build_vectorscope_label_lut(size):
+    """Build a (6, size*size) float32 weight matrix — computed once per size."""
+    import numpy as np
+    half_cone = 45.0
+    center = (size - 1) * 0.5
+    ix = np.arange(size, dtype=np.float32)
+    iy = np.arange(size, dtype=np.float32)
+    u_norm = (ix[np.newaxis, :] - center) / center   # (1,size) → broadcast (size,size)
+    v_norm = (center - iy[:, np.newaxis]) / center   # (size,1) → broadcast
+    radius = np.minimum(np.sqrt(u_norm ** 2 + v_norm ** 2), 1.0)
+    angle_deg = np.degrees(np.arctan2(v_norm, u_norm))
+    lut = np.empty((6, size * size), dtype=np.float32)
+    for i, (_, scope_angle, _) in enumerate(_VECTORSCOPE_HUE_LABELS):
+        diff = np.abs(((angle_deg - scope_angle + 180.0) % 360.0) - 180.0)
+        weight = np.where(diff < half_cone,
+                          np.cos(np.radians(diff * (90.0 / half_cone))), 0.0)
+        lut[i] = (weight * radius).ravel().astype(np.float32)
+    return lut
+
+
+def _vectorscope_label_scores(flat_density, size):
+    """Return 6 proximity scores [0..1] for each HUE_LABEL, one dot-product away."""
+    try:
+        import numpy as np
+    except ImportError:
+        return [0.0] * 6
+    if not flat_density or len(flat_density) != size * size:
+        return [0.0] * 6
+    lut = _vectorscope_label_lut_cache.get(size)
+    if lut is None:
+        lut = _build_vectorscope_label_lut(size)
+        _vectorscope_label_lut_cache[size] = lut
+    arr = np.asarray(flat_density, dtype=np.float32)
+    total = float(arr.sum())
+    if total <= 0.0:
+        return [0.0] * 6
+    scores = lut @ arr        # (6,) weighted pixel sums
+    scores /= total           # average weight per pixel → nominally 0..1
+    np.sqrt(scores, out=scores)  # sqrt compresses dynamic range for better feel
+    np.clip(scores, 0.0, 1.0, out=scores)
+    return scores.tolist()
 
 
 def _vectorscope_geometry_info(size, zoom_factor):
@@ -487,6 +531,7 @@ class VectorscopeWidget(QWidget):
         self._cached_scope_key = None
         self._cached_overlay_image = None
         self._cached_overlay_key = None
+        self._label_scores = [0.0] * 6
         self.setMinimumSize(120, 100)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.setFocusPolicy(Qt.NoFocus)
@@ -529,7 +574,6 @@ class VectorscopeWidget(QWidget):
         painter.setRenderHint(QPainter.Antialiasing, True)
         ring_pen = QPen(QColor(90, 98, 110, 88), 1)
         spoke_pen = QPen(QColor(90, 98, 110, 68), 1)
-        label_pen = QPen(QColor(160, 168, 176, 120), 1)
         skin_pen = QPen(QColor(210, 170, 120, 110), 1, Qt.DashLine)
 
         painter.setPen(ring_pen)
@@ -556,14 +600,29 @@ class VectorscopeWidget(QWidget):
         skin_y = center_y - (math.sin(skin_angle) * radius)
         painter.drawLine(int(center_x), int(center_y), int(skin_x), int(skin_y))
 
-        painter.setPen(label_pen)
-        for label, angle_deg, _ in self._HUE_LABELS:
+        painter.restore()
+
+    def _draw_labels(self, painter, center_x, center_y, radius, scores):
+        """Draw hue labels per-frame, tinted toward their target color by proximity score."""
+        painter.save()
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        base_r, base_g, base_b, base_a = 160, 168, 176, 120
+        for i, (label, angle_deg, display_hue) in enumerate(self._HUE_LABELS):
+            score = scores[i] if scores else 0.0
             angle = math.radians(angle_deg)
-            label_radius = radius * 0.82
-            x = center_x + (math.cos(angle) * label_radius)
-            y = center_y - (math.sin(angle) * label_radius)
-            text_rect = QRect(int(x - 18), int(y - 10), 36, 20)
-            painter.drawText(text_rect, Qt.AlignCenter, label)
+            lx = center_x + (math.cos(angle) * radius * 0.82)
+            ly = center_y - (math.sin(angle) * radius * 0.82)
+            if score < 0.02:
+                color = QColor(base_r, base_g, base_b, base_a)
+            else:
+                target = QColor.fromHsvF((display_hue % 360.0) / 360.0, 1.0, 1.0)
+                r = int(base_r + (target.red()   - base_r) * score)
+                g = int(base_g + (target.green() - base_g) * score)
+                b = int(base_b + (target.blue()  - base_b) * score)
+                a = int(base_a + (255 - base_a) * score)
+                color = QColor(r, g, b, a)
+            painter.setPen(QPen(color, 1))
+            painter.drawText(QRect(int(lx - 18), int(ly - 10), 36, 20), Qt.AlignCenter, label)
         painter.restore()
 
     def _layout_info(self):
@@ -650,6 +709,7 @@ class VectorscopeWidget(QWidget):
 
         self._cached_scope_image = None
         self._cached_scope_key = key
+        self._label_scores = _vectorscope_label_scores(flat, size)
         img = vectorscope.get("image")
         if not isinstance(img, QImage) or img.isNull():
             img = self._build_img(flat, size, zoom_factor)
@@ -690,6 +750,8 @@ class VectorscopeWidget(QWidget):
                 painter.drawImage(0, 0, self._cached_scope_image)
             if self._cached_overlay_image is not None:
                 painter.drawImage(0, 0, self._cached_overlay_image)
+            self._draw_labels(painter, layout["center_x"], layout["center_y"],
+                              layout["plot_radius"], self._label_scores)
         finally:
             painter.end()
 
