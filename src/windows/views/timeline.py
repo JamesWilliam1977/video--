@@ -55,6 +55,18 @@ from classes.color_presets import (
     apply_color_grade_preset,
     is_color_grade_effect,
 )
+from classes.film_grain_presets import (
+    FILM_GRAIN_CLASS_NAME,
+    FILM_GRAIN_PRESET_16MM_CLASSIC,
+    FILM_GRAIN_PRESET_35MM_CLASSIC,
+    FILM_GRAIN_PRESET_35MM_FINE,
+    FILM_GRAIN_PRESET_35MM_GRITTY,
+    FILM_GRAIN_PRESET_HIGH_ISO,
+    FILM_GRAIN_PRESET_NONE,
+    FILM_GRAIN_PRESET_SUPER_8,
+    apply_film_grain_preset,
+    is_film_grain_effect,
+)
 from classes.effect_init import effect_options
 from classes.logger import log
 from classes.query import File, Clip, Transition, Track, Effect
@@ -1585,6 +1597,31 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             Analyze_Colors.triggered.connect(lambda: get_app().window.show_scope_video_docks())
             menu.addMenu(Color_Menu)
 
+            Film_Grain_Menu = StyledContextMenu(title=_("Film Grain"), parent=self)
+            Film_Grain_None = Film_Grain_Menu.addAction(_("No Film Grain"))
+            Film_Grain_None.triggered.connect(partial(
+                self.Film_Grain_Triggered, FILM_GRAIN_PRESET_NONE, clip_ids))
+            Film_Grain_Menu.addSeparator()
+            Film_Grain_35mm_Fine = Film_Grain_Menu.addAction(_("35mm Fine"))
+            Film_Grain_35mm_Fine.triggered.connect(partial(
+                self.Film_Grain_Triggered, FILM_GRAIN_PRESET_35MM_FINE, clip_ids))
+            Film_Grain_35mm_Classic = Film_Grain_Menu.addAction(_("35mm Classic"))
+            Film_Grain_35mm_Classic.triggered.connect(partial(
+                self.Film_Grain_Triggered, FILM_GRAIN_PRESET_35MM_CLASSIC, clip_ids))
+            Film_Grain_35mm_Gritty = Film_Grain_Menu.addAction(_("35mm Gritty"))
+            Film_Grain_35mm_Gritty.triggered.connect(partial(
+                self.Film_Grain_Triggered, FILM_GRAIN_PRESET_35MM_GRITTY, clip_ids))
+            Film_Grain_16mm_Classic = Film_Grain_Menu.addAction(_("16mm Classic"))
+            Film_Grain_16mm_Classic.triggered.connect(partial(
+                self.Film_Grain_Triggered, FILM_GRAIN_PRESET_16MM_CLASSIC, clip_ids))
+            Film_Grain_Super_8 = Film_Grain_Menu.addAction(_("Super 8"))
+            Film_Grain_Super_8.triggered.connect(partial(
+                self.Film_Grain_Triggered, FILM_GRAIN_PRESET_SUPER_8, clip_ids))
+            Film_Grain_High_ISO = Film_Grain_Menu.addAction(_("High ISO"))
+            Film_Grain_High_ISO.triggered.connect(partial(
+                self.Film_Grain_Triggered, FILM_GRAIN_PRESET_HIGH_ISO, clip_ids))
+            menu.addMenu(Film_Grain_Menu)
+
         # Layout Menu
         Layout_Menu = StyledContextMenu(title=_("Layout"), parent=self)
         Layout_None = Layout_Menu.addAction(_("Reset Layout"))
@@ -2193,6 +2230,13 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         effect.Id(get_app().project.generate_id())
         return json.loads(effect.Json())
 
+    def _create_film_grain_effect_json(self):
+        effect = openshot.EffectInfo().CreateEffect(FILM_GRAIN_CLASS_NAME)
+        if effect is None:
+            raise RuntimeError("Unable to create Film Grain effect")
+        effect.Id(get_app().project.generate_id())
+        return json.loads(effect.Json())
+
     def _ensure_color_grade_effect(self, clip):
         if not clip or not self._clip_has_video(clip):
             return None, False
@@ -2253,6 +2297,57 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                 effects[matching_indexes[0]] = preset_effect
                 for index in reversed(matching_indexes[1:]):
                     del effects[index]
+            else:
+                effects.append(preset_effect)
+
+            self.update_clip_data(clip.data, only_basic_props=False, ignore_reader=True)
+            get_app().updates.apply_last_action_to_history(original_clip_data)
+
+    def Film_Grain_Triggered(self, preset_name, clip_ids):
+        """Apply Film Grain presets for selected clips."""
+        for clip_id in clip_ids:
+            clip = Clip.get(id=clip_id)
+            if not clip or not self._clip_has_video(clip):
+                continue
+
+            original_clip_data = json.loads(json.dumps(clip.data))
+            effects = clip.data.get("effects")
+            if not isinstance(effects, list):
+                effects = list(effects) if effects else []
+                clip.data["effects"] = effects
+
+            matching_indexes = [
+                index for index, effect_json in enumerate(effects)
+                if is_film_grain_effect(effect_json)
+            ]
+
+            if preset_name == FILM_GRAIN_PRESET_NONE:
+                if not matching_indexes:
+                    continue
+                clip.data["effects"] = [
+                    effect_json for effect_json in effects
+                    if not is_film_grain_effect(effect_json)
+                ]
+                self.update_clip_data(clip.data, only_basic_props=False, ignore_reader=True)
+                get_app().updates.apply_last_action_to_history(original_clip_data)
+                continue
+
+            source_effect = (
+                effects[matching_indexes[0]]
+                if matching_indexes
+                else self._create_film_grain_effect_json()
+            )
+            preset_effect = apply_film_grain_preset(source_effect, preset_name)
+
+            if matching_indexes:
+                existing_effect = effects[matching_indexes[0]]
+                if existing_effect.get("id"):
+                    preset_effect["id"] = existing_effect["id"]
+                if "order" in existing_effect:
+                    preset_effect["order"] = existing_effect["order"]
+                for index in reversed(matching_indexes[1:]):
+                    del effects[index]
+                effects[matching_indexes[0]] = preset_effect
             else:
                 effects.append(preset_effect)
 

@@ -975,7 +975,6 @@ class PropertiesTableView(QTableView):
 
             # Disable video caching during drag operation (for performance reasons)
             openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
-            log.debug('mouseMoveEvent: Stop caching frames on timeline')
 
             # Get the position of the cursor and % value
             value_column_x = self.columnViewportPosition(1)
@@ -1045,21 +1044,26 @@ class PropertiesTableView(QTableView):
                     # range is unreasonably long (such as position, start, end, etc.... which can be huge #'s)
 
                     # Get the current value and apply fixed adjustments in response to motion
-                    self.new_value = QLocale().system().toDouble(self.selected_item.text())[0]
+                    if self.new_value is None:
+                        self.new_value = QLocale().system().toDouble(self.selected_item.text())[0]
+                    step = 1.0 if property_type == "int" else 0.50
 
                     if drag_diff > 0:
                         # Move to the left by a small amount
-                        self.new_value -= 0.50
+                        self.new_value -= step
                     elif drag_diff < 0:
                         # Move to the right by a small amount
-                        self.new_value += 0.50
+                        self.new_value += step
 
                 # Clamp value between min and max (just incase user drags too big)
                 self.new_value = max(property_min, self.new_value)
                 self.new_value = min(property_max, self.new_value)
 
                 if property_type == "int":
-                    self.new_value = round(self.new_value, 0)
+                    if self.new_value >= 0:
+                        self.new_value = math.floor(self.new_value + 0.5)
+                    else:
+                        self.new_value = math.ceil(self.new_value - 0.5)
 
                 # Update value of this property
                 self.clip_properties_model.value_updated(self.selected_item, -1, self.new_value)
@@ -1093,6 +1097,7 @@ class PropertiesTableView(QTableView):
         # Allow new selection and prepare to set minimum move threshold
         self.lock_selection = False
         self.previous_x = -1
+        self.new_value = None
 
     @pyqtSlot(QColor)
     def color_callback(self, newColor: QColor):

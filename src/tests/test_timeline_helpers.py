@@ -4185,3 +4185,134 @@ class TimelineHelperTests(unittest.TestCase):
         for preset in presets:
             self.assertEqual(len(preset), 5)
             self.assertIsInstance(preset[4], str)
+
+    def test_film_grain_trigger_adds_preset_effect(self):
+        timeline_module = self.timeline_module
+        clip = types.SimpleNamespace(id="C1", data={
+            "id": "C1",
+            "reader": {"has_video": True},
+            "effects": [],
+        })
+
+        class Helper:
+            def __init__(self):
+                self.updates = []
+
+            def _clip_has_video(self, candidate):
+                return timeline_module.TimelineView._clip_has_video(self, candidate)
+
+            def _create_film_grain_effect_json(self):
+                return {"class_name": "FilmGrain", "id": "FG-1", "seed": 77}
+
+            def update_clip_data(self, clip_data, **kwargs):
+                self.updates.append((copy.deepcopy(clip_data), dict(kwargs)))
+
+        history = []
+        fake_app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(
+                apply_last_action_to_history=lambda original: history.append(copy.deepcopy(original))
+            )
+        )
+        helper = Helper()
+
+        with patch.object(timeline_module.Clip, "get", return_value=clip), \
+             patch.object(timeline_module, "get_app", return_value=fake_app):
+            timeline_module.TimelineView.Film_Grain_Triggered(
+                helper,
+                timeline_module.FILM_GRAIN_PRESET_SUPER_8,
+                ["C1"],
+            )
+
+        self.assertEqual(len(clip.data["effects"]), 1)
+        effect = clip.data["effects"][0]
+        self.assertEqual(effect["class_name"], "FilmGrain")
+        self.assertEqual(effect["id"], "FG-1")
+        self.assertEqual(effect["seed"], 77)
+        self.assertEqual(effect["amount"]["Points"][0]["co"]["Y"], 0.62)
+        self.assertEqual(effect["size"]["Points"][0]["co"]["Y"], 0.72)
+        self.assertEqual(len(helper.updates), 1)
+        self.assertEqual(helper.updates[0][1], {"only_basic_props": False, "ignore_reader": True})
+        self.assertEqual(len(history), 1)
+
+    def test_film_grain_trigger_replaces_duplicate_existing_effects(self):
+        timeline_module = self.timeline_module
+        clip = types.SimpleNamespace(id="C1", data={
+            "id": "C1",
+            "reader": {"has_video": True},
+            "effects": [
+                {"class_name": "FilmGrain", "id": "KEEP", "order": 3, "seed": 222},
+                {"class_name": "FilmGrain", "id": "DROP", "seed": 333},
+            ],
+        })
+
+        class Helper:
+            def __init__(self):
+                self.updates = []
+
+            def _clip_has_video(self, candidate):
+                return timeline_module.TimelineView._clip_has_video(self, candidate)
+
+            def update_clip_data(self, clip_data, **kwargs):
+                self.updates.append(copy.deepcopy(clip_data))
+
+        fake_app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(apply_last_action_to_history=lambda _original: None)
+        )
+        helper = Helper()
+
+        with patch.object(timeline_module.Clip, "get", return_value=clip), \
+             patch.object(timeline_module, "get_app", return_value=fake_app):
+            timeline_module.TimelineView.Film_Grain_Triggered(
+                helper,
+                timeline_module.FILM_GRAIN_PRESET_35MM_FINE,
+                ["C1"],
+            )
+
+        self.assertEqual(len(clip.data["effects"]), 1)
+        effect = clip.data["effects"][0]
+        self.assertEqual(effect["id"], "KEEP")
+        self.assertEqual(effect["order"], 3)
+        self.assertEqual(effect["seed"], 222)
+        self.assertEqual(effect["amount"]["Points"][0]["co"]["Y"], 0.14)
+
+    def test_film_grain_trigger_none_removes_existing_effects(self):
+        timeline_module = self.timeline_module
+        clip = types.SimpleNamespace(id="C1", data={
+            "id": "C1",
+            "reader": {"has_video": True},
+            "effects": [
+                {"class_name": "FilmGrain", "id": "FG-1"},
+                {"class_name": "Brightness", "id": "B-1"},
+                {"class_name": "FilmGrain", "id": "FG-2"},
+            ],
+        })
+
+        class Helper:
+            def __init__(self):
+                self.updates = []
+
+            def _clip_has_video(self, candidate):
+                return timeline_module.TimelineView._clip_has_video(self, candidate)
+
+            def update_clip_data(self, clip_data, **kwargs):
+                self.updates.append((copy.deepcopy(clip_data), dict(kwargs)))
+
+        history = []
+        fake_app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(
+                apply_last_action_to_history=lambda original: history.append(copy.deepcopy(original))
+            )
+        )
+        helper = Helper()
+
+        with patch.object(timeline_module.Clip, "get", return_value=clip), \
+             patch.object(timeline_module, "get_app", return_value=fake_app):
+            timeline_module.TimelineView.Film_Grain_Triggered(
+                helper,
+                timeline_module.FILM_GRAIN_PRESET_NONE,
+                ["C1"],
+            )
+
+        self.assertEqual(clip.data["effects"], [{"class_name": "Brightness", "id": "B-1"}])
+        self.assertEqual(len(helper.updates), 1)
+        self.assertEqual(len(history), 1)
