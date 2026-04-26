@@ -48,7 +48,7 @@ from qt_api import QIcon, QCursor, QKeySequence, QTextCursor
 from qt_api import show_open_file_dialog, show_save_file_dialog, file_exists, ensure_extension, path_basename
 from qt_api import (
     QMainWindow, QWidget, QDockWidget,
-    QMenu, QMessageBox, QDialog, QFileDialog, QInputDialog,
+    QApplication, QMenu, QMessageBox, QDialog, QFileDialog, QInputDialog,
     QAction, QActionGroup, QSizePolicy,
     QStatusBar, QToolBar, QToolButton,
     QLineEdit, QComboBox, QTextEdit, QShortcut, QTabBar, QTabWidget, QAbstractButton,
@@ -4555,7 +4555,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Set tab drawBase property
         self.set_tab_drawbase()
 
-    def _schedule_dock_style_update(self, theme_changed=False):
+    def _schedule_dock_style_update(self, *_args, theme_changed=False, delay=150):
         """Defer dock titlebar restyling until dock/layout churn has settled."""
         if not hasattr(self, "_dock_style_timer"):
             self._dock_style_timer = QTimer(self)
@@ -4564,9 +4564,29 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self._dock_style_theme_changed = False
         if theme_changed:
             self._dock_style_theme_changed = True
-        self._dock_style_timer.start(150)
+        self._dock_style_timer.start(delay)
+
+    def _on_dock_top_level_changed(self, floating=None, *_args):
+        """Handle dock float/dock transitions.
+
+        Floating docks need their title bar state corrected as soon as they
+        detach. Broader dock restyling is deferred until the mouse is released:
+        setTitleBarWidget() reparents widgets, and doing that while Qt is in a
+        native dock drag can interrupt the drag on Windows.
+        """
+        self._mark_dock_interaction_active()
+        if bool(floating):
+            sender = getattr(self, "sender", None)
+            dock = sender() if sender else None
+            if dock and dock.objectName() != "dockTimeline":
+                dock._titlebar_state = "floating"
+                dock.setTitleBarWidget(None)
+        self._schedule_dock_style_update(delay=0)
 
     def _apply_scheduled_dock_style_update(self):
+        if QApplication.mouseButtons() & Qt.LeftButton:
+            self._dock_style_timer.start(50)
+            return
         theme_changed = bool(getattr(self, "_dock_style_theme_changed", False))
         self._dock_style_theme_changed = False
         self.style_dock_widgets(theme_changed=theme_changed)
@@ -4965,7 +4985,7 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         for dock_widget in self.getDocks():
             dock_widget.dockLocationChanged.connect(self._schedule_dock_style_update)
             dock_widget.dockLocationChanged.connect(self._mark_dock_interaction_active)
-            dock_widget.topLevelChanged.connect(self._mark_dock_interaction_active)
+            dock_widget.topLevelChanged.connect(self._on_dock_top_level_changed)
             # Re-style siblings when any dock is shown/hidden (tab group may shrink to 1)
             dock_widget.visibilityChanged.connect(self._schedule_dock_style_update)
 
