@@ -173,6 +173,85 @@ class MainWindowTests(unittest.TestCase):
                 remaining = sorted(os.listdir(recovery_dir))
                 self.assertEqual(remaining, ["080-yesterday-project.zip", "100-newest-project.zip"])
 
+    def test_dock_style_scheduler_ignores_signal_payloads(self):
+        starts = []
+        callbacks = []
+
+        class FakeSignal:
+            def connect(self, callback):
+                callbacks.append(callback)
+
+        class FakeTimer:
+            def __init__(self, parent=None):
+                self.timeout = FakeSignal()
+
+            def setSingleShot(self, enabled):
+                pass
+
+            def start(self, delay):
+                starts.append(delay)
+
+        fake_window = types.SimpleNamespace(
+            _apply_scheduled_dock_style_update=lambda: None,
+        )
+
+        with patch.object(self.main_window_module, "QTimer", FakeTimer):
+            self.main_window_module.MainWindow._schedule_dock_style_update(
+                fake_window,
+                True,
+            )
+            self.assertFalse(fake_window._dock_style_theme_changed)
+            self.assertEqual(starts[-1], 150)
+
+            self.main_window_module.MainWindow._schedule_dock_style_update(
+                fake_window,
+                theme_changed=True,
+                delay=0,
+            )
+            self.assertTrue(fake_window._dock_style_theme_changed)
+            self.assertEqual(starts[-1], 0)
+
+    def test_dock_top_level_change_marks_interaction_and_restyles_immediately(self):
+        calls = []
+        fake_window = types.SimpleNamespace(
+            _mark_dock_interaction_active=lambda: calls.append("interaction"),
+            _schedule_dock_style_update=lambda **kwargs: calls.append(("style", kwargs)),
+        )
+
+        self.main_window_module.MainWindow._on_dock_top_level_changed(fake_window, True)
+
+        self.assertEqual(calls, ["interaction", ("style", {"delay": 0})])
+
+    def test_scheduled_dock_style_update_waits_for_mouse_release(self):
+        starts = []
+        styles = []
+        fake_window = types.SimpleNamespace(
+            _dock_style_theme_changed=False,
+            _dock_style_timer=types.SimpleNamespace(start=starts.append),
+            style_dock_widgets=lambda theme_changed=False: styles.append(theme_changed),
+        )
+
+        with patch.object(
+            self.main_window_module.QApplication,
+            "mouseButtons",
+            return_value=Qt.LeftButton,
+        ):
+            self.main_window_module.MainWindow._apply_scheduled_dock_style_update(fake_window)
+
+        self.assertEqual(starts, [50])
+        self.assertEqual(styles, [])
+
+        fake_window._dock_style_theme_changed = True
+        with patch.object(
+            self.main_window_module.QApplication,
+            "mouseButtons",
+            return_value=Qt.NoButton,
+        ):
+            self.main_window_module.MainWindow._apply_scheduled_dock_style_update(fake_window)
+
+        self.assertEqual(styles, [True])
+        self.assertFalse(fake_window._dock_style_theme_changed)
+
     def test_save_project_emits_saved_signal_on_success(self):
         saved = SignalRecorder()
         failed = SignalRecorder()

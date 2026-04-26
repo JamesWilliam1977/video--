@@ -196,7 +196,7 @@ class PropertyDelegate(QItemDelegate):
                 painter.drawPath(path)
                 painter.setClipping(False)
 
-                if points > 1:
+                if points > 1 and property_type not in ["colorgrade_curve", "colorgrade_wheels"]:
                     # Draw interpolation icon on top
                     painter.drawPixmap(
                         int(option.rect.x() + option.rect.width() - 30.0),
@@ -215,7 +215,7 @@ class PropertyDelegate(QItemDelegate):
                     curve = normalize_curve_data(cur_property[1].get("curve"))
                     is_enabled = curve_enabled_at_frame(curve, frame_number)
                     nodes = curve_nodes_at_frame(curve, frame_number)
-                preview_rect = QRectF(option.rect.adjusted(8, 8, -8, -8))
+                preview_rect = QRectF(option.rect.adjusted(8, 8, -32 if points > 1 else -8, -8))
                 line_color = Qt.white if is_enabled else QColor(100, 100, 100)
                 painter.setPen(QPen(line_color, 1.5))
                 path = QPainterPath()
@@ -257,7 +257,7 @@ class PropertyDelegate(QItemDelegate):
                 is_enabled = wheels.get("enabled", True)
                 circle_color = QColor(Qt.white) if is_enabled else QColor(100, 100, 100)
                 names = ["global", "shadows", "midtones", "highlights"]
-                preview_rect = QRectF(option.rect.adjusted(6, 4, -6, -4))
+                preview_rect = QRectF(option.rect.adjusted(6, 4, -32 if points > 1 else -6, -4))
                 wheel_width = preview_rect.width() / 4.0
                 for idx, name in enumerate(names):
                     wheel = wheels[name]
@@ -298,6 +298,12 @@ class PropertyDelegate(QItemDelegate):
                     luma_fill_right = luma_left + ((luma_right - luma_left) * luma_value)
                     painter.setPen(QPen(circle_color, 2.0))
                     painter.drawLine(QPointF(luma_left, luma_y), QPointF(luma_fill_right, luma_y))
+
+            if points > 1 and property_type in ["colorgrade_curve", "colorgrade_wheels"]:
+                painter.drawPixmap(
+                    int(option.rect.x() + option.rect.width() - 30.0),
+                    int(option.rect.y() + 4),
+                    self.curve_pixmaps[interpolation])
 
             value = index.data(Qt.DisplayRole)
             if value and property_type not in ["colorgrade_curve", "colorgrade_wheels"]:

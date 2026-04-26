@@ -599,6 +599,98 @@ class PropertiesModel(updates.UpdateInterface):
                     if current_row >= 0:
                         self.parent.setCurrentIndex(self.model.index(current_row, 0))
 
+    def _colorgrade_interpolation_at_frame(self, data, property_type, frame_number):
+        def _find_in_keyframe(kf_data):
+            points = kf_data.get("Points") if isinstance(kf_data, dict) else None
+            if not isinstance(points, list):
+                return None
+            for point in points:
+                try:
+                    if int(round(float(point["co"]["X"]))) == int(round(frame_number)):
+                        return int(point.get("interpolation", openshot.LINEAR))
+                except (KeyError, TypeError, ValueError):
+                    continue
+            return None
+
+        def _walk(value):
+            found = _find_in_keyframe(value)
+            if found is not None:
+                return found
+            if isinstance(value, dict):
+                for child in value.values():
+                    found = _walk(child)
+                    if found is not None:
+                        return found
+            elif isinstance(value, list):
+                for child in value:
+                    found = _walk(child)
+                    if found is not None:
+                        return found
+            return None
+
+        found = _walk(data)
+        return openshot.LINEAR if found is None else found
+
+    def _apply_colorgrade_interpolation(self, data, property_type, previous_point_x,
+                                        closest_point_x, interpolation, interpolation_details):
+        if interpolation < 0:
+            return data, False
+
+        from windows.color_grade_editor import normalize_curve_data, normalize_wheels_data
+
+        if property_type == "colorgrade_curve":
+            updated = normalize_curve_data(data)
+        else:
+            updated = normalize_wheels_data(data)
+
+        changed = False
+        previous_frame = int(round(previous_point_x))
+        closest_frame = int(round(closest_point_x))
+
+        def _frame_matches(point, frame):
+            try:
+                return int(round(float(point.get("co", {}).get("X")))) == frame
+            except (TypeError, ValueError):
+                return False
+
+        def _update_keyframe(kf_data):
+            nonlocal changed
+            points = kf_data.get("Points") if isinstance(kf_data, dict) else None
+            if not isinstance(points, list):
+                return
+            for point in points:
+                if _frame_matches(point, previous_frame):
+                    changed = True
+                    if int(point.get("interpolation", openshot.LINEAR)) == openshot.BEZIER and interpolation_details:
+                        point["handle_right"] = point.get("handle_right") or {"Y": 0.0, "X": 0.0}
+                        point["handle_right"]["X"] = interpolation_details[0]
+                        point["handle_right"]["Y"] = interpolation_details[1]
+                    else:
+                        point.pop("handle_right", None)
+                if _frame_matches(point, closest_frame):
+                    changed = True
+                    point["interpolation"] = interpolation
+                    if interpolation == openshot.BEZIER and interpolation_details:
+                        point["handle_left"] = point.get("handle_left") or {"Y": 0.0, "X": 0.0}
+                        point["handle_left"]["X"] = interpolation_details[2]
+                        point["handle_left"]["Y"] = interpolation_details[3]
+                    else:
+                        point.pop("handle_left", None)
+
+        def _walk(value):
+            if isinstance(value, dict):
+                if isinstance(value.get("Points"), list):
+                    _update_keyframe(value)
+                    return
+                for child in value.values():
+                    _walk(child)
+            elif isinstance(value, list):
+                for child in value:
+                    _walk(child)
+
+        _walk(updated)
+        return updated, changed
+
     def value_updated(self, item, interpolation=-1, value=None, interpolation_details=[]):
         """ Table cell change event - also handles context menu to update interpolation value """
 
@@ -689,7 +781,19 @@ class PropertiesModel(updates.UpdateInterface):
                     log.debug("%s: update property %s. %s", log_id, property_key, clip_data.get(property_key))
 
                     # Check the type of property (some are keyframe, and some are not)
-                    if property_type not in ["reader", "colorgrade_curve", "colorgrade_wheels"] and isinstance(clip_data[property_key], dict):
+                    if property_type in ["colorgrade_curve", "colorgrade_wheels"] and interpolation > -1:
+                        updated_value, clip_updated = self._apply_colorgrade_interpolation(
+                            clip_data[property_key],
+                            property_type,
+                            previous_point_x,
+                            closest_point_x,
+                            interpolation,
+                            interpolation_details,
+                        )
+                        if clip_updated:
+                            clip_data[property_key] = updated_value
+
+                    elif property_type not in ["reader", "colorgrade_curve", "colorgrade_wheels"] and isinstance(clip_data[property_key], dict):
                         # Keyframe
 
                         # Protection from HUGE scale values
@@ -959,9 +1063,22 @@ class PropertiesModel(updates.UpdateInterface):
         if type in ["colorgrade_curve", "colorgrade_wheels"]:
             from windows.color_grade_editor import colorgrade_keyframe_frames
             data_key = "curve" if type == "colorgrade_curve" else "wheels"
-            frame_set = colorgrade_keyframe_frames(property[1].get(data_key), type)
+            colorgrade_data = property[1].get(data_key)
+            frame_set = colorgrade_keyframe_frames(colorgrade_data, type)
             points = max(1, len(frame_set))
             keyframe = int(round(self.frame_number)) in frame_set
+            if frame_set:
+                sorted_frames = sorted(frame_set)
+                current_frame = int(round(self.frame_number))
+                closest_frame = next((frame for frame in sorted_frames if frame >= current_frame), sorted_frames[-1])
+                closest_index = sorted_frames.index(closest_frame)
+                previous_frame = sorted_frames[max(0, closest_index - 1)]
+                property[1]["closest_point_x"] = closest_frame
+                property[1]["previous_point_x"] = previous_frame
+                interpolation = self._colorgrade_interpolation_at_frame(colorgrade_data, type, closest_frame)
+                property[1]["interpolation"] = interpolation
+            property[1]["points"] = points
+            property[1]["keyframe"] = keyframe
         choices = property[1]["choices"]
         # Add object id reference to QStandardItem
         property[1]["object_id"] = object_id

@@ -1224,6 +1224,13 @@ class PropertySlider(QWidget):
         self._decimals = decimals
         self._drag_active = False
         self._editing = False
+        self._keyframe_points = 1
+        self._interpolation = openshot.LINEAR
+        self._curve_pixmaps = {
+            openshot.BEZIER: QIcon(":/curves/keyframe-%s.png" % openshot.BEZIER).pixmap(20, 20),
+            openshot.LINEAR: QIcon(":/curves/keyframe-%s.png" % openshot.LINEAR).pixmap(20, 20),
+            openshot.CONSTANT: QIcon(":/curves/keyframe-%s.png" % openshot.CONSTANT).pixmap(20, 20),
+        }
 
         self.setFocusPolicy(Qt.ClickFocus)
         self.setFixedHeight(30)
@@ -1245,6 +1252,11 @@ class PropertySlider(QWidget):
         self._value = max(self._min, min(self._max, float(value)))
         if not self._editing:
             self.update()
+
+    def set_keyframe_status(self, points=1, interpolation=openshot.LINEAR):
+        self._keyframe_points = max(1, int(points or 1))
+        self._interpolation = int(interpolation)
+        self.update()
 
     def _value_percent(self):
         span = self._max - self._min
@@ -1287,8 +1299,16 @@ class PropertySlider(QWidget):
             painter.fillPath(fill_path, gradient)
             painter.setClipping(False)
 
+        text_rect = QRectF(rect)
+        if self._keyframe_points > 1:
+            painter.drawPixmap(
+                int(rect.x() + rect.width() - 26.0),
+                int(rect.y() + 5.0),
+                self._curve_pixmaps.get(self._interpolation, self._curve_pixmaps[openshot.LINEAR]))
+            text_rect.adjust(0.0, 0.0, -24.0, 0.0)
+
         painter.setPen(QPen(Qt.white))
-        painter.drawText(rect, Qt.AlignCenter, self._fmt(self._value))
+        painter.drawText(text_rect, Qt.AlignCenter, self._fmt(self._value))
         painter.end()
 
     def resizeEvent(self, event):
@@ -1397,6 +1417,10 @@ class WheelRow(QWidget):
 
         self.amount_input = PropertySlider(0.0, 1.0, decimals=2, parent=self)
         self.luma_input = PropertySlider(-1.0, 1.0, decimals=2, parent=self)
+        for key, control in (("amount", self.amount_input), ("luma", self.luma_input)):
+            control.setContextMenuPolicy(Qt.CustomContextMenu)
+            control.customContextMenuRequested.connect(
+                lambda pos, slider_key=key, widget=control: self._show_slider_menu(slider_key, pos, widget))
 
         amount_row = QHBoxLayout()
         amount_label = QLabel("Amount", self)
@@ -1437,6 +1461,8 @@ class WheelRow(QWidget):
         self.luma_input.blockSignals(True)
         self.amount_input.setValue(float(data["amount"]))
         self.luma_input.setValue(float(data["luma"]))
+        self.amount_input.set_keyframe_status(*self._keyframe_status(self._data.get("amount_keyframes")))
+        self.luma_input.set_keyframe_status(*self._keyframe_status(self._data.get("luma_keyframes")))
         self.amount_input.blockSignals(False)
         self.luma_input.blockSignals(False)
 
@@ -1488,17 +1514,329 @@ class WheelRow(QWidget):
         self.changed.emit()
         self.dragFinished.emit()
 
-    def _show_wheel_menu(self, pos):
+    def _frame_set(self):
+        frames = set()
+
+        def _collect(kf_data):
+            points = kf_data.get("Points") if isinstance(kf_data, dict) else None
+            if not isinstance(points, list):
+                return
+            for point in points:
+                try:
+                    frames.add(int(round(float(point["co"]["X"]))))
+                except (KeyError, TypeError, ValueError):
+                    continue
+
+        color_kf = self._data.get("color_keyframes") or {}
+        for channel in ("red", "green", "blue", "alpha"):
+            _collect(color_kf.get(channel))
+        _collect(self._data.get("amount_keyframes"))
+        _collect(self._data.get("luma_keyframes"))
+        return frames
+
+    def _keyframe_points(self, kf_data):
+        points = kf_data.get("Points") if isinstance(kf_data, dict) else None
+        return points if isinstance(points, list) else []
+
+    def _keyframe_status(self, kf_data):
+        points = self._keyframe_points(kf_data)
+        target = self._interpolation_target_frame_for(kf_data)
+        interpolation = openshot.LINEAR
+        for point in points:
+            try:
+                if int(round(float(point["co"]["X"]))) == int(round(target)):
+                    interpolation = int(point.get("interpolation", openshot.LINEAR))
+                    break
+            except (KeyError, TypeError, ValueError):
+                continue
+        return max(1, len(points)), interpolation
+
+    def _has_keyframe_at(self, kf_data, frame_number):
+        target = int(round(frame_number))
+        for point in self._keyframe_points(kf_data):
+            try:
+                if int(round(float(point["co"]["X"]))) == target:
+                    return True
+            except (KeyError, TypeError, ValueError):
+                continue
+        return False
+
+    def _interpolation_target_frame(self):
+        frames = sorted(self._frame_set())
+        if not frames:
+            return int(round(self._frame_number))
+        current = int(round(self._frame_number))
+        return next((frame for frame in frames if frame >= current), frames[-1])
+
+    def _interpolation_target_frame_for(self, kf_data):
+        frames = []
+        for point in self._keyframe_points(kf_data):
+            try:
+                frames.append(int(round(float(point["co"]["X"]))))
+            except (KeyError, TypeError, ValueError):
+                continue
+        frames = sorted(set(frames))
+        if not frames:
+            return int(round(self._frame_number))
+        current = int(round(self._frame_number))
+        return next((frame for frame in frames if frame >= current), frames[-1])
+
+    def _previous_interpolation_frame(self, target_frame):
+        frames = sorted(self._frame_set())
+        if not frames:
+            return int(round(target_frame))
+        try:
+            target_index = frames.index(int(round(target_frame)))
+        except ValueError:
+            target_index = 0
+        return frames[max(0, target_index - 1)]
+
+    def _previous_interpolation_frame_for(self, kf_data, target_frame):
+        frames = []
+        for point in self._keyframe_points(kf_data):
+            try:
+                frames.append(int(round(float(point["co"]["X"]))))
+            except (KeyError, TypeError, ValueError):
+                continue
+        frames = sorted(set(frames))
+        if not frames:
+            return int(round(target_frame))
+        try:
+            target_index = frames.index(int(round(target_frame)))
+        except ValueError:
+            target_index = 0
+        return frames[max(0, target_index - 1)]
+
+    def _apply_keyframe_interpolation(self, previous_frame, target_frame, interpolation, preset=None):
+        changed = False
+        preset = preset or []
+
+        def _matches(point, frame):
+            try:
+                return int(round(float(point.get("co", {}).get("X")))) == int(round(frame))
+            except (TypeError, ValueError):
+                return False
+
+        def _update(kf_data):
+            nonlocal changed
+            points = kf_data.get("Points") if isinstance(kf_data, dict) else None
+            if not isinstance(points, list):
+                return
+            for point in points:
+                if _matches(point, previous_frame):
+                    changed = True
+                    if int(point.get("interpolation", openshot.LINEAR)) == openshot.BEZIER and preset:
+                        point["handle_right"] = point.get("handle_right") or {"Y": 0.0, "X": 0.0}
+                        point["handle_right"]["X"] = preset[0]
+                        point["handle_right"]["Y"] = preset[1]
+                    else:
+                        point.pop("handle_right", None)
+                if _matches(point, target_frame):
+                    changed = True
+                    point["interpolation"] = int(interpolation)
+                    if interpolation == openshot.BEZIER and preset:
+                        point["handle_left"] = point.get("handle_left") or {"Y": 0.0, "X": 0.0}
+                        point["handle_left"]["X"] = preset[2]
+                        point["handle_left"]["Y"] = preset[3]
+                    else:
+                        point.pop("handle_left", None)
+
+        color_kf = self._data.get("color_keyframes") or {}
+        for channel in ("red", "green", "blue", "alpha"):
+            _update(color_kf.get(channel))
+        _update(self._data.get("amount_keyframes"))
+        _update(self._data.get("luma_keyframes"))
+
+        if changed:
+            self.dragStarted.emit()
+            self._data = normalize_wheels_data({"global": self._data})["global"]
+            self._apply_data()
+            self.changed.emit()
+            self.dragFinished.emit()
+
+    def _set_wheel_interpolation(self, interpolation, preset=None):
+        target = self._interpolation_target_frame()
+        previous = self._previous_interpolation_frame(target)
+        self._apply_keyframe_interpolation(previous, target, interpolation, preset)
+
+    def _set_slider_interpolation(self, key, interpolation, preset=None):
+        key_name = f"{key}_keyframes"
+        target = self._interpolation_target_frame_for(self._data.get(key_name))
+        previous = self._previous_interpolation_frame_for(self._data.get(key_name), target)
+        self._apply_keyframe_interpolation_to_key(key_name, previous, target, interpolation, preset)
+
+    def _apply_keyframe_interpolation_to_key(self, key_name, previous_frame, target_frame, interpolation, preset=None):
+        changed = False
+        preset = preset or []
+        kf_data = self._data.get(key_name)
+
+        def _matches(point, frame):
+            try:
+                return int(round(float(point.get("co", {}).get("X")))) == int(round(frame))
+            except (TypeError, ValueError):
+                return False
+
+        points = self._keyframe_points(kf_data)
+        for point in points:
+            if _matches(point, previous_frame):
+                changed = True
+                if int(point.get("interpolation", openshot.LINEAR)) == openshot.BEZIER and preset:
+                    point["handle_right"] = point.get("handle_right") or {"Y": 0.0, "X": 0.0}
+                    point["handle_right"]["X"] = preset[0]
+                    point["handle_right"]["Y"] = preset[1]
+                else:
+                    point.pop("handle_right", None)
+            if _matches(point, target_frame):
+                changed = True
+                point["interpolation"] = int(interpolation)
+                if interpolation == openshot.BEZIER and preset:
+                    point["handle_left"] = point.get("handle_left") or {"Y": 0.0, "X": 0.0}
+                    point["handle_left"]["X"] = preset[2]
+                    point["handle_left"]["Y"] = preset[3]
+                else:
+                    point.pop("handle_left", None)
+
+        if changed:
+            self.dragStarted.emit()
+            self._data[key_name] = _normalize_keyframe_data(kf_data)
+            self._apply_data()
+            self.changed.emit()
+            self.dragFinished.emit()
+
+    def _insert_keyframe(self):
+        snapshot = self._snapshot()
+        self.dragStarted.emit()
+        self._data["color_keyframes"] = _set_color_value(
+            self._data.get("color_keyframes"), self._frame_number, QColor(snapshot["color"]))
+        self._data["amount_keyframes"] = _set_keyframe_value(
+            self._data.get("amount_keyframes"), self._frame_number, snapshot["amount"])
+        self._data["luma_keyframes"] = _set_keyframe_value(
+            self._data.get("luma_keyframes"), self._frame_number, snapshot["luma"])
+        self._data = normalize_wheels_data({"global": self._data})["global"]
+        self._apply_data()
+        self.changed.emit()
+        self.dragFinished.emit()
+
+    def _remove_keyframe(self):
+        target = int(round(self._frame_number))
+        changed = False
+
+        def _remove(kf_data):
+            nonlocal changed
+            points = kf_data.get("Points") if isinstance(kf_data, dict) else None
+            if not isinstance(points, list) or len(points) <= 1:
+                return
+            filtered = []
+            for point in points:
+                try:
+                    keep = int(round(float(point["co"]["X"]))) != target
+                except (KeyError, TypeError, ValueError):
+                    keep = True
+                if keep:
+                    filtered.append(point)
+            if len(filtered) != len(points):
+                kf_data["Points"] = filtered
+                changed = True
+
+        color_kf = self._data.get("color_keyframes") or {}
+        for channel in ("red", "green", "blue", "alpha"):
+            _remove(color_kf.get(channel))
+        _remove(self._data.get("amount_keyframes"))
+        _remove(self._data.get("luma_keyframes"))
+
+        if changed:
+            self.dragStarted.emit()
+            self._data = normalize_wheels_data({"global": self._data})["global"]
+            self._apply_data()
+            self.changed.emit()
+            self.dragFinished.emit()
+
+    def _insert_slider_keyframe(self, key):
+        value = self._snapshot().get(key, 0.0)
+        key_name = f"{key}_keyframes"
+        self.dragStarted.emit()
+        self._data[key_name] = _set_keyframe_value(
+            self._data.get(key_name), self._frame_number, value)
+        self._data = normalize_wheels_data({"global": self._data})["global"]
+        self._apply_data()
+        self.changed.emit()
+        self.dragFinished.emit()
+
+    def _remove_slider_keyframe(self, key):
+        key_name = f"{key}_keyframes"
+        target = int(round(self._frame_number))
+        points = self._keyframe_points(self._data.get(key_name))
+        if len(points) <= 1:
+            return
+        filtered = []
+        for point in points:
+            try:
+                keep = int(round(float(point["co"]["X"]))) != target
+            except (KeyError, TypeError, ValueError):
+                keep = True
+            if keep:
+                filtered.append(point)
+        if len(filtered) == len(points):
+            return
+        self.dragStarted.emit()
+        self._data[key_name]["Points"] = filtered
+        self._data = normalize_wheels_data({"global": self._data})["global"]
+        self._apply_data()
+        self.changed.emit()
+        self.dragFinished.emit()
+
+    def _show_slider_menu(self, key, pos, source_widget):
+        _ = get_app()._tr
+        menu = StyledContextMenu(parent=self)
+        populate_keyframe_context_menu(
+            menu,
+            bezier_callback=lambda preset: self._set_slider_interpolation(key, openshot.BEZIER, preset),
+            linear_callback=lambda: self._set_slider_interpolation(key, openshot.LINEAR),
+            constant_callback=lambda: self._set_slider_interpolation(key, openshot.CONSTANT),
+            bezier_icon=None,
+            linear_icon=None,
+            constant_icon=None,
+        )
+        menu.addSeparator()
+        insert_action = QAction(_("Insert Keyframe"), self)
+        insert_action.triggered.connect(lambda: self._insert_slider_keyframe(key))
+        menu.addAction(insert_action)
+        remove_action = QAction(_("Remove Keyframe"), self)
+        remove_action.setEnabled(self._has_keyframe_at(self._data.get(f"{key}_keyframes"), self._frame_number))
+        remove_action.triggered.connect(lambda: self._remove_slider_keyframe(key))
+        menu.addAction(remove_action)
+        menu.exec_(source_widget.mapToGlobal(pos))
+
+    def _show_wheel_menu(self, pos, source_widget=None):
         _ = get_app()._tr
         menu = StyledContextMenu(parent=self)
         color_action = QAction(_("Choose Color..."), self)
         color_action.triggered.connect(self.pick_color)
         menu.addAction(color_action)
         menu.addSeparator()
+        populate_keyframe_context_menu(
+            menu,
+            bezier_callback=lambda preset: self._set_wheel_interpolation(openshot.BEZIER, preset),
+            linear_callback=lambda: self._set_wheel_interpolation(openshot.LINEAR),
+            constant_callback=lambda: self._set_wheel_interpolation(openshot.CONSTANT),
+            bezier_icon=None,
+            linear_icon=None,
+            constant_icon=None,
+        )
+        menu.addSeparator()
+        insert_action = QAction(_("Insert Keyframe"), self)
+        insert_action.triggered.connect(self._insert_keyframe)
+        menu.addAction(insert_action)
+        remove_action = QAction(_("Remove Keyframe"), self)
+        remove_action.setEnabled(int(round(self._frame_number)) in self._frame_set())
+        remove_action.triggered.connect(self._remove_keyframe)
+        menu.addAction(remove_action)
+        menu.addSeparator()
         reset_action = QAction(_("Reset"), self)
         reset_action.triggered.connect(self.reset_to_neutral)
         menu.addAction(reset_action)
-        menu.exec_(self.wheel_control.mapToGlobal(pos))
+        source_widget = source_widget or self.wheel_control
+        menu.exec_(source_widget.mapToGlobal(pos))
 
     def value(self):
         return copy.deepcopy(self._data)

@@ -36,6 +36,7 @@ if PATH not in sys.path:
 from windows.color_grade_editor import (  # noqa: E402
     _set_color_value,
     _set_keyframe_value,
+    colorgrade_keyframe_frames,
     curve_enabled_at_frame,
     curve_nodes_at_frame,
     default_curve_data,
@@ -47,6 +48,7 @@ from windows.color_grade_editor import (  # noqa: E402
     wheel_snapshot,
     wheels_enabled_at_frame,
 )
+from windows.models.properties_model import PropertiesModel  # noqa: E402
 from qt_api import QColor  # noqa: E402
 import openshot  # noqa: E402
 
@@ -122,6 +124,76 @@ class ColorGradeEditorTests(unittest.TestCase):
     def test_normalize_wheels_data_preserves_enabled_flag(self):
         wheels = normalize_wheels_data({"enabled": False})
         self.assertFalse(wheels_enabled_at_frame(wheels, 1))
+
+    def test_colorgrade_keyframe_frames_includes_wheel_subkeyframes(self):
+        wheels = default_wheels_data()
+        wheels["global"]["color_keyframes"]["red"]["Points"].append({
+            "co": {"X": 24.0, "Y": 64.0},
+            "interpolation": openshot.CONSTANT,
+        })
+        wheels["highlights"]["luma_keyframes"]["Points"].append({
+            "co": {"X": 48.0, "Y": 0.2},
+            "interpolation": openshot.LINEAR,
+        })
+
+        self.assertEqual(
+            colorgrade_keyframe_frames(wheels, "colorgrade_wheels"),
+            {1, 24, 48},
+        )
+
+    def test_properties_model_applies_interpolation_to_colorgrade_wheel_frame(self):
+        wheels = default_wheels_data()
+        for keyframe in (
+            wheels["global"]["color_keyframes"]["red"],
+            wheels["global"]["color_keyframes"]["green"],
+            wheels["global"]["amount_keyframes"],
+            wheels["shadows"]["luma_keyframes"],
+        ):
+            keyframe["Points"].append({
+                "co": {"X": 24.0, "Y": 0.5},
+                "interpolation": openshot.LINEAR,
+            })
+
+        helper = PropertiesModel.__new__(PropertiesModel)
+        updated, changed = helper._apply_colorgrade_interpolation(
+            wheels,
+            "colorgrade_wheels",
+            1,
+            24,
+            openshot.CONSTANT,
+            [],
+        )
+
+        self.assertTrue(changed)
+        self.assertEqual(updated["global"]["color_keyframes"]["red"]["Points"][1]["interpolation"], openshot.CONSTANT)
+        self.assertEqual(updated["global"]["color_keyframes"]["green"]["Points"][1]["interpolation"], openshot.CONSTANT)
+        self.assertEqual(updated["global"]["amount_keyframes"]["Points"][1]["interpolation"], openshot.CONSTANT)
+        self.assertEqual(updated["shadows"]["luma_keyframes"]["Points"][1]["interpolation"], openshot.CONSTANT)
+
+    def test_properties_model_applies_interpolation_to_colorgrade_curve_frame(self):
+        curve = default_curve_data()
+        curve["nodes"][0]["y"]["Points"].append({
+            "co": {"X": 32.0, "Y": 0.4},
+            "interpolation": openshot.LINEAR,
+        })
+        curve["nodes"][1]["x"]["Points"].append({
+            "co": {"X": 32.0, "Y": 0.8},
+            "interpolation": openshot.LINEAR,
+        })
+
+        helper = PropertiesModel.__new__(PropertiesModel)
+        updated, changed = helper._apply_colorgrade_interpolation(
+            curve,
+            "colorgrade_curve",
+            1,
+            32,
+            openshot.CONSTANT,
+            [],
+        )
+
+        self.assertTrue(changed)
+        self.assertEqual(updated["nodes"][0]["y"]["Points"][1]["interpolation"], openshot.CONSTANT)
+        self.assertEqual(updated["nodes"][1]["x"]["Points"][1]["interpolation"], openshot.CONSTANT)
 
     def test_achromatic_color_detection_treats_white_as_neutral(self):
         self.assertTrue(is_achromatic_color(QColor("#ffffff")))
