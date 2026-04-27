@@ -55,6 +55,12 @@ class VideoWidget(QWidget, updates.UpdateInterface):
     regionRectChanged = pyqtSignal()
     scopeRegionCancelled = pyqtSignal()
 
+    def _is_playing(self):
+        try:
+            return get_app().window.preview_thread.player.Mode() == openshot.PLAYBACK_PLAY
+        except Exception:
+            return False
+
     def _snap_angle(self, angle_degrees, step_degrees=15.0):
         """Snap an angle to the nearest increment (degrees)."""
         step = float(step_degrees) if step_degrees else 0.0
@@ -795,7 +801,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.mouse_position = event.pos()
             self.middle_pan_active = True
             self.setCursor(Qt.ClosedHandCursor)
-            openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
+            if not self._is_playing():
+                openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
             return
         self.mouse_pressed = True
         self.mouse_dragging = False
@@ -821,7 +828,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self.region_press_outside = True
                 self.scope_region_drag_anchor = QPointF(point)
                 self._apply_scope_region_rect(QRectF(point, point), emit_signal=True, enforce_min=False)
-            openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
+            if not self._is_playing():
+                openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
             log.debug('mousePressEvent: Stop caching frames on timeline')
             return
 
@@ -880,7 +888,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.original_effect_data = None
 
         # Disable video caching during drag operation (for performance reasons)
-        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
+        if not self._is_playing():
+            openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
         log.debug('mousePressEvent: Stop caching frames on timeline')
 
     def mouseReleaseEvent(self, event):

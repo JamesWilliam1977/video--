@@ -728,8 +728,14 @@ class PropertiesTableView(QTableView):
 
         self._sync_color_grade_editors_to_current_frame()
 
+    def _is_playing(self):
+        try:
+            return get_app().window.preview_thread.player.Mode() == openshot.PLAYBACK_PLAY
+        except Exception:
+            return False
+
     def pause_live_property_caching(self):
-        if self.live_property_cache_paused:
+        if self.live_property_cache_paused or self._is_playing():
             return
         openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
         self.live_property_cache_paused = True
@@ -739,7 +745,8 @@ class PropertiesTableView(QTableView):
         if not self.live_property_cache_paused:
             return
         self.live_property_cache_paused = False
-        log.debug("resume_live_property_caching")
+        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
+        log.debug("resume_live_property_caching: Resume caching frames on timeline")
 
     def _wheels_drag_started(self):
         """Open a per-drag undo transaction when user starts dragging a wheel control."""
@@ -979,8 +986,9 @@ class PropertiesTableView(QTableView):
             # Ignore undo/redo history temporarily (to avoid a huge pile of undo/redo history)
             get_app().updates.ignore_history = True
 
-            # Disable video caching during drag operation (for performance reasons)
-            openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
+            # Disable video caching during drag (for performance), but not during playback
+            if not self._is_playing():
+                openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = False
 
             # Get the position of the cursor and % value
             value_column_x = self.columnViewportPosition(1)
