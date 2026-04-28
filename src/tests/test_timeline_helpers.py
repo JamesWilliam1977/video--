@@ -1558,10 +1558,15 @@ class TimelineHelperTests(unittest.TestCase):
     def test_motion_ken_burns_direction_sets_distinct_scale_and_location(self):
         helper = self.make_motion_helper()
         clip = self.make_motion_clip()
+        clip.data["reader"] = {"width": 3840, "height": 1080}
         app = types.SimpleNamespace(
             updates=types.SimpleNamespace(transaction_id=None),
             project=types.SimpleNamespace(
-                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                get=lambda key: {
+                    "fps": {"num": 30, "den": 1},
+                    "width": 1920,
+                    "height": 1080,
+                }.get(key),
                 generate_id=lambda: "FX1",
             ),
         )
@@ -1576,10 +1581,11 @@ class TimelineHelperTests(unittest.TestCase):
             )
 
         self.assertEqual(clip.data["scale"], openshot.SCALE_CROP)
-        self.assertAlmostEqual(clip.data["scale_x"]["Points"][-1]["co"]["Y"], 1.3)
-        self.assertAlmostEqual(clip.data["scale_y"]["Points"][-1]["co"]["Y"], 1.3)
-        self.assertAlmostEqual(clip.data["location_x"]["Points"][-1]["co"]["Y"], -0.08)
-        self.assertAlmostEqual(clip.data["location_y"]["Points"][-1]["co"]["Y"], 0.04)
+        self.assertAlmostEqual(clip.data["scale_x"]["Points"][-1]["co"]["Y"], 1.22)
+        self.assertAlmostEqual(clip.data["scale_y"]["Points"][-1]["co"]["Y"], 1.22)
+        self.assertGreater(clip.data["location_x"]["Points"][0]["co"]["Y"], 0.0)
+        self.assertLess(clip.data["location_x"]["Points"][-1]["co"]["Y"], 0.0)
+        self.assertAlmostEqual(clip.data["location_y"]["Points"][-1]["co"]["Y"], 0.0)
 
     def test_find_missing_transition_details_returns_overlap(self):
         clip_data = {"id": "B", "layer": 1, "position": 4.0, "start": 0.0, "end": 6.0}

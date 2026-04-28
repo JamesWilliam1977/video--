@@ -66,6 +66,26 @@ from classes.film_grain_presets import (
     apply_film_grain_preset,
     is_film_grain_effect,
 )
+from classes.camera_motion import (
+    KEN_BURNS_AUTO,
+    KEN_BURNS_BOTTOM_TO_TOP,
+    KEN_BURNS_LEFT_TO_RIGHT,
+    KEN_BURNS_RIGHT_TO_LEFT,
+    KEN_BURNS_TOP_TO_BOTTOM,
+    PAN_AUTO,
+    PAN_DOWN,
+    PAN_LEFT,
+    PAN_LEFT_TO_RIGHT,
+    PAN_RIGHT,
+    PAN_RIGHT_TO_LEFT,
+    PAN_TOP_TO_BOTTOM,
+    PAN_BOTTOM_TO_TOP,
+    PAN_UP,
+    camera_pan_keyframes,
+    ken_burns_keyframes,
+    push_pull_keyframes,
+    source_dimensions_from_reader,
+)
 from classes.effect_init import effect_options
 from classes.logger import log
 from classes.query import File, Clip, Transition, Track, Effect
@@ -1591,17 +1611,33 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
         # ── Camera ▶ ───────────────────────────────────────────────────────────
         Camera_Menu = StyledContextMenu(title=_("Camera"), parent=self)
-        for label, action in [
-            (_("Push In"),       MenuAnimate.CAM_PUSH_IN),
-            (_("Pull Out"),      MenuAnimate.CAM_PULL_OUT),
-            (_("Pan Left"),      MenuAnimate.CAM_PAN_LEFT),
-            (_("Pan Right"),     MenuAnimate.CAM_PAN_RIGHT),
-            (_("Pan Up"),        MenuAnimate.CAM_PAN_UP),
-            (_("Pan Down"),      MenuAnimate.CAM_PAN_DOWN),
-            (_("Ken Burns In"),  MenuAnimate.KEN_BURNS_IN),
-            (_("Ken Burns Out"), MenuAnimate.KEN_BURNS_OUT),
-        ]:
-            _motion_act(Camera_Menu, label, action)
+        Camera_Menu.addMenu(_motion_sub(_("Zoom"), [
+            (_("In"),  MenuAnimate.CAM_PUSH_IN),
+            (_("Out"), MenuAnimate.CAM_PULL_OUT),
+        ]))
+        Camera_Menu.addMenu(_motion_sub(_("Pan"), [
+            (_("Auto Direction"), MenuAnimate.CAM_PAN_AUTO),
+            (_("Left to Right"),  MenuAnimate.CAM_PAN_RIGHT),
+            (_("Right to Left"),  MenuAnimate.CAM_PAN_LEFT),
+            (_("Top to Bottom"),  MenuAnimate.CAM_PAN_DOWN),
+            (_("Bottom to Top"),  MenuAnimate.CAM_PAN_UP),
+        ]))
+        Zoom_Pan_Menu = StyledContextMenu(title=_("Zoom & Pan").replace("&", "&&"), parent=self)
+        Zoom_Pan_Menu.addMenu(_motion_sub(_("In"), [
+            (_("Auto Direction"),  MenuAnimate.KEN_BURNS_IN),
+            (_("Left to Right"),   MenuAnimate.KEN_BURNS_IN_LEFT_TO_RIGHT),
+            (_("Right to Left"),   MenuAnimate.KEN_BURNS_IN_RIGHT_TO_LEFT),
+            (_("Top to Bottom"),   MenuAnimate.KEN_BURNS_IN_TOP_TO_BOTTOM),
+            (_("Bottom to Top"),   MenuAnimate.KEN_BURNS_IN_BOTTOM_TO_TOP),
+        ]))
+        Zoom_Pan_Menu.addMenu(_motion_sub(_("Out"), [
+            (_("Auto Direction"),  MenuAnimate.KEN_BURNS_OUT),
+            (_("Left to Right"),   MenuAnimate.KEN_BURNS_OUT_LEFT_TO_RIGHT),
+            (_("Right to Left"),   MenuAnimate.KEN_BURNS_OUT_RIGHT_TO_LEFT),
+            (_("Top to Bottom"),   MenuAnimate.KEN_BURNS_OUT_TOP_TO_BOTTOM),
+            (_("Bottom to Top"),   MenuAnimate.KEN_BURNS_OUT_BOTTOM_TO_TOP),
+        ]))
+        Camera_Menu.addMenu(Zoom_Pan_Menu)
         Animate_Menu.addMenu(Camera_Menu)
 
         # ── Credits ▶ ──────────────────────────────────────────────────────────
@@ -2746,6 +2782,25 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     MenuAnimate.WIPE_OUT_BOTTOM:        "wipe_bottom_to_top.svg",
                 }
 
+                def _camera_context():
+                    reader = clip.data.get("reader", {}) if isinstance(clip.data, dict) else {}
+                    source_width, source_height = source_dimensions_from_reader(reader)
+                    try:
+                        project_width = get_app().project.get("width")
+                        project_height = get_app().project.get("height")
+                    except Exception:
+                        project_width, project_height = None, None
+                    return project_width, project_height, source_width, source_height
+
+                def _apply_camera_motion(values):
+                    clip.data["scale"] = openshot.SCALE_CROP
+                    for prop in ("scale_x", "scale_y", "location_x", "location_y"):
+                        self._remove_keypoints_in_range(clip.data[prop], s, e)
+                    add("scale_x", kf(s, values.scale_x[0]), kf(e, values.scale_x[1]))
+                    add("scale_y", kf(s, values.scale_y[0]), kf(e, values.scale_y[1]))
+                    add("location_x", kf(s, values.location_x[0]), kf(e, values.location_x[1]))
+                    add("location_y", kf(s, values.location_y[0]), kf(e, values.location_y[1]))
+
                 if action == MenuAnimate.NONE:
                     _reset_motion()
 
@@ -2887,42 +2942,53 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
                     # ── CAMERA: PUSH IN / PULL OUT (zoom, SCALE_CROP) ──────────
                     elif action == MenuAnimate.CAM_PUSH_IN:
-                        clip.data["scale"] = openshot.SCALE_CROP
-                        add("scale_x", kf(s, 1.0), kf(e, 1.3))
-                        add("scale_y", kf(s, 1.0), kf(e, 1.3))
+                        _apply_camera_motion(push_pull_keyframes(zoom_in=True))
                     elif action == MenuAnimate.CAM_PULL_OUT:
-                        clip.data["scale"] = openshot.SCALE_CROP
-                        add("scale_x", kf(s, 1.3), kf(e, 1.0))
-                        add("scale_y", kf(s, 1.3), kf(e, 1.0))
+                        _apply_camera_motion(push_pull_keyframes(zoom_in=False))
 
-                    # ── CAMERA: PAN (1.3× constant, ±0.15 edge-to-edge) ────────
-                    elif action in (MenuAnimate.CAM_PAN_LEFT,  MenuAnimate.CAM_PAN_RIGHT,
+                    # ── CAMERA: PAN (axis-aware SCALE_CROP framing) ───────────
+                    elif action in (MenuAnimate.CAM_PAN_AUTO,
+                                    MenuAnimate.CAM_PAN_LEFT,  MenuAnimate.CAM_PAN_RIGHT,
                                     MenuAnimate.CAM_PAN_UP,    MenuAnimate.CAM_PAN_DOWN):
-                        clip.data["scale"] = openshot.SCALE_CROP
-                        add("scale_x", kf(s, 1.3), kf(e, 1.3))
-                        add("scale_y", kf(s, 1.3), kf(e, 1.3))
-                        if action == MenuAnimate.CAM_PAN_LEFT:
-                            add("location_x", kf(s, -0.15), kf(e,  0.15))
-                        elif action == MenuAnimate.CAM_PAN_RIGHT:
-                            add("location_x", kf(s,  0.15), kf(e, -0.15))
-                        elif action == MenuAnimate.CAM_PAN_UP:
-                            add("location_y", kf(s, -0.15), kf(e,  0.15))
-                        elif action == MenuAnimate.CAM_PAN_DOWN:
-                            add("location_y", kf(s,  0.15), kf(e, -0.15))
+                        pan_direction = {
+                            MenuAnimate.CAM_PAN_AUTO: PAN_AUTO,
+                            MenuAnimate.CAM_PAN_LEFT: PAN_LEFT,
+                            MenuAnimate.CAM_PAN_RIGHT: PAN_RIGHT,
+                            MenuAnimate.CAM_PAN_UP: PAN_UP,
+                            MenuAnimate.CAM_PAN_DOWN: PAN_DOWN,
+                        }[action]
+                        _apply_camera_motion(camera_pan_keyframes(pan_direction, *_camera_context()))
 
-                    # ── CAMERA: KEN BURNS (scale + diagonal drift) ─────────────
-                    elif action == MenuAnimate.KEN_BURNS_IN:
-                        clip.data["scale"] = openshot.SCALE_CROP
-                        add("scale_x",    kf(s, 1.0), kf(e, 1.3))
-                        add("scale_y",    kf(s, 1.0), kf(e, 1.3))
-                        add("location_x", kf(s, 0.0), kf(e, -0.08))
-                        add("location_y", kf(s, 0.0), kf(e,  0.04))
-                    elif action == MenuAnimate.KEN_BURNS_OUT:
-                        clip.data["scale"] = openshot.SCALE_CROP
-                        add("scale_x",    kf(s, 1.3),   kf(e, 1.0))
-                        add("scale_y",    kf(s, 1.3),   kf(e, 1.0))
-                        add("location_x", kf(s, -0.08), kf(e, 0.0))
-                        add("location_y", kf(s,  0.04), kf(e, 0.0))
+                    # ── CAMERA: KEN BURNS (axis-aware zoom + drift) ───────────
+                    elif action in (
+                            MenuAnimate.KEN_BURNS_IN, MenuAnimate.KEN_BURNS_OUT,
+                            MenuAnimate.KEN_BURNS_IN_LEFT_TO_RIGHT,
+                            MenuAnimate.KEN_BURNS_IN_RIGHT_TO_LEFT,
+                            MenuAnimate.KEN_BURNS_IN_TOP_TO_BOTTOM,
+                            MenuAnimate.KEN_BURNS_IN_BOTTOM_TO_TOP,
+                            MenuAnimate.KEN_BURNS_OUT_LEFT_TO_RIGHT,
+                            MenuAnimate.KEN_BURNS_OUT_RIGHT_TO_LEFT,
+                            MenuAnimate.KEN_BURNS_OUT_TOP_TO_BOTTOM,
+                            MenuAnimate.KEN_BURNS_OUT_BOTTOM_TO_TOP):
+                        direction = {
+                            MenuAnimate.KEN_BURNS_IN: KEN_BURNS_AUTO,
+                            MenuAnimate.KEN_BURNS_OUT: KEN_BURNS_AUTO,
+                            MenuAnimate.KEN_BURNS_IN_LEFT_TO_RIGHT: KEN_BURNS_LEFT_TO_RIGHT,
+                            MenuAnimate.KEN_BURNS_IN_RIGHT_TO_LEFT: KEN_BURNS_RIGHT_TO_LEFT,
+                            MenuAnimate.KEN_BURNS_IN_TOP_TO_BOTTOM: KEN_BURNS_TOP_TO_BOTTOM,
+                            MenuAnimate.KEN_BURNS_IN_BOTTOM_TO_TOP: KEN_BURNS_BOTTOM_TO_TOP,
+                            MenuAnimate.KEN_BURNS_OUT_LEFT_TO_RIGHT: KEN_BURNS_LEFT_TO_RIGHT,
+                            MenuAnimate.KEN_BURNS_OUT_RIGHT_TO_LEFT: KEN_BURNS_RIGHT_TO_LEFT,
+                            MenuAnimate.KEN_BURNS_OUT_TOP_TO_BOTTOM: KEN_BURNS_TOP_TO_BOTTOM,
+                            MenuAnimate.KEN_BURNS_OUT_BOTTOM_TO_TOP: KEN_BURNS_BOTTOM_TO_TOP,
+                        }[action]
+                        zoom_in = action in (
+                            MenuAnimate.KEN_BURNS_IN,
+                            MenuAnimate.KEN_BURNS_IN_LEFT_TO_RIGHT,
+                            MenuAnimate.KEN_BURNS_IN_RIGHT_TO_LEFT,
+                            MenuAnimate.KEN_BURNS_IN_TOP_TO_BOTTOM,
+                            MenuAnimate.KEN_BURNS_IN_BOTTOM_TO_TOP)
+                        _apply_camera_motion(ken_burns_keyframes(zoom_in, direction, *_camera_context()))
 
                     # ── CREDITS (full scroll, SCALE_CROP) ─────────────────────
                     elif action == MenuAnimate.CREDITS_UP:
