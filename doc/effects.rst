@@ -949,14 +949,15 @@ itself. Stronger settings can be useful for vintage looks, music videos, horror 
 or footage that should feel like older 16mm or Super 8 film.
 
 You can add Film Grain from the :guilabel:`Effects` tab, or right-click a clip and choose
-:guilabel:`Film Grain` to start with a preset such as :guilabel:`35mm Fine`,
-:guilabel:`35mm Classic`, :guilabel:`16mm Classic`, :guilabel:`Super 8`, or
+:guilabel:`Look → Film → Film Grain` to start with a preset: :guilabel:`35mm Fine`,
+:guilabel:`35mm Classic`, :guilabel:`35mm Gritty`, :guilabel:`16mm Classic`, :guilabel:`Super 8`, or
 :guilabel:`High ISO`. Presets only set the properties for you; all controls remain visible and editable.
 
 Simple starting points:
 
 - **Clean cinematic texture**: try :guilabel:`35mm Fine`, then lower ``amount`` if it feels too visible.
 - **Classic film look**: try :guilabel:`35mm Classic` for a balanced grain pattern.
+- **Punchy, gritty film look**: try :guilabel:`35mm Gritty` for heavier, more visible grain.
 - **Older home-movie style**: try :guilabel:`Super 8`, which uses larger, more active grain.
 - **Low-light camera noise style**: try :guilabel:`High ISO`, then adjust ``color_amount`` to control how colorful the grain feels.
 
@@ -997,17 +998,23 @@ The Glow effect creates a soft halo from the clip's visible pixels. It can rende
 for a classic outer glow, or along the inside edges for an inner glow. The effect uses the source alpha channel,
 so transparent PNGs, text, logos, and masked clips work especially well.
 
+You can add Glow from the :guilabel:`Effects` tab, or right-click a clip and choose
+:guilabel:`Look → Lighting → Glow` to start with a preset: :guilabel:`Soft White` (a gentle neutral
+halo), :guilabel:`Warm` (a warm amber glow), :guilabel:`Neon` (a vivid colored glow), or
+:guilabel:`Inner Glow` (glow drawn inside the subject's edges). Presets only set the properties for
+you; all controls remain visible and editable.
+
 .. table::
    :widths: 26 80
 
    ==========================  ============
    Property Name               Description
    ==========================  ============
-   mode                        ``(int, choices: ['Outer', 'Inner'])`` Choose whether the glow appears outside the visible pixels or just inside their edges.
+   mode                        ``(int, choices: ['Outer', 'Inner'])`` Choose whether the glow appears outside the visible pixels (Outer) or just inside their edges (Inner).
    opacity                     ``(float, 0 to 1)`` Overall glow strength and transparency.
-   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the glow.
-   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blurring for a denser glow.
-   color                       ``(color)`` Tint color of the glow, including alpha.
+   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the glow. Larger values create a wider, softer halo.
+   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blurring for a denser, more filled-in glow.
+   color                       ``(color)`` Tint color of the glow, including alpha. Use the alpha channel to control the glow's maximum opacity independently of the ``opacity`` property.
    ==========================  ============
 
 Hue
@@ -1195,6 +1202,12 @@ The Shadow effect creates a soft drop shadow from the clip's visible pixels. It 
 blurs that silhouette, and offsets it by a distance and angle before drawing the original image on top. This is
 useful for giving text, logos, overlays, and cut-out subjects more separation from the background.
 
+You can add Shadow from the :guilabel:`Effects` tab, or right-click a clip and choose
+:guilabel:`Look → Lighting → Shadow` to start with a preset: :guilabel:`Subtle` (a light near shadow),
+:guilabel:`Soft` (a diffused medium shadow), :guilabel:`Strong` (a bold, high-opacity shadow), or
+:guilabel:`Long` (a distant, elongated shadow). Presets only set the properties for you; all controls
+remain visible and editable.
+
 .. table::
    :widths: 26 80
 
@@ -1202,11 +1215,11 @@ useful for giving text, logos, overlays, and cut-out subjects more separation fr
    Property Name               Description
    ==========================  ============
    opacity                     ``(float, 0 to 1)`` Overall shadow strength and transparency.
-   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the shadow.
-   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blur for a fuller shadow shape.
-   distance                    ``(float, -500 to 500)`` Offset distance of the shadow in pixels.
-   angle                       ``(float, -360 to 360)`` Direction of the shadow offset in degrees.
-   color                       ``(color)`` Shadow tint color, including alpha.
+   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the shadow edges. Higher values produce softer, more diffused shadows.
+   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blurring for a fuller, heavier shadow shape.
+   distance                    ``(float, -500 to 500)`` Offset distance of the shadow in pixels. Negative values move the shadow in the opposite direction.
+   angle                       ``(float, -360 to 360)`` Direction of the shadow offset in degrees. 0° is right, 90° is down, 180° is left, 270° is up.
+   color                       ``(color)`` Shadow tint color, including alpha. The default is semi-transparent black.
    ==========================  ============
 
 Shift
