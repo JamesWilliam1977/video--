@@ -160,23 +160,54 @@ Social Media Quick Reference
 The table below shows the recommended :guilabel:`Target` and :guilabel:`Video Profile` settings for common
 social media platforms. Select these in the **Simple** tab of the Export dialog.
 
-.. table::
+.. list-table::
    :widths: 20 22 30 28
+   :header-rows: 1
 
-   ============================  =======================  ==============================  ======================================
-   Platform                      Target                   Video Profile                   Notes
-   ============================  =======================  ==============================  ======================================
-   YouTube (landscape)           ``YouTube``           ``FHD 1080p 30 fps``            Use ``YouTube (4K)`` for 4K
-   YouTube Shorts (vertical)     ``YouTube Shorts``       ``FHD Vertical 1080p 30 fps``   Up to 60 fps
-   TikTok (vertical)             ``TikTok``               ``FHD Vertical 1080p 30 fps``   Up to 60 fps
-   Instagram Reels (vertical)    ``Instagram Reels``      ``FHD Vertical 1080p 30 fps``   Up to 60 fps
-   Instagram (landscape/square)  ``Instagram``            ``FHD 1080p 30 fps``            Square (1:1) also available
-   Snapchat (vertical)           ``Snapchat``             ``FHD Vertical 1080p 30 fps``   Up to 60 fps
-   Facebook                      ``Facebook``             ``FHD 1080p 30 fps``            Square and vertical also available
-   LinkedIn (landscape)          ``LinkedIn``             ``FHD 1080p 30 fps``            Square and 4:5 portrait also available
-   Twitter / X                   ``Twitter / X``          ``FHD 1080p 30 fps``            Vertical also available
-   Vimeo                         ``Vimeo``             ``FHD 1080p 30 fps``            Use High quality setting
-   ============================  =======================  ==============================  ======================================
+   * - Platform
+     - Target
+     - Video Profile
+     - Notes
+   * - YouTube (landscape)
+     - ``YouTube``
+     - ``FHD 1080p 30 fps``
+     - Use ``YouTube (4K)`` for 4K
+   * - YouTube Shorts (vertical)
+     - ``YouTube Shorts``
+     - ``FHD Vertical 1080p 30 fps``
+     - Up to 60 fps
+   * - TikTok (vertical)
+     - ``TikTok``
+     - ``FHD Vertical 1080p 30 fps``
+     - Up to 60 fps
+   * - Instagram Reels (vertical)
+     - ``Instagram Reels``
+     - ``FHD Vertical 1080p 30 fps``
+     - Up to 60 fps
+   * - Instagram (landscape/square)
+     - ``Instagram``
+     - ``FHD 1080p 30 fps``
+     - Square (1:1) also available
+   * - Snapchat (vertical)
+     - ``Snapchat``
+     - ``FHD Vertical 1080p 30 fps``
+     - Up to 60 fps
+   * - Facebook
+     - ``Facebook``
+     - ``FHD 1080p 30 fps``
+     - Square and vertical also available
+   * - LinkedIn (landscape)
+     - ``LinkedIn``
+     - ``FHD 1080p 30 fps``
+     - Square and 4:5 portrait also available
+   * - Twitter / X
+     - ``Twitter / X``
+     - ``FHD 1080p 30 fps``
+     - Vertical also available
+   * - Vimeo
+     - ``Vimeo``
+     - ``FHD 1080p 30 fps``
+     - Use High quality setting
 
 .. _export_hardware_accel_ref:
 
