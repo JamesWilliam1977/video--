@@ -77,14 +77,14 @@ Timing
 ------
 Changing how fast a clip plays is done with the :guilabel:`Time` property and the :guilabel:`Timing` tool.
 
-- The :guilabel:`Time` menu offers presets such as normal, fast, slow, freeze, and reverse. See details in :ref:`clip_time_ref`.
+- The :guilabel:`Speed` menu offers presets such as normal, fast, slow, freeze, reverse, and repeat. See details in :ref:`clip_time_ref`.
 - The :guilabel:`Timing` tool lets you drag a clip’s edges to speed it up or slow it down. OpenShot adds the needed Time keyframes
   and **scales your other keyframes** so your animations stay aligned. Shorter clips play faster, longer clips play slower.
   See more: :ref:`clip_time_ref`.
 
 Repeating
 ---------
-To play a clip multiple times, use :guilabel:`Right-Click → Time → Repeat`.
+To play a clip multiple times, use :guilabel:`Right-Click → Speed → Repeat`.
 
 - :guilabel:`Loop` repeats in one direction (forward or reverse).
 - :guilabel:`Ping-Pong` alternates direction (forward then backward, etc.).

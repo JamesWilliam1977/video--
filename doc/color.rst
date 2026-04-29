@@ -100,16 +100,16 @@ Getting Started
 
 OpenShot offers several ways to open its color tools, depending on what you need:
 
-**Right-click a clip → Color → Adjust Colors**
+**Right-click a clip → Look → Adjust Colors**
    The quickest all-in-one setup. OpenShot adds the :guilabel:`Color Grade` effect to the clip,
    selects it, opens the :guilabel:`Properties` panel, and shows the :guilabel:`Color Wheels` dock
    and all three video scopes — ready to grade immediately.
 
-**Right-click a clip → Color → [preset]** *(Auto Contrast, Lift Shadows, Warm Up, Boost Color…)*
+**Right-click a clip → Look → Color → [preset]** *(Auto Contrast, Lift Shadows, Warm Up, Boost Color…)*
    Adds the Color Grade effect with a useful preset already applied. The Color Wheels and scopes
    are not opened automatically — open them any time from :guilabel:`View → Docks`.
 
-**Right-click a clip → Color → Analyze Colors**
+**Right-click a clip → Look → Analyze Colors**
    Opens all three scopes (Luma Waveform, Histogram, and Vectorscope, tabbed together on the right)
    without adding any Color Grade effect. Use this to evaluate footage before deciding whether it
    needs grading, or simply to monitor levels during playback.

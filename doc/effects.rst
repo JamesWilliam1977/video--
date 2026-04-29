@@ -552,7 +552,7 @@ Color Grade
 """""""""""
 The Color Grade effect combines primary correction, tonal wheels, RGB curves, and LUT support into one
 fully animated effect. Use it for **color correction** (white balance, exposure, contrast) and
-**color grading** (building a stylized look). Right-click a clip and use :guilabel:`Color` presets to
+**color grading** (building a stylized look). Right-click a clip and use :guilabel:`Look → Color` presets to
 apply it instantly, or switch to :guilabel:`View → Views → Color View` for a dedicated grading workspace.
 
 .. seealso::
