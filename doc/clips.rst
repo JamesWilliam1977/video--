@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -254,8 +254,10 @@ slow-motion, freezes, and looping effects. See :ref:`clip_time_ref` key-frame.
 - :guilabel:`Freeze` — freezes on the frame at the current playhead position for 2, 4, 6, 8, 10, 20, or 30 seconds.
 - :guilabel:`Freeze && Zoom` — freezes and simultaneously zooms in on that frozen frame.
 
-- **Usage Example:** Creating a slow-motion effect to emphasize a specific action.
-- **Tip:** Use the :guilabel:`Timing` toolbar tool to change speed interactively by dragging a clip's edges.
+- **Slow motion** — :guilabel:`Slow Down → 1/2×` or :guilabel:`1/4×` for dreamy or dramatic footage.
+- **Time-lapse** — :guilabel:`Speed Up → 8×` or :guilabel:`16×` to compress hours into seconds.
+- **Speed ramp** — use the :guilabel:`Timing` tool to drag clip edges and create a natural-feeling speed change; OpenShot scales all keyframes automatically.
+- **Tip:** Combine :guilabel:`Freeze` with :guilabel:`Speed Up` for an impact-freeze-then-fast-forward effect.
 
 .. _clip_time_repeat_ref:
 

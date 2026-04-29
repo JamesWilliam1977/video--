@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -533,6 +533,14 @@ The Chroma Key (Greenscreen) effect replaces a specific color (or chroma) in the
 with transparency, allowing for the compositing of the video over a different background. This effect is widely used
 in film and television production for creating visual effects and placing subjects in settings that would be otherwise
 impossible or impractical to shoot in.
+
+**Green Screen Workflow**
+
+1. Place your background clip on a lower track and your green-screen footage on the track directly above it.
+2. Drag and drop the :guilabel:`Chroma Key (Greenscreen)` effect from the **Effects** panel onto your green-screen clip.
+3. Double-click the :guilabel:`color` button in the Properties panel to open the color picker, then select the green or blue background color.
+4. Raise the :guilabel:`threshold` slider until the background turns fully transparent.
+5. Fine-tune :guilabel:`halo` to remove any residual color fringe around the subject edges.
 
 .. table::
    :widths: 26 80

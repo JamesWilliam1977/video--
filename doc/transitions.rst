@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -22,7 +22,7 @@
 Transitions
 ===========
 
-A transition is used to gradually fade (or wipe) between two clip images. In OpenShot,
+A transition is used to gradually fade (also called a **cross dissolve** or **crossfade**) or wipe between two clip images. In OpenShot,
 transitions are represented by blue, rounded rectangles on the timeline. They are automatically created when you
 overlap two clips, and can be added manually by dragging one onto the timeline from the **Transitions** panel.
 A transition must be placed on top of a clip (overlapping it), with the most common location being the beginning or end

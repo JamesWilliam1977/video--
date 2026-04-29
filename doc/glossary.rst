@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -123,6 +123,8 @@ Codec:
    Codec is a video compression technology used to compress data in a video file.  Codec stands for "Compression Decompression." An example of a popular codec is H.264.
 Color Correction:
    The process of altering the color of a video, especially one shot under less than ideal conditions, such as low light.
+Color Grade / Color Grading:
+   The process of stylizing or enhancing the look and mood of a video beyond technical correction. Color grading adjusts tonal balance, hue, saturation, and contrast to achieve a deliberate visual style (for example, a warm cinematic look or a cold, desaturated tone). See also Color Correction.
 Compositing:
    Construction of a composite image by combining multiple images and other elements.
 Coverage:
@@ -263,6 +265,8 @@ Jump Cut:
 
 -K-
 ~~~
+Ken Burns Effect:
+   A pan-and-zoom animation technique applied to still images or video clips to create the illusion of camera movement. Named after documentary filmmaker Ken Burns, who popularized the approach. In OpenShot, use :guilabel:`Right-Click → Motion → Camera` presets for one-click Ken Burns animations.
 Key:
    A method for creating transparency, such as a bluescreen key or a chroma key.
 Keyframe:
@@ -284,6 +288,10 @@ Lossless:
    A compression scheme that results in no loss of data from decompressing the file.  Lossless files are generally quite large (but still smaller than uncompressed versions) and sometimes require considerable processing power to decode the data.
 Lossy:
    Lossy compression is a compression scheme that degrades quality.  Lossy algorithms compress digital data by eliminating the data least sensitive to the human eye and offer the highest compression rates available.
+Lower Third:
+   A text or graphic overlay positioned in the lower third of the screen, commonly used to display a speaker's name, title, or other identifying information. Lower thirds are a staple of news, documentaries, and corporate video. In OpenShot, create them using the Title Editor and place the title clip on a track above your video.
+LUT (Look-Up Table):
+   A file that maps one set of colors to another, used to apply a specific color grade or look to a video clip in one step. LUTs can replicate film stock emulations, broadcast standards, or custom styles. OpenShot's Color Grade effect supports LUT files directly.
 
 .. _letter_M_ref:
 
@@ -377,6 +385,8 @@ RGB:
    Monitors, cameras, and digital projectors use the primary colors of light (Red, Green, and Blue) to make images.
 RGBA:
    A file containing an RGB image plus an alpha channel for transparency information.
+Ripple Edit:
+   An edit where trimming a clip automatically shifts all subsequent clips on the timeline forward or backward by the same amount, closing or opening a gap. This preserves sync between clips that follow the edit point. Also called a ripple trim.
 Roll:
    Roll is a text effect commonly seen in end credits, where text typically moves from the bottom to the top of the screen.
 Rough cut:

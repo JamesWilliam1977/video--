@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -103,6 +103,16 @@ the expected value and then back (producing a bounce effect).
 To choose a curve preset, right click on the small graph icon next to a key frame.
 
 .. image:: images/curve-presets.jpg
+
+.. _animation_ken_burns_ref:
+
+Ken Burns Effect
+----------------
+The **Ken Burns effect** is a pan-and-zoom animation technique — named after documentary filmmaker Ken Burns —
+that brings still images or video clips to life with slow, deliberate camera movement. In OpenShot, use
+:guilabel:`Right-Click → Motion → Camera` presets for one-click Ken Burns animations
+(Zoom In, Zoom Out, Pan, Zoom & Pan with Auto Direction), or set keyframes on :guilabel:`Location X/Y`
+and :guilabel:`Scale X/Y` manually for full control. See :ref:`clip_presets_ref`.
 
 .. _animation_image_seq_ref:
 

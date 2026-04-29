@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2023 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -1087,7 +1087,7 @@ Xbox 360
 Web
 ^^^
 
-Flickr-HD
+Flickr
 ~~~~~~~~~
 
 .. table::
@@ -1249,7 +1249,7 @@ Vimeo
                             | NTSC SD Wide FWVGA 480p 29.97 fps
    =======================  ============
 
-Vimeo-HD
+Vimeo
 ~~~~~~~~
 
 .. table::
@@ -1306,7 +1306,7 @@ Wikipedia
    Profiles                 | NTSC SD 1/4 QVGA 240p 29.97 fps
    =======================  ============
 
-YouTube HD
+YouTube
 ~~~~~~~~~~
 
 .. table::
@@ -1345,7 +1345,7 @@ YouTube HD
                             | FHD Vertical 1080p 60 fps
    =======================  ============
 
-YouTube HD (2K)
+YouTube (2K)
 ~~~~~~~~~~~~~~~
 
 .. table::
@@ -1376,7 +1376,7 @@ YouTube HD (2K)
                             | 2.5K WQHD 1440p 60 fps
    =======================  ============
 
-YouTube HD (4K)
+YouTube (4K)
 ~~~~~~~~~~~~~~~
 
 .. table::
@@ -1407,7 +1407,7 @@ YouTube HD (4K)
                             | 4K UHD 2160p 60 fps
    =======================  ============
 
-YouTube HD (8K)
+YouTube (8K)
 ~~~~~~~~~~~~~~~
 
 .. table::
