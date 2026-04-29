@@ -193,6 +193,7 @@ class TimelineHelperTests(unittest.TestCase):
 
         data = {
             "id": "C1",
+            "position": 0.0,
             "start": 0.0,
             "end": 3.0,
             "scale": openshot.SCALE_FIT,
@@ -1554,6 +1555,128 @@ class TimelineHelperTests(unittest.TestCase):
         effect = clip.data["effects"][0]
         self.assertEqual(effect["class_name"], "Mask")
         self.assertEqual(effect["contrast"]["Points"][0]["co"]["Y"], 20.0)
+
+    def test_motion_bounce_emphasis_uses_frame_relative_offsets(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.BOUNCE,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        points = {
+            point["co"]["X"]: point["co"]["Y"]
+            for point in clip.data["location_y"]["Points"]
+        }
+        self.assertAlmostEqual(points[13], -0.25)
+        self.assertAlmostEqual(points[14], -0.25)
+        self.assertAlmostEqual(points[22], -0.125)
+        self.assertAlmostEqual(points[28], -0.033333, places=6)
+        self.assertAlmostEqual(points[31], 0.0)
+
+    def test_motion_emphasis_uses_playhead_in_clip_local_frame_space(self):
+        helper = self.make_motion_helper()
+        helper.window.preview_thread.current_frame = 331
+        clip = self.make_motion_clip()
+        clip.data["position"] = 10.0
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.BOUNCE,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        points = {
+            point["co"]["X"]: point["co"]["Y"]
+            for point in clip.data["location_y"]["Points"]
+        }
+        self.assertIn(31, points)
+        self.assertIn(43, points)
+        self.assertIn(61, points)
+        self.assertNotIn(13, points)
+        self.assertAlmostEqual(points[43], -0.25)
+        self.assertAlmostEqual(points[61], 0.0)
+
+    def test_motion_bounce_in_down_uses_frame_relative_rebound_offsets(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.BOUNCE_IN_DOWN,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        points = {
+            point["co"]["X"]: point["co"]["Y"]
+            for point in clip.data["location_y"]["Points"]
+        }
+        self.assertAlmostEqual(points[1], -3.0)
+        self.assertAlmostEqual(points[19], 0.25)
+        self.assertAlmostEqual(points[24], -0.1)
+        self.assertAlmostEqual(points[28], 0.05)
+        self.assertAlmostEqual(points[31], 0.0)
+
+    def test_motion_bounce_out_up_uses_frame_relative_rebound_offsets(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.BOUNCE_OUT_UP,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        points = {
+            point["co"]["X"]: point["co"]["Y"]
+            for point in clip.data["location_y"]["Points"]
+        }
+        self.assertAlmostEqual(points[67], -0.125)
+        self.assertAlmostEqual(points[73], 0.25)
+        self.assertAlmostEqual(points[74], 0.25)
+        self.assertAlmostEqual(points[91], -3.0)
 
     def test_motion_ken_burns_direction_sets_distinct_scale_and_location(self):
         helper = self.make_motion_helper()

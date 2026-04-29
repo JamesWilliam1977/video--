@@ -1527,36 +1527,35 @@ class TimelineView(updates.UpdateInterface, ViewClass):
         # ── In ▶ ───────────────────────────────────────────────────────────────
         In_Menu = StyledContextMenu(title=_("In"), parent=self)
         In_Menu.addMenu(_motion_sub(_("Back In"), [
-            (_("From Top"),    MenuAnimate.BACK_IN_DOWN),
+            (_("From Bottom"), MenuAnimate.BACK_IN_UP),
             (_("From Left"),   MenuAnimate.BACK_IN_LEFT),
             (_("From Right"),  MenuAnimate.BACK_IN_RIGHT),
-            (_("From Bottom"), MenuAnimate.BACK_IN_UP),
+            (_("From Top"),    MenuAnimate.BACK_IN_DOWN),
         ]))
+        _motion_act(In_Menu, _("Blur In"),   MenuAnimate.BLUR_IN)
         In_Menu.addMenu(_motion_sub(_("Bounce In"), [
             (_("Center"),      MenuAnimate.BOUNCE_IN),
-            (_("From Top"),    MenuAnimate.BOUNCE_IN_DOWN),
+            (_("From Bottom"), MenuAnimate.BOUNCE_IN_UP),
             (_("From Left"),   MenuAnimate.BOUNCE_IN_LEFT),
             (_("From Right"),  MenuAnimate.BOUNCE_IN_RIGHT),
-            (_("From Bottom"), MenuAnimate.BOUNCE_IN_UP),
+            (_("From Top"),    MenuAnimate.BOUNCE_IN_DOWN),
         ]))
+        _motion_act(In_Menu, _("Pop In"),    MenuAnimate.POP_IN)
         In_Menu.addMenu(_motion_sub(_("Slide In"), [
+            (_("From Bottom"), MenuAnimate.SLIDE_IN_BOTTOM),
             (_("From Left"),   MenuAnimate.SLIDE_IN_LEFT),
             (_("From Right"),  MenuAnimate.SLIDE_IN_RIGHT),
             (_("From Top"),    MenuAnimate.SLIDE_IN_TOP),
-            (_("From Bottom"), MenuAnimate.SLIDE_IN_BOTTOM),
         ]))
+        _motion_act(In_Menu, _("Spiral In"), MenuAnimate.SPIRAL_IN)
         In_Menu.addMenu(_motion_sub(_("Wipe In"), [
             (_("Circle Expand"),  MenuAnimate.WIPE_IN_CIRCLE_EXPAND),
             (_("Circle Shrink"),  MenuAnimate.WIPE_IN_CIRCLE_SHRINK),
-            (_("Fade"),           MenuAnimate.WIPE_IN_FADE),
+            (_("From Bottom"),    MenuAnimate.WIPE_IN_BOTTOM),
             (_("From Left"),      MenuAnimate.WIPE_IN_LEFT),
             (_("From Right"),     MenuAnimate.WIPE_IN_RIGHT),
             (_("From Top"),       MenuAnimate.WIPE_IN_TOP),
-            (_("From Bottom"),    MenuAnimate.WIPE_IN_BOTTOM),
         ]))
-        _motion_act(In_Menu, _("Blur In"),   MenuAnimate.BLUR_IN)
-        _motion_act(In_Menu, _("Pop In"),    MenuAnimate.POP_IN)
-        _motion_act(In_Menu, _("Spiral In"), MenuAnimate.SPIRAL_IN)
         Animate_Menu.addMenu(In_Menu)
 
         # ── Out ▶ ──────────────────────────────────────────────────────────────
@@ -1567,37 +1566,38 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             (_("To Right"),  MenuAnimate.BACK_OUT_RIGHT),
             (_("To Top"),    MenuAnimate.BACK_OUT_UP),
         ]))
+        _motion_act(Out_Menu, _("Blur Out"),  MenuAnimate.BLUR_OUT)
         Out_Menu.addMenu(_motion_sub(_("Bounce Out"), [
             (_("Center"),    MenuAnimate.BOUNCE_OUT),
             (_("To Bottom"), MenuAnimate.BOUNCE_OUT_DOWN),
-            (_("To Right"),  MenuAnimate.BOUNCE_OUT_RIGHT),
             (_("To Left"),   MenuAnimate.BOUNCE_OUT_LEFT),
+            (_("To Right"),  MenuAnimate.BOUNCE_OUT_RIGHT),
             (_("To Top"),    MenuAnimate.BOUNCE_OUT_UP),
         ]))
+        _motion_act(Out_Menu, _("Pop Out"),   MenuAnimate.POP_OUT)
         Out_Menu.addMenu(_motion_sub(_("Slide Out"), [
+            (_("To Bottom"), MenuAnimate.SLIDE_OUT_BOTTOM),
             (_("To Left"),   MenuAnimate.SLIDE_OUT_LEFT),
             (_("To Right"),  MenuAnimate.SLIDE_OUT_RIGHT),
             (_("To Top"),    MenuAnimate.SLIDE_OUT_TOP),
-            (_("To Bottom"), MenuAnimate.SLIDE_OUT_BOTTOM),
         ]))
+        _motion_act(Out_Menu, _("Spiral Out"), MenuAnimate.SPIRAL_OUT)
         Out_Menu.addMenu(_motion_sub(_("Wipe Out"), [
             (_("Circle Expand"),  MenuAnimate.WIPE_OUT_CIRCLE_EXPAND),
             (_("Circle Shrink"),  MenuAnimate.WIPE_OUT_CIRCLE_SHRINK),
-            (_("Fade"),           MenuAnimate.WIPE_OUT_FADE),
+            (_("To Bottom"),      MenuAnimate.WIPE_OUT_BOTTOM),
             (_("To Left"),        MenuAnimate.WIPE_OUT_LEFT),
             (_("To Right"),       MenuAnimate.WIPE_OUT_RIGHT),
             (_("To Top"),         MenuAnimate.WIPE_OUT_TOP),
-            (_("To Bottom"),      MenuAnimate.WIPE_OUT_BOTTOM),
         ]))
-        _motion_act(Out_Menu, _("Blur Out"),  MenuAnimate.BLUR_OUT)
-        _motion_act(Out_Menu, _("Pop Out"),   MenuAnimate.POP_OUT)
-        _motion_act(Out_Menu, _("Spiral Out"), MenuAnimate.SPIRAL_OUT)
         Animate_Menu.addMenu(Out_Menu)
 
         # ── Emphasis ▶ ─────────────────────────────────────────────────────────
         Animate_Menu.addMenu(_motion_sub(_("Emphasis"), [
             (_("Bounce"),      MenuAnimate.BOUNCE),
             (_("Flash"),       MenuAnimate.FLASH),
+            (_("Heartbeat"),   MenuAnimate.HEART_BEAT),
+            (_("Jello"),       MenuAnimate.JELLO),
             (_("Pulse"),       MenuAnimate.PULSE),
             (_("Rubber Band"), MenuAnimate.RUBBER_BAND),
             (_("Shake X"),     MenuAnimate.SHAKE_X),
@@ -1605,8 +1605,6 @@ class TimelineView(updates.UpdateInterface, ViewClass):
             (_("Swing"),       MenuAnimate.SWING),
             (_("Tada"),        MenuAnimate.TADA),
             (_("Wobble"),      MenuAnimate.WOBBLE),
-            (_("Jello"),       MenuAnimate.JELLO),
-            (_("Heartbeat"),   MenuAnimate.HEART_BEAT),
         ]))
 
         # ── Camera ▶ ───────────────────────────────────────────────────────────
@@ -2620,13 +2618,23 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                 in_end    = min(s + zone, e)   # end of "In" zone
                 out_start = max(s, e - zone)   # start of "Out" zone
 
-                # Emphasis: fixed 1-second window at playhead (if inside clip)
+                # Emphasis: fixed 1-second window at playhead (if inside clip).
+                # preview_thread.current_frame is timeline-global, while clip
+                # keyframes are stored in the clip's local/source frame space.
                 try:
-                    playhead = int(self.window.preview_thread.current_frame or 1)
+                    timeline_frame = int(self.window.preview_thread.current_frame or 1)
                 except Exception:
-                    playhead = 1
-                if s <= playhead <= e:
-                    emph_start = playhead
+                    timeline_frame = 1
+                try:
+                    timeline_seconds = max(0.0, (timeline_frame - 1) / fps_float)
+                    clip_position = float(clip.data.get("position", 0.0))
+                    clip_playhead = round(
+                        (float(clip.data["start"]) + timeline_seconds - clip_position) * fps_float
+                    ) + 1
+                except Exception:
+                    clip_playhead = s
+                if s <= clip_playhead <= e:
+                    emph_start = clip_playhead
                 else:
                     emph_start = s
                 emph_end = min(emph_start + zone, e)

@@ -67,9 +67,9 @@ PRESETS = {
             (22, 1.05, 'ease_in_quint'), (25, 0.95), (28, 1.02), (31, 1.0)
         ],
         'location_y': [
-            (1, 0, 'ease_out_cubic'), (7, 0, 'ease_out_cubic'), (13, -0.20, 'ease_in_quint'),
-            (14, -0.20, 'ease_in_quint'), (17, 0, 'ease_out_cubic'), (22, -0.10, 'ease_in_quint'),
-            (25, 0), (28, -0.027, 'ease_in_quint'), (31, 0)
+            (1, 0, 'ease_out_cubic'), (7, 0, 'ease_out_cubic'), (13, -0.25, 'ease_in_quint'),
+            (14, -0.25, 'ease_in_quint'), (17, 0, 'ease_out_cubic'), (22, -0.125, 'ease_in_quint'),
+            (25, 0), (28, -0.033333, 'ease_in_quint'), (31, 0)
         ],
     },
 
@@ -219,8 +219,8 @@ PRESETS = {
         'alpha': [(1, 0, 'ease_out_cubic'), (19, 1)],
         'scale_y': [(1, 3, 'ease_out_cubic'), (19, 0.9, 'ease_out_cubic'), (24, 0.95, 'ease_out_cubic'), (28, 0.985)],
         'location_y': [
-            (1, -3, 'ease_out_cubic'), (19, 0.023148, 'ease_out_cubic'), (24, -0.009259, 'ease_out_cubic'),
-            (28, 0.00463, 'ease_out_cubic'), (31, 0)
+            (1, -3, 'ease_out_cubic'), (19, 0.25, 'ease_out_cubic'), (24, -0.10, 'ease_out_cubic'),
+            (28, 0.05, 'ease_out_cubic'), (31, 0)
         ],
     },
 
@@ -228,8 +228,8 @@ PRESETS = {
         'alpha': [(1, 0, 'ease_out_cubic'), (19, 1)],
         'scale_x': [(1, 3, 'ease_out_cubic'), (19, 1, 'ease_out_cubic'), (24, 0.98, 'ease_out_cubic'), (28, 0.995)],
         'location_x': [
-            (1, -3, 'ease_out_cubic'), (19, 0.013021, 'ease_out_cubic'), (24, -0.005208, 'ease_out_cubic'),
-            (28, 0.002604, 'ease_out_cubic'), (31, 0)
+            (1, -3, 'ease_out_cubic'), (19, 0.25, 'ease_out_cubic'), (24, -0.10, 'ease_out_cubic'),
+            (28, 0.05, 'ease_out_cubic'), (31, 0)
         ],
     },
 
@@ -237,8 +237,8 @@ PRESETS = {
         'alpha': [(1, 0, 'ease_out_cubic'), (19, 1)],
         'scale_x': [(1, 3, 'ease_out_cubic'), (19, 1, 'ease_out_cubic'), (24, 0.98, 'ease_out_cubic'), (28, 0.995)],
         'location_x': [
-            (1, 3, 'ease_out_cubic'), (19, -0.013021, 'ease_out_cubic'), (24, 0.005208, 'ease_out_cubic'),
-            (28, -0.002604, 'ease_out_cubic'), (31, 0)
+            (1, 3, 'ease_out_cubic'), (19, -0.25, 'ease_out_cubic'), (24, 0.10, 'ease_out_cubic'),
+            (28, -0.05, 'ease_out_cubic'), (31, 0)
         ],
     },
 
@@ -246,8 +246,8 @@ PRESETS = {
         'alpha': [(1, 0, 'ease_out_cubic'), (19, 1)],
         'scale_y': [(1, 5, 'ease_out_cubic'), (19, 0.9, 'ease_out_cubic'), (24, 0.95, 'ease_out_cubic'), (28, 0.985)],
         'location_y': [
-            (1, 3, 'ease_out_cubic'), (19, -0.018519, 'ease_out_cubic'), (24, 0.009259, 'ease_out_cubic'),
-            (28, -0.00463, 'ease_out_cubic'), (31, 0)
+            (1, 3, 'ease_out_cubic'), (19, -0.25, 'ease_out_cubic'), (24, 0.10, 'ease_out_cubic'),
+            (28, -0.05, 'ease_out_cubic'), (31, 0)
         ],
     },
 
@@ -263,25 +263,25 @@ PRESETS = {
     'bounceOutDown': {
         'alpha': [(13, 1), (14, 1), (31, 0)],
         'scale_y': [(7, 0.985), (13, 0.9), (14, 0.9), (31, 3)],
-        'location_y': [(7, 0.009259), (13, -0.018519), (14, -0.018519), (31, 3)],
+        'location_y': [(7, 0.125), (13, -0.25), (14, -0.25), (31, 3)],
     },
 
     'bounceOutLeft': {
         'alpha': [(7, 1), (31, 0)],
         'scale_x': [(7, 0.9), (31, 2)],
-        'location_x': [(7, 0.010417), (31, -3)],
+        'location_x': [(7, 0.25), (31, -3)],
     },
 
     'bounceOutRight': {
         'alpha': [(7, 1), (31, 0)],
         'scale_x': [(7, 0.9), (31, 2)],
-        'location_x': [(7, -0.010417), (31, 3)],
+        'location_x': [(7, -0.25), (31, 3)],
     },
 
     'bounceOutUp': {
         'alpha': [(13, 1), (14, 1), (31, 0)],
         'scale_y': [(7, 0.985), (13, 0.9), (14, 0.9), (31, 3)],
-        'location_y': [(7, -0.009259), (13, 0.018519), (14, 0.018519), (31, -3)],
+        'location_y': [(7, -0.125), (13, 0.25), (14, 0.25), (31, -3)],
     },
 
 
