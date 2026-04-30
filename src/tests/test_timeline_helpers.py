@@ -4421,6 +4421,18 @@ class TimelineHelperTests(unittest.TestCase):
             self.assertEqual(len(preset), 5)
             self.assertIsInstance(preset[4], str)
 
+    def test_video_clip_with_audio_can_toggle_waveform(self):
+        helper = types.SimpleNamespace()
+        clip = types.SimpleNamespace(data={"reader": {"has_video": True, "has_audio": True}})
+
+        self.assertTrue(self.timeline_module.TimelineView._clip_has_audio(helper, clip))
+
+    def test_video_clip_without_audio_cannot_toggle_waveform(self):
+        helper = types.SimpleNamespace()
+        clip = types.SimpleNamespace(data={"reader": {"has_video": True, "has_audio": False}})
+
+        self.assertFalse(self.timeline_module.TimelineView._clip_has_audio(helper, clip))
+
     def test_film_grain_trigger_adds_preset_effect(self):
         timeline_module = self.timeline_module
         clip = types.SimpleNamespace(id="C1", data={

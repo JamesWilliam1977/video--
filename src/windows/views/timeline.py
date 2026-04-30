@@ -2029,7 +2029,7 @@ class TimelineView(updates.UpdateInterface, ViewClass):
 
         if clip_has_audio:
             Audio_Menu.addSeparator()
-        if not self._clip_has_video(clip):
+        if self._clip_has_audio(clip):
             if self._clip_has_visible_waveform(clip):
                 ToggleWaveform = Audio_Menu.addAction(
                     QIcon(os.path.join(info.PATH, "themes/cosmic/images/view-waveform-flat.svg")),
@@ -2040,12 +2040,13 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     QIcon(os.path.join(info.PATH, "themes/cosmic/images/view-waveform.svg")),
                     _("Show Waveform"))
                 ToggleWaveform.triggered.connect(partial(self.Show_Waveform_Triggered, clip_ids))
-        Analyze_Levels = Audio_Menu.addAction(
-            QIcon(os.path.join(info.PATH, "themes/cosmic/images/view-analysis.svg")),
-            _("Analyze Levels"))
-        Analyze_Levels.triggered.connect(lambda: get_app().window.show_scope_audio_dock())
+        if clip_has_audio:
+            Analyze_Levels = Audio_Menu.addAction(
+                QIcon(os.path.join(info.PATH, "themes/cosmic/images/view-analysis.svg")),
+                _("Analyze Levels"))
+            Analyze_Levels.triggered.connect(lambda: get_app().window.show_scope_audio_dock())
 
-        menu.addMenu(Audio_Menu)
+            menu.addMenu(Audio_Menu)
 
         # If Playhead overlapping clip
         if clip:
