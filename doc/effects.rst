@@ -84,13 +84,17 @@ identify a clip's start is by utilizing the 'next/previous marker' feature on th
 
 List of Effects
 ---------------
-OpenShot Video Editor has a total of 37 built-in video and audio effects: 28 video effects and 9 audio effects.
+OpenShot Video Editor has a total of 39 built-in video and audio effects: 30 video effects and 9 audio effects.
 These effects can be added to a clip by dragging the effect onto a clip. The following table contains
 the name and short description of each effect.
 
 .. |analogtape_icon| image:: ../src/effects/icons/analogtape@2x.png
    :width: 50px
    :alt: Analog Tape Icon
+
+.. |audiovisualization_icon| image:: ../src/effects/icons/audiovisualization@2x.png
+   :width: 50px
+   :alt: Audio Visualization Icon
 
 .. |mask_icon| image:: ../src/effects/icons/mask@2x.png
    :width: 50px
@@ -248,6 +252,7 @@ the name and short description of each effect.
    =========================== ============================= ===============
    |analogtape_icon|           Analog Tape                   Vintage home-video wobble, bleed, and snow.
    |mask_icon|                 Alpha Mask / Wipe Transition  Grayscale mask transition between images.
+   |audiovisualization_icon|   Audio Visualization           Render waveform, spectrum, and other transparent audio visualizations.
    |bars_icon|                 Bars                          Add colored bars around your video.
    |blur_icon|                 Blur                          Adjust image blur.
    |brightness_icon|           Brightness & Contrast         Modify frame’s brightness and contrast.
@@ -429,6 +434,49 @@ affects the image, and not the audio track.
    contrast                    ``(float, 0 to 20)`` This curve controls the hardness and softness of the wipe edge
    reader                      ``(reader)`` This reader can use any image or video as input for your grayscale wipe
    replace_image               ``(bool, choices: ['Yes', 'No'])`` Replace the clips image with the current grayscale wipe image, useful for troubleshooting
+   ==========================  ============
+
+Audio Visualization
+"""""""""""""""""""
+The Audio Visualization effect turns sound into animated visuals, making it easy to create music visualizers,
+audio spectrum analyzers, waveform animations, podcast videos, lyric videos, DJ visuals, and social media clips
+that react to music, voice, beats, and other audio. It draws from the clip's audio samples and can render waveforms,
+filled waveforms, audio bars, radial visualizers, frequency spectrum displays, phase scopes, particles, VU meters,
+and radial bars.
+
+Because this is a video effect, the visualization can be composited directly over the source image, placed on a
+transparent background, or drawn over a solid, faded, or gradient background. This makes it useful for YouTube music
+videos, podcast audiograms, voiceover clips, album preview videos, karaoke-style videos,
+and quick promotional clips where the audio needs a strong visual presence.
+
+Common uses include:
+
+- **Music visualizer videos**: Add moving waveforms, spectrum bars, radial bars, or particles to a song, remix, or beat.
+- **Podcast and voiceover clips**: Show a waveform or VU meter while a speaker talks, especially for audio-only media.
+- **Lyric and karaoke videos**: Combine captions or titles with reactive audio visuals behind or around the text.
+- **Social media audiograms**: Create short clips for YouTube Shorts, TikTok, Instagram Reels, and other platforms.
+- **DJ, concert, and livestream visuals**: Use neon, radial, particle, or spectrum styles for energetic background motion.
+- **Technical audio displays**: Use spectrum, phase scope, or VU meter modes to show frequency content, stereo movement, or loudness.
+
+.. table::
+   :widths: 26 80
+
+   ==========================  ============
+   Property Name               Description
+   ==========================  ============
+   visualization_type          ``(int, choices: ['Waveform', 'Filled Waveform', 'Bars', 'Radial', 'Radial Bars', 'Spectrum', 'Phase Scope', 'Particles', 'VU Meter'])``
+   style                       ``(int, choices: ['Clean', 'Soft', 'Neon', 'Minimal', 'Retro'])``
+   color                       ``(color)`` Seed color for the visualization
+   intensity                   ``(float, 0 to 10)`` Overall audio response and visual strength
+   smoothing                   ``(float, 0 to 1)`` Smooths the audio response between sampled points
+   detail                      ``(float, 0 to 1)`` Controls visual density, such as bars, points, or particles
+   glow                        ``(float, 0 to 1)`` Adds soft glow around the visualization
+   color_spread                ``(float, 0 to 1)`` Controls color variation around the seed color or rainbow mode
+   color_mode                  ``(int, choices: ['Seed', 'Rainbow'])``
+   channel_layout              ``(int, choices: ['Auto', 'Combined', 'Split', 'Overlay'])``
+   frequency_low               ``(float, 0 to 1)`` Normalized frequency floor: 0 = 20 Hz, 1 = 20 kHz
+   frequency_high              ``(float, 0 to 1)`` Normalized frequency ceiling: 0 = 20 Hz, 1 = 20 kHz
+   background                  ``(int, choices: ['Transparent', 'Solid', 'Fade', 'Gradient', 'Source'])``
    ==========================  ============
 
 Bars
