@@ -148,10 +148,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
     ProjectSaved = pyqtSignal(str)
     ProjectSaveFailed = pyqtSignal(str, str)
 
-    # Docks are closable, movable and floatable
-    docks_frozen = False
-    scopes_frozen = False
-
     # Save window settings on close
     def closeEvent(self, event):
         app = get_app()
@@ -1563,13 +1559,13 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
 
         menu.addSeparator()
         if closed_docks:
-            show_action = QAction(self.actionShow_All.icon(), show_text, menu)
+            show_action = QAction(show_text, menu)
             show_action.triggered.connect(
                 lambda _=False, _callback=show_callback, _docks=docks:
                 _callback() if _callback else self.showDocks(_docks))
             menu.addAction(show_action)
         if open_docks:
-            close_action = QAction(self.actionShow_All.icon(), close_text, menu)
+            close_action = QAction(close_text, menu)
             close_action.triggered.connect(lambda _=False, _docks=open_docks: self.closeDocks(_docks))
             menu.addAction(close_action)
 
@@ -2906,7 +2902,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         """ Add all dockable widgets to the same dock area on the main screen """
         for dock in docks:
             self.addDockWidget(area, dock)
-            self.applyDockLockState(dock)
 
     def floatDocks(self, is_floating):
         """ Float or Un-Float all dockable widgets above main screen """
@@ -2922,7 +2917,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             if dock is color_grade_dock and hasattr(property_view, "_ensure_color_grade_wheels_dock_attached"):
                 property_view._ensure_color_grade_wheels_dock_attached()
             if self.dockWidgetArea(dock) != Qt.NoDockWidgetArea:
-                self.applyDockLockState(dock)
                 # Only show correctly docked widgets
                 dock.show()
 
@@ -2931,46 +2925,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         for dock in docks:
             if self._dock_is_open(dock):
                 dock.hide()
-
-    def freezeDock(self, dock, frozen=True):
-        """ Freeze/unfreeze a dock widget on the main screen."""
-        if self.dockWidgetArea(dock) == Qt.NoDockWidgetArea and not dock.isFloating():
-            # Don't freeze removed/undockable widgets
-            return
-        if frozen:
-            dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
-        else:
-            features = (
-                QDockWidget.DockWidgetFloatable
-                | QDockWidget.DockWidgetMovable)
-            if dock is not self.dockTimeline:
-                features |= QDockWidget.DockWidgetClosable
-            dock.setFeatures(features)
-        dock.toggleViewAction().setEnabled(True)
-
-    def applyDockLockState(self, dock):
-        """Apply the current Docks/Scopes lock state to a dock."""
-        if all(hasattr(self, name) for name in (
-                "dockAudio", "dockHistogram", "dockLumaWaveform", "dockVectorscope"
-        )) and dock in self._scope_docks():
-            self.freezeDock(dock, frozen=self.scopes_frozen)
-        else:
-            self.freezeDock(dock, frozen=self.docks_frozen)
-
-    @pyqtSlot()
-    def freezeMainToolBar(self, frozen=None):
-        """Freeze/unfreeze the toolbar if it's attached to the window."""
-        if frozen is None:
-            frozen = self.docks_frozen
-        floating = self.toolBar.isFloating()
-        log.debug(
-            "%s main toolbar%s",
-            "freezing" if frozen and not floating else "unfreezing",
-            " (floating)" if floating else "")
-        if floating:
-            self.toolBar.setMovable(True)
-        else:
-            self.toolBar.setMovable(not frozen)
 
     def addViewDocksMenu(self):
         """Insert dynamic Docks and Scopes submenus into the View menu."""
@@ -2991,16 +2945,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             action.setEnabled(True)
             self.docks_menu.addAction(action)
 
-        self.docks_menu.addSeparator()
-        if self.docks_frozen:
-            self.docks_menu.addAction(self.actionUn_Freeze_View)
-        else:
-            self.docks_menu.addAction(self.actionFreeze_View)
-        _ = get_app()._tr
-        self._add_dock_visibility_actions(
-            self.docks_menu, docks, _("Show All Docks"), _("Close All Docks"),
-            show_callback=self.actionShow_All_trigger)
-
     def _rebuild_scopes_menu(self):
         """Repopulate the Scopes menu with scope docks and scope recovery actions."""
         self.scopes_menu.clear()
@@ -3010,13 +2954,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             action = dock.toggleViewAction()
             action.setEnabled(True)
             self.scopes_menu.addAction(action)
-        self.scopes_menu.addSeparator()
-        lock_text = _("Unlock Scopes") if self.scopes_frozen else _("Lock Scopes")
-        lock_scopes = QAction(self.actionFreeze_View.icon(), lock_text, self.scopes_menu)
-        lock_scopes.triggered.connect(
-            self.actionUn_Freeze_Scopes_trigger if self.scopes_frozen
-            else self.actionFreeze_Scopes_trigger)
-        self.scopes_menu.addAction(lock_scopes)
         self._add_dock_visibility_actions(
             self.scopes_menu, docks, _("Show All Scopes"), _("Close All Scopes"),
             show_callback=self.show_all_scope_docks)
@@ -3163,44 +3100,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                     Qt.Vertical,
                 )
             QTimer.singleShot(0, _resize_right_column)
-
-    def actionFreeze_View_trigger(self):
-        """Freeze dock widgets managed by the Docks menu."""
-        for dock in self._view_menu_docks():
-            self.freezeDock(dock, frozen=True)
-        self.freezeMainToolBar(frozen=True)
-        self.actionFreeze_View.setVisible(False)
-        self.actionUn_Freeze_View.setVisible(True)
-        self.docks_frozen = True
-        self._schedule_dock_style_update(theme_changed=True, delay=0)
-
-    def actionUn_Freeze_View_trigger(self):
-        """Un-freeze dock widgets managed by the Docks menu."""
-        for dock in self._view_menu_docks():
-            self.freezeDock(dock, frozen=False)
-        self.freezeMainToolBar(frozen=False)
-        self.actionFreeze_View.setVisible(True)
-        self.actionUn_Freeze_View.setVisible(False)
-        self.docks_frozen = False
-        self._schedule_dock_style_update(theme_changed=True, delay=0)
-
-    def actionFreeze_Scopes_trigger(self):
-        """Freeze scope dock widgets."""
-        for dock in self._scope_docks():
-            self.freezeDock(dock, frozen=True)
-        self.scopes_frozen = True
-        self._schedule_dock_style_update(theme_changed=True, delay=0)
-
-    def actionUn_Freeze_Scopes_trigger(self):
-        """Un-freeze scope dock widgets."""
-        for dock in self._scope_docks():
-            self.freezeDock(dock, frozen=False)
-        self.scopes_frozen = False
-        self._schedule_dock_style_update(theme_changed=True, delay=0)
-
-    def actionShow_All_trigger(self):
-        """Show dock widgets managed by the Docks menu."""
-        self.showDocks(self._view_menu_docks())
 
     def actionTutorial_trigger(self):
         """ Show tutorial again """
@@ -3489,8 +3388,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
         # Save window state and geometry (saves toolbar and dock locations)
         s.set('window_state_v2', qt_types.bytes_to_str(self.saveState()))
         s.set('window_geometry_v2', qt_types.bytes_to_str(self.saveGeometry()))
-        s.set('docks_frozen', self.docks_frozen)
-        s.set('scopes_frozen', self.scopes_frozen)
         # Qt's saveState() does not capture docks removed via removeDockWidget(); save them explicitly.
         hidden = [d.objectName() for d in self.getDocks()
                   if self.dockWidgetArea(d) == Qt.NoDockWidgetArea]
@@ -3509,20 +3406,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
             self.saved_geometry = qt_types.str_to_bytes(s.get('window_geometry_v2'))
         if s.get('window_state_v2'):
             self.saved_state = qt_types.str_to_bytes(s.get('window_state_v2'))
-        if s.get('docks_frozen'):
-            self.actionFreeze_View_trigger()
-        else:
-            self.actionUn_Freeze_View_trigger()
-        scopes_frozen = s.get('scopes_frozen')
-        if (not scopes_frozen
-                and hasattr(s, "has_user_value")
-                and not s.has_user_value('scopes_frozen')
-                and s.get('docks_frozen')):
-            scopes_frozen = True
-        if scopes_frozen:
-            self.actionFreeze_Scopes_trigger()
-        else:
-            self.actionUn_Freeze_Scopes_trigger()
         timeline_height = s.get('timeline_height')
         if timeline_height:
             try:
@@ -5196,10 +5079,6 @@ class MainWindow(updates.UpdateWatcher, QMainWindow):
                 functools.partial(self._on_scope_dock_toggled, dock=_dock))
         for _dock in [self.dockLumaWaveform, self.dockHistogram, self.dockVectorscope]:
             _dock.visibilityChanged.connect(self._on_video_scope_visibility_changed)
-
-        # Ensure toolbar is movable when floated (even with docks frozen)
-        self.toolBar.topLevelChanged.connect(
-            functools.partial(self.freezeMainToolBar, None))
 
         # Create tutorial manager
         self.tutorial_manager = TutorialManager(self)

@@ -165,7 +165,6 @@ Learning a few of these shortcuts can save you a bunch of time!
    Export Video / Media                  :kbd:`Ctrl+E`             :kbd:`Ctrl+M`
    Fast Forward                          :kbd:`L`
    File Properties                       :kbd:`Alt+I`              :kbd:`Ctrl+Double Click`
-   Lock Docks                            :kbd:`Ctrl+F`
    Fullscreen                            :kbd:`F11`
    Import Files...                       :kbd:`Ctrl+I`
    Insert Keyframe                       :kbd:`Alt+Shift+K`
@@ -201,7 +200,6 @@ Learning a few of these shortcuts can save you a bunch of time!
    Select All                            :kbd:`Ctrl+A`
    Select Item (Ripple)                  :kbd:`Alt+A`              :kbd:`Alt+Click`
    Select None                           :kbd:`Ctrl+Shift+A`
-   Show All Docks                        :kbd:`Ctrl+Shift+D`
    Simple View                           :kbd:`Alt+Shift+0`
    Slice All: Keep Both Sides            :kbd:`Ctrl+Shift+K`
    Slice All: Keep Left Side             :kbd:`Ctrl+Shift+J`
@@ -217,7 +215,6 @@ Learning a few of these shortcuts can save you a bunch of time!
    Timing Toggle                         :kbd:`T`
    Title                                 :kbd:`Ctrl+T`
    Translate this Application...         :kbd:`F6`
-   Unlock Docks                          :kbd:`Ctrl+Shift+F`
    Undo                                  :kbd:`Ctrl+Z`
    View Toolbar                          :kbd:`Ctrl+Shift+B`
    Zoom In                               :kbd:`=`                  :kbd:`Ctrl+=`

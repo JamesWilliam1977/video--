@@ -44,7 +44,7 @@ if PATH not in sys.path:
     sys.path.append(PATH)
 
 from qt_api import QCoreApplication, Qt
-from qt_api import QApplication, QDockWidget, QMainWindow, QStandardItem, QStandardItemModel
+from qt_api import QApplication, QDockWidget, QMainWindow, QMenu, QStandardItem, QStandardItemModel
 
 from classes.project_data import ProjectDataStore
 from classes.updates import UpdateManager
@@ -759,37 +759,64 @@ class MainWindowTests(unittest.TestCase):
         self.assertEqual(refreshed.calls, [()])
         self.assertIsNone(self.app.updates.transaction_id)
 
-    def test_add_and_show_docks_apply_current_lock_state(self):
+    def test_add_and_show_docks_keep_default_dock_features(self):
         fake_window = QMainWindow()
         normal_dock = QDockWidget("Normal", fake_window)
         normal_dock.setObjectName("dockNormal")
-        scope_dock = QDockWidget("Scope", fake_window)
-        scope_dock.setObjectName("dockLumaWaveform")
-        fake_window.dockAudio = QDockWidget("Audio", fake_window)
-        fake_window.dockHistogram = QDockWidget("Histogram", fake_window)
-        fake_window.dockLumaWaveform = scope_dock
-        fake_window.dockTimeline = QDockWidget("Timeline", fake_window)
-        fake_window.dockVectorscope = QDockWidget("Vectorscope", fake_window)
-        fake_window.docks_frozen = True
-        fake_window.scopes_frozen = False
-        fake_window._scope_docks = lambda: self.main_window_module.MainWindow._scope_docks(fake_window)
-        fake_window.freezeDock = lambda dock, frozen=True: self.main_window_module.MainWindow.freezeDock(
-            fake_window, dock, frozen=frozen)
-        fake_window.applyDockLockState = lambda dock: self.main_window_module.MainWindow.applyDockLockState(
-            fake_window, dock)
 
-        self.main_window_module.MainWindow.addDocks(fake_window, [normal_dock], Qt.RightDockWidgetArea)
-        self.assertEqual(normal_dock.features(), QDockWidget.NoDockWidgetFeatures)
-
-        fake_window.removeDockWidget(normal_dock)
-        fake_window.docks_frozen = False
         self.main_window_module.MainWindow.addDocks(fake_window, [normal_dock], Qt.RightDockWidgetArea)
         self.assertTrue(normal_dock.features() & QDockWidget.DockWidgetClosable)
+        self.assertTrue(normal_dock.features() & QDockWidget.DockWidgetMovable)
         self.assertTrue(normal_dock.features() & QDockWidget.DockWidgetFloatable)
 
-        fake_window.scopes_frozen = True
-        self.main_window_module.MainWindow.addDocks(fake_window, [scope_dock], Qt.RightDockWidgetArea)
-        self.assertEqual(scope_dock.features(), QDockWidget.NoDockWidgetFeatures)
+        normal_dock.hide()
+        fake_window.showDocks = lambda docks: self.main_window_module.MainWindow.showDocks(fake_window, docks)
+        self.main_window_module.MainWindow.showDocks(fake_window, [normal_dock])
+        self.assertTrue(normal_dock.features() & QDockWidget.DockWidgetClosable)
+        self.assertTrue(normal_dock.features() & QDockWidget.DockWidgetMovable)
+        self.assertTrue(normal_dock.features() & QDockWidget.DockWidgetFloatable)
+
+    def test_scope_menu_keeps_conditional_show_and_close_all_actions(self):
+        fake_window = QMainWindow()
+        fake_window.scopes_menu = QMenu(fake_window)
+        fake_window.dockAudio = QDockWidget("Audio Levels", fake_window)
+        fake_window.dockAudio.setObjectName("dockAudio")
+        fake_window.dockHistogram = QDockWidget("Histogram", fake_window)
+        fake_window.dockHistogram.setObjectName("dockHistogram")
+        fake_window.dockLumaWaveform = QDockWidget("Luma Waveform", fake_window)
+        fake_window.dockLumaWaveform.setObjectName("dockLumaWaveform")
+        fake_window.dockVectorscope = QDockWidget("Vectorscope", fake_window)
+        fake_window.dockVectorscope.setObjectName("dockVectorscope")
+        for dock in [
+                fake_window.dockAudio,
+                fake_window.dockHistogram,
+                fake_window.dockLumaWaveform,
+                fake_window.dockVectorscope]:
+            fake_window.addDockWidget(Qt.RightDockWidgetArea, dock)
+            dock.hide()
+
+        open_docks = set()
+        fake_window._scope_docks = lambda: self.main_window_module.MainWindow._scope_docks(fake_window)
+        fake_window._dock_is_open = lambda dock: dock in open_docks
+        fake_window.closeDocks = lambda docks: self.main_window_module.MainWindow.closeDocks(fake_window, docks)
+        fake_window.show_all_scope_docks = lambda: None
+        fake_window._add_dock_visibility_actions = (
+            lambda menu, docks, show_text, close_text, show_callback=None:
+            self.main_window_module.MainWindow._add_dock_visibility_actions(
+                fake_window, menu, docks, show_text, close_text, show_callback))
+
+        self.main_window_module.MainWindow._rebuild_scopes_menu(fake_window)
+        action_texts = [action.text() for action in fake_window.scopes_menu.actions() if not action.isSeparator()]
+        self.assertIn("Show All Scopes", action_texts)
+        self.assertNotIn("Close All Scopes", action_texts)
+        self.assertNotIn("Lock Scopes", action_texts)
+
+        open_docks.add(fake_window.dockAudio)
+        self.main_window_module.MainWindow._rebuild_scopes_menu(fake_window)
+        action_texts = [action.text() for action in fake_window.scopes_menu.actions() if not action.isSeparator()]
+        self.assertIn("Show All Scopes", action_texts)
+        self.assertIn("Close All Scopes", action_texts)
+        self.assertNotIn("Unlock Scopes", action_texts)
 
     def test_live_property_resume_keeps_cache_disabled_until_seek_or_play(self):
         settings = openshot.Settings.Instance()
