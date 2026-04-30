@@ -44,7 +44,7 @@ if PATH not in sys.path:
     sys.path.append(PATH)
 
 from qt_api import QCoreApplication, Qt
-from qt_api import QApplication, QDockWidget, QMainWindow
+from qt_api import QApplication, QDockWidget, QMainWindow, QStandardItem, QStandardItemModel
 
 from classes.project_data import ProjectDataStore
 from classes.updates import UpdateManager
@@ -123,8 +123,10 @@ class MainWindowTests(unittest.TestCase):
         sys.modules.pop("windows.views.timeline", None)
         sys.modules.pop("windows.main_window", None)
         sys.modules.pop("windows.views.properties_tableview", None)
+        sys.modules.pop("windows.models.properties_model", None)
         cls.main_window_module = importlib.import_module("windows.main_window")
         cls.properties_tableview_module = importlib.import_module("windows.views.properties_tableview")
+        cls.properties_model_module = importlib.import_module("windows.models.properties_model")
 
     @classmethod
     def tearDownClass(cls):
@@ -802,6 +804,66 @@ class MainWindowTests(unittest.TestCase):
             self.assertFalse(settings.ENABLE_PLAYBACK_CACHING)
         finally:
             settings.ENABLE_PLAYBACK_CACHING = previous
+
+    def test_insert_keyframe_adds_current_color_property_frame(self):
+        saved = []
+        refreshed = SignalRecorder()
+        self.app.window = types.SimpleNamespace(refreshFrameSignal=refreshed)
+
+        effect = types.SimpleNamespace(
+            data={
+                "wave_color": {
+                    "red": {"Points": [{"co": {"X": 1.0, "Y": 0.0}, "interpolation": openshot.LINEAR}]},
+                    "green": {"Points": [{"co": {"X": 1.0, "Y": 123.0}, "interpolation": openshot.LINEAR}]},
+                    "blue": {"Points": [{"co": {"X": 1.0, "Y": 255.0}, "interpolation": openshot.LINEAR}]},
+                    "alpha": {"Points": [{"co": {"X": 1.0, "Y": 255.0}, "interpolation": openshot.LINEAR}]},
+                }
+            },
+        )
+        effect.save = lambda: saved.append(effect.data)
+
+        model = QStandardItemModel()
+        label = QStandardItem("Wave Color")
+        label.setData((
+            "wave_color",
+            {
+                "type": "color",
+                "red": {"value": 0},
+                "green": {"value": 123},
+                "blue": {"value": 255},
+                "alpha": {"value": 255},
+                "closest_point_x": 1,
+                "previous_point_x": 1,
+                "object_id": None,
+                "max": 255.0,
+            },
+        ))
+        value = QStandardItem("")
+        value.setData([("effect-1", "effect")])
+        model.appendRow([label, value])
+
+        parent = types.SimpleNamespace(
+            currentIndex=lambda: model.index(0, 0),
+            clearSelection=lambda: None,
+            setCurrentIndex=lambda index: None,
+        )
+        helper = self.properties_model_module.PropertiesModel.__new__(
+            self.properties_model_module.PropertiesModel)
+        helper.model = model
+        helper.parent = parent
+        helper.frame_number = 30
+        helper._trim_preview_mode = False
+
+        with patch.object(self.properties_model_module.Effect, "get", return_value=effect):
+            helper.insert_keyframe(value)
+
+        self.assertEqual(len(saved), 1)
+        color = effect.data["wave_color"]
+        self.assertIn(30, [point["co"]["X"] for point in color["red"]["Points"]])
+        self.assertIn(30, [point["co"]["X"] for point in color["green"]["Points"]])
+        self.assertIn(30, [point["co"]["X"] for point in color["blue"]["Points"]])
+        self.assertIn(30, [point["co"]["X"] for point in color["alpha"]["Points"]])
+        self.assertEqual(refreshed.calls, [()])
 
     def test_ripple_delete_gap_shifts_only_later_items_on_same_layer(self):
         saved = []

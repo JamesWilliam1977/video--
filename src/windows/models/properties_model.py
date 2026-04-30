@@ -224,6 +224,16 @@ class PropertiesModel(updates.UpdateInterface):
         if property_type in ("colorgrade_curve", "colorgrade_wheels"):
             self._save_colorgrade_keyframe_update(item, "insert")
             return
+        if property_type == "color":
+            property_data = property[1]
+            current_color = QColor(
+                int(property_data["red"]["value"]),
+                int(property_data["green"]["value"]),
+                int(property_data["blue"]["value"]),
+                int(property_data.get("alpha", {}).get("value", property_data.get("max", 255.0))),
+            )
+            self.color_update(item, current_color)
+            return
 
         value = QLocale().system().toDouble(item.text())[0]
         self.value_updated(item, value=value)
