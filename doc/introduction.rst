@@ -36,7 +36,7 @@ Features
 - **Advanced timeline** (drag-drop, scroll, zoom, snap)
 - **Advanced clips** (trim, alpha, scale, rotate, shear, transform)
 - **Real-time preview** (multi-threaded, performance-optimized)
-- **Simple & advanced views** (customizable)
+- **Multiple workspace modes** (Simple, Advanced, Color views — plus save your own)
 - **Keyframe animations & panel** (`linear`, `bézier`, `constant` interpolation, visual keyframe panel)
 - **One-click presets** (motion, fade, look, camera, color, and more)
 - **Compositing, overlays, watermarks, transparency**

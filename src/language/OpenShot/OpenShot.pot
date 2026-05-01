@@ -4276,20 +4276,6 @@ msgstr ""
 msgid "Advanced View"
 msgstr ""
 
-#: Settings for actionFreeze_View
-#: /home/jonathan/apps/openshot-qt/src/windows/ui/main-window.ui:1253
-msgid "Freeze View"
-msgstr ""
-
-#: Settings for actionUn_Freeze_View
-#: /home/jonathan/apps/openshot-qt/src/windows/ui/main-window.ui:1262
-msgid "Un-Freeze View"
-msgstr ""
-
-#: Settings for actionShow_All
-msgid "Show All Docks"
-msgstr ""
-
 #: Settings for actionView_Toolbar
 #: /home/jonathan/apps/openshot-qt/src/windows/ui/main-window.ui:1130
 msgid "View Toolbar"
@@ -5050,4 +5036,3 @@ msgstr ""
 #: /home/jonathan/apps/openshot-qt/src/windows/ui/title-editor.ui:14
 msgid "Titles"
 msgstr ""
-

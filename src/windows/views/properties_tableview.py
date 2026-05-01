@@ -772,8 +772,7 @@ class PropertiesTableView(QTableView):
         if not self.live_property_cache_paused:
             return
         self.live_property_cache_paused = False
-        openshot.Settings.Instance().ENABLE_PLAYBACK_CACHING = True
-        log.debug("resume_live_property_caching: Resume caching frames on timeline")
+        log.debug("resume_live_property_caching: Keep caching disabled until seek/play")
 
     def _wheels_drag_started(self):
         """Open a per-drag undo transaction when user starts dragging a wheel control."""
@@ -2018,7 +2017,7 @@ class PropertiesTableView(QTableView):
         self.color_grade_wheels_dock.setWidget(self.color_grade_wheels_scroll)
         self.color_grade_wheels_panel.setEnabled(False)
         self.color_grade_wheels_dock.hide()
-        self.win.addDockWidget(Qt.RightDockWidgetArea, self.color_grade_wheels_dock)
+        self.win.addDocks([self.color_grade_wheels_dock], Qt.RightDockWidgetArea)
         self.color_grade_wheels_panel.wheelsChanged.connect(self.preview_live_property_value)
         self.color_grade_wheels_panel.dragStarted.connect(self._wheels_drag_started)
         self.color_grade_wheels_panel.dragFinished.connect(self._wheels_drag_finished)
@@ -2034,7 +2033,7 @@ class PropertiesTableView(QTableView):
 
     def _ensure_color_grade_wheels_dock_attached(self):
         if self.win.dockWidgetArea(self.color_grade_wheels_dock) == Qt.NoDockWidgetArea:
-            self.win.addDockWidget(Qt.RightDockWidgetArea, self.color_grade_wheels_dock)
+            self.win.addDocks([self.color_grade_wheels_dock], Qt.RightDockWidgetArea)
         if self.color_grade_wheels_dock.isFloating():
             # Only call setFloating(False) when actually floating — calling it
             # unconditionally triggers setWindowFlags → reparentFocusWidgets over
@@ -2044,7 +2043,7 @@ class PropertiesTableView(QTableView):
     def _color_grade_wheels_visibility_changed(self, visible):
         if visible:
             if self.win.dockWidgetArea(self.color_grade_wheels_dock) == Qt.NoDockWidgetArea:
-                self.win.addDockWidget(Qt.RightDockWidgetArea, self.color_grade_wheels_dock)
+                self.win.addDocks([self.color_grade_wheels_dock], Qt.RightDockWidgetArea)
                 # If scope docks are already at bottom-right, split so Wheels sits above them
                 scope_docks = [self.win.dockLumaWaveform,
                                self.win.dockHistogram,

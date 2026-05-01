@@ -1248,36 +1248,6 @@
     <string>Alt+Shift+2</string>
    </property>
   </action>
-  <action name="actionFreeze_View">
-   <property name="icon">
-    <iconset theme="locked" resource="../../../images/openshot.qrc">
-     <normaloff>:/icons/Humanity/actions/16/locked.svg</normaloff>:/icons/Humanity/actions/16/locked.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Lock Docks</string>
-   </property>
-  </action>
-  <action name="actionUn_Freeze_View">
-   <property name="icon">
-    <iconset theme="locked" resource="../../../images/openshot.qrc">
-     <normaloff>:/icons/Humanity/actions/16/locked.svg</normaloff>:/icons/Humanity/actions/16/locked.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Unlock Docks</string>
-   </property>
-   <property name="visible">
-    <bool>false</bool>
-   </property>
-  </action>
-  <action name="actionShow_All">
-   <property name="icon">
-    <iconset theme="zoom-in" resource="../../../images/openshot.qrc">
-     <normaloff>:/icons/Humanity/actions/16/zoom-in.png</normaloff>:/icons/Humanity/actions/16/zoom-in.png</iconset>
-   </property>
-   <property name="text">
-    <string>Show All Docks</string>
-   </property>
-  </action>
   <action name="actionRecoveryProjects">
    <property name="checkable">
     <bool>false</bool>
