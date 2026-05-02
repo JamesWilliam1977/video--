@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2020 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -21,7 +21,7 @@ Introduction
 ============
 
 OpenShot Video Editor is an award-winning, open-source video editor, available on
-Linux, Mac, and Windows. OpenShot can create stunning videos, films, and animations with an
+Linux, macOS, Chrome OS, and Windows. OpenShot can create stunning videos, films, and animations with an
 easy-to-use interface and rich feature-set.
 
 .. image:: images/openshot-banner.jpg
@@ -29,26 +29,29 @@ easy-to-use interface and rich feature-set.
 Features
 --------
 - **Free & open-source** (licensed under GPLv3)
-- **Cross-platform** (Linux, OS X, Chrome OS, and Windows)
+- **Cross-platform** (Linux, macOS, Chrome OS, and Windows)
 - **Easy-to-use UI** (beginner-friendly, built-in tutorial)
 - **Supports most formats** (video, audio, images - FFmpeg-based)
-- **70+ video profiles & presets** (including YouTube HD)
+- **70+ export targets & profiles** (YouTube, TikTok, Reels, Shorts, and more)
 - **Advanced timeline** (drag-drop, scroll, zoom, snap)
 - **Advanced clips** (trim, alpha, scale, rotate, shear, transform)
 - **Real-time preview** (multi-threaded, performance-optimized)
-- **Simple & advanced views** (customizable)
-- **Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)
+- **Multiple workspace modes** (Simple, Advanced, Color views — plus save your own)
+- **Keyframe animations & panel** (`linear`, `bézier`, `constant` interpolation, visual keyframe panel)
+- **One-click presets** (motion, fade, look, camera, color, and more)
 - **Compositing, overlays, watermarks, transparency**
 - **Unlimited tracks / layers** (for complex projects)
 - **Transitions, masks, wipes** (grayscale images, animated masks)
-- **Video & audio effects** (brightness, hue, chroma key, and more)
+- **Video effects** (chroma key, blur, brightness & contrast, film grain, stabilizer, and more)
+- **Audio effects** (compressor, expander, noise removal, echo, and more)
+- **Color grading** (color wheels, RGB curves, LUT support, video scopes & analysis)
 - **Image sequences & 2D animations**
 - **Blender 3D integration** (animated 3D title templates)
-- **Vector file support & editing** (SVG for titles)
+- **Vector file support & editing** (SVG for titles, lower thirds, text overlays)
 - **Audio mixing, waveform, editing**
 - **Emojis** (open-source stickers & artwork)
 - **Frame accuracy** (per-frame navigation)
-- **Time re-mapping & speed changes** (slow/fast, forward/backward)
+- **Time re-mapping & speed changes** (slow motion, repeat, loop, ping-pong, forward/backward)
 - **Built-in AI** (motion tracking, object detection, stabilization)
 - **Advanced AI** (see :ref:`ai_ref`)
 
@@ -86,7 +89,7 @@ Most computers manufactured after 2017 will run OpenShot
 
 Minimum Specifications
 ^^^^^^^^^^^^^^^^^^^^^^
-- 64-bit Operating System (*Linux, OS X, Chrome OS, Windows 7/8/10/11*)
+- 64-bit Operating System (*Linux, macOS, Chrome OS, Windows 7/8/10/11*)
 - Multi-core processor with 64-bit support
     - Minimum cores: 2 (*recommended: 6+ cores*)
     - Minimum threads: 4 (*recommended: 6+ threads*)

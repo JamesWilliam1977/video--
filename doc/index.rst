@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -20,7 +20,7 @@
 OpenShot User Guide
 ===================
 
-OpenShot Video Editor is an award-winning, open-source video editor, available on
+OpenShot Video Editor is a free, award-winning, open-source video editor, available on
 Linux, Mac, Chrome OS, and Windows. OpenShot can create stunning videos, films, and animations with an
 easy-to-use interface and rich set of features.
 

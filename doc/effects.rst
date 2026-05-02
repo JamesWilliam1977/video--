@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -84,7 +84,7 @@ identify a clip's start is by utilizing the 'next/previous marker' feature on th
 
 List of Effects
 ---------------
-OpenShot Video Editor has a total of 36 built-in video and audio effects: 27 video effects and 9 audio effects.
+OpenShot Video Editor has a total of 37 built-in video and audio effects: 28 video effects and 9 audio effects.
 These effects can be added to a clip by dragging the effect onto a clip. The following table contains
 the name and short description of each effect.
 
@@ -143,6 +143,10 @@ the name and short description of each effect.
 .. |displace_icon| image:: ../src/effects/icons/displace@2x.png
    :width: 50px
    :alt: Displacement Map Icon
+
+.. |filmgrain_icon| image:: ../src/effects/icons/filmgrain@2x.png
+   :width: 50px
+   :alt: Film Grain Icon
 
 .. |glow_icon| image:: ../src/effects/icons/glow@2x.png
    :width: 50px
@@ -256,6 +260,7 @@ the name and short description of each effect.
    |crop_icon|                 Crop                          Crop out parts of your video.
    |deinterlace_icon|          Deinterlace                   Remove interlacing from video.
    |displace_icon|             Displacement Map              Use a grayscale image or video to warp the frame.
+   |filmgrain_icon|            Film Grain                    Add natural film-inspired texture and motion.
    |glow_icon|                 Glow                          Add a soft outer or inner glow to visible pixels.
    |hue_icon|                  Hue                           Adjust hue / color.
    |lensflare_icon|            Lens Flare                    Simulate sunlight hitting a lens with flares.
@@ -529,6 +534,14 @@ with transparency, allowing for the compositing of the video over a different ba
 in film and television production for creating visual effects and placing subjects in settings that would be otherwise
 impossible or impractical to shoot in.
 
+**Green Screen Workflow**
+
+1. Place your background clip on a lower track and your green-screen footage on the track directly above it.
+2. Drag and drop the :guilabel:`Chroma Key (Greenscreen)` effect from the **Effects** panel onto your green-screen clip.
+3. Double-click the :guilabel:`color` button in the Properties panel to open the color picker, then select the green or blue background color.
+4. Raise the :guilabel:`threshold` slider until the background turns fully transparent.
+5. Fine-tune :guilabel:`halo` to remove any residual color fringe around the subject edges.
+
 .. table::
    :widths: 26 80
 
@@ -547,8 +560,8 @@ Color Grade
 """""""""""
 The Color Grade effect combines primary correction, tonal wheels, RGB curves, and LUT support into one
 fully animated effect. Use it for **color correction** (white balance, exposure, contrast) and
-**color grading** (building a stylized look). Right-click a clip and use :guilabel:`Color` presets to
-apply it instantly, or switch to :guilabel:`View → Views → Color View` for a dedicated grading workspace.
+**color grading** (building a stylized look). Right-click a clip and use :guilabel:`Look → Color` presets to
+apply it instantly, or switch to :guilabel:`View → Color View` for a dedicated grading workspace.
 
 .. seealso::
 
@@ -932,11 +945,72 @@ Usage Notes
    replace_image               ``(int, choices: ['Yes', 'No'])`` Replace the output image with the processed map, useful for previewing or debugging the distortion map
    ==========================  ============================================================================
 
+Film Grain
+""""""""""
+The **Film Grain** effect adds a gentle moving texture to your video, similar to the tiny speckles you see in
+real film photography. This can make very clean digital footage feel warmer, more natural, or more cinematic.
+It can also help blend mixed footage together, especially when one clip looks too sharp or too smooth compared
+to the rest of your project.
+
+If you are new to film grain, start small. A little grain can add life and texture without calling attention to
+itself. Stronger settings can be useful for vintage looks, music videos, horror scenes, documentary recreations,
+or footage that should feel like older 16mm or Super 8 film.
+
+You can add Film Grain from the :guilabel:`Effects` tab, or right-click a clip and choose
+:guilabel:`Look → Film → Film Grain` to start with a preset: :guilabel:`35mm Fine`,
+:guilabel:`35mm Classic`, :guilabel:`35mm Gritty`, :guilabel:`16mm Classic`, :guilabel:`Super 8`, or
+:guilabel:`High ISO`. Presets only set the properties for you; all controls remain visible and editable.
+
+Simple starting points:
+
+- **Clean cinematic texture**: try :guilabel:`35mm Fine`, then lower ``amount`` if it feels too visible.
+- **Classic film look**: try :guilabel:`35mm Classic` for a balanced grain pattern.
+- **Punchy, gritty film look**: try :guilabel:`35mm Gritty` for heavier, more visible grain.
+- **Older home-movie style**: try :guilabel:`Super 8`, which uses larger, more active grain.
+- **Low-light camera noise style**: try :guilabel:`High ISO`, then adjust ``color_amount`` to control how colorful the grain feels.
+
+The grain is deterministic, which means the same settings render the same grain pattern each time. Change
+``seed`` when you want a different repeatable grain pattern on a clip.
+
+.. table::
+   :widths: 26 80
+
+   ==========================  ============================================================================
+   Property Name               Description
+   ==========================  ============================================================================
+   amount                      ``(float, 0 to 1)`` Overall grain intensity. Lower values are subtle; higher values are more visible and gritty.
+   size                        ``(float, 0 to 1)`` Grain scale. Lower values create fine grain; higher values create larger, coarser grain.
+   softness                    ``(float, 0 to 1)`` Softens the grain texture. Lower values look crisp; higher values look smoother and more organic.
+   clump                       ``(float, 0 to 1)`` Controls how even or clustered the grain appears. Higher values create more irregular groups of grain.
+   shadows                     ``(float, 0 to 1)`` Grain strength in dark areas of the image.
+   midtones                    ``(float, 0 to 1)`` Grain strength in middle brightness areas, such as skin tones and everyday objects.
+   highlights                  ``(float, 0 to 1)`` Grain strength in bright areas, such as skies, windows, and lights.
+   color_amount                ``(float, 0 to 1)`` How much the grain affects color. Lower values are mostly luma grain; higher values add more chroma grain.
+   color_variation             ``(float, 0 to 1)`` How independently the red, green, and blue grain changes. Higher values feel more colorful and random.
+   evolution                   ``(float, 0 to 1)`` How much the grain renews over time. Higher values make the texture change more from frame to frame.
+   coherence                   ``(float, 0 to 1)`` How stable and smooth the grain remains between frames. Higher values feel calmer and less jumpy.
+   seed                        ``(int, 0 to 1000000)`` Selects the exact repeatable grain pattern. Change this to get a different look without changing intensity.
+   ==========================  ============================================================================
+
+**Usage notes**
+
+- Grain is easiest to judge while the video is playing, not on a single paused frame.
+- If faces or bright skies look too noisy, lower ``highlights`` or ``amount``.
+- If shadows look too clean compared to the rest of the image, raise ``shadows`` slightly.
+- If the grain looks too digital or sharp, raise ``softness`` or lower ``color_variation``.
+- If the grain looks too busy during motion, lower ``evolution`` or raise ``coherence``.
+
 Glow
 """"
 The Glow effect creates a soft halo from the clip's visible pixels. It can render either outside the subject
 for a classic outer glow, or along the inside edges for an inner glow. The effect uses the source alpha channel,
 so transparent PNGs, text, logos, and masked clips work especially well.
+
+You can add Glow from the :guilabel:`Effects` tab, or right-click a clip and choose
+:guilabel:`Look → Lighting → Glow` to start with a preset: :guilabel:`Soft White` (a gentle neutral
+halo), :guilabel:`Warm` (a warm amber glow), :guilabel:`Neon` (a vivid colored glow), or
+:guilabel:`Inner Glow` (glow drawn inside the subject's edges). Presets only set the properties for
+you; all controls remain visible and editable.
 
 .. table::
    :widths: 26 80
@@ -944,11 +1018,11 @@ so transparent PNGs, text, logos, and masked clips work especially well.
    ==========================  ============
    Property Name               Description
    ==========================  ============
-   mode                        ``(int, choices: ['Outer', 'Inner'])`` Choose whether the glow appears outside the visible pixels or just inside their edges.
+   mode                        ``(int, choices: ['Outer', 'Inner'])`` Choose whether the glow appears outside the visible pixels (Outer) or just inside their edges (Inner).
    opacity                     ``(float, 0 to 1)`` Overall glow strength and transparency.
-   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the glow.
-   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blurring for a denser glow.
-   color                       ``(color)`` Tint color of the glow, including alpha.
+   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the glow. Larger values create a wider, softer halo.
+   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blurring for a denser, more filled-in glow.
+   color                       ``(color)`` Tint color of the glow, including alpha. Use the alpha channel to control the glow's maximum opacity independently of the ``opacity`` property.
    ==========================  ============
 
 Hue
@@ -1136,6 +1210,12 @@ The Shadow effect creates a soft drop shadow from the clip's visible pixels. It 
 blurs that silhouette, and offsets it by a distance and angle before drawing the original image on top. This is
 useful for giving text, logos, overlays, and cut-out subjects more separation from the background.
 
+You can add Shadow from the :guilabel:`Effects` tab, or right-click a clip and choose
+:guilabel:`Look → Lighting → Shadow` to start with a preset: :guilabel:`Subtle` (a light near shadow),
+:guilabel:`Soft` (a diffused medium shadow), :guilabel:`Strong` (a bold, high-opacity shadow), or
+:guilabel:`Long` (a distant, elongated shadow). Presets only set the properties for you; all controls
+remain visible and editable.
+
 .. table::
    :widths: 26 80
 
@@ -1143,11 +1223,11 @@ useful for giving text, logos, overlays, and cut-out subjects more separation fr
    Property Name               Description
    ==========================  ============
    opacity                     ``(float, 0 to 1)`` Overall shadow strength and transparency.
-   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the shadow.
-   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blur for a fuller shadow shape.
-   distance                    ``(float, -500 to 500)`` Offset distance of the shadow in pixels.
-   angle                       ``(float, -360 to 360)`` Direction of the shadow offset in degrees.
-   color                       ``(color)`` Shadow tint color, including alpha.
+   blur_radius                 ``(float, 0 to 100)`` Blur radius in pixels used to soften the shadow edges. Higher values produce softer, more diffused shadows.
+   spread                      ``(float, 0 to 1)`` Expands and strengthens the source alpha before blurring for a fuller, heavier shadow shape.
+   distance                    ``(float, -500 to 500)`` Offset distance of the shadow in pixels. Negative values move the shadow in the opposite direction.
+   angle                       ``(float, -360 to 360)`` Direction of the shadow offset in degrees. 0° is right, 90° is down, 180° is left, 270° is up.
+   color                       ``(color)`` Shadow tint color, including alpha. The default is semi-transparent black.
    ==========================  ============
 
 Shift

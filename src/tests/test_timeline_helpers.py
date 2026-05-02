@@ -155,6 +155,62 @@ class TimelineHelperTests(unittest.TestCase):
 
         return Helper()
 
+    def make_motion_helper(self):
+        timeline_module = self.timeline_module
+
+        class Helper:
+            def __init__(self):
+                self.updated = []
+                self.show_wait_spinner = False
+                self.window = types.SimpleNamespace(
+                    timeline_sync=types.SimpleNamespace(
+                        timeline=types.SimpleNamespace(GetClip=lambda _clip_id: None)
+                    ),
+                    preview_thread=types.SimpleNamespace(current_frame=None),
+                )
+
+            def get_uuid(self):
+                return "tx-motion-1"
+
+            def AddPoint(self, keyframe, new_point):
+                return timeline_module.TimelineView.AddPoint(self, keyframe, new_point)
+
+            def _remove_keypoints_in_range(self, points_data, frame_start, frame_end):
+                return timeline_module.TimelineView._remove_keypoints_in_range(
+                    self, points_data, frame_start, frame_end)
+
+            def update_clip_data(self, clip_data, **kwargs):
+                self.updated.append((copy.deepcopy(clip_data), dict(kwargs)))
+
+            def _get_transition_reader_json(self, _path):
+                return {"path": "/tmp/wipe.svg", "has_single_image": True}
+
+        return Helper()
+
+    def make_motion_clip(self):
+        def kf(value):
+            return {"Points": [{"co": {"X": 1, "Y": value}, "interpolation": openshot.BEZIER}]}
+
+        data = {
+            "id": "C1",
+            "position": 0.0,
+            "start": 0.0,
+            "end": 3.0,
+            "scale": openshot.SCALE_FIT,
+            "scale_x": kf(1.0),
+            "scale_y": kf(1.0),
+            "location_x": kf(0.0),
+            "location_y": kf(0.0),
+            "rotation": kf(0.0),
+            "shear_x": kf(0.0),
+            "shear_y": kf(0.0),
+            "alpha": kf(1.0),
+            "origin_x": kf(0.5),
+            "origin_y": kf(0.5),
+            "effects": [],
+        }
+        return types.SimpleNamespace(id="C1", data=data)
+
     def make_finalize_keyframe_helper(self):
         timeline_module = self.timeline_module
 
@@ -1474,6 +1530,185 @@ class TimelineHelperTests(unittest.TestCase):
         saved_data = saved[-1]
         self.assertEqual(saved_data["brightness"]["Points"][0]["co"]["X"], 1)
         self.assertEqual(saved_data["brightness"]["Points"][-1]["co"]["X"], 62)
+
+    def test_motion_wipe_mask_uses_high_static_contrast(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.WIPE_IN_LEFT,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        self.assertEqual(len(clip.data["effects"]), 1)
+        effect = clip.data["effects"][0]
+        self.assertEqual(effect["class_name"], "Mask")
+        self.assertEqual(effect["contrast"]["Points"][0]["co"]["Y"], 20.0)
+
+    def test_motion_bounce_emphasis_uses_frame_relative_offsets(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.BOUNCE,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        points = {
+            point["co"]["X"]: point["co"]["Y"]
+            for point in clip.data["location_y"]["Points"]
+        }
+        self.assertAlmostEqual(points[13], -0.25)
+        self.assertAlmostEqual(points[14], -0.25)
+        self.assertAlmostEqual(points[22], -0.125)
+        self.assertAlmostEqual(points[28], -0.033333, places=6)
+        self.assertAlmostEqual(points[31], 0.0)
+
+    def test_motion_emphasis_uses_playhead_in_clip_local_frame_space(self):
+        helper = self.make_motion_helper()
+        helper.window.preview_thread.current_frame = 331
+        clip = self.make_motion_clip()
+        clip.data["position"] = 10.0
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.BOUNCE,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        points = {
+            point["co"]["X"]: point["co"]["Y"]
+            for point in clip.data["location_y"]["Points"]
+        }
+        self.assertIn(31, points)
+        self.assertIn(43, points)
+        self.assertIn(61, points)
+        self.assertNotIn(13, points)
+        self.assertAlmostEqual(points[43], -0.25)
+        self.assertAlmostEqual(points[61], 0.0)
+
+    def test_motion_bounce_in_down_uses_frame_relative_rebound_offsets(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.BOUNCE_IN_DOWN,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        points = {
+            point["co"]["X"]: point["co"]["Y"]
+            for point in clip.data["location_y"]["Points"]
+        }
+        self.assertAlmostEqual(points[1], -3.0)
+        self.assertAlmostEqual(points[19], 0.25)
+        self.assertAlmostEqual(points[24], -0.1)
+        self.assertAlmostEqual(points[28], 0.05)
+        self.assertAlmostEqual(points[31], 0.0)
+
+    def test_motion_bounce_out_up_uses_frame_relative_rebound_offsets(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {"num": 30, "den": 1} if key == "fps" else None,
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.BOUNCE_OUT_UP,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        points = {
+            point["co"]["X"]: point["co"]["Y"]
+            for point in clip.data["location_y"]["Points"]
+        }
+        self.assertAlmostEqual(points[67], -0.125)
+        self.assertAlmostEqual(points[73], 0.25)
+        self.assertAlmostEqual(points[74], 0.25)
+        self.assertAlmostEqual(points[91], -3.0)
+
+    def test_motion_ken_burns_direction_sets_distinct_scale_and_location(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        clip.data["reader"] = {"width": 3840, "height": 1080}
+        app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            project=types.SimpleNamespace(
+                get=lambda key: {
+                    "fps": {"num": 30, "den": 1},
+                    "width": 1920,
+                    "height": 1080,
+                }.get(key),
+                generate_id=lambda: "FX1",
+            ),
+        )
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.KEN_BURNS_IN,
+                ["C1"],
+                transaction_id="tx-motion-test",
+            )
+
+        self.assertEqual(clip.data["scale"], openshot.SCALE_CROP)
+        self.assertAlmostEqual(clip.data["scale_x"]["Points"][-1]["co"]["Y"], 1.22)
+        self.assertAlmostEqual(clip.data["scale_y"]["Points"][-1]["co"]["Y"], 1.22)
+        self.assertGreater(clip.data["location_x"]["Points"][0]["co"]["Y"], 0.0)
+        self.assertLess(clip.data["location_x"]["Points"][-1]["co"]["Y"], 0.0)
+        self.assertAlmostEqual(clip.data["location_y"]["Points"][-1]["co"]["Y"], 0.0)
 
     def test_find_missing_transition_details_returns_overlap(self):
         clip_data = {"id": "B", "layer": 1, "position": 4.0, "start": 0.0, "end": 6.0}
@@ -4185,3 +4420,155 @@ class TimelineHelperTests(unittest.TestCase):
         for preset in presets:
             self.assertEqual(len(preset), 5)
             self.assertIsInstance(preset[4], str)
+
+    def test_video_clip_with_audio_can_toggle_waveform(self):
+        helper = types.SimpleNamespace()
+        clip = types.SimpleNamespace(data={"reader": {"has_video": True, "has_audio": True}})
+
+        self.assertTrue(self.timeline_module.TimelineView._clip_has_audio(helper, clip))
+
+    def test_video_clip_without_audio_cannot_toggle_waveform(self):
+        helper = types.SimpleNamespace()
+        clip = types.SimpleNamespace(data={"reader": {"has_video": True, "has_audio": False}})
+
+        self.assertFalse(self.timeline_module.TimelineView._clip_has_audio(helper, clip))
+
+    def test_film_grain_trigger_adds_preset_effect(self):
+        timeline_module = self.timeline_module
+        clip = types.SimpleNamespace(id="C1", data={
+            "id": "C1",
+            "reader": {"has_video": True},
+            "effects": [],
+        })
+
+        class Helper:
+            def __init__(self):
+                self.updates = []
+
+            def _clip_has_video(self, candidate):
+                return timeline_module.TimelineView._clip_has_video(self, candidate)
+
+            def _clip_has_visual(self, candidate):
+                return timeline_module.TimelineView._clip_has_visual(self, candidate)
+
+            def _create_film_grain_effect_json(self):
+                return {"class_name": "FilmGrain", "id": "FG-1", "seed": 77}
+
+            def update_clip_data(self, clip_data, **kwargs):
+                self.updates.append((copy.deepcopy(clip_data), dict(kwargs)))
+
+        history = []
+        fake_app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(
+                apply_last_action_to_history=lambda original: history.append(copy.deepcopy(original))
+            )
+        )
+        helper = Helper()
+
+        with patch.object(timeline_module.Clip, "get", return_value=clip), \
+             patch.object(timeline_module, "get_app", return_value=fake_app):
+            timeline_module.TimelineView.Film_Grain_Triggered(
+                helper,
+                timeline_module.FILM_GRAIN_PRESET_SUPER_8,
+                ["C1"],
+            )
+
+        self.assertEqual(len(clip.data["effects"]), 1)
+        effect = clip.data["effects"][0]
+        self.assertEqual(effect["class_name"], "FilmGrain")
+        self.assertEqual(effect["id"], "FG-1")
+        self.assertEqual(effect["seed"], 77)
+        self.assertEqual(effect["amount"]["Points"][0]["co"]["Y"], 0.62)
+        self.assertEqual(effect["size"]["Points"][0]["co"]["Y"], 0.72)
+        self.assertEqual(len(helper.updates), 1)
+        self.assertEqual(helper.updates[0][1], {"only_basic_props": False, "ignore_reader": True})
+        self.assertEqual(len(history), 1)
+
+    def test_film_grain_trigger_replaces_duplicate_existing_effects(self):
+        timeline_module = self.timeline_module
+        clip = types.SimpleNamespace(id="C1", data={
+            "id": "C1",
+            "reader": {"has_video": True},
+            "effects": [
+                {"class_name": "FilmGrain", "id": "KEEP", "order": 3, "seed": 222},
+                {"class_name": "FilmGrain", "id": "DROP", "seed": 333},
+            ],
+        })
+
+        class Helper:
+            def __init__(self):
+                self.updates = []
+
+            def _clip_has_video(self, candidate):
+                return timeline_module.TimelineView._clip_has_video(self, candidate)
+
+            def _clip_has_visual(self, candidate):
+                return timeline_module.TimelineView._clip_has_visual(self, candidate)
+
+            def update_clip_data(self, clip_data, **kwargs):
+                self.updates.append(copy.deepcopy(clip_data))
+
+        fake_app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(apply_last_action_to_history=lambda _original: None)
+        )
+        helper = Helper()
+
+        with patch.object(timeline_module.Clip, "get", return_value=clip), \
+             patch.object(timeline_module, "get_app", return_value=fake_app):
+            timeline_module.TimelineView.Film_Grain_Triggered(
+                helper,
+                timeline_module.FILM_GRAIN_PRESET_35MM_FINE,
+                ["C1"],
+            )
+
+        self.assertEqual(len(clip.data["effects"]), 1)
+        effect = clip.data["effects"][0]
+        self.assertEqual(effect["id"], "KEEP")
+        self.assertEqual(effect["order"], 3)
+        self.assertEqual(effect["seed"], 222)
+        self.assertEqual(effect["amount"]["Points"][0]["co"]["Y"], 0.14)
+
+    def test_film_grain_trigger_none_removes_existing_effects(self):
+        timeline_module = self.timeline_module
+        clip = types.SimpleNamespace(id="C1", data={
+            "id": "C1",
+            "reader": {"has_video": True},
+            "effects": [
+                {"class_name": "FilmGrain", "id": "FG-1"},
+                {"class_name": "Brightness", "id": "B-1"},
+                {"class_name": "FilmGrain", "id": "FG-2"},
+            ],
+        })
+
+        class Helper:
+            def __init__(self):
+                self.updates = []
+
+            def _clip_has_video(self, candidate):
+                return timeline_module.TimelineView._clip_has_video(self, candidate)
+
+            def _clip_has_visual(self, candidate):
+                return timeline_module.TimelineView._clip_has_visual(self, candidate)
+
+            def update_clip_data(self, clip_data, **kwargs):
+                self.updates.append((copy.deepcopy(clip_data), dict(kwargs)))
+
+        history = []
+        fake_app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(
+                apply_last_action_to_history=lambda original: history.append(copy.deepcopy(original))
+            )
+        )
+        helper = Helper()
+
+        with patch.object(timeline_module.Clip, "get", return_value=clip), \
+             patch.object(timeline_module, "get_app", return_value=fake_app):
+            timeline_module.TimelineView.Film_Grain_Triggered(
+                helper,
+                timeline_module.FILM_GRAIN_PRESET_NONE,
+                ["C1"],
+            )
+
+        self.assertEqual(clip.data["effects"], [{"class_name": "Brightness", "id": "B-1"}])
+        self.assertEqual(len(helper.updates), 1)
+        self.assertEqual(len(history), 1)

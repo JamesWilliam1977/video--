@@ -128,8 +128,8 @@ QMenu::item {
     padding: 6px 14px 6px 10px;
 }
 
-QMenu::item::checked {
-    padding: 6px 12px 6px 20px;
+QMenu::item:checked {
+    padding: 6px 14px 6px 10px;
 }
 
 QMenu::item:selected {

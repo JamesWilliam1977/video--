@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -22,7 +22,7 @@
 Text & Titles
 =============
 
-Adding text and titles is an important aspect of video editing, and OpenShot comes with an easy-to-use Title Editor. Use
+Adding text overlays, lower thirds, and titles is an important aspect of video editing, and OpenShot comes with an easy-to-use Title Editor. Use
 the Title menu (located in the main menu of OpenShot) to launch the Title Editor. You can also use the keyboard shortcut
 :kbd:`Ctrl+T`.
 

@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -151,3 +151,88 @@ Audio Settings
    Channel Layout      The number and layout of audio channels (``Stereo``, ``Mono``, ``Surround``, etc...)
    Bit Rate / Quality  The bitrate to use for audio encoding. Accepts the following formats: ``96 kb/s``, ``128 kb/s``, ``192 kb/s``, etc...
    ==================  ============
+
+.. _export_social_media_ref:
+
+Social Media Quick Reference
+-----------------------------
+
+The table below shows the recommended :guilabel:`Target` and :guilabel:`Video Profile` settings for common
+social media platforms. Select these in the **Simple** tab of the Export dialog.
+
+.. list-table::
+   :widths: 20 22 30 28
+   :header-rows: 1
+
+   * - Platform
+     - Target
+     - Video Profile
+     - Notes
+   * - YouTube (landscape)
+     - ``YouTube``
+     - ``FHD 1080p 30 fps``
+     - Use ``YouTube (4K)`` for 4K
+   * - YouTube Shorts (vertical)
+     - ``YouTube Shorts``
+     - ``FHD Vertical 1080p 30 fps``
+     - Up to 60 fps
+   * - TikTok (vertical)
+     - ``TikTok``
+     - ``FHD Vertical 1080p 30 fps``
+     - Up to 60 fps
+   * - Instagram Reels (vertical)
+     - ``Instagram Reels``
+     - ``FHD Vertical 1080p 30 fps``
+     - Up to 60 fps
+   * - Instagram (landscape/square)
+     - ``Instagram``
+     - ``FHD 1080p 30 fps``
+     - Square (1:1) also available
+   * - Snapchat (vertical)
+     - ``Snapchat``
+     - ``FHD Vertical 1080p 30 fps``
+     - Up to 60 fps
+   * - Facebook
+     - ``Facebook``
+     - ``FHD 1080p 30 fps``
+     - Square and vertical also available
+   * - LinkedIn (landscape)
+     - ``LinkedIn``
+     - ``FHD 1080p 30 fps``
+     - Square and 4:5 portrait also available
+   * - Twitter / X
+     - ``Twitter / X``
+     - ``FHD 1080p 30 fps``
+     - Vertical also available
+   * - Vimeo
+     - ``Vimeo``
+     - ``FHD 1080p 30 fps``
+     - Use High quality setting
+
+.. _export_hardware_accel_ref:
+
+Hardware-Accelerated Export
+----------------------------
+
+OpenShot supports GPU-accelerated video encoding on supported hardware, dramatically reducing export times.
+Hardware-accelerated targets are shown with a badge in the :guilabel:`Target` dropdown. Select the
+appropriate target for your hardware:
+
+.. table::
+   :widths: 35 20 45
+
+   =====================================  ============  =============================================
+   Target (Export Dialog)                 Badge         Requires
+   =====================================  ============  =============================================
+   ``MP4 (h.264 nv)``                     NVENC         NVIDIA GPU (Kepler or newer)
+   ``MP4 (h.264 va)``                     VA-API        Linux with AMD or Intel GPU (VAAPI driver)
+   ``MP4 (h.264 qsv)``                    QSV           Intel GPU with Quick Sync Video
+   ``MP4 (h.264 videotoolbox)``           VideoToolbox  macOS with Apple or Intel GPU
+   ``MP4 (h.264 dx)``                     DirectX       Windows with DirectX-compatible GPU
+   ``MP4 (HEVC va)``                      VA-API        Linux VA-API — produces smaller HEVC files
+   =====================================  ============  =============================================
+
+MKV variants (``MKV (h.264 nv)``, ``MKV (h.264 va)``, etc.) are also available for each accelerator.
+If none of these targets appear or export fails, your system either lacks the required driver or the
+hardware encoder is not supported — fall back to the standard ``MP4 (h.264 + AAC)`` target, which uses
+the CPU-based ``libx264`` encoder and works on all systems.

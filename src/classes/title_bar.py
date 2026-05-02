@@ -25,7 +25,7 @@
  along with OpenShot Library.  If not, see <http://www.gnu.org/licenses/>.
  """
 
-from qt_api import Qt, QWidget, QHBoxLayout, QPushButton, QLabel
+from qt_api import Qt, QEvent, QWidget, QDockWidget, QHBoxLayout, QPushButton, QLabel
 
 from classes.app import get_app
 
@@ -46,6 +46,7 @@ class HiddenTitleBar(QWidget):
         # Add a QLabel for the title (optional, based on title_text)
         self.title_label = QLabel(title_text)
         self.title_label.setFocusPolicy(Qt.NoFocus)
+        self.title_label.installEventFilter(self)
         if title_text:
             self.title_label.setObjectName("dock-title-label")
         else:
@@ -110,6 +111,26 @@ class HiddenTitleBar(QWidget):
         else:
             float_label = _("Float")
         self.undock_button.setAccessibleName(float_label)
+
+    def _close_on_middle_click(self, event):
+        if event.button() != Qt.MiddleButton:
+            return False
+        if not (self.dock_widget.features() & QDockWidget.DockWidgetClosable):
+            return False
+        self.dock_widget.close()
+        event.accept()
+        return True
+
+    def eventFilter(self, obj, event):
+        if obj is self.title_label and event.type() == QEvent.MouseButtonRelease:
+            if self._close_on_middle_click(event):
+                return True
+        return super().eventFilter(obj, event)
+
+    def mouseReleaseEvent(self, event):
+        if self._close_on_middle_click(event):
+            return
+        super().mouseReleaseEvent(event)
 
     def toggle_dock_state(self):
         """Toggle between docked and floating states."""

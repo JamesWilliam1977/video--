@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -132,98 +132,146 @@ revealing the context menu. A preset sets one (or more) clip properties for the 
 to manually set the key-frame clip properties. See :ref:`clip_properties_ref`.
 
 Some presets allow the user to target either the start, end, or entire clip, and most presets allow
-the user to reset a specific clip property. For example, when using the ``Volume`` preset, the user has
-the following menu options: 
+the user to reset a specific clip property. For example, when using the :guilabel:`Audio → Volume` presets,
+the user has the following menu options:
 
-- **Reset** - This will reset the volume to the original level.
-- **Start of Clip** - Your volume level selection will apply at the Beginning of the clip.
-- **End of Clip** - Your volume level selection will apply to the End of the clip.
-- **Entire Clip** - Your volume level selection will apply to the Entire clip.
+- **Reset Volume** — resets the volume to the original level.
+- **Start of Clip** — the volume change applies at the beginning of the clip.
+- **End of Clip** — the volume change applies at the end of the clip.
+- **Entire Clip** — the volume change applies to the entire clip.
 
 .. image:: images/clip-presets.jpg
 
 .. table::
    :widths: 20 80
-   
+
    ==================  ============
    Preset Name         Description
    ==================  ============
    Copy / Cut / Paste  Copy selected clip data, cut selected clips, or paste copied clip data. Copy supports full clips, effects, and keyframe groups.
-   Align               Align the left or right edge of multiple selected clips and transitions.
-   Fade                Fade the image in or out (often easier than using a transition)
-   Animate             Zoom and slide a clip
-   Rotate              Rotate or flip a clip
-   Crop                Crop the clip with or without resizing the visible result back to the project frame.
-   Color               Apply quick color presets, reset color changes, or open the video scopes.
-   Layout              Make a video smaller or larger, and snap to any corner
-   Time                Reverse, repeat, and speed up or slow down video
-   Volume              Fade in or out the volume, reduce or increase the volume of a clip, mute it, or open the Audio Levels dock
-   Separate Audio      Separate the audio from a clip. This preset can either create a single detached audio clip (positioned on a layer below the original clip), or multiple detached audio clips (one per audio track, positioned on multiple layers below the original clip)
-   Slice               Cut the clip at the play-head position, with options to keep either side, both sides, or ripple-delete one side.
-   Display             Switch selected clips between audio waveform and thumbnail display styles.
-   Properties          Show the properties panel for a clip
-   Remove Clip         Remove a clip from the timeline
+   Align               Align the left or right edge of multiple selected clips and transitions (only shown when multiple clips are selected).
+   Fade                Fade the clip in or out — automatically fades video (alpha) and/or audio (volume) based on what the clip contains.
+   Motion              Add animated motion to a clip: slide in/out, bounce, blur, zoom, emphasis effects at the playhead, camera movements, and scrolling credits. Only shown for visual clips.
+   Transform           Apply geometric presets to a clip: rotate/flip, crop, or snap to a corner layout. Also provides a **No Transform** reset. Only shown for visual clips.
+   Look                Apply visual style presets: color grades, film grain, analog tape, sharpen, blur, shadow, and glow effects. Includes **Adjust Colors** (Color Wheels editor) and **Analyze Colors** (video scopes). Only shown for visual clips.
+   Speed               Reverse, repeat, speed up, or slow down video. Includes Freeze and Freeze & Zoom options.
+   Audio               Control audio properties: adjust volume levels, fade volume in/out, separate audio channels, show/hide the timeline waveform, or open the Audio Levels scope.
+   Slice               Cut the clip at the play-head position, with options to keep either side, both sides, or ripple-delete one side. Only shown when the playhead overlaps the clip.
+   Properties          Show the properties panel for a clip.
+   Remove Clip         Remove a clip from the timeline.
    ==================  ============
 
 Fade
 """"
-The :guilabel:`Fade` preset enables smooth transitions by gradually increasing or decreasing the clip's opacity. It
-creates a fade-in or fade-out of the clip image, ideal for introducing or concluding clips. 
-See :ref:`clip_alpha_ref` key-frame.
+The :guilabel:`Fade` preset creates a smooth fade-in or fade-out on the selected clip. It automatically
+fades **video** (alpha/opacity) and/or **audio** (volume) depending on what the clip contains — a video clip
+gets both, an audio-only clip gets only a volume fade, and an image clip gets only an alpha fade.
+
+- :guilabel:`No Fade` — removes all fade keyframes.
+- :guilabel:`Fade In` → :guilabel:`Fast` / :guilabel:`Slow` — fades from transparent/silent at the start of the clip.
+- :guilabel:`Fade Out` → :guilabel:`Fast` / :guilabel:`Slow` — fades to transparent/silent at the end of the clip.
+- :guilabel:`Fade In and Out` → :guilabel:`Fast` / :guilabel:`Slow` — applies both a fade-in at the start and a fade-out at the end.
+
+Fast fades span approximately 1 second; Slow fades span approximately 3 seconds.
+See :ref:`clip_alpha_ref` and :ref:`clip_volume_ref` key-frames.
 
 - **Usage Example:** Applying a fade-out to a video clip to gently conclude a scene.
-- **Tip:** Adjust the duration of the fade effect (slow or fast) to control its timing and intensity.
+- **Tip:** Fade and Volume fade are independent — use :guilabel:`Fade` for a combined video+audio fade, or use :guilabel:`Audio → Volume` to fade only the audio.
 
-Animate
-"""""""
-The :guilabel:`Animate` preset adds dynamic motion to clips, combining zooming and sliding animations. It
-animates a clip by zooming in or out while sliding across the screen. It can **slide** in many specific
-directions, or slide and zoom to a **random** location. See :ref:`clip_location_x_ref` and 
-:ref:`clip_scale_x_ref` key-frames.
+Motion
+""""""
+The :guilabel:`Motion` menu adds animated movement to visual clips using keyframe presets. It is organized into
+several submenus. See :ref:`clip_location_x_ref` and :ref:`clip_scale_x_ref` key-frames.
 
-- **Usage Example:** Using the animate preset to simulate a camera movement across a landscape shot.
-- **Tip:** Experiment with different animation speeds and directions for diverse visual effects.
+- :guilabel:`No Motion` — removes all motion keyframes from the clip.
+- :guilabel:`In` — entrance animations applied at the start of the clip:
+
+  - **Back In** (From Bottom / Left / Right / Top) — clip overshoots and springs back into position.
+  - **Blur In** — clip fades in from a motion blur.
+  - **Bounce In** (Center / From Bottom / Left / Right / Top) — clip bounces as it enters.
+  - **Pop In** — clip scales up quickly from nothing.
+  - **Slide In** (From Bottom / Left / Right / Top) — clip slides onto the screen.
+  - **Spiral In** — clip rotates in while scaling up.
+  - **Wipe In** (Circle Expand / Circle Shrink / From Bottom / Left / Right / Top) — clip is revealed by a wipe.
+
+- :guilabel:`Out` — exit animations applied at the end of the clip (mirrors the In options: Back Out, Blur Out, Bounce Out, Pop Out, Slide Out, Spiral Out, Wipe Out).
+
+- :guilabel:`Emphasis` — short attention-grabbing animations **inserted at the current playhead position** (not applied across the whole clip). Useful for mid-clip highlights: **Bounce**, **Flash**, **Heartbeat**, **Jello**, **Pulse**, **Rubber Band**, **Shake X**, **Shake Y**, **Swing**, **Tada**, **Wobble**.
+
+- :guilabel:`Camera` — simulates camera movement on the clip by animating scale and position:
+
+  - **Zoom** → In / Out — a simple push-in or pull-out.
+  - **Pan** → Auto Direction / Left to Right / Right to Left / Top to Bottom / Bottom to Top — a lateral camera pan. *Auto Direction* picks the best direction based on the clip's aspect ratio.
+  - **Zoom & Pan** → In or Out, with directional variants — combines a zoom with a pan (Ken Burns style). *Auto Direction* picks the best direction based on the clip's aspect ratio.
+
+- :guilabel:`Credits` — scrolling credit animations: **Scroll Up** and **Scroll Down**.
+
+- **Tip:** Emphasis presets are placed at the current playhead position, so position the playhead over the moment you want to highlight before applying one.
+- **Tip:** Camera presets use *Auto Direction* by default, which picks the optimal pan direction for wide or tall media to avoid black bars.
+
+.. _clip_presets_rotate_ref:
 
 Rotate
 """"""
-The :guilabel:`Rotate` preset introduces easy rotation and flipping of clips, enhancing their visual appeal. It
-enables orientation adjustment, by rotating and flipping a clip for creative visual transformations. See :ref:`clip_rotation_ref` key-frame.
+The :guilabel:`Transform → Rotate` submenu introduces easy rotation and flipping of clips. It
+enables orientation adjustment by rotating and flipping a clip for creative visual transformations.
+See :ref:`clip_rotation_ref` key-frame.
 
-- **Usage Example:** Rotating a photo or video by 90 degree (a portrait video to a landscape)
-- **Usage Example:** If your video is oriented sideways (90 degrees), you can rotate it clockwise or counterclockwise by 90 degrees to bring it to the correct orientation. This can be useful when you accidentally recorded a video in portrait mode when you intended it to be landscape.
-- **Usage Example:** If your video is upside down, you can rotate it by 180 degrees to flip it to the correct orientation. This can happen if you accidentally held your camera the wrong way while recording.
+- :guilabel:`No Rotation` — removes any rotation keyframes.
+- :guilabel:`Rotate 90 (Right)` — rotates the clip 90 degrees clockwise.
+- :guilabel:`Rotate 90 (Left)` — rotates the clip 90 degrees counterclockwise.
+- :guilabel:`Rotate 180 (Flip)` — flips the clip upside down.
+
+- **Usage Example:** Rotating a photo or video by 90 degrees (a portrait video to a landscape).
+- **Usage Example:** If your video is upside down, rotate it by 180 degrees to correct the orientation.
+
+.. _clip_presets_layout_ref:
 
 Layout
 """"""
-The :guilabel:`Layout` preset adjusts the size of a clip and snaps it to a chosen corner of the screen. It
-resizes a clip and anchors it to a corner or the center, useful for picture-in-picture or watermark effects.
+The :guilabel:`Transform → Layout` submenu adjusts the size of a clip and snaps it to a chosen corner of the
+screen, useful for picture-in-picture or watermark effects.
 See :ref:`clip_location_x_ref` and :ref:`clip_scale_x_ref` key-frames.
+
+- :guilabel:`Reset Layout` — removes any layout keyframes.
+- :guilabel:`1/4 Size` — positions the clip at 1/4 of the screen in the Center, Top Left, Top Right, Bottom Left, or Bottom Right corner.
+- :guilabel:`Show All (Maintain Ratio)` — fits the entire clip frame within the screen while preserving its aspect ratio.
+- :guilabel:`Show All (Distort)` — stretches the entire clip frame to fill the screen, ignoring aspect ratio.
 
 - **Usage Example:** Placing a logo in the corner of a video using the layout preset.
 - **Tip:** Combine with animation presets for dynamic transitions involving resizing and repositioning.
 
-Time
-""""
-The :guilabel:`Time` preset manipulates clip playback speed, allowing for reverse playback or time-lapse effects. It
-alters the speed and direction of a clip's playback, enhancing visual storytelling.
-See :ref:`clip_time_ref` key-frame.
+Speed
+"""""
+The :guilabel:`Speed` menu manipulates clip playback speed, allowing for reverse playback, time-lapse,
+slow-motion, freezes, and looping effects. See :ref:`clip_time_ref` key-frame.
 
-- **Usage Example:** Creating a slow-motion effect to emphasize a specific action.
-- **Tip:** Use time presets to creatively manipulate the pacing of your video.
+- :guilabel:`Reset` — restores the clip to normal 1× speed.
+- :guilabel:`Reverse` — plays the clip backwards at normal speed.
+- :guilabel:`Speed Up` → Forward / Backward → 2×, 4×, 8×, 16× — speeds up playback in either direction.
+- :guilabel:`Slow Down` → Forward / Backward → 1/2×, 1/4×, 1/8×, 1/16× — slows down playback in either direction.
+- :guilabel:`Repeat` — see below.
+- :guilabel:`Freeze` — freezes on the frame at the current playhead position for 2, 4, 6, 8, 10, 20, or 30 seconds.
+- :guilabel:`Freeze && Zoom` — freezes and simultaneously zooms in on that frozen frame.
+
+- **Slow motion** — :guilabel:`Slow Down → 1/2×` or :guilabel:`1/4×` for dreamy or dramatic footage.
+- **Time-lapse** — :guilabel:`Speed Up → 8×` or :guilabel:`16×` to compress hours into seconds.
+- **Speed ramp** — use the :guilabel:`Timing` tool to drag clip edges and create a natural-feeling speed change; OpenShot scales all keyframes automatically.
+- **Tip:** Combine :guilabel:`Freeze` with :guilabel:`Speed Up` for an impact-freeze-then-fast-forward effect.
 
 .. _clip_time_repeat_ref:
 
 Repeat
 """"""
-Use :guilabel:`Time → Repeat` to play a clip multiple times, without building the
+Use :guilabel:`Speed → Repeat` to play a clip multiple times, without building the
 time curve by hand. OpenShot writes the needed :guilabel:`Time` keyframes for you (you can edit them later).
 
 **Menu path**
 
-- :guilabel:`Time → Repeat → Loop → Forward` – plays left to right, then starts again from the beginning
-- :guilabel:`Time → Repeat → Loop → Reverse` – plays right to left, then starts again from the end
-- :guilabel:`Time → Repeat → Ping-Pong → Forward` – forward, then backward, then forward…
-- :guilabel:`Time → Repeat → Ping-Pong → Reverse` – backward, then forward, then backward…
+- :guilabel:`Speed → Repeat → Loop → Forward` – plays left to right, then starts again from the beginning
+- :guilabel:`Speed → Repeat → Loop → Reverse` – plays right to left, then starts again from the end
+- :guilabel:`Speed → Repeat → Ping-Pong → Forward` – forward, then backward, then forward…
+- :guilabel:`Speed → Repeat → Ping-Pong → Reverse` – backward, then forward, then backward…
 - :guilabel:`Custom…` – opens a dialog for extra options (see below)
 
 Counts are **finite** (2x, 3x, 4x, 5x, 8x, 10x, or a custom number).  
@@ -253,7 +301,7 @@ Example: “Forward then Back and stop” = :guilabel:`Ping-Pong → Forward →
 
 **Reset**
 
-- :guilabel:`Time → Reset Time` completely removes any Time curve (including Repeat) and restores the clip to its
+- :guilabel:`Speed → Reset` completely removes any Time curve (including Repeat) and restores the clip to its
   original playback, **without deleting your original non-Time keyframes**.
 
 Timing Tool
@@ -262,37 +310,79 @@ Another way to change a clip's speed is with the :guilabel:`Timing` tool on the 
 icon and drag a clip's edges. Lengthening the clip slows playback, while shotening it speeds the clip up.
 All keyframes on the clip and its effects are scaled so their relative positions remain intact.
 
-Color
+Look
+""""
+The :guilabel:`Look` menu applies one-click visual style presets to clips. All presets work by adding or
+updating effects on the clip — you can inspect or animate them further in the Properties dock. The menu is
+organized into four submenus plus two direct actions at the bottom.
+
+- :guilabel:`Reset Look` — removes all Look-managed effects (Color Grade, Film Grain, Analog Tape, Sharpen,
+  Blur, Shadow, Glow) from the selected clips in a single step.
+
+**Color** — applies a :guilabel:`Color Grade` effect with one of four quick presets:
+
+- **Auto Contrast** — boosts contrast by lifting shadows and pulling highlights.
+- **Lift Shadows** — brightens the dark areas of the image.
+- **Warm Up** — shifts the color balance toward warm orange/amber tones.
+- **Boost Color** — increases color saturation.
+
+**Film** — cinematic film simulation:
+
+- :guilabel:`Film Grain` → **No Film Grain**, then: **35mm Fine**, **35mm Classic**, **35mm Gritty**,
+  **16mm Classic**, **Super 8**, **High ISO** — adds photographic grain at various strengths and sizes.
+- :guilabel:`Analog Tape` → **No Analog Tape**, then: **Subtle**, **VHS**, **Heavy** — adds tape
+  noise and color degradation for a retro video look.
+
+**Focus** — sharpness adjustments:
+
+- :guilabel:`Sharpen` → **No Sharpen**, then: **Subtle**, **Medium**, **Strong** — sharpens fine detail.
+- :guilabel:`Blur` → **No Blur**, then: **Soft Focus**, **Medium**, **Heavy** — softens the image.
+
+**Lighting** — light and shadow overlays:
+
+- :guilabel:`Shadow` → **No Shadow**, then: **Subtle**, **Soft**, **Strong**, **Long** — casts a drop
+  shadow across the clip.
+- :guilabel:`Glow` → **No Glow**, then: **Soft White**, **Warm**, **Neon**, **Inner Glow** — adds a
+  soft halo or glow effect.
+
+At the bottom of the Look menu:
+
+- :guilabel:`Adjust Colors` — opens the :guilabel:`Color Wheels` dock for full manual color grading with
+  lift/gamma/gain wheels, curves, and an Amount/Luma blend slider.
+- :guilabel:`Analyze Colors` — opens the :guilabel:`Luma Waveform` and :guilabel:`Histogram` video scopes
+  on the right side of the window, tabified together.
+
+- **Tip:** Each Look submenu has a "No …" option at the top to remove just that single effect without affecting
+  the others.
+- **Tip:** After applying a Look preset, double-click the effect badge on the clip (or use Properties) to
+  fine-tune every parameter or animate it over time.
+
+Audio
 """""
-The :guilabel:`Color` preset menu includes quick grading presets, :guilabel:`Reset Color`, and
-:guilabel:`Analyze Colors`. Choosing :guilabel:`Analyze Colors` opens the :guilabel:`Luma Waveform`
-and :guilabel:`Histogram` docks on the right side of the window, tabified together when needed.
+The :guilabel:`Audio` menu groups all audio-related clip actions in one place.
 
-If you select multiple clips and/or transitions that share the same left edge or
-right edge, you can retime that shared edge together in one drag.
+**Volume** — controls the clip's audio level. See :ref:`clip_volume_ref` key-frame.
 
-Volume
-""""""
-The :guilabel:`Volume` preset controls audio properties, facilitating smooth volume adjustments. It
-manages audio volume, including fading in/out, reducing/increasing volume, or muting.
-See :ref:`clip_volume_ref` key-frame.
+- :guilabel:`Reset Volume` — removes all volume keyframes, returning to full (1×) volume.
+- :guilabel:`Level` — sets a fixed volume percentage (0 % to 130 %) for the entire clip.
+- :guilabel:`Fade In` → :guilabel:`Fast` / :guilabel:`Slow` — fades volume from silence at the start of the clip.
+- :guilabel:`Fade Out` → :guilabel:`Fast` / :guilabel:`Slow` — fades volume to silence at the end of the clip.
+- :guilabel:`Fade In and Out` → :guilabel:`Fast` / :guilabel:`Slow` — applies both a volume fade-in and fade-out.
 
-The same menu also includes :guilabel:`Audio Levels`, which opens the :guilabel:`Audio Levels` dock on the right
-side of the window. If the scope docks are already open, OpenShot tabifies :guilabel:`Audio Levels` with the
-other scopes.
+**Separate** — splits the audio track out of a clip:
+
+- :guilabel:`Single Clip (all channels)` — creates one detached audio clip on a layer below the original.
+- :guilabel:`Multiple Clips (each channel)` — creates separate detached audio clips, one per audio channel, on multiple layers below the original.
+
+**Show Waveform / Hide Waveform** — toggles the audio waveform visualization on the timeline for audio-only clips.
+Only shown for clips that do not have a video track.
+
+**Analyze Levels** — opens the :guilabel:`Audio Levels` scope dock. If other scope docks are already open,
+OpenShot tabifies :guilabel:`Audio Levels` with them.
 
 - **Usage Example:** Applying a gradual volume fade-out to transition between scenes.
-- **Tip:** Utilize volume presets for quickly lowering or raising volume levels.
-
-Separate Audio
-""""""""""""""
-The :guilabel:`Separate Audio` preset splits the audio from a clip, creating detached audio clips positioned 
-below the original clip on the timeline. This preset can either create a **single** detached audio clip 
-(positioned on a layer below the original clip) or **multiple** detached audio clips 
-(one per audio track, positioned on multiple layers below the original clip).
-
-- **Usage Example:** Extracting background music from a video clip for independent control.
-- **Tip:** Use this preset to fine-tune audio elements separately from the visual content.
+- **Usage Example:** Extracting background music from a video clip for independent volume control.
+- **Tip:** Use :guilabel:`Audio → Volume → Fade In/Out` for audio-only fades. Use the top-level :guilabel:`Fade` menu for a combined video+audio fade.
 
 Slice
 """""
@@ -321,6 +411,17 @@ For a complete guide to slicing and all available keyboard shortcuts, see the :r
 
 Transform
 """""""""
+The :guilabel:`Transform` context menu provides geometric preset actions for visual clips:
+
+- :guilabel:`No Transform` — removes all Rotate, Layout, and crop presets from the selected clips in one step.
+- :guilabel:`Rotate` — rotate or flip the clip. See the :ref:`Rotate <clip_presets_rotate_ref>` section above.
+- :guilabel:`Crop` — add or remove a crop effect. See the :ref:`Crop <clip_presets_crop_ref>` section below.
+- :guilabel:`Layout` — resize and snap the clip to a corner or fit position. See the :ref:`Layout <clip_presets_layout_ref>` section above.
+
+.. _clip_transform_tool_ref:
+
+Transform Tool
+^^^^^^^^^^^^^^
 The **Transform Tool** lets you quickly adjust a clip directly in the preview
 window, instead of changing location, scale, rotation, shear, and rotation
 origin values one property at a time. OpenShot shows the Transform Tool
@@ -347,9 +448,11 @@ of your clip. You can also manually adjust these same clip properties in the pro
 - **Usage Example:** Use the transform handles to resize and reposition a clip for a picture-in-picture effect.
 - **Tip:** Use these handles to precisely control a clip's appearance.
 
+.. _clip_presets_crop_ref:
+
 Crop
 """""
-The :guilabel:`Crop` preset adds a crop effect to the selected clip and displays
+The :guilabel:`Transform → Crop` submenu adds a crop effect to the selected clip and displays
 interactive crop handles in the video preview. The submenu offers:
 
 - :guilabel:`No Crop` – remove any existing crop effect.
@@ -359,13 +462,14 @@ interactive crop handles in the video preview. The submenu offers:
 Drag the blue handles to adjust the crop boundaries, move the cropped area around, or move the center handle to
 reposition the image inside the cropped area.
 
-Display
-"""""""
-The :guilabel:`Display` preset toggles the display mode of a clip on the timeline, showing either its 
-waveform or thumbnail.
+Waveform
+""""""""
+The :guilabel:`Audio → Show Waveform` / :guilabel:`Hide Waveform` action toggles whether an audio-only clip
+shows its waveform visualization on the timeline instead of the default thumbnail. This option only appears
+for clips that have no video track.
 
-- **Usage Example:** Displaying the audio waveform for precise audio editing.
-- **Tip:** Use this preset to focus on specific aspects of a clip's audio during editing.
+- **Usage Example:** Displaying the audio waveform for precise audio editing and alignment.
+- **Tip:** Use this to visually spot loud or quiet sections in a music clip without opening the audio scopes.
 
 Properties
 """"""""""
@@ -662,7 +766,7 @@ To avoid distortion, OpenShot might need to reduce the volume levels in overlapp
  - **Average** - Automatically divide the volume of each clip based on the # of overlapping clips. For example, 2 overlapping clips would each have 50% volume, 3 overlapping clips would each have 33% volume, etc...
  - **Reduce** - Automatically reduce overlapping clips volume by 20%, which reduces the likelihood of becoming too loud, but does not always prevent audio distortion. For example, if you have 10 loud clips overlapping, each with a 20% reduction in volume, it might still exceed the max allowable volume and exhibit audio distortion.
 
-For quickly adjusting the volume of a clip, you can use the simple :guilabel:`Volume Preset` menu. See :ref:`clip_presets_ref`.
+For quickly adjusting the volume of a clip, you can use the :guilabel:`Audio → Volume` menu. See :ref:`clip_presets_ref`.
 For precise control over the volume of a clip, you can manually set the :guilabel:`Volume Key-frame`. See :ref:`clip_volume_ref`.
 
 Origin X and Origin Y
@@ -757,8 +861,8 @@ Changing this property will impact the :guilabel:`Duration` clip property.
 Time
 """"
 The :guilabel:`Time` property is a key-frame curve that represents frames played over time, affecting the speed and direction of the video.
-You can use one of the available presets (`normal, fast, slow, freeze, freeze & zoom, forward, backward`), by right clicking
-on a Clip and choosing the :guilabel:`Time` menu. Many presets are available in this menu for reversing,
+You can use one of the available presets (normal, fast, slow, freeze, freeze & zoom, forward, backward), by right-clicking
+on a clip and choosing the :guilabel:`Speed` menu. Many presets are available in this menu for reversing,
 speeding up, and slowing down a video clip, see :ref:`clip_presets_ref`.
 The same adjustments can be made interactively with the :guilabel:`Timing` toolbar button by dragging a clip's edges; OpenShot
 adds the necessary time keyframes and scales all other keyframes automatically.
@@ -787,7 +891,7 @@ For automatic adjustment of volume, see :ref:`clip_volume_mixing_ref`.
 
 - **Usage Example:** Gradually fading out background music as dialogue becomes more prominent, or increasing or lowering the volume of a clip.
 - **Tip:** Combine multiple volume key-frames for nuanced audio adjustments, such as ducking the level of the music when dialog is spoken.
-- **Tip:** For **quickly** adjusting the volume of a clip you can use the simple :guilabel:`Volume Preset` menu. See :ref:`clip_presets_ref`.
+- **Tip:** For **quickly** adjusting the volume of a clip you can use the :guilabel:`Audio → Volume` menu. See :ref:`clip_presets_ref`.
 
 Wave Color
 """"""""""

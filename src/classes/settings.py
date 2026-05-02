@@ -166,7 +166,10 @@ class SettingStore(JsonDataStore):
         Return True if any settings with 'restart: True' are changed.
         """
         log.info(f"Restoring defaults for category: {category_filter or 'all categories'}")
-        preserve_keys = ['unique_install_id', 'tutorial_ids', 'tutorial_enabled', 'send_metrics', 'recent_projects']
+        preserve_keys = [
+            'unique_install_id', 'tutorial_ids', 'tutorial_enabled', 'send_metrics',
+            'recent_projects', 'custom_views', 'active_custom_view',
+        ]
 
         requires_restart = False  # Track if any setting requires a restart
 

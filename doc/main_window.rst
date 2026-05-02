@@ -1,4 +1,4 @@
-.. Copyright (c) 2008-2016 OpenShot Studios, LLC
+.. Copyright (c) 2008-2026 OpenShot Studios, LLC
  (http://www.openshotstudios.com). This file is part of
  OpenShot Video Editor (http://www.openshot.org), an open-source project
  dedicated to delivering high quality video editing and animation solutions
@@ -165,7 +165,6 @@ Learning a few of these shortcuts can save you a bunch of time!
    Export Video / Media                  :kbd:`Ctrl+E`             :kbd:`Ctrl+M`
    Fast Forward                          :kbd:`L`
    File Properties                       :kbd:`Alt+I`              :kbd:`Ctrl+Double Click`
-   Freeze View                           :kbd:`Ctrl+F`
    Fullscreen                            :kbd:`F11`
    Import Files...                       :kbd:`Ctrl+I`
    Insert Keyframe                       :kbd:`Alt+Shift+K`
@@ -201,7 +200,6 @@ Learning a few of these shortcuts can save you a bunch of time!
    Select All                            :kbd:`Ctrl+A`
    Select Item (Ripple)                  :kbd:`Alt+A`              :kbd:`Alt+Click`
    Select None                           :kbd:`Ctrl+Shift+A`
-   Show All Docks                        :kbd:`Ctrl+Shift+D`
    Simple View                           :kbd:`Alt+Shift+0`
    Slice All: Keep Both Sides            :kbd:`Ctrl+Shift+K`
    Slice All: Keep Left Side             :kbd:`Ctrl+Shift+J`
@@ -217,7 +215,6 @@ Learning a few of these shortcuts can save you a bunch of time!
    Timing Toggle                         :kbd:`T`
    Title                                 :kbd:`Ctrl+T`
    Translate this Application...         :kbd:`F6`
-   Un-Freeze View                        :kbd:`Ctrl+Shift+F`
    Undo                                  :kbd:`Ctrl+Z`
    View Toolbar                          :kbd:`Ctrl+Shift+B`
    Zoom In                               :kbd:`=`                  :kbd:`Ctrl+=`
@@ -262,10 +259,11 @@ are renamed and/or rearranged.
        - :guilabel:`Animated Title` Add an animated title to the project. See :ref:`animated_titles_ref`.
    * - View
      -
-       - :guilabel:`Toolbar` Show or hide the main window toolbar.
-       - :guilabel:`Fullscreen` Toggle fullscreen mode.
-       - :guilabel:`Views` Switch or reset the main window layout (*Simple, Color, Advanced, Freeze, Show All*).
-       - :guilabel:`Docks` Show or hide various dockable panels (*Audio Levels, Captions, Color Wheels, Effects, Emojis, Histogram, Luma Waveform, Project Files, Properties, Transitions, Video Preview*).
+       - :guilabel:`Simple View`, :guilabel:`Color View`, and :guilabel:`Advanced View` switch or reset the main window layout.
+       - :guilabel:`My Views` Save, load, update, and delete your own named layouts. See :ref:`my_views_ref`.
+       - :guilabel:`Docks` Show or hide various dockable panels.
+       - :guilabel:`Scopes` Show or hide scope docks, or open all scopes at once.
+       - :guilabel:`Window` Show or hide the main window toolbar, or toggle fullscreen mode.
    * - Help
      -
        - :guilabel:`Contents` Open the user guide online.
@@ -276,19 +274,21 @@ are renamed and/or rearranged.
        - :guilabel:`Donate` Make a donation to support the project.
        - :guilabel:`About` View information about the software (version, contributors, translators, changelog, and supporters).
 
+.. _views_ref:
+
 Views
 -----
 
 The OpenShot main window is composed of multiple **docks**. These **docks** are arranged and snapped together
 into a grouping that we call a **View**. OpenShot includes :guilabel:`Simple View`, :guilabel:`Advanced View`,
-and :guilabel:`Color View`.
+:guilabel:`Color View`, and :guilabel:`My Views` (user-defined layouts).
 
 Simple View
 ^^^^^^^^^^^
 This is the **default** view, and is designed to be easy-to-use, especially for first-time users. It contains
 :guilabel:`Project Files` on the top left, :guilabel:`Preview Window` on the top right, and :guilabel:`Timeline` on
 the bottom. If you accidentally close or move a dock, you can quickly reset all the docks back to their default
-location using the :guilabel:`View->Views->Simple View` menu at the top of the screen.
+location using the :guilabel:`View->Simple View` menu at the top of the screen.
 
 Advanced View
 ^^^^^^^^^^^^^
@@ -302,11 +302,47 @@ This view is focused on color correction and scopes. It enlarges the video previ
 keeps the timeline and properties visible, places the :guilabel:`Color Wheels` dock on the right, and tabifies the
 :guilabel:`Luma Waveform` and :guilabel:`Histogram` docks together below it.
 
+.. _my_views_ref:
+
+My Views
+^^^^^^^^
+**My Views** lets you save any dock arrangement as a named layout and recall it instantly. This is ideal for
+workflows that require switching between different editing modes — for example, a detailed audio mix layout and
+a focused color grading layout — without manually repositioning docks each time.
+
+Each saved view captures the position, size, and visibility of every dock, as well as the timeline height.
+Saved views are stored in your project settings and persist across sessions.
+
+**View → My Views** menu options:
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Menu Item
+     - Description
+   * - List of user-defined views
+     - Click to restore that layout. The currently active view shows a checkmark.
+   * - Update "*[name]*"
+     - Save your current dock arrangement over the active view, replacing it.
+   * - Delete "*[name]*"
+     - Remove the active view (asks for confirmation first).
+   * - Save Current View As...
+     - Name and save your current dock arrangement as a new view.
+
+**Typical workflow:**
+
+1. Arrange your docks exactly how you like them.
+2. Open :guilabel:`View → My Views → Save Current View As...` and enter a name (e.g. *"Audio Mix"*).
+3. Later, open :guilabel:`View → My Views` and click the view name to restore that layout instantly.
+4. If you adjust the layout and want to keep the changes, choose :guilabel:`Update "Audio Mix"` to overwrite it.
+
 Docks
 ^^^^^
 Each widget on the OpenShot main window is contained in a **dock**. These docks can be dragged and snapped around the
 main window, and even grouped together (into tabs). OpenShot will always save your main window dock layout when you
-exit the program. Re-launching OpenShot will restore your custom dock layout automatically.
+exit the program. Re-launching OpenShot will restore your custom dock layout automatically. Scope docks are grouped
+under :guilabel:`View->Scopes`.
 
 .. list-table::
    :widths: 20 80
@@ -338,5 +374,5 @@ exit the program. Re-launching OpenShot will restore your custom dock layout aut
      - Preview the current state of your video project. Allows you to play back and review your edits in real-time. See :ref:`playback_ref`.
 
 If you have accidentally closed or moved a dock and can no longer find it, there are a couple easy solutions.
-First, you can use the :guilabel:`View->Views->Simple View` menu option at the top of the screen, to restore the view back to its
-default. Or you can use the :guilabel:`View->Views->Docks->...` menu to show or hide specific dock widgets on the main window.
+First, you can use the :guilabel:`View->Simple View` menu option at the top of the screen, to restore the view back to its
+default. Or you can use the :guilabel:`View->Docks->...` menu to show or hide specific dock widgets on the main window.
