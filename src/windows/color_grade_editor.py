@@ -26,13 +26,12 @@
  """
 
 import copy
-import json
 import math
 
-from qt_api import Qt, QPointF, QRectF, QSize, pyqtSignal, QShortcut, QKeySequence, QTimer
+from qt_api import Qt, QPointF, QRectF, QSize, pyqtSignal, QShortcut, QKeySequence
 from qt_api import QColor, QPainter, QPen, QBrush, QPainterPath, QPixmap, QIcon
 from qt_api import QWidget, QDialog, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QAction
-from qt_api import QDialogButtonBox, QFrame
+from qt_api import QDialogButtonBox
 from qt_api import QFontMetrics, QSizePolicy
 from qt_api import QLineEdit, QEvent, QLinearGradient
 
@@ -849,7 +848,6 @@ class CurvePreviewWidget(QWidget):
         handle_y = max(-2.0, min(2.0, handle_y))
         self._set_handle_value(node, side, handle_x, handle_y)
 
-        opposite_side = "right" if side == "left" else "left"
         if modifiers & Qt.ShiftModifier:
             opposite_node = node
             if side == "left":

@@ -28,7 +28,6 @@ if PATH not in sys.path:
 
 from classes.camera_motion import (
     KEN_BURNS_AUTO,
-    KEN_BURNS_BOTTOM_TO_TOP,
     KEN_BURNS_LEFT_TO_RIGHT,
     KEN_BURNS_TOP_TO_BOTTOM,
     PAN_AUTO,

@@ -136,7 +136,7 @@ class VideoWidgetTransformTests(unittest.TestCase):
 
     def test_scale_none_uses_project_to_viewport_pixel_ratio(self):
         fake_app = types.SimpleNamespace(
-            project=types.SimpleNamespace(get=lambda key: {"width": 320, "height": 180}.get(key))
+            project=types.SimpleNamespace(get={"width": 320, "height": 180}.get)
         )
         with patch("windows.video_widget.get_app", return_value=fake_app):
             center = self.rect_for(openshot.SCALE_NONE)

@@ -68,7 +68,6 @@ from windows.color_grade_editor import (
     normalize_wheels_data,
     puck_display_color,
     scope_angle_for_display_hue,
-    wheels_enabled_at_frame,
     wheels_snapshot,
     wheels_summary,
 )

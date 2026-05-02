@@ -1181,7 +1181,6 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 last_point = self._clamp_region_point(self.region_transform_inverted.map(self.mouse_position))
                 diff_x = point.x() - last_point.x()
                 diff_y = point.y() - last_point.y()
-                current_rect = self._scope_region_rect() or QRectF(point, point)
 
                 if self.region_mode == "draw":
                     anchor = self.scope_region_drag_anchor or QPointF(point)
