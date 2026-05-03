@@ -1566,7 +1566,7 @@ class TimelineHelperTests(unittest.TestCase):
                 patch.object(self.timeline_module.Clip, "get", return_value=clip):
             self.timeline_module.TimelineView.Animate_Triggered(
                 helper,
-                self.timeline_module.MenuAnimate.BLUR_WIPE_IN_LEFT,
+                self.timeline_module.MenuAnimate.FOCUS_WIPE_IN_LEFT,
                 ["C1"],
                 transaction_id="tx-blur-wipe-test",
             )
@@ -1589,7 +1589,7 @@ class TimelineHelperTests(unittest.TestCase):
                 patch.object(self.timeline_module.Clip, "get", return_value=clip):
             self.timeline_module.TimelineView.Animate_Triggered(
                 helper,
-                self.timeline_module.MenuAnimate.BLUR_WIPE_OUT_LEFT,
+                self.timeline_module.MenuAnimate.FOCUS_WIPE_OUT_LEFT,
                 ["C1"],
                 transaction_id="tx-blur-wipe-test",
             )
