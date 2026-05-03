@@ -1078,11 +1078,13 @@ class ClipPainter(BasePainter):
             return [], None
 
         # Slot dimensions — height fills the clip; width matches the clip's source AR.
+        # thumb_w must be an integer pixel value so all slot positions share the same
+        # fractional offset and round consistently in drawPixmap, preventing per-slot jitter.
         thumb_h = max(self._min_thumb_slot_width, inner.height())
         if self.w.theme.clip.thumb_width:
-            thumb_w = max(self._min_thumb_slot_width, float(self.w.theme.clip.thumb_width))
+            thumb_w = float(max(self._min_thumb_slot_width, float(self.w.theme.clip.thumb_width)))
         else:
-            thumb_w = max(self._min_thumb_slot_width, inner.height() * self._clip_aspect_ratio(clip))
+            thumb_w = float(max(self._min_thumb_slot_width, round(inner.height() * self._clip_aspect_ratio(clip))))
         top = inner.y()
 
         pixels_per_second = float(self.w.pixels_per_second or 0.0)
