@@ -193,8 +193,8 @@ class TimelineHelperTests(unittest.TestCase):
             def update_clip_data(self, clip_data, **kwargs):
                 self.updated.append((copy.deepcopy(clip_data), dict(kwargs)))
 
-            def _get_transition_reader_json(self, _path):
-                return {"path": "/tmp/wipe.svg", "has_single_image": True}
+            def _get_transition_reader_json(self, path):
+                return {"path": path, "has_single_image": True}
 
         return Helper()
 
@@ -1616,6 +1616,39 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertEqual(mask_fx["brightness"]["Points"][0]["co"]["Y"], -1.0)
         self.assertEqual(mask_fx["brightness"]["Points"][-1]["co"]["Y"], 1.0)
         self.assertEqual(mask_fx["contrast"]["Points"][0]["co"]["Y"], 10.0)
+
+    def test_motion_wipe_out_circle_presets_use_visible_motion_direction(self):
+        cases = (
+            (self.timeline_module.MenuAnimate.WIPE_OUT_CIRCLE_EXPAND, "circle_out_to_in.svg"),
+            (self.timeline_module.MenuAnimate.WIPE_OUT_CIRCLE_SHRINK, "circle_in_to_out.svg"),
+            (self.timeline_module.MenuAnimate.FOCUS_WIPE_OUT_CIRCLE_EXPAND, "circle_out_to_in.svg"),
+            (self.timeline_module.MenuAnimate.FOCUS_WIPE_OUT_CIRCLE_SHRINK, "circle_in_to_out.svg"),
+        )
+
+        for action, svg_filename in cases:
+            with self.subTest(action=action):
+                helper = self.make_motion_helper()
+                clip = self.make_motion_clip()
+
+                with patch.object(self.timeline_module, "get_app", return_value=self.make_motion_app()), \
+                        patch.object(self.timeline_module.Clip, "get", return_value=clip):
+                    self.timeline_module.TimelineView.Animate_Triggered(
+                        helper,
+                        action,
+                        ["C1"],
+                        transaction_id="tx-circle-wipe-test",
+                    )
+
+                mask_fx = [
+                    effect for effect in clip.data["effects"]
+                    if effect.get("class_name") == "Mask"
+                ][0]
+                self.assertEqual(
+                    os.path.basename(mask_fx["mask_reader"]["path"]),
+                    svg_filename,
+                )
+                self.assertEqual(mask_fx["brightness"]["Points"][0]["co"]["Y"], -1.0)
+                self.assertEqual(mask_fx["brightness"]["Points"][-1]["co"]["Y"], 1.0)
 
     def test_motion_bounce_emphasis_uses_frame_relative_offsets(self):
         helper = self.make_motion_helper()
