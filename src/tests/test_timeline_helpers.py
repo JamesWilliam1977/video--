@@ -99,6 +99,7 @@ class TimelineHelperTests(unittest.TestCase):
         cls.qwidget_transition_module = importlib.import_module("windows.views.timeline_backend.qwidget.transition")
         cls.qwidget_keyframe_module = importlib.import_module("windows.views.timeline_backend.qwidget.keyframe")
         cls.qwidget_keyframe_panel_module = importlib.import_module("windows.views.timeline_backend.qwidget.keyframe_panel")
+        cls.qwidget_timecode_module = importlib.import_module("windows.views.timeline_backend.qwidget.timecode")
         cls.thumbnails_module = importlib.import_module("windows.views.timeline_backend.qwidget.thumbnails")
         cls.waveform_module = importlib.import_module("classes.waveform")
         cls.humanity_theme_module = importlib.import_module("themes.humanity.styles")
@@ -127,6 +128,15 @@ class TimelineHelperTests(unittest.TestCase):
     def tearDownClass(cls):
         if getattr(cls, "_owns_app", False) and cls.app:
             cls.app.quit()
+
+    def test_timecode_editor_parses_blank_and_zero_as_timeline_start(self):
+        edit = self.qwidget_timecode_module.TimecodeLineEdit()
+        edit.set_context(30, 1, 31)
+
+        self.assertEqual(edit.parse_text(""), 1)
+        self.assertEqual(edit.parse_text("0"), 1)
+        self.assertEqual(edit.parse_text("00:00:00,00"), 1)
+        self.assertIsNone(edit.parse_text("bad"))
 
     def make_time_helper(self):
         timeline_module = self.timeline_module
