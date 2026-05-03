@@ -84,7 +84,7 @@ identify a clip's start is by utilizing the 'next/previous marker' feature on th
 
 List of Effects
 ---------------
-OpenShot Video Editor has a total of 39 built-in video and audio effects: 30 video effects and 9 audio effects.
+OpenShot Video Editor has a total of 40 built-in video and audio effects: 31 video effects and 9 audio effects.
 These effects can be added to a clip by dragging the effect onto a clip. The following table contains
 the name and short description of each effect.
 
@@ -95,6 +95,10 @@ the name and short description of each effect.
 .. |audiovisualization_icon| image:: ../src/effects/icons/audiovisualization@2x.png
    :width: 50px
    :alt: Audio Visualization Icon
+
+.. |beatsync_icon| image:: ../src/effects/icons/beatsync@2x.png
+   :width: 50px
+   :alt: Beat Sync Icon
 
 .. |mask_icon| image:: ../src/effects/icons/mask@2x.png
    :width: 50px
@@ -253,6 +257,7 @@ the name and short description of each effect.
    |analogtape_icon|           Analog Tape                   Vintage home-video wobble, bleed, and snow.
    |mask_icon|                 Alpha Mask / Wipe Transition  Grayscale mask transition between images.
    |audiovisualization_icon|   Audio Visualization           Render waveform, spectrum, and other transparent audio visualizations.
+   |beatsync_icon|             Beat Sync                     Generate audio-reactive color flashes for compositing.
    |bars_icon|                 Bars                          Add colored bars around your video.
    |blur_icon|                 Blur                          Adjust image blur.
    |brightness_icon|           Brightness & Contrast         Modify frame’s brightness and contrast.
@@ -478,6 +483,88 @@ Common uses include:
    frequency_high              ``(float, 0 to 1)`` Normalized frequency ceiling: 0 = 20 Hz, 1 = 20 kHz
    background                  ``(int, choices: ['Transparent', 'Solid', 'Fade', 'Gradient', 'Source'])``
    ==========================  ============
+
+Beat Sync
+"""""""""
+The **Beat Sync** effect turns audio energy into a flashing full-frame color layer. A simple example is a black
+frame that flashes toward white on each drum hit. By placing that flashing clip above your video and changing its
+:guilabel:`Composite (Blend Mode)`, you can make the video underneath pulse, brighten, darken, or color-shift with
+the beat.
+
+This effect is a little different from most video effects: it does not directly brighten the clip underneath it.
+Instead, it creates a new flashing image from the audio clip it is applied to. You preview that flashing image first,
+then use the clip's composite mode to blend it with another clip on a lower track.
+
+.. note::
+
+   Beat Sync needs access to audio samples. If the clip's :guilabel:`Enable Audio` property is set manually, use
+   :guilabel:`Auto` or :guilabel:`Yes`. If you want Beat Sync to react to an audio clip but you do **not** want to
+   hear that clip, set the clip's :guilabel:`Volume` keyframe to ``0.0``. The effect can still use the silent audio
+   data to generate the flashing colors.
+
+Basic Workflow
+^^^^^^^^^^^^^^
+
+1. Place an audio clip on the Timeline.
+2. Drag the :guilabel:`Beat Sync` effect from the **Effects** panel onto that audio clip.
+3. Preview the clip by itself first. You should see a flashing color layer, usually black flashing toward white.
+4. Open the effect :guilabel:`Properties`.
+5. Adjust :guilabel:`Low Color` and :guilabel:`High Color`. For example, black to white creates a brightness flash,
+   white to black creates a darkening flash, and red to green creates a color pulse.
+6. Adjust :guilabel:`Response Curve` to control how easily the flash appears:
+
+   - Lift the middle of the curve to make smaller sounds flash more strongly.
+   - Lower the middle of the curve to make only stronger beats flash.
+   - Create a steeper curve for a sharper strobe-like response.
+
+7. If the effect is reacting to the wrong part of the sound, adjust :guilabel:`Low Frequency` and
+   :guilabel:`High Frequency`. For example, a bass-only flash should use a lower frequency range.
+8. When the flashing layer feels right, select the Beat Sync clip and change its
+   :guilabel:`Composite (Blend Mode)` property. Try modes such as
+   :guilabel:`Screen`, :guilabel:`Overlay`, :guilabel:`Multiply`, or :guilabel:`Color Dodge`, depending on the look
+   you want.
+9. Place the video you want to affect on the track **below** the Beat Sync clip.
+10. Preview the composited result and fine-tune the colors, curve, intensity, threshold, or composite mode.
+
+Common Uses
+^^^^^^^^^^^
+
+- **Music video flashes**: Flash white or bright colors on snare hits, kicks, or strong beats.
+- **Bass pulses**: Use a low frequency range so the image reacts mostly to bass drums or bass lines.
+- **Silent driver track**: Use a muted audio clip only as the control signal for the visual flash.
+- **Color rhythm effects**: Blend between two custom colors, such as blue to yellow or red to green.
+
+Properties
+^^^^^^^^^^
+
+.. table::
+   :widths: 26 80
+
+   ==========================  ============
+   Property Name               Description
+   ==========================  ============
+   low_color                   ``(color)`` Color generated when the audio response is low. The default is black.
+   high_color                  ``(color)`` Color generated when the audio response is high. The default is white.
+   intensity                   ``(float, 0 to 10)`` Audio gain before response shaping. Higher values make quieter audio produce stronger flashes.
+   threshold                   ``(float, 0 to 1)`` Audio level that must be exceeded before the effect responds. Raise this to ignore quieter sounds.
+   attack_ms                   ``(float, 1 to 500)`` How quickly the flash rises after a beat or loud sound.
+   decay_ms                    ``(float, 1 to 2000)`` How slowly the flash fades back after the audio energy drops.
+   frequency_low               ``(float, 0 to 1)`` Normalized frequency floor: 0 = 20 Hz, 1 = 20 kHz.
+   frequency_high              ``(float, 0 to 1)`` Normalized frequency ceiling: 0 = 20 Hz, 1 = 20 kHz.
+   invert                      ``(int, choices: ['No', 'Yes'])`` Reverses the audio response, so quiet moments use the high color and loud moments use the low color.
+   response_curve              ``(rich curve editor)`` Maps detected audio energy to the blend between :guilabel:`Low Color` and :guilabel:`High Color`.
+   ==========================  ============
+
+Technical Notes
+^^^^^^^^^^^^^^^
+
+Beat Sync analyzes the clip's audio, filters it to the selected frequency range, follows the audio envelope using
+the attack and decay settings, applies the threshold, then samples the :guilabel:`Response Curve`. The resulting
+value blends between :guilabel:`Low Color` and :guilabel:`High Color` and fills the entire frame with that color.
+The clip's own image is not used as a background; the effect generates a clean color layer intended for compositing.
+
+Because the output is a full-frame layer, the final look depends heavily on the clip's :guilabel:`Composite (Blend Mode)`.
+Preview the flashing layer alone first, then choose a blend mode after placing the target video on the track below it.
 
 Bars
 """"
