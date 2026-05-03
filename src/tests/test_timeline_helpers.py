@@ -93,6 +93,7 @@ class TimelineHelperTests(unittest.TestCase):
         cls.geometry_clip_module = importlib.import_module("windows.views.timeline_backend.geometry.clip")
         cls.geometry_transition_module = importlib.import_module("windows.views.timeline_backend.geometry.transition")
         cls.clip_paint_module = importlib.import_module("windows.views.timeline_backend.paint.clip")
+        cls.ruler_paint_module = importlib.import_module("windows.views.timeline_backend.paint.ruler")
         cls.transition_paint_module = importlib.import_module("windows.views.timeline_backend.paint.transition")
         cls.qwidget_clip_module = importlib.import_module("windows.views.timeline_backend.qwidget.clip")
         cls.qwidget_transition_module = importlib.import_module("windows.views.timeline_backend.qwidget.transition")
@@ -2686,6 +2687,24 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertAlmostEqual(helper.h_scroll_offset, 5.0)
         self.assertEqual(helper._zoom_playhead_anchor, (4.0, 75.0))
         self.assertFalse(helper.is_auto_center)
+
+    def test_ruler_tick_intervals_include_intermediate_common_steps(self):
+        painter = object.__new__(self.ruler_paint_module.RulerPainter)
+
+        self.assertEqual(
+            painter._nice_frame_intervals(30.0)[:8],
+            [1, 2, 3, 5, 6, 10, 15, 30],
+        )
+        self.assertIn(30, painter._nice_frame_intervals(30.0))
+        self.assertIn(12, painter._nice_frame_intervals(24.0))
+
+    def test_ruler_tick_picker_avoids_large_density_drop_near_threshold(self):
+        painter = object.__new__(self.ruler_paint_module.RulerPainter)
+
+        self.assertEqual(painter._frames_per_tick(210.0, 30.0), 10)
+        self.assertEqual(painter._frames_per_tick(190.0, 30.0), 10)
+        self.assertEqual(painter._frames_per_tick(110.0, 30.0), 15)
+        self.assertEqual(painter._frames_per_tick(70.0, 30.0), 30)
 
     def test_qwidget_new_item_snap_uses_timeline_space_when_scrolled(self):
         recorded = {}
