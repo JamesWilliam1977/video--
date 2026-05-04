@@ -68,6 +68,7 @@ from classes.film_grain_presets import (
 )
 
 LOOK_EFFECT_UI_MENU = "look"
+MOTION_EFFECT_UI_MENU = "motion"
 
 LOOK_RESET_EFFECT_CLASSES = {
     COLOR_GRADE_CLASS_NAME,
@@ -3013,16 +3014,92 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                         )
                     ]
 
+                _WIPE_SVG_FILENAMES = {
+                    "circle_in_to_out.svg",
+                    "circle_out_to_in.svg",
+                    "fade.svg",
+                    "wipe_left_to_right.svg",
+                    "wipe_right_to_left.svg",
+                    "wipe_top_to_bottom.svg",
+                    "wipe_bottom_to_top.svg",
+                }
+
+                def _find_or_create_motion_effect(class_name):
+                    """Return a reusable motion effect and collapse duplicate preset effects."""
+                    effects = clip.data.get("effects")
+                    if not isinstance(effects, list):
+                        effects = []
+                        clip.data["effects"] = effects
+
+                    def _points(prop):
+                        data = prop if isinstance(prop, dict) else {}
+                        return data.get("Points") if isinstance(data.get("Points"), list) else []
+
+                    def _point_values(prop):
+                        return [point.get("co", {}).get("Y") for point in _points(prop)]
+
+                    def _is_legacy_motion_effect(eff):
+                        if eff.get("ui-menu") not in (None, ""):
+                            return False
+                        if class_name == "Blur":
+                            horizontal = _point_values(eff.get("horizontal_radius"))
+                            vertical = _point_values(eff.get("vertical_radius"))
+                            return (
+                                horizontal == vertical
+                                and horizontal in ([50.0, 0.0], [0.0, 50.0])
+                            )
+                        if class_name == "Mask":
+                            reader = eff.get("mask_reader") or eff.get("reader") or {}
+                            path = reader.get("path", "") if isinstance(reader, dict) else ""
+                            brightness = _point_values(eff.get("brightness"))
+                            return (
+                                os.path.basename(path) in _WIPE_SVG_FILENAMES
+                                and brightness in ([1.0, -1.0], [-1.0, 1.0])
+                            )
+                        return False
+
+                    matching_indexes = [
+                        idx for idx, eff in enumerate(effects)
+                        if isinstance(eff, dict)
+                        and eff.get("class_name") == class_name
+                        and (
+                            eff.get("ui-menu") == MOTION_EFFECT_UI_MENU
+                            or _is_legacy_motion_effect(eff)
+                        )
+                    ]
+                    if matching_indexes:
+                        keep_index = matching_indexes[0]
+                        fx = effects[keep_index]
+                        fx["ui-menu"] = MOTION_EFFECT_UI_MENU
+                        for idx in reversed(matching_indexes[1:]):
+                            del effects[idx]
+                        return fx, False
+
+                    effect = openshot.EffectInfo().CreateEffect(class_name)
+                    fx = json.loads(effect.Json())
+                    fx["id"] = get_app().project.generate_id()
+                    fx["ui-menu"] = MOTION_EFFECT_UI_MENU
+                    effects.append(fx)
+                    return fx, True
+
+                def _set_motion_effect_points(fx, prop, *pts, replace_all=False):
+                    if not isinstance(fx.get(prop), dict) or not isinstance(fx[prop].get("Points"), list):
+                        fx[prop] = {"Points": []}
+                    if replace_all:
+                        fx[prop]["Points"] = []
+                    else:
+                        self._remove_keypoints_in_range(fx[prop], pts[0]["co"]["X"], pts[-1]["co"]["X"])
+                    for pt in pts:
+                        self.AddPoint(fx[prop], pt)
+
                 def _make_wipe_fx(svg_filename, t_start, t_end, brightness_start, brightness_end,
                                   contrast=20.0):
-                    """Attach a Mask effect (wipe) to clip.data using the given SVG transition."""
+                    """Reuse or attach a Mask effect (wipe) using the given SVG transition."""
                     svg_path = os.path.join(info.PATH, "transitions", "common", svg_filename)
                     reader_json = self._get_transition_reader_json(svg_path)
                     if not reader_json:
                         return
-                    effect = openshot.EffectInfo().CreateEffect("Mask")
-                    fx = json.loads(effect.Json())
-                    fx["id"] = get_app().project.generate_id()
+                    fx, created = _find_or_create_motion_effect("Mask")
                     fx["mask_reader"] = deepcopy(reader_json)
                     fx["reader"]      = deepcopy(reader_json)
                     x1, y1, x2, y2 = _KEYFRAME_EASING['ease_in_out']
@@ -3030,15 +3107,12 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                     p0['handle_right'] = {'X': x1, 'Y': y1}
                     p1 = kf(t_end, brightness_end)
                     p1['handle_left'] = {'X': x2, 'Y': y2}
-                    fx["brightness"] = {"Points": [p0, p1]}
-                    fx["contrast"] = {"Points": [kf(t_start, contrast)]}
-                    clip.data["effects"].append(fx)
+                    _set_motion_effect_points(fx, "brightness", p0, p1, replace_all=created)
+                    _set_motion_effect_points(fx, "contrast", kf(t_start, contrast), replace_all=created)
 
                 def _make_blur_fx(t_start, r_start, t_end, r_end):
-                    """Attach a Blur effect (horizontal + vertical radius) to clip.data."""
-                    effect = openshot.EffectInfo().CreateEffect("Blur")
-                    fx = json.loads(effect.Json())
-                    fx["id"] = get_app().project.generate_id()
+                    """Reuse or attach a Blur effect (horizontal + vertical radius)."""
+                    fx, created = _find_or_create_motion_effect("Blur")
                     x1, y1, x2, y2 = _KEYFRAME_EASING['ease_in_out']
 
                     def _eased_pts():
@@ -3048,9 +3122,8 @@ class TimelineView(updates.UpdateInterface, ViewClass):
                         q1['handle_left'] = {'X': x2, 'Y': y2}
                         return [q0, q1]
 
-                    fx["horizontal_radius"] = {"Points": _eased_pts()}
-                    fx["vertical_radius"]   = {"Points": _eased_pts()}
-                    clip.data["effects"].append(fx)
+                    _set_motion_effect_points(fx, "horizontal_radius", *_eased_pts(), replace_all=created)
+                    _set_motion_effect_points(fx, "vertical_radius", *_eased_pts(), replace_all=created)
 
                 def _apply_preset(preset_name, t_start, t_end, resting_frame):
                     """Apply an animation preset scaled to [t_start, t_end] frames.

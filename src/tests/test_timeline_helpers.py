@@ -1617,6 +1617,106 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertEqual(mask_fx["brightness"]["Points"][-1]["co"]["Y"], 1.0)
         self.assertEqual(mask_fx["contrast"]["Points"][0]["co"]["Y"], 10.0)
 
+    def test_motion_focus_wipe_reuses_existing_blur_and_mask_effects(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        app = self.make_motion_app()
+
+        with patch.object(self.timeline_module, "get_app", return_value=app), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.FOCUS_WIPE_IN_LEFT,
+                ["C1"],
+                transaction_id="tx-focus-wipe-test",
+            )
+            first_effect_ids = [effect["id"] for effect in clip.data["effects"]]
+
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.FOCUS_WIPE_IN_TOP,
+                ["C1"],
+                transaction_id="tx-focus-wipe-test",
+            )
+
+        self.assertEqual(len(clip.data["effects"]), 2)
+        self.assertEqual([effect["id"] for effect in clip.data["effects"]], first_effect_ids)
+        blur_fx, mask_fx = clip.data["effects"]
+        self.assertEqual(blur_fx["class_name"], "Blur")
+        self.assertEqual(mask_fx["class_name"], "Mask")
+        self.assertEqual(mask_fx["ui-menu"], self.timeline_module.MOTION_EFFECT_UI_MENU)
+        self.assertEqual(
+            os.path.basename(mask_fx["mask_reader"]["path"]),
+            "wipe_top_to_bottom.svg",
+        )
+
+    def test_motion_focus_wipe_in_then_out_keeps_one_blur_and_one_mask(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+
+        with patch.object(self.timeline_module, "get_app", return_value=self.make_motion_app()), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.FOCUS_WIPE_IN_LEFT,
+                ["C1"],
+                transaction_id="tx-focus-wipe-test",
+            )
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.FOCUS_WIPE_OUT_LEFT,
+                ["C1"],
+                transaction_id="tx-focus-wipe-test",
+            )
+
+        self.assertEqual(len(clip.data["effects"]), 2)
+        blur_fx, mask_fx = clip.data["effects"]
+        self.assertEqual(blur_fx["class_name"], "Blur")
+        self.assertEqual(mask_fx["class_name"], "Mask")
+        self.assertEqual(
+            [point["co"]["Y"] for point in blur_fx["horizontal_radius"]["Points"]],
+            [50.0, 0.0, 0.0, 50.0],
+        )
+        self.assertEqual(
+            [point["co"]["Y"] for point in mask_fx["brightness"]["Points"]],
+            [1.0, -1.0, -1.0, 1.0],
+        )
+
+    def test_motion_focus_wipe_does_not_repurpose_manual_blur_or_mask_effects(self):
+        helper = self.make_motion_helper()
+        clip = self.make_motion_clip()
+        clip.data["effects"] = [
+            {
+                "id": "USER_BLUR",
+                "class_name": "Blur",
+                "horizontal_radius": {"Points": [{"co": {"X": 1, "Y": 12.0}}]},
+                "vertical_radius": {"Points": [{"co": {"X": 1, "Y": 12.0}}]},
+            },
+            {
+                "id": "USER_MASK",
+                "class_name": "Mask",
+                "brightness": {"Points": [{"co": {"X": 1, "Y": 0.25}}]},
+                "contrast": {"Points": [{"co": {"X": 1, "Y": 4.0}}]},
+            },
+        ]
+
+        with patch.object(self.timeline_module, "get_app", return_value=self.make_motion_app()), \
+                patch.object(self.timeline_module.Clip, "get", return_value=clip):
+            self.timeline_module.TimelineView.Animate_Triggered(
+                helper,
+                self.timeline_module.MenuAnimate.FOCUS_WIPE_IN_LEFT,
+                ["C1"],
+                transaction_id="tx-focus-wipe-test",
+            )
+
+        self.assertEqual(len(clip.data["effects"]), 4)
+        self.assertEqual(clip.data["effects"][0]["id"], "USER_BLUR")
+        self.assertEqual(clip.data["effects"][1]["id"], "USER_MASK")
+        self.assertNotIn("ui-menu", clip.data["effects"][0])
+        self.assertNotIn("ui-menu", clip.data["effects"][1])
+        self.assertEqual(clip.data["effects"][0]["horizontal_radius"]["Points"][0]["co"]["Y"], 12.0)
+        self.assertEqual(clip.data["effects"][1]["brightness"]["Points"][0]["co"]["Y"], 0.25)
+
     def test_motion_wipe_out_circle_presets_use_visible_motion_direction(self):
         cases = (
             (self.timeline_module.MenuAnimate.WIPE_OUT_CIRCLE_EXPAND, "circle_out_to_in.svg"),
