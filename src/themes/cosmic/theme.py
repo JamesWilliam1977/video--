@@ -132,6 +132,10 @@ QMenu::item:checked {
     padding: 6px 14px 6px 10px;
 }
 
+QMenu::indicator {
+    margin-right: 10px;
+}
+
 QMenu::item:selected {
     background-color: #192332;
     color: #ffffff;
