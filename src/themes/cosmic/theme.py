@@ -125,16 +125,16 @@ QMenu {
 }
 
 QMenu::item {
-    padding: 6px 18px 6px 12px;
+    padding: 6px 18px 6px 22px;
 }
 
 QMenu::item:checked {
-    padding: 6px 18px 6px 12px;
+    padding: 6px 18px 6px 22px;
 }
 
 QMenu::indicator {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
 }
 
 QMenu::item:selected {
