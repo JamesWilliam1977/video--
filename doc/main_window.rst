@@ -143,7 +143,6 @@ Learning a few of these shortcuts can save you a bunch of time!
    Add Marker                            :kbd:`M`
    Add Track                             :kbd:`Ctrl+Y`
    Add to Timeline                       :kbd:`Ctrl+Alt+A`
-   Advanced View                         :kbd:`Alt+Shift+1`
    Animated Title                        :kbd:`Ctrl+Shift+T`
    Ask a Question...                     :kbd:`F4`
    Center on Playhead                    :kbd:`Shift+C`            :kbd:`Alt+Up`
@@ -259,7 +258,7 @@ are renamed and/or rearranged.
        - :guilabel:`Animated Title` Add an animated title to the project. See :ref:`animated_titles_ref`.
    * - View
      -
-       - :guilabel:`Simple View`, :guilabel:`Color View`, and :guilabel:`Advanced View` switch or reset the main window layout.
+       - :guilabel:`Simple View` and :guilabel:`Color View` switch or reset the main window layout.
        - :guilabel:`My Views` Save, load, update, and delete your own named layouts. See :ref:`my_views_ref`.
        - :guilabel:`Docks` Show or hide various dockable panels.
        - :guilabel:`Scopes` Show or hide scope docks, or open all scopes at once.
@@ -280,8 +279,8 @@ Views
 -----
 
 The OpenShot main window is composed of multiple **docks**. These **docks** are arranged and snapped together
-into a grouping that we call a **View**. OpenShot includes :guilabel:`Simple View`, :guilabel:`Advanced View`,
-:guilabel:`Color View`, and :guilabel:`My Views` (user-defined layouts).
+into a grouping that we call a **View**. OpenShot includes :guilabel:`Simple View`, :guilabel:`Color View`,
+and :guilabel:`My Views` (user-defined layouts).
 
 Simple View
 ^^^^^^^^^^^
@@ -289,12 +288,6 @@ This is the **default** view, and is designed to be easy-to-use, especially for 
 :guilabel:`Project Files` on the top left, :guilabel:`Preview Window` on the top right, and :guilabel:`Timeline` on
 the bottom. If you accidentally close or move a dock, you can quickly reset all the docks back to their default
 location using the :guilabel:`View->Simple View` menu at the top of the screen.
-
-Advanced View
-^^^^^^^^^^^^^
-This is an advanced view, which adds more docks to the screen at once, improving access to many features that are
-not visible in Simple View. Once you have mastered the Simple View, we recommend giving this view a try as well.
-NOTE: You can also drag and drop the docks anywhere you would like, for a fully custom view.
 
 Color View
 ^^^^^^^^^^

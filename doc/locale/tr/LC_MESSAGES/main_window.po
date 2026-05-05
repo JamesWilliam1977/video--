@@ -540,16 +540,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Gelişmiş Görünüm"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Animasyonlu Başlık"
@@ -1640,19 +1630,6 @@ msgid "Views"
 msgstr "Görünümler"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"OpenShot ana penceresi birden fazla **panelden** oluşur. Bu **paneller** bir "
-"araya getirilip yapışarak bir grup oluşturur ve buna **Görünüm** deriz. "
-"OpenShot, iki temel görünümle gelir: :guilabel:`Basit Görünüm` ve :guilabel:"
-"`Gelişmiş Görünüm`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1668,21 +1645,6 @@ msgstr ""
 "`Zaman Çizelgesi` bulunur. Bir dock'u yanlışlıkla kapatır veya taşırırsanız, "
 "ekranın üstündeki :guilabel:`Görünüm->Görünümler->Basit Görünüm` menüsünü "
 "kullanarak tüm dock'ları varsayılan konumlarına hızlıca sıfırlayabilirsiniz."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Bu, gelişmiş bir görünüm olup, ekranda aynı anda daha fazla dock ekleyerek "
-"Basit Görünüm'de görünmeyen birçok özelliğe erişimi artırır. Basit Görünüm'ü "
-"öğrendikten sonra, bu görünümü de denemenizi öneririz. NOT: Dock'ları "
-"tamamen özelleştirilmiş bir görünüm için istediğiniz yere sürükleyip "
-"bırakabilirsiniz."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

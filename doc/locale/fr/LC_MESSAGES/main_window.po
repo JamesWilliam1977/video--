@@ -547,16 +547,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Vue avancée"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Maj+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Titre animé"
@@ -1657,19 +1647,6 @@ msgid "Views"
 msgstr "Vues"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"La fenêtre principale d'OpenShot est composée de plusieurs **volets**. Ces "
-"**volets** sont organisés et ancrés ensemble dans un groupe que nous "
-"appelons une **Vue**. OpenShot propose deux vues principales : :guilabel:"
-"`Vue simple` et :guilabel:`Vue avancée`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1686,22 +1663,6 @@ msgstr ""
 "un dock, vous pouvez rapidement réinitialiser tous les docks à leur "
 "emplacement par défaut via le menu :guilabel:`Affichage->Vues->Vue simple` "
 "en haut de l’écran."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Ceci est une vue avancée, qui ajoute plusieurs docks à l’écran "
-"simultanément, améliorant l’accès à de nombreuses fonctionnalités non "
-"visibles dans la Vue simple. Une fois que vous maîtrisez la Vue simple, nous "
-"vous recommandons d’essayer également cette vue. REMARQUE : vous pouvez "
-"aussi glisser-déposer les docks où vous le souhaitez, pour une vue "
-"entièrement personnalisée."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

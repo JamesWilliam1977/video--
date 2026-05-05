@@ -549,16 +549,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Strg+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Erweiterte Ansicht"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Umschalt+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Animierter Titel"
@@ -1659,19 +1649,6 @@ msgid "Views"
 msgstr "Ansichten"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"Das Hauptfenster von OpenShot besteht aus mehreren **Andockfenstern**. Diese "
-"**Andockfenster** sind angeordnet und zusammengefügt in einer Gruppierung, "
-"die wir eine **Ansicht** nennen. OpenShot bietet zwei Hauptansichten: :"
-"guilabel:`Einfache Ansicht` und :guilabel:`Erweiterte Ansicht`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1688,22 +1665,6 @@ msgstr ""
 "verschieben, können Sie alle Docks schnell über das Menü :guilabel:`Ansicht-"
 ">Ansichten->Einfache Ansicht` oben im Bildschirm auf ihre Standardposition "
 "zurücksetzen."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Dies ist eine erweiterte Ansicht, die mehr Docks gleichzeitig auf dem "
-"Bildschirm anzeigt und den Zugriff auf viele Funktionen verbessert, die in "
-"der Einfachen Ansicht nicht sichtbar sind. Sobald Sie die Einfache Ansicht "
-"beherrschen, empfehlen wir, auch diese Ansicht auszuprobieren. HINWEIS: Sie "
-"können die Docks auch per Drag & Drop an beliebige Stellen ziehen, um eine "
-"vollständig individuelle Ansicht zu erstellen."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

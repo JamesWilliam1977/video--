@@ -537,16 +537,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Ítarleg sýn"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Hreyfimyndatitill"
@@ -1633,18 +1623,6 @@ msgid "Views"
 msgstr "Útsýni"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"Aðalgluggi OpenShot samanstendur af mörgum **dokkum**. Þessar **dokkir** eru "
-"raðaðar og festar saman í hóp sem við köllum **Útsýni**. OpenShot kemur með "
-"tvö aðalútsýni: :guilabel:`Einfalt útsýni` og :guilabel:`Ítarlegt útsýni`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1660,21 +1638,6 @@ msgstr ""
 "`Tímabil` neðst. Ef þú lokar eða færir óvart viðmótsglugga geturðu fljótt "
 "endurstillt alla gluggana í sjálfgefna stöðu með því að nota :guilabel:"
 "`Skoða->Útsýni->Einfalt útsýni` valmyndina efst á skjánum."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Þetta er flókið útsýni sem bætir við fleiri gluggum á skjáinn í einu, sem "
-"bætir aðgang að mörgum eiginleikum sem sjást ekki í einföldu útsýni. Þegar "
-"þú hefur náð tökum á einföldu útsýni mælum við með að þú prófir þetta útsýni "
-"líka. ATH: Þú getur einnig dregið og sleppt gluggum hvar sem er til að "
-"sérsníða útsýnið að þínum þörfum."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

@@ -85,11 +85,6 @@ msgid "**Real-time preview** (multi-threaded, performance-optimized)"
 msgstr "**Reaaliaikainen esikatselu** (monisäikeinen, suorituskykyoptimoitu)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**Yksinkertaiset ja edistyneet näkymät** (muokattavissa)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr ""

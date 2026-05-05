@@ -545,16 +545,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Geavanceerde Weergave"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Geanimeerde Titel"
@@ -1651,19 +1641,6 @@ msgid "Views"
 msgstr "Weergaven"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"Het hoofdvenster van OpenShot bestaat uit meerdere **docks**. Deze **docks** "
-"zijn gerangschikt en vastgezet in een groep die we een **Weergave** noemen. "
-"OpenShot heeft twee primaire weergaven: :guilabel:`Eenvoudige Weergave` en :"
-"guilabel:`Geavanceerde Weergave`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1680,21 +1657,6 @@ msgstr ""
 "verplaatst, kunt u snel alle docks terugzetten naar hun standaardlocatie via "
 "het menu :guilabel:`Beeld->Weergaven->Eenvoudige weergave` bovenaan het "
 "scherm."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Dit is een geavanceerde weergave, die meer docks tegelijk op het scherm "
-"toont, waardoor de toegang tot veel functies die niet zichtbaar zijn in de "
-"Eenvoudige weergave wordt verbeterd. Zodra u de Eenvoudige weergave "
-"beheerst, raden we aan deze weergave ook te proberen. OPMERKING: U kunt de "
-"docks ook overal naartoe slepen voor een volledig aangepaste weergave."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

@@ -544,16 +544,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Vizualizare Avansată"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Titlu Animat"
@@ -1648,20 +1638,6 @@ msgid "Views"
 msgstr "Vizualizări"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"Fereastra principală OpenShot este compusă din mai multe **panouri "
-"ancorabile**. Aceste **panouri** sunt aranjate și fixate împreună într-un "
-"grup pe care îl numim **Vizualizare**. OpenShot vine cu două vizualizări "
-"principale: :guilabel:`Vizualizare Simplă` și :guilabel:`Vizualizare "
-"Avansată`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1678,21 +1654,6 @@ msgstr ""
 "închideți sau mutați accidental un panou, puteți reseta rapid toate "
 "panourile la locația lor implicită folosind meniul :guilabel:`Vizualizare-"
 ">Vizualizări->Vizualizare simplă` din partea de sus a ecranului."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Aceasta este o vizualizare avansată, care adaugă mai multe panouri pe ecran "
-"simultan, îmbunătățind accesul la multe funcții care nu sunt vizibile în "
-"Vizualizarea simplă. După ce ați stăpânit Vizualizarea simplă, vă recomandăm "
-"să încercați și această vizualizare. NOTĂ: De asemenea, puteți trage și "
-"plasa panourile oriunde doriți, pentru o vizualizare complet personalizată."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

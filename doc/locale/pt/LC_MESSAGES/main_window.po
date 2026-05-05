@@ -543,16 +543,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Visualização Avançada"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Título Animado"
@@ -1647,20 +1637,6 @@ msgid "Views"
 msgstr "Visualizações"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"A janela principal do OpenShot é composta por múltiplos **painéis "
-"encaixáveis**. Esses **painéis** são organizados e fixados juntos em um "
-"agrupamento que chamamos de **Visualização**. O OpenShot vem com duas "
-"visualizações principais: :guilabel:`Visualização Simples` e :guilabel:"
-"`Visualização Avançada`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1677,21 +1653,6 @@ msgstr ""
 "mover um dock acidentalmente, pode rapidamente redefinir todos os docks para "
 "sua localização padrão usando o menu :guilabel:`Exibir->Vistas->Vista "
 "Simples` no topo da tela."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Esta é uma vista avançada, que adiciona mais docks na tela ao mesmo tempo, "
-"melhorando o acesso a muitos recursos que não estão visíveis na Vista "
-"Simples. Depois de dominar a Vista Simples, recomendamos experimentar esta "
-"vista também. NOTA: Você também pode arrastar e soltar os docks onde quiser, "
-"para uma vista totalmente personalizada."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

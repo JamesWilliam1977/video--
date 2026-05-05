@@ -88,11 +88,6 @@ msgstr ""
 "**Previzualizare în timp real** (multi-thread, optimizat pentru performanță)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**Vizualizări simple și avansate** (personalizabile)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr ""

@@ -91,11 +91,6 @@ msgstr ""
 "wydajności)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**Proste i zaawansowane widoki** (konfigurowalne)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr ""

@@ -81,11 +81,6 @@ msgid "**Real-time preview** (multi-threaded, performance-optimized)"
 msgstr "**实时预览** （多线程，性能优化）"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**简易与高级视图** （可自定义）"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr "**关键帧动画** （`线性` 、`贝塞尔` 、`常量` 插值）"

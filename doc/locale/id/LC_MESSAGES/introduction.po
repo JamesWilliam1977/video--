@@ -84,11 +84,6 @@ msgstr ""
 "**Pratinjau waktu nyata** (multi-threaded, dioptimalkan untuk performa)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**Tampilan sederhana & canggih** (dapat disesuaikan)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr "**Animasi keyframe** (`linear`, `Bézier`, interpolasi `konstan`)"
