@@ -26,6 +26,7 @@
  """
 
 import importlib
+import json
 import os
 import sys
 import tempfile
@@ -43,10 +44,11 @@ PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 if PATH not in sys.path:
     sys.path.append(PATH)
 
-from qt_api import QCoreApplication, Qt
+from qt_api import QByteArray, QCoreApplication, Qt
 from qt_api import QApplication, QDockWidget, QMainWindow, QMenu, QStandardItem, QStandardItemModel
 
 from classes.project_data import ProjectDataStore
+from classes.settings import SettingStore
 from classes.updates import UpdateManager
 from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
 
@@ -109,6 +111,65 @@ class SignalRecorder:
 
     def emit(self, *args):
         self.calls.append(args)
+
+
+class FakeDock:
+    def __init__(self, name="", height=100, width=200, area=Qt.TopDockWidgetArea):
+        self._name = name
+        self._height = height
+        self._width = width
+        self._area = area
+        self._minimum_height = 0
+        self._maximum_height = 16777215
+        self._minimum_width = 0
+        self._maximum_width = 16777215
+        self.fixed_heights = []
+        self.fixed_widths = []
+
+    def objectName(self):
+        return self._name
+
+    def height(self):
+        return self._height
+
+    def width(self):
+        return self._width
+
+    def minimumHeight(self):
+        return self._minimum_height
+
+    def maximumHeight(self):
+        return self._maximum_height
+
+    def minimumWidth(self):
+        return self._minimum_width
+
+    def maximumWidth(self):
+        return self._maximum_width
+
+    def setFixedHeight(self, height):
+        self.fixed_heights.append(height)
+        self._height = height
+        self._minimum_height = height
+        self._maximum_height = height
+
+    def setFixedWidth(self, width):
+        self.fixed_widths.append(width)
+        self._width = width
+        self._minimum_width = width
+        self._maximum_width = width
+
+    def setMinimumHeight(self, height):
+        self._minimum_height = height
+
+    def setMaximumHeight(self, height):
+        self._maximum_height = height
+
+    def setMinimumWidth(self, width):
+        self._minimum_width = width
+
+    def setMaximumWidth(self, width):
+        self._maximum_width = width
 
 
 class MainWindowTests(unittest.TestCase):
@@ -226,6 +287,74 @@ class MainWindowTests(unittest.TestCase):
         self.main_window_module.MainWindow._on_dock_top_level_changed(fake_window, True)
 
         self.assertEqual(calls, ["interaction", ("style", {"delay": 0})])
+
+    def test_save_settings_persists_video_width_and_timeline_height(self):
+        timeline_dock = FakeDock("dockTimeline", height=240, area=Qt.BottomDockWidgetArea)
+        video_dock = FakeDock("dockVideo", height=360, width=520, area=Qt.TopDockWidgetArea)
+        fake_window = types.SimpleNamespace(
+            dockTimeline=timeline_dock,
+            dockVideo=video_dock,
+            saveState=lambda: QByteArray(b"state"),
+            saveGeometry=lambda: QByteArray(b"geometry"),
+            getDocks=lambda: [timeline_dock, video_dock],
+            dockWidgetArea=lambda dock: dock._area,
+        )
+
+        self.main_window_module.MainWindow.save_settings(fake_window)
+
+        self.assertEqual(self.app.settings.values["timeline_height"], 240)
+        self.assertEqual(self.app.settings.values["video_dock_width"], 520)
+
+    def test_default_settings_include_video_dock_width(self):
+        with open(os.path.join(PATH, "settings", "_default.settings"), encoding="utf-8") as fh:
+            settings = json.load(fh)
+
+        names = {item.get("setting") for item in settings}
+
+        self.assertIn("video_dock_width", names)
+
+    def test_setting_store_invalid_key_warns_without_crashing(self):
+        store = SettingStore()
+        store._data = [{"setting": "known", "value": 1}]
+
+        store.set("unknown", 2)
+
+        self.assertEqual(store.get("known"), 1)
+
+    def test_apply_saved_dock_sizes_restores_video_width_and_timeline_height(self):
+        timeline_dock = FakeDock("dockTimeline", height=140, area=Qt.BottomDockWidgetArea)
+        video_dock = FakeDock("dockVideo", height=180, width=260, area=Qt.TopDockWidgetArea)
+        fake_window = types.SimpleNamespace(
+            dockTimeline=timeline_dock,
+            dockVideo=video_dock,
+            saved_timeline_height=260,
+            saved_video_dock_width=640,
+            width=lambda: 1200,
+            height=lambda: 900,
+        )
+        fake_window._force_dock_extent_once = types.MethodType(
+            self.main_window_module.MainWindow._force_dock_extent_once,
+            fake_window)
+        fake_window._positive_int = self.main_window_module.MainWindow._positive_int
+
+        with patch.object(self.main_window_module.QTimer, "singleShot", lambda _delay, callback: callback()):
+            self.main_window_module.MainWindow._apply_saved_dock_sizes(fake_window)
+
+        self.assertEqual(timeline_dock.fixed_heights, [260])
+        self.assertEqual(video_dock.fixed_widths, [640])
+        self.assertEqual(timeline_dock.minimumHeight(), 0)
+        self.assertEqual(video_dock.maximumWidth(), 16777215)
+
+    def test_missing_video_dock_width_uses_initial_shown_layout_as_fallback(self):
+        video_dock = FakeDock("dockVideo", height=300, width=540, area=Qt.TopDockWidgetArea)
+        fake_window = types.SimpleNamespace(
+            dockVideo=video_dock,
+            saved_video_dock_width=None,
+        )
+
+        self.main_window_module.MainWindow._capture_missing_dock_size_fallbacks(fake_window)
+
+        self.assertEqual(fake_window.saved_video_dock_width, 540)
 
     def test_active_custom_view_setter_does_not_shadow_reader(self):
         fake_window = types.SimpleNamespace()
