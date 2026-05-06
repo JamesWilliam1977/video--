@@ -226,50 +226,62 @@ def GenerateThumbnail(file_path, thumb_path, thumbnail_frame, width, height, mas
     decode_width = max(thumb_width, round(thumb_width * THUMBNAIL_DECODE_SCALE))
     decode_height = max(thumb_height, round(thumb_height * THUMBNAIL_DECODE_SCALE))
 
-    reader = None
-    try:
-        reader = openshot.Clip.CreateReader(file_path, False)
-        if not reader:
-            raise RuntimeError("No reader available for thumbnail generation")
-        if reader and hasattr(reader, "SetMaxDecodeSize"):
-            reader.SetMaxDecodeSize(decode_width, decode_height)
-        reader.Open()
-
-        # Get the 'rotate' metadata (if any)
-        rotate = 0.0
+    def _render_with_reader(inspect_reader):
+        reader = None
         try:
-            if reader.info.metadata.count("rotate"):
-                rotate_data = reader.info.metadata["rotate"]
-                rotate = float(rotate_data)
-        except ValueError as ex:
-            log.warning("Could not parse rotation value {}: {}".format(rotate_data, ex))
-        except Exception:
-            log.warning("Error reading rotation metadata from {}".format(file_path), exc_info=1)
+            reader = openshot.Clip.CreateReader(file_path, inspect_reader)
+            if not reader:
+                raise RuntimeError("No reader available for thumbnail generation")
 
-        reader.GetFrame(thumbnail_frame).Thumbnail(
-            thumb_path,
-            thumb_width,
-            thumb_height,
-            mask,
-            overlay,
-            "#000",
-            False,
-            "png",
-            85,
-            rotate,
-            openshot.SCALE_CROP,
-        )
-    except RuntimeError:
-        # Any failure opening the reader (i.e. file missing or corrupt) use placeholder thumbnail
-        not_found_path = os.path.join(info.IMAGES_PATH, "NotFound@2x.png")
-        shutil.copyfile(not_found_path, thumb_path)
-        log.warning(f"Failed to generate thumbnail for missing file: {file_path}")
-    finally:
-        if reader:
+            if hasattr(reader, "SetMaxDecodeSize"):
+                reader.SetMaxDecodeSize(decode_width, decode_height)
+            reader.Open()
+
+            # Get the 'rotate' metadata (if any)
+            rotate = 0.0
             try:
-                reader.Close()
+                if reader.info.metadata.count("rotate"):
+                    rotate_data = reader.info.metadata["rotate"]
+                    rotate = float(rotate_data)
+            except ValueError as ex:
+                log.warning("Could not parse rotation value {}: {}".format(rotate_data, ex))
             except Exception:
-                pass
+                log.warning("Error reading rotation metadata from {}".format(file_path), exc_info=1)
+
+            reader.GetFrame(thumbnail_frame).Thumbnail(
+                thumb_path,
+                thumb_width,
+                thumb_height,
+                mask,
+                overlay,
+                "#000",
+                False,
+                "png",
+                85,
+                rotate,
+                openshot.SCALE_CROP,
+            )
+            return True
+        finally:
+            if reader:
+                try:
+                    reader.Close()
+                except Exception:
+                    pass
+        # Return False only when an exception is handled in caller.
+
+    for inspect_reader in (False, True):
+        try:
+            if _render_with_reader(inspect_reader):
+                return
+        except RuntimeError:
+            # retry once with eager inspection if lightweight reader did not work
+            continue
+
+    # Any failure opening the reader (i.e. file missing or corrupt) use placeholder thumbnail
+    not_found_path = os.path.join(info.IMAGES_PATH, "NotFound@2x.png")
+    shutil.copyfile(not_found_path, thumb_path)
+    log.warning(f"Failed to generate thumbnail for missing file: {file_path}")
 
 
 def ThumbnailCacheIsStale(thumb_path):
