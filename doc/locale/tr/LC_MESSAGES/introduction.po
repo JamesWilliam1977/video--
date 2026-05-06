@@ -86,11 +86,6 @@ msgstr ""
 "**Gerçek zamanlı önizleme** (çoklu iş parçacığı, performans optimize edilmiş)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**Basit ve gelişmiş görünümler** (özelleştirilebilir)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr ""

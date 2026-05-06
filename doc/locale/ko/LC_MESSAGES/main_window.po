@@ -528,16 +528,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr "Ctrl+Alt+A"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "고급 보기"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr "Alt+Shift+1"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "애니메이션 제목"
@@ -1625,19 +1615,6 @@ msgid "Views"
 msgstr "보기"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"OpenShot 메인 창은 여러 개의 ** 도크** 로 구성되어 있습니다. 이 ** 도크** 들"
-"은 함께 배열되고 고정되어 우리가 ** 보기(View)** 라고 부르는 그룹을 형성합니"
-"다. OpenShot은 두 가지 주요 보기를 제공합니다: :guilabel:` 간단 보기` 와 :"
-"guilabel:` 고급 보기`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1653,20 +1630,6 @@ msgstr ""
 "다. 도크를 실수로 닫거나 이동한 경우, 화면 상단의 :guilabel:` 보기->보기->간"
 "단한 보기` 메뉴를 사용하여 모든 도크를 기본 위치로 빠르게 재설정할 수 있습니"
 "다."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"이것은 고급 보기로, 한 번에 더 많은 도크를 화면에 추가하여 간단한 보기에서 보"
-"이지 않는 여러 기능에 더 쉽게 접근할 수 있습니다. 간단한 보기를 익힌 후에는 "
-"이 보기도 사용해 보시길 권장합니다. 참고: 도크를 원하는 위치로 드래그 앤 드롭"
-"하여 완전히 사용자 지정된 보기를 만들 수도 있습니다."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

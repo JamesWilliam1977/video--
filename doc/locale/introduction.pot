@@ -60,10 +60,6 @@ msgstr ""
 msgid "**Real-time preview** (multi-threaded, performance-optimized)"
 msgstr ""
 
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr ""
-
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr ""

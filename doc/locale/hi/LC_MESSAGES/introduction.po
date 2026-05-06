@@ -81,11 +81,6 @@ msgid "**Real-time preview** (multi-threaded, performance-optimized)"
 msgstr "**रीयल-टाइम पूर्वावलोकन** (मल्टी-थ्रेडेड, प्रदर्शन-अनुकूलित)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**सरल और उन्नत दृश्य** (अनुकूलन योग्य)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr "**कीफ़्रेम एनिमेशन** (`linear`, `Bézier`, `constant` इंटरपोलेशन)"

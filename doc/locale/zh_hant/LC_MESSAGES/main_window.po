@@ -507,16 +507,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "進階檢視"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "動畫標題"
@@ -1597,18 +1587,6 @@ msgid "Views"
 msgstr "檢視"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"OpenShot 主視窗由多個 **停靠區** 組成。這些 **停靠區** 被排列並吸附在一起，形"
-"成我們稱之為 **檢視** 的群組。OpenShot 提供兩種主要檢視：:guilabel:`簡易檢視"
-"` 和 :guilabel:` 高級檢視` 。"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1622,19 +1600,6 @@ msgstr ""
 "專案檔案` ，右上角為 :guilabel:` 預覽視窗` ，底部為 :guilabel:` 時間軸` 。如"
 "果不小心關閉或移動了停靠視窗，可以使用畫面頂端的 :guilabel:` 檢視->檢視->簡易"
 "檢視` 選單快速重設所有停靠視窗回預設位置。"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"這是進階檢視，會同時新增更多停靠視窗到畫面上，方便存取簡易檢視中看不到的多項"
-"功能。當您熟悉簡易檢視後，我們建議也試試此檢視。注意：您也可以拖曳停靠視窗到"
-"任意位置，打造完全自訂的檢視。"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

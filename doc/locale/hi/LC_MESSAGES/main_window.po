@@ -520,16 +520,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "उन्नत दृश्य"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "एनिमेटेड शीर्षक"
@@ -1616,18 +1606,6 @@ msgid "Views"
 msgstr "व्यू"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"OpenShot मुख्य विंडो कई **डॉक्स** से बनी होती है। ये **डॉक्स** एक समूह में व्यवस्थित और "
-"संलग्न होते हैं जिसे हम **व्यू** कहते हैं। OpenShot के दो मुख्य व्यू हैं: :guilabel:`Simple "
-"View` और :guilabel:`Advanced View`।"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1643,20 +1621,6 @@ msgstr ""
 "आप गलती से कोई डॉक बंद या स्थानांतरित कर देते हैं, तो आप स्क्रीन के शीर्ष पर :guilabel:"
 "`View->Views->Simple View` मेनू का उपयोग करके सभी डॉक को उनके डिफ़ॉल्ट स्थान पर "
 "जल्दी से रीसेट कर सकते हैं।"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"यह एक उन्नत दृश्य है, जो एक बार में स्क्रीन पर अधिक डॉक जोड़ता है, जिससे उन कई सुविधाओं "
-"तक पहुंच बेहतर होती है जो सरल दृश्य में दिखाई नहीं देती हैं। एक बार जब आप सरल दृश्य में "
-"महारत हासिल कर लें, तो हम इस दृश्य को भी आजमाने की सलाह देते हैं। नोट: आप डॉक को कहीं "
-"भी ड्रैग और ड्रॉप कर सकते हैं, ताकि पूरी तरह से कस्टम दृश्य बनाया जा सके।"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

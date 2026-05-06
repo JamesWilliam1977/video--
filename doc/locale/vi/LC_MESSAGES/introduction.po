@@ -85,11 +85,6 @@ msgid "**Real-time preview** (multi-threaded, performance-optimized)"
 msgstr "**Xem trước thời gian thực** (đa luồng, tối ưu hiệu suất)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**Chế độ xem đơn giản & nâng cao** (tùy chỉnh được)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr "**Hoạt hình khung chính** (`linear`, `Bézier`, `constant` nội suy)"

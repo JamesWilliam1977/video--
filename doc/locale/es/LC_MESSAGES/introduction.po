@@ -90,11 +90,6 @@ msgstr ""
 "**Vista previa en tiempo real** (multihilo, optimizado para rendimiento)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**Vistas simples y avanzadas** (personalizables)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr ""

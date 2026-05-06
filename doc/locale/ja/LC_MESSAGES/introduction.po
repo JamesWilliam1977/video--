@@ -83,11 +83,6 @@ msgid "**Real-time preview** (multi-threaded, performance-optimized)"
 msgstr "**リアルタイムプレビュー** （マルチスレッド、パフォーマンス最適化）"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**シンプル＆高度なビュー** （カスタマイズ可能）"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr ""

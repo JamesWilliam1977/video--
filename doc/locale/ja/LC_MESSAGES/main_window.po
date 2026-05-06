@@ -532,16 +532,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "詳細表示"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "アニメーションタイトル"
@@ -1636,19 +1626,6 @@ msgid "Views"
 msgstr "ビュー"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"OpenShotのメインウィンドウは複数の**ドック** で構成されています。これらの**"
-"ドック** は配置されてスナップされ、**ビュー** と呼ばれるグループにまとめられ"
-"ています。OpenShotには主に2つのビューがあります：:guilabel:`シンプルビュー` "
-"と :guilabel:` 詳細ビュー` 。"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1664,20 +1641,6 @@ msgstr ""
 "クを誤って閉じたり移動した場合は、画面上部のメニュー :guilabel:` 表示->"
 "ビュー->シンプルビュー` を使って、すべてのドックをデフォルトの位置にすばやく"
 "リセットできます。"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"これは高度なビューで、一度により多くのドックを画面に表示し、シンプルビューで"
-"は見えない多くの機能へのアクセスを向上させます。シンプルビューに慣れたら、こ"
-"のビューも試してみることをお勧めします。注意：ドックは好きな場所にドラッグ＆"
-"ドロップして、完全にカスタムなビューを作成することもできます。"
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

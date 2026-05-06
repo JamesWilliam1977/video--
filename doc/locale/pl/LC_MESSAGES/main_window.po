@@ -543,16 +543,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Widok zaawansowany"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Animowany tytuł"
@@ -1647,19 +1637,6 @@ msgid "Views"
 msgstr "Widoki"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"Główne okno OpenShot składa się z wielu **paneli dokowalnych**. Te "
-"**panele** są ułożone i połączone w grupę, którą nazywamy **Widokiem**. "
-"OpenShot oferuje dwa podstawowe widoki: :guilabel:`Widok prosty` oraz :"
-"guilabel:`Widok zaawansowany`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1675,21 +1652,6 @@ msgstr ""
 "guilabel:`Oś czasu` na dole. Jeśli przypadkowo zamkniesz lub przesuniesz "
 "dok, możesz szybko przywrócić wszystkie doki do ich domyślnej lokalizacji, "
 "korzystając z menu :guilabel:`Widok->Widoki->Prosty widok` u góry ekranu."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"To jest zaawansowany widok, który dodaje na ekran więcej doków jednocześnie, "
-"ułatwiając dostęp do wielu funkcji niewidocznych w Prosty widoku. Po "
-"opanowaniu Prostego widoku, zalecamy również wypróbowanie tego widoku. "
-"UWAGA: Możesz także przeciągać i upuszczać doki w dowolne miejsce, aby "
-"uzyskać w pełni spersonalizowany widok."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

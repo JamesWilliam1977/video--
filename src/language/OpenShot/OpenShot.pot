@@ -4271,11 +4271,6 @@ msgstr ""
 msgid "Simple View"
 msgstr ""
 
-#: Settings for actionAdvanced_View
-#: /home/jonathan/apps/openshot-qt/src/windows/ui/main-window.ui:1244
-msgid "Advanced View"
-msgstr ""
-
 #: Settings for actionView_Toolbar
 #: /home/jonathan/apps/openshot-qt/src/windows/ui/main-window.ui:1130
 msgid "View Toolbar"

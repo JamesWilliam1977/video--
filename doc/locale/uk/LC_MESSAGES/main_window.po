@@ -540,16 +540,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Розширений вигляд"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Анімований заголовок"
@@ -1646,19 +1636,6 @@ msgid "Views"
 msgstr "Вигляди"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"Головне вікно OpenShot складається з кількох **доків**. Ці **доки** "
-"організовані та закріплені разом у групу, яку ми називаємо **Виглядом**. "
-"OpenShot має два основні вигляди: :guilabel:`Простий вигляд` та :guilabel:"
-"`Розширений вигляд`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1674,21 +1651,6 @@ msgstr ""
 "`Таймлайн` унизу. Якщо ви випадково закрили або перемістили док, ви можете "
 "швидко скинути всі доки до їхнього стандартного розташування за допомогою "
 "меню :guilabel:`Вигляд->Вигляди->Простий вигляд` у верхній частині екрана."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Це розширений вигляд, який додає на екран більше доків одночасно, покращуючи "
-"доступ до багатьох функцій, які не видно у Простому вигляді. Після того, як "
-"ви освоїте Простий вигляд, рекомендуємо також спробувати цей. ПРИМІТКА: Ви "
-"також можете перетягувати доки куди завгодно для повністю налаштованого "
-"вигляду."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

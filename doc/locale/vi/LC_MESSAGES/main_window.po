@@ -537,16 +537,6 @@ msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ":kbd:`Ctrl+Alt+A`"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:146 ../main_window.rst:293
-msgid "Advanced View"
-msgstr "Chế Độ Nâng Cao"
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ":kbd:`Alt+Shift+1`"
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr "Tiêu Đề Hoạt Hình"
@@ -1635,18 +1625,6 @@ msgid "Views"
 msgstr "Giao diện"
 
 # Translated with gpt-4.1-mini
-#: ../main_window.rst:281
-msgid ""
-"The OpenShot main window is composed of multiple **docks**. These **docks** "
-"are arranged and snapped together into a grouping that we call a **View**. "
-"OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:"
-"`Advanced View`."
-msgstr ""
-"Cửa sổ chính của OpenShot bao gồm nhiều **dock**. Các **dock** này được sắp "
-"xếp và ghép lại thành một nhóm gọi là **Giao diện**. OpenShot có hai giao "
-"diện chính: :guilabel:`Giao diện Đơn giản` và :guilabel:`Giao diện Nâng cao`."
-
-# Translated with gpt-4.1-mini
 #: ../main_window.rst:287
 msgid ""
 "This is the **default** view, and is designed to be easy-to-use, especially "
@@ -1662,21 +1640,6 @@ msgstr ""
 "Gian` ở phía dưới. Nếu bạn vô tình đóng hoặc di chuyển một dock, bạn có thể "
 "nhanh chóng đặt lại tất cả các dock về vị trí mặc định bằng cách sử dụng "
 "menu :guilabel:`Xem->Chế Độ Xem->Chế Độ Đơn Giản` ở đầu màn hình."
-
-# Translated with gpt-4.1-mini
-#: ../main_window.rst:294
-msgid ""
-"This is an advanced view, which adds more docks to the screen at once, "
-"improving access to many features that are not visible in Simple View. Once "
-"you have mastered the Simple View, we recommend giving this view a try as "
-"well. NOTE: You can also drag and drop the docks anywhere you would like, "
-"for a fully custom view."
-msgstr ""
-"Đây là chế độ xem nâng cao, thêm nhiều dock hơn trên màn hình cùng lúc, cải "
-"thiện truy cập đến nhiều tính năng không hiển thị trong Chế Độ Đơn Giản. Khi "
-"bạn đã thành thạo Chế Độ Đơn Giản, chúng tôi khuyên bạn nên thử chế độ xem "
-"này. LƯU Ý: Bạn cũng có thể kéo và thả các dock đến bất cứ đâu bạn muốn để "
-"có một chế độ xem tùy chỉnh hoàn toàn."
 
 # Translated with gpt-4.1-mini
 #: ../main_window.rst:299

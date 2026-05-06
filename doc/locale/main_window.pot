@@ -354,15 +354,6 @@ msgstr ""
 msgid ":kbd:`Ctrl+Alt+A`"
 msgstr ""
 
-#: ../main_window.rst:146
-#: ../main_window.rst:293
-msgid "Advanced View"
-msgstr ""
-
-#: ../main_window.rst:146
-msgid ":kbd:`Alt+Shift+1`"
-msgstr ""
-
 #: ../main_window.rst:147
 msgid "Animated Title"
 msgstr ""
@@ -1197,16 +1188,8 @@ msgstr ""
 msgid "Views"
 msgstr ""
 
-#: ../main_window.rst:281
-msgid "The OpenShot main window is composed of multiple **docks**. These **docks** are arranged and snapped together into a grouping that we call a **View**. OpenShot comes with two primary views: :guilabel:`Simple View` and :guilabel:`Advanced View`."
-msgstr ""
-
 #: ../main_window.rst:287
 msgid "This is the **default** view, and is designed to be easy-to-use, especially for first-time users. It contains :guilabel:`Project Files` on the top left, :guilabel:`Preview Window` on the top right, and :guilabel:`Timeline` on the bottom. If you accidentally close or move a dock, you can quickly reset all the docks back to their default location using the :guilabel:`View->Views->Simple View` menu at the top of the screen."
-msgstr ""
-
-#: ../main_window.rst:294
-msgid "This is an advanced view, which adds more docks to the screen at once, improving access to many features that are not visible in Simple View. Once you have mastered the Simple View, we recommend giving this view a try as well. NOTE: You can also drag and drop the docks anywhere you would like, for a fully custom view."
 msgstr ""
 
 #: ../main_window.rst:299

@@ -81,11 +81,6 @@ msgid "**Real-time preview** (multi-threaded, performance-optimized)"
 msgstr "** 실시간 미리보기** (멀티스레드, 성능 최적화)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "** 간단한 및 고급 보기** (사용자 정의 가능)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr "** 키프레임 애니메이션** (`linear`, `Bézier`, `constant` 보간)"

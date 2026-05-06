@@ -86,11 +86,6 @@ msgstr ""
 "**Pregled u stvarnom vremenu** (više niti, optimizirano za performanse)"
 
 # Translated with gpt-4.1-mini
-#: ../introduction.rst:39
-msgid "**Simple & advanced views** (customizable)"
-msgstr "**Jednostavni i napredni prikazi** (prilagodljivi)"
-
-# Translated with gpt-4.1-mini
 #: ../introduction.rst:40
 msgid "**Keyframe animations** (`linear`, `Bézier`, `constant` interpolation)"
 msgstr ""
