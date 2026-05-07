@@ -50,6 +50,14 @@ class _Reader:
         self.close_calls += 1
 
 
+class _QueriedFile:
+    def __init__(self):
+        self.data = {"fps": {"num": 25, "den": 1}}
+
+    def absolute_path(self):
+        return "/tmp/dummy.webp"
+
+
 class ThumbnailGenerationTests(unittest.TestCase):
     def test_generate_thumbnail_retries_when_first_reader_fails_to_open(self):
         first_reader = _Reader(open_error=RuntimeError("QtImageReader could not open image file."))
@@ -74,6 +82,72 @@ class ThumbnailGenerationTests(unittest.TestCase):
         self.assertEqual(first_reader.close_calls, 1)
         self.assertEqual(second_reader.close_calls, 1)
         copyfile_patch.assert_not_called()
+
+    def test_generate_thumbnail_renders_svg_placeholder_when_source_cannot_open(self):
+        failing_readers = [
+            _Reader(open_error=RuntimeError("missing source")),
+            _Reader(open_error=RuntimeError("missing source")),
+        ]
+        placeholder_reader = _Reader()
+        reader_iter = iter([*failing_readers, placeholder_reader])
+        created = []
+
+        def create_reader(path, inspect_reader):
+            created.append((path, inspect_reader))
+            return next(reader_iter)
+
+        with patch.object(thumbnail.openshot.Clip, "CreateReader", side_effect=create_reader), \
+             patch.object(thumbnail.os.path, "exists", side_effect=lambda path: True), \
+             patch.object(thumbnail.shutil, "copyfile") as copyfile_patch:
+            thumbnail.GenerateThumbnail("missing.webp", "/tmp/thumb.png", 7, 20, 20, None, None)
+
+        self.assertEqual(created[0:2], [("missing.webp", False), ("missing.webp", True)])
+        self.assertEqual(created[2], (thumbnail.os.path.join(thumbnail.info.IMAGES_PATH, "NotFound.svg"), False))
+        self.assertEqual(placeholder_reader.max_frames, [1])
+        copyfile_patch.assert_not_called()
+
+    def test_http_thumbnail_handler_uses_project_file_icon_size(self):
+        file_record = _QueriedFile()
+        handler = thumbnail.httpThumbnailHandler.__new__(thumbnail.httpThumbnailHandler)
+        handler.path = "/thumbnails/file-id/1/path/"
+        handler.wfile = type("_Writer", (), {"write": lambda *_: None})()
+        handler.send_response_only = unittest.mock.Mock()
+        handler.send_header = unittest.mock.Mock()
+        handler.end_headers = unittest.mock.Mock()
+        handler.send_error = unittest.mock.Mock()
+
+        with patch.object(thumbnail, "File") as file_cls, \
+             patch.object(thumbnail, "GenerateThumbnail") as generate_thumbnail, \
+             patch.object(thumbnail, "ThumbnailCacheIsStale", return_value=False), \
+             patch.object(thumbnail.os.path, "exists", return_value=False), \
+             patch.object(thumbnail.time, "sleep", return_value=None):
+            file_cls.get.return_value = file_record
+            handler.do_GET()
+
+        self.assertEqual(generate_thumbnail.call_count, 1)
+        call_kwargs = generate_thumbnail.call_args[0]
+        self.assertEqual(call_kwargs[3], thumbnail.info.LIST_ICON_SIZE.width())
+        self.assertEqual(call_kwargs[4], thumbnail.info.LIST_ICON_SIZE.height())
+
+    def test_http_thumbnail_handler_regenerates_stale_project_file_thumbnail(self):
+        file_record = _QueriedFile()
+        handler = thumbnail.httpThumbnailHandler.__new__(thumbnail.httpThumbnailHandler)
+        handler.path = "/thumbnails/file-id/1/path/"
+        handler.wfile = type("_Writer", (), {"write": lambda *_: None})()
+        handler.send_response_only = unittest.mock.Mock()
+        handler.send_header = unittest.mock.Mock()
+        handler.end_headers = unittest.mock.Mock()
+        handler.send_error = unittest.mock.Mock()
+
+        with patch.object(thumbnail, "File") as file_cls, \
+             patch.object(thumbnail, "GenerateThumbnail") as generate_thumbnail, \
+             patch.object(thumbnail, "ThumbnailCacheIsStale", return_value=True), \
+             patch.object(thumbnail.os.path, "exists", return_value=True), \
+             patch.object(thumbnail.time, "sleep", return_value=None):
+            file_cls.get.return_value = file_record
+            handler.do_GET()
+
+        self.assertEqual(generate_thumbnail.call_count, 1)
 
 
 if __name__ == "__main__":

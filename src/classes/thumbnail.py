@@ -226,10 +226,10 @@ def GenerateThumbnail(file_path, thumb_path, thumbnail_frame, width, height, mas
     decode_width = max(thumb_width, round(thumb_width * THUMBNAIL_DECODE_SCALE))
     decode_height = max(thumb_height, round(thumb_height * THUMBNAIL_DECODE_SCALE))
 
-    def _render_with_reader(inspect_reader):
+    def _render_with_reader(source_path, source_frame, inspect_reader):
         reader = None
         try:
-            reader = openshot.Clip.CreateReader(file_path, inspect_reader)
+            reader = openshot.Clip.CreateReader(source_path, inspect_reader)
             if not reader:
                 raise RuntimeError("No reader available for thumbnail generation")
 
@@ -246,9 +246,9 @@ def GenerateThumbnail(file_path, thumb_path, thumbnail_frame, width, height, mas
             except ValueError as ex:
                 log.warning("Could not parse rotation value {}: {}".format(rotate_data, ex))
             except Exception:
-                log.warning("Error reading rotation metadata from {}".format(file_path), exc_info=1)
+                log.warning("Error reading rotation metadata from {}".format(source_path), exc_info=1)
 
-            reader.GetFrame(thumbnail_frame).Thumbnail(
+            reader.GetFrame(source_frame).Thumbnail(
                 thumb_path,
                 thumb_width,
                 thumb_height,
@@ -272,15 +272,18 @@ def GenerateThumbnail(file_path, thumb_path, thumbnail_frame, width, height, mas
 
     for inspect_reader in (False, True):
         try:
-            if _render_with_reader(inspect_reader):
+            if _render_with_reader(file_path, thumbnail_frame, inspect_reader):
                 return
         except RuntimeError:
             # retry once with eager inspection if lightweight reader did not work
             continue
 
     # Any failure opening the reader (i.e. file missing or corrupt) use placeholder thumbnail
-    not_found_path = os.path.join(info.IMAGES_PATH, "NotFound@2x.png")
-    shutil.copyfile(not_found_path, thumb_path)
+    not_found_path = os.path.join(info.IMAGES_PATH, "NotFound.svg")
+    try:
+        _render_with_reader(not_found_path, 1, False)
+    except RuntimeError:
+        log.warning(f"Failed to generate placeholder thumbnail from: {not_found_path}", exc_info=1)
     log.warning(f"Failed to generate thumbnail for missing file: {file_path}")
 
 
@@ -430,13 +433,14 @@ class httpThumbnailHandler(BaseHTTPRequestHandler):
 
         if not os.path.exists(thumb_path) or no_cache or ThumbnailCacheIsStale(thumb_path):
             # Generate thumbnail (since we can't find it)
-
-            # Create thumbnail image
+            thumb_width = info.LIST_ICON_SIZE.width()
+            thumb_height = info.LIST_ICON_SIZE.height()
             GenerateThumbnail(
                 file_path,
                 thumb_path,
                 file_frame,
-                98, 64,
+                thumb_width,
+                thumb_height,
                 mask_path,
                 "")
 

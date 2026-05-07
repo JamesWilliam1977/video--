@@ -153,7 +153,7 @@ def create_clip(context, track):
         thumb_path = os.path.join(info.THUMBNAIL_PATH, "%s.png" % file.data["id"])
     else:
         # Audio file
-        thumb_path = os.path.join(info.PATH, "images", "AudioThumbnail.png")
+        thumb_path = os.path.join(info.PATH, "images", "AudioThumbnail.svg")
 
     # Create Clip object
     clip = Clip()
