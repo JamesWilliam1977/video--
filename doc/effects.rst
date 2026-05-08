@@ -258,11 +258,11 @@ the name and short description of each effect.
    =========================== ============================= ===============
    Icon                        Effect Name                   Effect Description
    =========================== ============================= ===============
-   |analogtape_icon|           Analog Tape                   Vintage home-video wobble, bleed, and snow.
    |mask_icon|                 Alpha Mask / Wipe Transition  Grayscale mask transition between images.
+   |analogtape_icon|           Analog Tape                   Vintage home-video wobble, bleed, and snow.
    |audiovisualization_icon|   Audio Visualization           Render waveform, spectrum, and other transparent audio visualizations.
-   |beatsync_icon|             Beat Sync                     Generate audio-reactive color flashes for compositing.
    |bars_icon|                 Bars                          Add colored bars around your video.
+   |beatsync_icon|             Beat Sync                     Generate audio-reactive color flashes for compositing.
    |blur_icon|                 Blur                          Adjust image blur.
    |brightness_icon|           Brightness & Contrast         Modify frame’s brightness and contrast.
    |caption_icon|              Caption                       Add text captions to any clip.
@@ -271,33 +271,33 @@ the name and short description of each effect.
    |colormap_icon|             Color Map / Lookup            Adjust colors using 3D LUT lookup tables (.cube format).
    |saturation_icon|           Color Saturation              Adjust color intensity.
    |colorshift_icon|           Color Shift                   Shift image colors in various directions.
+   |compressor_icon|           Compressor                    Reduce loudness or amplify quiet sounds.
    |crop_icon|                 Crop                          Crop out parts of your video.
    |deinterlace_icon|          Deinterlace                   Remove interlacing from video.
+   |delay_icon|                Delay                         Adjust audio-video synchronism.
    |denoiseimage_icon|         Denoise Image                 Reduce visible grain and color speckles in video frames.
    |displace_icon|             Displacement Map              Use a grayscale image or video to warp the frame.
+   |distortion_icon|           Distortion                    Clip audio signal for distortion.
+   |echo_icon|                 Echo                          Add delayed sound reflection.
+   |expander_icon|             Expander                      Make loud parts relatively louder.
    |filmgrain_icon|            Film Grain                    Add natural film-inspired texture and motion.
    |glow_icon|                 Glow                          Add a soft outer or inner glow to visible pixels.
    |hue_icon|                  Hue                           Adjust hue / color.
    |lensflare_icon|            Lens Flare                    Simulate sunlight hitting a lens with flares.
    |negate_icon|               Negative                      Produce a negative image.
+   |noise_icon|                Noise                         Add random equal-intensity signals.
    |objectdetection_icon|      Object Detector               Detect objects in video.
    |outline_icon|              Outline                       Add outline around any image or text.
+   |parametriceq_icon|         Parametric EQ                 Adjust frequency volume in audio.
    |pixelate_icon|             Pixelate                      Increase or decrease visible pixels.
-   |sharpen_icon|              Sharpen                       Boost edge contrast to make video details look crisper.
+   |robotization_icon|         Robotization                  Transform audio into robotic voice.
    |shadow_icon|               Shadow                        Add a soft drop shadow behind visible pixels.
+   |sharpen_icon|              Sharpen                       Boost edge contrast to make video details look crisper.
    |shift_icon|                Shift                         Shift image in different directions.
    |sphericalprojection_icon|  Spherical Projection          Flatten or project 360° and fisheye footage.
    |stabilizer_icon|           Stabilizer                    Reduce video shake.
    |tracker_icon|              Tracker                       Track bounding box in video.
    |wave_icon|                 Wave                          Distort image into a wave pattern.
-   |compressor_icon|           Compressor                    Reduce loudness or amplify quiet sounds.
-   |delay_icon|                Delay                         Adjust audio-video synchronism.
-   |distortion_icon|           Distortion                    Clip audio signal for distortion.
-   |echo_icon|                 Echo                          Add delayed sound reflection.
-   |expander_icon|             Expander                      Make loud parts relatively louder.
-   |noise_icon|                Noise                         Add random equal-intensity signals.
-   |parametriceq_icon|         Parametric EQ                 Adjust frequency volume in audio.
-   |robotization_icon|         Robotization                  Transform audio into robotic voice.
    |whisperization_icon|       Whisperization                Transform audio into whispers.
    =========================== ============================= ===============
 
@@ -319,14 +319,19 @@ more information on individual effects and their unique properties.
    ======================  ==========  ============
    Effect Property Name    Type        Description
    ======================  ==========  ============
+   Apply Before Clip       Boolean     Apply this effect before the Clip processes keyframes? (default is Yes)
    Duration                Float       The length of the effect (in seconds). Read-only property. Most effects default to the length of a clip. This property is hidden when an effect belongs to a clip.
    End                     Float       The end trimming position of the effect (in seconds). This property is hidden when an effect belongs to a clip.
    ID                      String      A randomly generated GUID (globally unique identifier) assigned to each effect. Read-only property.
+   Mask: Invert            Bool        Invert the mask source so light areas become dark and dark areas become light.
+   Mask: Loop              Bool        Loop an animated mask source when the effect is longer than the source.
+   Mask Mode               Enum        Controls how the mask limits or varies the strength of the effect.
+   Mask: Source            Reader      The image, image sequence, or video used as the effect's grayscale mask source.
+   Mask: Time Mode         Enum        Controls how OpenShot maps effect time to an animated mask source.
    Parent                  String      The parent object to this effect, which makes many of these keyframe values initialize to the parent value.
    Position                Float       The position of the effect on the timeline (in seconds). This property is hidden when an effect belongs to a clip.
    Start                   Float       The start trimming position of the effect (in seconds). This property is hidden when an effect belongs to a clip.
    Track                   Int         The layer which holds the effect (higher tracks are rendered on top of lower tracks). This property is hidden when an effect belongs to a clip.
-   Apply Before Clip       Boolean     Apply this effect before the Clip processes keyframes? (default is Yes)
    ======================  ==========  ============
 
 Duration
@@ -347,6 +352,13 @@ ID
 ""
 The :guilabel:`ID` property holds a randomly generated GUID (Globally Unique Identifier) assigned to each effect,
 ensuring its uniqueness. This is a Read-only property, and assigned by OpenShot when an effect is created.
+
+Mask Properties
+"""""""""""""""
+The :guilabel:`Mask: Source`, :guilabel:`Mask Mode`, :guilabel:`Mask: Time Mode`, :guilabel:`Mask: Loop`, and
+:guilabel:`Mask: Invert` properties limit where an effect is applied. The mask source can be a static image, image
+sequence, or video. Light areas of the mask usually apply more of the effect, while dark areas apply less; use
+:guilabel:`Mask: Invert` when you need the opposite result.
 
 Track
 """""

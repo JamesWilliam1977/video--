@@ -109,6 +109,10 @@ audio volume of a clip, you must adjust the ``volume`` clip property. See :ref:`
    Duration                    Float       The length of the transition (in seconds). Read-only property.
    End                         Float       The end trimming position of the transition (in seconds).
    ID                          String      A randomly generated GUID (globally unique identifier) assigned to each transition. Read-only property.
+   Mask: Invert                Bool        Invert the mask source so light areas become dark and dark areas become light.
+   Mask: Loop                  Bool        Loop an animated mask source when the transition is longer than the source.
+   Mask: Source                Reader      The image, image sequence, or video used as the transition's grayscale mask source.
+   Mask: Time Mode             Enum        Controls how OpenShot maps transition time to an animated mask source.
    Parent                      String      The parent object to this transition, which makes many of these keyframe values initialize to the parent value.
    Position                    Float       The position of the transition on the timeline (in seconds).
    Replace Image               Bool        For debugging a problem, this property displays the transition image (instead of becoming a transparency).
@@ -139,6 +143,16 @@ ensuring its uniqueness. This is a Read-only property, and assigned by OpenShot 
 
 - **Usage Example:** Referencing specific transitions within custom scripts or automation tasks.
 - **Tip:** While typically managed behind the scenes, understanding transition IDs can aid in advanced project customization.
+
+Mask Properties
+"""""""""""""""
+The :guilabel:`Mask: Source`, :guilabel:`Mask: Time Mode`, :guilabel:`Mask: Loop`, and :guilabel:`Mask: Invert`
+properties control the grayscale mask used by a transition. Static masks use a single image. Animated masks can use
+video or image sequences, with time mapping and looping options determining which source frame is used at each point
+in the transition.
+
+- **Usage Example:** Use :guilabel:`Mask: Invert` when the visible and hidden areas of a custom mask are reversed.
+- **Tip:** When using an animated mask, trim the mask source carefully before enabling loop behavior.
 
 Track
 """""

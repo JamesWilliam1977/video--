@@ -569,18 +569,16 @@ See the table below for a full list of clip properties.
    Alpha                   Key-Frame   Curve representing the alpha for fading the image and adding transparency (1 to 0)
    Channel Filter          Key-Frame   A number representing an audio channel to filter (clears all other channels)
    Channel Mapping         Key-Frame   A number representing an audio channel to output (only works when filtering a channel)
-   Frame Number            Enum        The format to display the frame number (if any)
    Composite (Blend Mode)  Enum        The blend mode used to composite this clip into lower layers. Default is **Normal**. See :ref:`clip_composite_ref`.
    Duration                Float       The length of the clip (in seconds). Read-only property. This is calculated by: End - Start.
-   End                     Float       The end trimming position of the clip (in seconds)
-   Gravity                 Enum        The gravity of a clip determines where it snaps to its parent (details below)
    Enable Audio            Enum        An optional override to determine if this clip has audio (-1=undefined, 0=no, 1=yes)
    Enable Video            Enum        An optional override to determine if this clip has video (-1=undefined, 0=no, 1=yes)
+   End                     Float       The end trimming position of the clip (in seconds)
+   Frame Number            Enum        The format to display the frame number (if any)
+   Gravity                 Enum        The gravity of a clip determines where it snaps to its parent (details below)
    ID                      String      A randomly generated GUID (globally unique identifier) assigned to each clip. Read-only property.
-   Track                   Int         The layer which holds the clip (higher tracks are rendered on top of lower tracks)
    Location X              Key-Frame   Curve representing the relative X position in percent based on the gravity (-1 to 1)
    Location Y              Key-Frame   Curve representing the relative Y position in percent based on the gravity (-1 to 1)
-   Volume Mixing           Enum        The volume mixing choices control how volume is adjusted before mixing (None=don't adjust volume of this clip, Reduce=lower the volume to 80%, Average=divide volume based on # of concurrent clips, details below)
    Origin X                Key-Frame   Curve representing the rotation origin point, X position in percent (-1 to 1)
    Origin Y                Key-Frame   Curve representing the rotation origin point, Y position in percent (-1 to 1)
    Parent                  String      The parent object to this clip, which makes many of these keyframe values initialize to the parent value
@@ -593,9 +591,12 @@ See the table below for a full list of clip properties.
    Shear Y                 Key-Frame   Curve representing Y shear angle in degrees (-45.0=down, 45.0=up)
    Start                   Float       The start trimming position of the clip (in seconds)
    Time                    Key-Frame   Curve representing the frames over time to play (used for speed and direction of video)
+   Track                   Int         The layer which holds the clip (higher tracks are rendered on top of lower tracks)
    Volume                  Key-Frame   Curve representing the volume for fading audio quieter/louder, mute, or adjusting levels (0 to 1)
+   Volume Mixing           Enum        The volume mixing choices control how volume is adjusted before mixing (None=don't adjust volume of this clip, Reduce=lower the volume to 80%, Average=divide volume based on # of concurrent clips, details below)
    Wave Color              Key-Frame   Curve representing the color of the audio waveform
    Waveform                Bool        Should a waveform be used instead of the clip's image
+   Waveform Mode           Enum        The visualization style used when displaying the clip as an audio waveform
    ======================  ==========  ============
 
 .. _clip_composite_ref:
@@ -907,6 +908,15 @@ The :guilabel:`Waveform` property is a boolean that determines whether a wavefor
 
 - **Usage Example:** Displaying an audio waveform in place of the video for visually highlighting audio patterns.
 - **Tip:** Use waveform visualization for emphasizing music beats or voice modulations.
+
+Waveform Mode
+"""""""""""""
+The :guilabel:`Waveform Mode` property controls the visualization style used when :guilabel:`Waveform` is enabled.
+It uses the same choices as the :guilabel:`Visualization` property on the :guilabel:`Audio Visualization` effect:
+Waveform, Filled Waveform, Bars, Radial, Radial Bars, Spectrum, Phase Scope, Particles, and VU Meter.
+
+- **Usage Example:** Switching an audio-only clip from a standard waveform to bars or a spectrum display.
+- **Tip:** Use :guilabel:`Wave Color` with :guilabel:`Waveform Mode` to tune both the visualization style and color.
 
 More Information
 ----------------
