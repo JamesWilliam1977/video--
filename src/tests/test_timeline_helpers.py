@@ -42,7 +42,7 @@ if PATH not in sys.path:
     sys.path.append(PATH)
 
 from qt_api import QCoreApplication, QPointF, QRectF, Qt
-from qt_api import QColor, QCursor
+from qt_api import QColor, QCursor, QImage, QPainter
 from qt_api import QApplication
 from classes import info
 from classes.updates import UpdateAction
@@ -90,9 +90,11 @@ class TimelineHelperTests(unittest.TestCase):
         sys.modules.pop("windows.views.timeline", None)
         cls.timeline_module = importlib.import_module("windows.views.timeline")
         cls.qwidget_base_module = importlib.import_module("windows.views.timeline_backend.qwidget.base")
+        cls.geometry_base_module = importlib.import_module("windows.views.timeline_backend.geometry.base")
         cls.geometry_clip_module = importlib.import_module("windows.views.timeline_backend.geometry.clip")
         cls.geometry_transition_module = importlib.import_module("windows.views.timeline_backend.geometry.transition")
         cls.clip_paint_module = importlib.import_module("windows.views.timeline_backend.paint.clip")
+        cls.cache_paint_module = importlib.import_module("windows.views.timeline_backend.paint.cache")
         cls.ruler_paint_module = importlib.import_module("windows.views.timeline_backend.paint.ruler")
         cls.transition_paint_module = importlib.import_module("windows.views.timeline_backend.paint.transition")
         cls.qwidget_clip_module = importlib.import_module("windows.views.timeline_backend.qwidget.clip")
@@ -2633,6 +2635,67 @@ class TimelineHelperTests(unittest.TestCase):
         targets = snap._target_edges_px(viewport=False)
         self.assertIn(rect.left(), targets)
         self.assertIn(rect.right(), targets)
+
+    def test_marker_icon_viewport_ignores_vertical_track_scroll(self):
+        widget = types.SimpleNamespace(
+            track_name_width=140.0,
+            ruler_height=40.0,
+            scroll_bar_thickness=15.0,
+            scrollbar_position=[0.2, 0.7, 500.0, 250.0],
+            v_scrollbar_position=[0.25, 0.5, 400.0, 100.0],
+            width=lambda: 405.0,
+            height=lambda: 155.0,
+            h_scroll_offset=0.0,
+        )
+        geometry = self.geometry_base_module.GeometryBase(widget)
+        geometry.marker_rects = [{
+            "line_rect": QRectF(190.0, 40.0, 0.5, 400.0),
+            "icon_rect": QRectF(184.0, 26.0, 12.0, 14.0),
+            "hit_rect": QRectF(180.0, 22.0, 20.0, 22.0),
+        }]
+
+        marker = next(geometry.iter_markers())
+
+        self.assertAlmostEqual(marker["icon_rect"].x(), 84.0)
+        self.assertAlmostEqual(marker["icon_rect"].y(), 26.0)
+        self.assertAlmostEqual(marker["hit_rect"].x(), 80.0)
+        self.assertAlmostEqual(marker["hit_rect"].y(), 22.0)
+        self.assertAlmostEqual(widget.h_scroll_offset, 100.0)
+
+    def test_playback_cache_paints_fixed_lane_background(self):
+        image = QImage(140, 80, QImage.Format_ARGB32)
+        image.fill(QColor("#00ff00"))
+        widget = types.SimpleNamespace(
+            theme=types.SimpleNamespace(
+                playback_cache_color=QColor("#0000ff"),
+                playback_cache_height=5.0,
+                track=types.SimpleNamespace(
+                    background=QColor("#ff0000"),
+                    background2=QColor(),
+                ),
+            ),
+            _playback_cache_ranges=[(0.0, 50.0)],
+            pixels_per_second=1.0,
+            track_name_width=20.0,
+            ruler_height=10.0,
+            scroll_bar_thickness=0.0,
+            track_margin_top=8.0,
+            h_scroll_offset=0.0,
+            width=lambda: 140,
+            height=lambda: 80,
+        )
+        painter_obj = self.cache_paint_module.PlaybackCachePainter(widget)
+
+        painter = QPainter(image)
+        try:
+            painter_obj.paint(painter)
+        finally:
+            painter.end()
+
+        self.assertEqual(image.pixelColor(30, 12).name(), "#0000ff")
+        self.assertEqual(image.pixelColor(90, 12).name(), "#ff0000")
+        self.assertEqual(image.pixelColor(30, 16).name(), "#ff0000")
+        self.assertEqual(image.pixelColor(30, 19).name(), "#00ff00")
 
     def test_qwidget_ctrl_mouse_zoom_starts_on_ctrl_middle_press(self):
         helper, _event_cls, _wheel_event_cls = self.make_qwidget_ctrl_zoom_helper()
