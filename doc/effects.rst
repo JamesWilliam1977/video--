@@ -55,8 +55,15 @@ How to use effect masks:
 
 1. Add an effect to a clip.
 2. Open the effect :guilabel:`Properties`.
-3. Choose a mask source (static image or animated mask video).
+3. Choose a :guilabel:`Mask: Source` (static image, animated mask video, :guilabel:`Tracker`, or
+   :guilabel:`Object Detector`).
 4. Adjust :guilabel:`Mask Mode` (for example, *Limit to Mask* or *Vary Strength*).
+
+For quick rectangular masks, add a :guilabel:`Tracker` effect to the clip, draw a box around the area you want to
+affect, then choose that tracker as the :guilabel:`Mask: Source` for another effect, such as
+:guilabel:`Blur` or :guilabel:`Pixelate`. The tracker box can be moved or resized directly in the video preview while
+the Tracker effect is selected, and those box changes can be keyframed over time. Tracker boxes also work on static
+photos, so the same workflow can limit an effect to one region of an image.
 
 High-quality animated masks can also be generated with Advanced AI workflows.
 In many cases, you can click one or more subjects and let tracking build a mask
@@ -326,7 +333,7 @@ more information on individual effects and their unique properties.
    Mask: Invert            Bool        Invert the mask source so light areas become dark and dark areas become light.
    Mask: Loop              Bool        Loop an animated mask source when the effect is longer than the source.
    Mask Mode               Enum        Controls how the mask limits or varies the strength of the effect.
-   Mask: Source            Reader      The image, image sequence, or video used as the effect's grayscale mask source.
+   Mask: Source            Reader      The image, image sequence, video, Tracker, or Object Detector used as the effect's grayscale mask source.
    Mask: Time Mode         Enum        Controls how OpenShot maps effect time to an animated mask source.
    Parent                  String      The parent object to this effect, which makes many of these keyframe values initialize to the parent value.
    Position                Float       The position of the effect on the timeline (in seconds). This property is hidden when an effect belongs to a clip.
@@ -357,8 +364,10 @@ Mask Properties
 """""""""""""""
 The :guilabel:`Mask: Source`, :guilabel:`Mask Mode`, :guilabel:`Mask: Time Mode`, :guilabel:`Mask: Loop`, and
 :guilabel:`Mask: Invert` properties limit where an effect is applied. The mask source can be a static image, image
-sequence, or video. Light areas of the mask usually apply more of the effect, while dark areas apply less; use
-:guilabel:`Mask: Invert` when you need the opposite result.
+sequence, video, :guilabel:`Tracker`, or :guilabel:`Object Detector`. Light areas of the mask usually apply more of
+the effect, while dark areas apply less; use :guilabel:`Mask: Invert` when you need the opposite result. Tracker and
+Object Detector sources use their bounding boxes as the masked region, which is useful for limiting effects such as
+blur, pixelation, color correction, or sharpening to a specific subject.
 
 Track
 """""
@@ -1532,9 +1541,19 @@ Tracker
 """""""
 The Tracker effect allows for the tracking of a specific object or area within the video frame across multiple frames.
 This can be used for motion tracking, adding effects or annotations that follow the movement of objects, or for
-stabilizing footage based on a tracked point.When tracking an object, be sure to select the entire object, which is
+stabilizing footage based on a tracked point. When tracking an object, be sure to select the entire object, which is
 visible at the start of a clip, and choose one of the following ``Tracking Type`` algorithms. The tracking algorithm
 then follows this object from frame to frame, recording its position, scale, and sometimes rotation.
+
+The tracked box can also be used as a live mask source for any other effect. For example, add a
+:guilabel:`Tracker` effect, draw a box around a face or license plate, add a :guilabel:`Blur` or
+:guilabel:`Pixelate` effect to the same clip, and set that effect's :guilabel:`Mask: Source` to the tracker. The blur
+or pixelation is then limited to the tracked box and updates in the video preview as you adjust it.
+
+Tracker boxes are not limited to moving video. You can add a Tracker effect to a static photo, use its box as the
+:guilabel:`Mask: Source` for another effect, and keyframe the box position or size if the masked region should move
+over time. Select the Tracker effect, then use the video preview transform handles to move or resize the box; OpenShot
+updates the box properties such as ``x1``, ``y1``, ``x2``, and ``y2`` so the masked effect follows the adjusted region.
 
 Tracking Type
 ^^^^^^^^^^^^^
