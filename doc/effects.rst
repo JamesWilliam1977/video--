@@ -615,7 +615,9 @@ Blur
 """"
 The Blur effect softens the image, reducing detail and texture. This can be used to create a sense of depth,
 draw attention to specific parts of the frame, or simply to apply a stylistic choice for aesthetic purposes.
-The intensity of the blur can be adjusted to achieve the desired level of softness.
+The intensity of the blur can be adjusted to achieve the desired level of softness. Use the ``left``, ``right``,
+``top``, and ``bottom`` margin properties to limit the blur to a rectangular area, such as a corner, logo, or
+static part of the screen.
 
 .. table::
    :widths: 26 80
@@ -623,9 +625,13 @@ The intensity of the blur can be adjusted to achieve the desired level of softne
    ==========================  ============
    Property Name               Description
    ==========================  ============
+   bottom                      ``(float, 0 to 1)`` The curve to adjust the bottom margin size
    horizontal_radius           ``(float, 0 to 100)`` Horizontal blur radius keyframe. The size of the horizontal blur operation in pixels.
    iterations                  ``(float, 0 to 100)`` Iterations keyframe. The # of blur iterations per pixel. 3 iterations = Gaussian.
+   left                        ``(float, 0 to 1)`` The curve to adjust the left margin size
+   right                       ``(float, 0 to 1)`` The curve to adjust the right margin size
    sigma                       ``(float, 0 to 100)`` Sigma keyframe. The amount of spread in the blur operation. Should be larger than radius.
+   top                         ``(float, 0 to 1)`` The curve to adjust the top margin size
    vertical_radius             ``(float, 0 to 100)`` Vertical blur radius keyframe. The size of the vertical blur operation in pixels.
    ==========================  ============
 
