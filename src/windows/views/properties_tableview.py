@@ -1589,6 +1589,61 @@ class PropertiesTableView(QTableView):
                             "icon": None
                         })
 
+                # Handle generated mask source effect options
+                if property_key == "mask_source_id" and not self.choices:
+                    tracked_effect_choices = []
+
+                    for clip in Clip.filter():
+                        file_id = clip.data.get("file_id")
+
+                        clip_icon = None
+                        for row in range(self.files_model.rowCount()):
+                            idx = self.files_model.index(row, 0)
+                            if idx.sibling(row, 5).data() == file_id:
+                                clip_icon = idx.data(Qt.DecorationRole)
+                                break
+
+                        effect_choices = []
+                        for effect in clip.data.get("effects", []):
+                            effect_id = effect.get("id")
+                            if not effect_id:
+                                continue
+                            if effect_id == item_id:
+                                continue
+                            if not effect.get("has_tracked_object"):
+                                continue
+
+                            effect_class = effect.get("class_name", "")
+                            effect_name = effect.get("name") or effect_class or effect.get("id")
+                            effect_icon = None
+                            if effect_class:
+                                effect_icon = QIcon(QPixmap(os.path.join(
+                                    info.PATH, "effects", "icons", "%s.png" % effect_class.lower())))
+
+                            effect_choices.append({
+                                "name": f"{_(effect_name)} ({effect_id})",
+                                "value": effect_id,
+                                "selected": False,
+                                "icon": effect_icon
+                            })
+
+                        if effect_choices:
+                            tracked_effect_choices.append({
+                                "name": clip.data["title"],
+                                "value": effect_choices,
+                                "selected": False,
+                                "icon": clip_icon
+                            })
+
+                    self.choices.append({"name": _("None"), "value": "", "selected": False, "icon": None})
+                    if tracked_effect_choices:
+                        self.choices.append({
+                            "name": _("Tracked Objects"),
+                            "value": tracked_effect_choices,
+                            "selected": False,
+                            "icon": None
+                        })
+
             # Handle reader type values
             if self.property_type == "reader" and not self.choices:
                 # Add all files
