@@ -2,6 +2,7 @@ import os
 import sys
 import types
 import unittest
+import json
 from unittest.mock import patch
 
 from qt_api import QRect, QSize
@@ -58,6 +59,7 @@ class DummySignal:
 class DummyVideoPreview:
     def __init__(self, viewport):
         self._viewport = viewport
+        self.aspect_ratio = None
 
     def centeredViewport(self, width, height):
         _ = (width, height)
@@ -68,6 +70,15 @@ class DummyVideoPreview:
 
     def height(self):
         return self._viewport.height()
+
+
+class DummyFraction:
+    def __init__(self, num, den):
+        self.num = num
+        self.den = den
+
+    def Reduce(self):
+        return None
 
 
 class DialogPreviewResizeTests(unittest.TestCase):
@@ -314,6 +325,9 @@ class DialogPreviewResizeTests(unittest.TestCase):
             def SetJson(self, payload):
                 self.payload = payload
 
+            def Open(self):
+                pass
+
             def Start(self, value):
                 self.start = value
 
@@ -332,6 +346,7 @@ class DialogPreviewResizeTests(unittest.TestCase):
             channels=2,
             channel_layout=3,
             file=types.SimpleNamespace(absolute_path=lambda: "/source.mp4", data={"start": 0.0, "duration": 5.0}),
+            videoPreview=DummyVideoPreview(QRect(0, 0, 640, 360)),
             video_length=150,
             source_reader_data={"path": "/source.mp4"},
             proxy_reader_data={"path": ""},
@@ -339,12 +354,16 @@ class DialogPreviewResizeTests(unittest.TestCase):
 
         with patch("windows.cutting.openshot.Timeline", FakeTimeline), \
              patch("windows.cutting.openshot.Clip", FakeClip), \
-             patch("windows.cutting.openshot.Fraction", side_effect=lambda num, den: (num, den)), \
+             patch("windows.cutting.openshot.Fraction", DummyFraction), \
              patch("windows.cutting.openshot.FRAME_DISPLAY_CLIP", 7):
             Cutting._build_preview_timeline(fake, {"path": "/source.mp4"}, QSize(640, 360))
 
         self.assertEqual(timeline_args[0][0:2], (3840, 2160))
         self.assertEqual(timeline_setmax, [(640, 360)])
+        self.assertEqual(json.loads(fake.clip.payload), {
+            "reader_orientation_mode": "reader",
+            "reader": {"path": "/source.mp4"},
+        })
 
     def test_cutting_build_preview_timeline_uses_project_floor_for_single_image_media(self):
         timeline_args = []
@@ -381,6 +400,9 @@ class DialogPreviewResizeTests(unittest.TestCase):
                 clip_payloads.append(payload)
                 self.payload = payload
 
+            def Open(self):
+                pass
+
             def Start(self, value):
                 self.start = value
 
@@ -402,6 +424,7 @@ class DialogPreviewResizeTests(unittest.TestCase):
                 absolute_path=lambda: "/emoji.svg",
                 data={"start": 0.0, "duration": 5.0, "media_type": "image"},
             ),
+            videoPreview=DummyVideoPreview(QRect(0, 0, 640, 360)),
             video_length=150,
             source_reader_data={"path": "/emoji.svg", "media_type": "image"},
             proxy_reader_data={"path": ""},
@@ -410,7 +433,7 @@ class DialogPreviewResizeTests(unittest.TestCase):
 
         with patch("windows.cutting.openshot.Timeline", FakeTimeline), \
              patch("windows.cutting.openshot.Clip", FakeClip), \
-             patch("windows.cutting.openshot.Fraction", side_effect=lambda num, den: (num, den)), \
+             patch("windows.cutting.openshot.Fraction", DummyFraction), \
              patch("windows.cutting.openshot.FRAME_DISPLAY_CLIP", 7), \
              patch("windows.cutting.get_app", return_value=fake_app):
             Cutting._build_preview_timeline(fake, {"path": "/emoji.svg", "media_type": "image"}, QSize(640, 360))

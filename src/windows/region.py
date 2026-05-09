@@ -257,7 +257,10 @@ class SelectRegion(QDialog):
             if self.file_path:
                 self.clip = openshot.Clip(self.file_path)
                 if not is_single_image:
-                    self.clip.SetJson(json.dumps({"reader": self.reader_data}))
+                    self.clip.SetJson(json.dumps({
+                        "reader_orientation_mode": "reader",
+                        "reader": self.reader_data,
+                    }))
             else:
                 self.clip = openshot.Clip(clip.Reader())
             self.clip.Open()
@@ -273,7 +276,10 @@ class SelectRegion(QDialog):
                     source_path = str(getattr(file, "data", {}).get("path", ""))
             self.clip = openshot.Clip(source_path)
             if self.reader_data and not is_single_image:
-                self.clip.SetJson(json.dumps({"reader": self.reader_data}))
+                self.clip.SetJson(json.dumps({
+                    "reader_orientation_mode": "reader",
+                    "reader": self.reader_data,
+                }))
             self.clip.Open()
         self.clip.Id(get_app().project.generate_id())
 

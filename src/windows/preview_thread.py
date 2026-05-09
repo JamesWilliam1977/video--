@@ -661,7 +661,7 @@ class PlayerWorker(QObject):
         """ Stop the video player and terminate the playback threads """
 
         # Stop playback
-        if self.parent.initialized:
+        if getattr(self, "player", None):
             self.player.Stop()
 
     def queue_seek(self, number, start_preroll=True):

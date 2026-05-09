@@ -426,6 +426,7 @@ class ProxyServiceTests(unittest.TestCase):
          self.assertIsNone(clip_obj.parent_timeline_calls[-1])
          self.assertEqual(writer_obj.frames, ["frame-1", "frame-2", "frame-3"])
          self.assertEqual([os.path.basename(call[1]) for call in thumbnail_calls], ["1.png", "3.png"])
+         self.assertEqual([call[4] for call in thumbnail_calls], [0.0, 0.0])
          self.assertEqual(clip_cache.max_bytes, [self.service.OPTIMIZE_CACHE_MAX_BYTES])
          self.assertEqual(reader_cache.max_bytes, [self.service.OPTIMIZE_CACHE_MAX_BYTES])
          self.assertGreaterEqual(clip_cache.clears, 2)

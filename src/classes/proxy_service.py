@@ -732,7 +732,6 @@ class ProxyService(QObject):
                      max_frame = int(source_reader.get("video_length", 0) or 0)
                      if max_frame <= 0:
                          raise RuntimeError("invalid source frame count")
-                     rotate = self._rotation_for_reader(reader)
                      prewarm_frames = self._thumbnail_prewarm_frames(
                          file_id,
                          max_frame,
@@ -747,7 +746,7 @@ class ProxyService(QObject):
                          while prewarm_index < len(prewarm_frames) and prewarm_frames[prewarm_index] < frame_number:
                              prewarm_index += 1
                          if prewarm_index < len(prewarm_frames) and prewarm_frames[prewarm_index] == frame_number:
-                             self._save_prewarmed_thumbnail(frame, file_id, frame_number, rotate)
+                             self._save_prewarmed_thumbnail(frame, file_id, frame_number, 0.0)
                              prewarm_index += 1
                          self._trim_optimize_caches(clip, reader, frame_number)
                          if frame_number == 1 or frame_number == max_frame or frame_number % max(1, min(12, max_frame // 40 or 1)) == 0:
@@ -1151,15 +1150,6 @@ class ProxyService(QObject):
              cache_object.Clear()
          except Exception:
              log.debug("Optimize Preview cache clear failed", exc_info=1)
-
-     @staticmethod
-     def _rotation_for_reader(reader):
-         try:
-             if reader.info.metadata.count("rotate"):
-                 return float(reader.info.metadata["rotate"])
-         except Exception:
-             pass
-         return 0.0
 
      def _create_optimize_timeline(self, width, height):
          width = max(2, int(width or 2))

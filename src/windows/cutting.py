@@ -313,13 +313,38 @@ class Cutting(QDialog):
             int(reader_data.get("height", 0) or 0),
         )
 
-        base_width = max(2, int(getattr(self, "width", 0) or max_size.width() or 2))
-        base_height = max(2, int(getattr(self, "height", 0) or max_size.height() or 2))
+        self.clip = openshot.Clip(self.file_path)
+        if not is_single_image:
+            self.clip.SetJson(json.dumps({
+                "reader_orientation_mode": "reader",
+                "reader": self.reader_data,
+            }))
+        self.clip.Open()
+
+        c_info = self.clip.Reader().info
+        self.width = int(getattr(c_info, "width", self.width))
+        self.height = int(getattr(c_info, "height", self.height))
+        fps_info = getattr(c_info, "fps", None)
+        self.fps_num = int(getattr(fps_info, "num", self.fps_num))
+        self.fps_den = int(getattr(fps_info, "den", self.fps_den))
+        self.fps = float(self.fps_num) / float(self.fps_den or 1)
+        self.sample_rate = int(getattr(c_info, "sample_rate", self.sample_rate))
+        self.channels = int(getattr(c_info, "channels", self.channels))
+        self.channel_layout = int(getattr(c_info, "channel_layout", self.channel_layout))
+
+        base_width = max(2, int(self.width or max_size.width() or 2))
+        base_height = max(2, int(self.height or max_size.height() or 2))
         if is_single_image:
             project = getattr(get_app(), "project", None)
             if project:
                 base_width = max(base_width, int(project.get("width") or 0))
                 base_height = max(base_height, int(project.get("height") or 0))
+
+        aspect_ratio = openshot.Fraction(base_width, base_height)
+        aspect_ratio.Reduce()
+        self.videoPreview.aspect_ratio = aspect_ratio
+        viewport_rect = self.videoPreview.centeredViewport(self.videoPreview.width(), self.videoPreview.height())
+        max_size = QSize(max(2, int(viewport_rect.width())), max(2, int(viewport_rect.height())))
 
         self.r = openshot.Timeline(
             base_width,
@@ -331,9 +356,6 @@ class Cutting(QDialog):
         self.r.info.channel_layout = self.channel_layout
         self.r.SetMaxSize(max_size.width(), max_size.height())
 
-        self.clip = openshot.Clip(self.file_path)
-        if not is_single_image:
-            self.clip.SetJson(json.dumps({"reader": self.reader_data}))
         self.clip.Start(self.file.data.get("start", 0.0))
         self.clip.End(self.file.data.get("end", self.file.data.get("duration", 0.0)))
 
@@ -779,7 +801,6 @@ class Cutting(QDialog):
 
         if getattr(self, "preview_thread", None):
             try:
-                self.initialized = False
                 self.PauseSignal.emit()
                 self.StopSignal.emit()
             except Exception:
@@ -794,11 +815,15 @@ class Cutting(QDialog):
                     pass
                 background.finished.connect(self._on_preview_stopped)
                 try:
-                    # Non-blocking stop to avoid visible UI lag when closing with ESC.
                     self.preview_parent.Stop(wait_for_thread=False)
                     return
                 except Exception:
                     pass
+
+            try:
+                self.preview_parent.Stop(wait_for_thread=True)
+            except Exception:
+                pass
 
         self._on_preview_stopped()
 
