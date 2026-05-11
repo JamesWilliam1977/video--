@@ -51,9 +51,14 @@ class PlaybackCachePainter(BasePainter):
 
     def _ruler_bottom_color(self):
         """Return the ruler color that touches the playback cache lane."""
-        ruler_theme = getattr(getattr(self.w, "theme", None), "ruler", None)
+        theme = getattr(self.w, "theme", None)
+        ruler_theme = getattr(theme, "ruler", None)
         bg = QColor(getattr(ruler_theme, "background", QColor()))
         bg2 = QColor(getattr(ruler_theme, "background2", QColor()))
+        if not bg.isValid():
+            track_theme = getattr(theme, "track", None)
+            bg = QColor(getattr(track_theme, "background", QColor()))
+            bg2 = QColor(getattr(track_theme, "background2", QColor()))
         if bg2.isValid():
             return bg2
         return bg
