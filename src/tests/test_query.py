@@ -45,7 +45,7 @@ from classes.query import Clip, File, Transition
 from classes import info
 from classes.project_data import ProjectDataStore
 from classes.updates import UpdateManager
-from qt_test_app import ensure_app_state as ensure_qt_app_state
+from tests.qt_test_app import ensure_app_state as ensure_qt_app_state
 
 info.LOG_LEVEL_CONSOLE = "ERROR"
 

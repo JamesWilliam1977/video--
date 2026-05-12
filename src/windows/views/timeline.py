@@ -181,7 +181,7 @@ log.info("Timeline backend: QWidget (%s)", getattr(ViewClass, "__name__", "unkno
 
 # ── Animation preset helpers ──────────────────────────────────────────────────
 
-from animation_presets import PRESETS as _ANIMATION_PRESETS, KEYFRAME_EASING as _KEYFRAME_EASING
+from classes.animation_presets import PRESETS as _ANIMATION_PRESETS, KEYFRAME_EASING as _KEYFRAME_EASING
 
 # JSON animation name for each MenuAnimate value
 _JSON_ANIM = {

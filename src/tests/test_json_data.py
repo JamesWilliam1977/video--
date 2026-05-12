@@ -42,7 +42,7 @@ from qt_api import QApplication
 
 from classes import info
 from classes.json_data import JsonDataStore
-from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
+from tests.qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
 
 
 class DummySettings:

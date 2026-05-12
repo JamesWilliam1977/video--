@@ -15,7 +15,7 @@ if PATH not in sys.path:
     sys.path.append(PATH)
 
 from qt_api import QApplication
-from qt_test_app import ensure_app_state, get_or_create_app
+from tests.qt_test_app import ensure_app_state, get_or_create_app
 
 
 class DummySettings:

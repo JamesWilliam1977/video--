@@ -42,7 +42,7 @@ from qt_api import QApplication
 
 from classes.project_data import ProjectDataStore
 from classes.updates import UpdateManager
-from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
+from tests.qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
 
 
 class DummySettings:

@@ -16,7 +16,7 @@ if PATH not in sys.path:
 from qt_api import QCoreApplication, Qt
 from qt_api import QApplication
 
-from qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
+from tests.qt_test_app import ensure_app_state as ensure_qt_app_state, get_or_create_app
 
 QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts, True)
 

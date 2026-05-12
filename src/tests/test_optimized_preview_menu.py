@@ -38,7 +38,7 @@ if PATH not in sys.path:
 from qt_api import QObject
 from qt_api import QAction, QApplication
 
-from qt_test_app import get_or_create_app
+from tests.qt_test_app import get_or_create_app
 from windows.views.menu import StyledContextMenu
 from windows.views.optimized_preview_menu import populate_optimized_preview_menu
 
