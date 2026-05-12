@@ -27,6 +27,7 @@
 
 import copy
 import importlib
+import math
 import os
 import sys
 import types
@@ -3874,6 +3875,60 @@ class TimelineHelperTests(unittest.TestCase):
 
         self.assertEqual(interval, 2.0)
         self.assertIn(8.0, starts)
+
+    def test_build_thumbnail_slots_entire_style_uses_pixel_stable_geometry(self):
+        pixels_per_second = 23.8
+        painter = self.make_clip_painter(
+            thumbnail_style="entire",
+            pixels_per_second=pixels_per_second,
+            project_fps=24.0,
+        )
+        clip = types.SimpleNamespace(
+            id="C1",
+            data={
+                "file_id": "F1",
+                "start": 0.0,
+                "end": 12.0,
+                "duration": 12.0,
+                "position": 0.0,
+                "reader": {"fps": {"num": 24, "den": 1}, "duration": 12.0},
+            },
+        )
+        inner = self.clip_paint_module.QRectF(
+            0.0,
+            0.0,
+            12.0 * pixels_per_second,
+            40.0,
+        )
+        segment = {
+            "offset_seconds": 0.0,
+            "duration_seconds": 12.0,
+            "clip_duration": 12.0,
+            "segment_width": 12.0 * pixels_per_second,
+            "clip_width": 12.0 * pixels_per_second,
+            "includes_start": True,
+            "includes_end": True,
+        }
+        timing = painter._segment_timing(segment, 12.0)
+
+        slots, _interval = painter._build_thumbnail_slots(clip, inner, segment, "entire", timing)
+        rects = [
+            rect
+            for _slot_start, rect in slots
+            if rect.x() >= 0.0 and rect.right() <= inner.right()
+        ]
+        spacings = [
+            round(rects[index + 1].x() - rects[index].x(), 6)
+            for index in range(len(rects) - 1)
+        ]
+
+        self.assertGreaterEqual(len(spacings), 2)
+        self.assertTrue(
+            all(
+                math.isclose(spacing, rects[0].width(), abs_tol=1e-6)
+                for spacing in spacings
+            )
+        )
 
     def test_expire_thumbnail_requests_clears_edge_slot_fallback_cache(self):
         painter = self.make_clip_painter(thumbnail_style="entire", pixels_per_second=24.0, project_fps=24.0)
