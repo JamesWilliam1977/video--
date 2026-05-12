@@ -102,6 +102,94 @@ class FilesModelImportTests(unittest.TestCase):
         self.assertEqual(file_data, {"media": "ok"})
         self.assertEqual(duration, 3.0)
 
+    def test_process_urls_preserves_original_url_order_for_import(self):
+        files_model_cls = self.files_model_module.FilesModel
+        fake_self = types.SimpleNamespace()
+        captured = {}
+
+        def record_add_files(paths, quiet=False, prevent_image_seq=False):
+            captured["paths"] = list(paths)
+            captured["quiet"] = quiet
+            captured["prevent_image_seq"] = prevent_image_seq
+
+        fake_self.add_files = record_add_files
+
+        fake_app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            window=types.SimpleNamespace(OpenProjectSignal=types.SimpleNamespace(emit=lambda *_args, **_kwargs: None)),
+        )
+
+        urls = [
+            types.SimpleNamespace(toLocalFile=lambda: "/tmp/zeta.mp4"),
+            types.SimpleNamespace(toLocalFile=lambda: "/tmp/alpha.mp4"),
+        ]
+
+        with patch.object(self.files_model_module.os.path, "exists", return_value=True), \
+                patch.object(self.files_model_module.os.path, "isdir", return_value=False), \
+                patch.object(self.files_model_module.os.path, "isfile", return_value=True), \
+                patch.object(self.files_model_module, "get_app", return_value=fake_app):
+            files_model_cls.process_urls(fake_self, urls)
+
+        self.assertEqual(captured["paths"], ["/tmp/zeta.mp4", "/tmp/alpha.mp4"])
+
+    def test_process_urls_sorts_directory_contents_in_place(self):
+        files_model_cls = self.files_model_module.FilesModel
+        fake_self = types.SimpleNamespace()
+        captured = {}
+
+        def record_add_files(paths, quiet=False, prevent_image_seq=False):
+            captured["paths"] = list(paths)
+            captured["quiet"] = quiet
+            captured["prevent_image_seq"] = prevent_image_seq
+
+        fake_self.add_files = record_add_files
+
+        fake_app = types.SimpleNamespace(
+            updates=types.SimpleNamespace(transaction_id=None),
+            window=types.SimpleNamespace(OpenProjectSignal=types.SimpleNamespace(emit=lambda *_args, **_kwargs: None)),
+        )
+
+        urls = [
+            types.SimpleNamespace(toLocalFile=lambda: "/tmp/zeta.mp4"),
+            types.SimpleNamespace(toLocalFile=lambda: "/tmp/imports"),
+            types.SimpleNamespace(toLocalFile=lambda: "/tmp/alpha.mp4"),
+        ]
+
+        def fake_isdir(path):
+            return path == "/tmp/imports"
+
+        def fake_isfile(path):
+            return not fake_isdir(path)
+
+        def fake_walk(path):
+            dirs = ["scene_b", "scene_a"]
+            yield path, dirs, ["clip_b.mp4", "clip_a.mp4"]
+            for dirname in dirs:
+                filenames = {
+                    "scene_a": ["take_4.mp4", "take_3.mp4"],
+                    "scene_b": ["take_2.mp4", "take_1.mp4"],
+                }[dirname]
+                yield os.path.join(path, dirname), [], filenames
+
+        with patch.object(self.files_model_module.os.path, "exists", return_value=True), \
+                patch.object(self.files_model_module.os.path, "isdir", side_effect=fake_isdir), \
+                patch.object(self.files_model_module.os.path, "isfile", side_effect=fake_isfile), \
+                patch.object(self.files_model_module.os, "walk", side_effect=fake_walk), \
+                patch.object(self.files_model_module, "get_app", return_value=fake_app):
+            files_model_cls.process_urls(fake_self, urls)
+
+        self.assertEqual(captured["paths"], [
+            "/tmp/zeta.mp4",
+            "/tmp/imports/clip_a.mp4",
+            "/tmp/imports/clip_b.mp4",
+            "/tmp/imports/scene_a/take_3.mp4",
+            "/tmp/imports/scene_a/take_4.mp4",
+            "/tmp/imports/scene_b/take_1.mp4",
+            "/tmp/imports/scene_b/take_2.mp4",
+            "/tmp/alpha.mp4",
+        ])
+        self.assertTrue(captured["quiet"])
+
 
 if __name__ == "__main__":
     unittest.main()
