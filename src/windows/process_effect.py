@@ -31,8 +31,6 @@ import json
 import functools
 import webbrowser
 import hashlib
-import subprocess
-import sys
 import zipfile
 
 from qt_api import Qt, pyqtSignal, QCoreApplication, QTimer
@@ -377,54 +375,21 @@ class ProcessEffect(QDialog):
         if cached:
             return cached
 
-        validator_code = """
-import sys
-
-try:
-    import cv2
-except ImportError:
-    sys.exit(2)
-
-try:
-    cv2.dnn.readNetFromONNX(sys.argv[1])
-except Exception as ex:
-    sys.stderr.write(str(ex))
-    sys.exit(1)
-"""
         try:
-            validation = subprocess.run(
-                [sys.executable, "-c", validator_code, path],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.PIPE,
-                text=True,
-                timeout=15,
-            )
-        except subprocess.TimeoutExpired:
-            result = (False, _("Unable to load model file."))
-            self.onnx_validation_cache[cache_key] = result
-            log.error("ONNX model validation timed out: %s", path)
-            return result
+            error_text = openshot.ClipProcessingJobs.ValidateONNXModel(path)
+        except Exception as ex:
+            error_text = str(ex)
 
-        if validation.returncode == 2:
+        if not error_text:
             result = (True, _("Ready"))
-        elif validation.returncode != 0:
-            error_text = (validation.stderr or "").strip()
-            if validation.returncode < 0:
-                log.error("ONNX model validation crashed with signal %s", -validation.returncode)
-            elif error_text:
-                log.error("ONNX model validation failed: %s", error_text)
-            else:
-                log.error("ONNX model validation failed with code %s", validation.returncode)
-
+        else:
+            log.error("ONNX model validation failed: %s", error_text)
+            result = (False, error_text)
             if "Unsupported data type: FLOAT16" in error_text:
                 result = (
                     False,
                     self.model_message(_("%(model)s requires an FP32 model file for this OpenCV build.")),
                 )
-            else:
-                result = (False, _("Unable to load model file."))
-        else:
-            result = (True, _("Ready"))
 
         self.onnx_validation_cache[cache_key] = result
         return result

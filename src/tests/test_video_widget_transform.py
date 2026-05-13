@@ -154,6 +154,41 @@ class VideoWidgetTransformTests(unittest.TestCase):
         finally:
             os.remove(test_path)
 
+    def test_yolo5_validation_uses_libopenshot(self):
+        process = ProcessEffect.__new__(ProcessEffect)
+        process.onnx_validation_cache = {}
+
+        with tempfile.NamedTemporaryFile(suffix=".onnx") as test_model, \
+                patch("windows.process_effect.get_app") as get_app, \
+                patch(
+                    "windows.process_effect.openshot.ClipProcessingJobs.ValidateONNXModel",
+                    return_value="",
+                ) as validate:
+            get_app.return_value = types.SimpleNamespace(_tr=lambda text: text)
+
+            valid, message = ProcessEffect.validate_onnx_model_load(process, test_model.name)
+
+        self.assertTrue(valid)
+        self.assertEqual(message, "Ready")
+        validate.assert_called_once_with(test_model.name)
+
+    def test_yolo5_validation_reports_libopenshot_error(self):
+        process = ProcessEffect.__new__(ProcessEffect)
+        process.onnx_validation_cache = {}
+
+        with tempfile.NamedTemporaryFile(suffix=".onnx") as test_model, \
+                patch("windows.process_effect.get_app") as get_app, \
+                patch(
+                    "windows.process_effect.openshot.ClipProcessingJobs.ValidateONNXModel",
+                    return_value="Failed to load ONNX model: bad graph",
+                ):
+            get_app.return_value = types.SimpleNamespace(_tr=lambda text: text)
+
+            valid, message = ProcessEffect.validate_onnx_model_load(process, test_model.name)
+
+        self.assertFalse(valid)
+        self.assertEqual(message, "Failed to load ONNX model: bad graph")
+
     def test_yolo5_ssl_context_prefers_certifi_bundle(self):
         certifi_stub = types.SimpleNamespace(where=lambda: "/tmp/cacert.pem")
         context_stub = object()

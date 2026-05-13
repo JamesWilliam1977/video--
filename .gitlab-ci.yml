@@ -17,6 +17,8 @@ init-builders:
 
 linux:
   stage: build
+  variables:
+    OPENCV_ROOT: /opt/opencv-4.5.5
   artifacts:
     expire_in: 2 weeks
     paths:
@@ -32,7 +34,7 @@ linux:
     - fi
     - unzip artifacts.zip
     - cp -r "$CI_PROJECT_DIR/build/install-x64/python/." "$CI_PROJECT_DIR"
-    - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/build/install-x64/lib:$LD_LIBRARY_PATH
+    - export LD_LIBRARY_PATH=$OPENCV_ROOT/lib:$CI_PROJECT_DIR/build/install-x64/lib:$LD_LIBRARY_PATH
     - export QT_QPA_PLATFORM=offscreen
     - python3 -m unittest discover -s src/tests -t src/tests --quiet
     - VERSION=$(python3 src/launch.py -V)
