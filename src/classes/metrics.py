@@ -29,10 +29,11 @@
 import encodings.idna
 import base64
 import platform
-import requests
+import threading
 import time
 
 from classes import info
+from classes import http_client
 from classes import language
 from classes.app import get_app
 from classes.logger import log
@@ -82,10 +83,14 @@ GA4_MID = "G-YGF4YGWPE2"
 GA4_MPS = "aG9qVmV0MllURXVPMlVoQm11RWRDQQ=="
 GA4_SESSION_ID = int(time.time())
 METRIC_QUEUE_MAX = 100
+METRIC_CONNECT_TIMEOUT = http_client.DEFAULT_CONNECT_TIMEOUT
+METRIC_READ_TIMEOUT = 3
 
 # Queue for metrics (incase things are disabled... just queue it up
 # incase the user enables metrics later
 metric_queue = []
+metric_queue_lock = threading.Lock()
+metric_worker_active = False
 
 
 def _d(value):
@@ -162,20 +167,42 @@ def track_metric_session(is_start=True):
 
 def send_metric(event):
     """Send anonymous GA4 Measurement Protocol events over HTTP."""
+    global metric_worker_active
 
     # Add to queue and *maybe* send if the user allows it
-    metric_queue.append(event)
-    if len(metric_queue) > METRIC_QUEUE_MAX:
-        metric_queue.pop(0)
+    with metric_queue_lock:
+        metric_queue.append(event)
+        if len(metric_queue) > METRIC_QUEUE_MAX:
+            metric_queue.pop(0)
 
     # Check if the user wants to send metrics and errors
-    if s.get("send_metrics"):
-        if not GA4_MID or not GA4_MPS:
-            log.warning("GA4 metrics disabled: missing GA4 configuration")
-            return
+    if not s.get("send_metrics"):
+        return
+    if not GA4_MID or not GA4_MPS:
+        log.warning("GA4 metrics disabled: missing GA4 configuration")
+        return
 
-        events_to_send = list(metric_queue)
-        metric_queue.clear()
+    with metric_queue_lock:
+        if metric_worker_active:
+            return
+        metric_worker_active = True
+
+    worker = threading.Thread(target=_send_metric_worker, name="OpenShotMetrics", daemon=True)
+    worker.start()
+
+
+def _send_metric_worker():
+    """Flush queued metrics without blocking the Qt event loop."""
+    global metric_worker_active
+
+    while True:
+        with metric_queue_lock:
+            if not metric_queue:
+                metric_worker_active = False
+                return
+
+            events_to_send = list(metric_queue)
+            metric_queue.clear()
 
         url = "%s?measurement_id=%s&api_secret=%s" % (
             GA4_ENDPOINT,
@@ -187,13 +214,29 @@ def send_metric(event):
             "events": events_to_send,
         }
 
-        # Send metric HTTP data
         try:
-            r = requests.post(url, json=payload, headers={"user-agent": user_agent}, timeout=5)
-            if r.status_code >= 300:
-                log.warning("Failed to track metric (status=%s)", r.status_code)
+            r = http_client.post_json(
+                url,
+                payload,
+                "metrics",
+                headers={"user-agent": user_agent},
+                timeout=(METRIC_CONNECT_TIMEOUT, METRIC_READ_TIMEOUT),
+            )
         except Exception:
             log.warning("Failed to track metric", exc_info=1)
+            _requeue_metrics(events_to_send)
+            return
 
-        # Wait a moment, so we don't spam the requests
+        # Wait in the worker so startup/UI rendering never blocks on telemetry.
         time.sleep(0.25)
+
+
+def _requeue_metrics(events):
+    """Put failed metrics back in the bounded queue for a later attempt."""
+    global metric_worker_active
+
+    with metric_queue_lock:
+        metric_queue[:0] = events
+        if len(metric_queue) > METRIC_QUEUE_MAX:
+            del metric_queue[:-METRIC_QUEUE_MAX]
+        metric_worker_active = False

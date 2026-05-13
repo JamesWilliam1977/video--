@@ -202,8 +202,11 @@ def main():
     # Normal startup, print module path and lauch application
     print(f"Loaded modules from: {info.PATH}")
 
+    # Configure packaged CA certificates before optional network integrations start.
+    from classes import http_client, sentry
+    http_client.configure_ssl_environment()
+
     # Initialize sentry exception tracing
-    from classes import sentry
     sentry.init_tracing()
 
     # Create any missing paths in the user's settings dir

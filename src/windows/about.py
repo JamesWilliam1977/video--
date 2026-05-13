@@ -36,7 +36,7 @@ from qt_api import Qt, pyqtSignal
 from qt_api import QIcon, QSize, QTimer
 from qt_api import QDialog, QLabel
 
-from classes import info, ui_util
+from classes import http_client, info, ui_util
 from classes.logger import log
 from classes.app import get_app
 from classes.metrics import track_metric_screen
@@ -44,7 +44,6 @@ from windows.views.credits_treeview import CreditsTreeView
 from windows.views.changelog_treeview import ChangelogTreeView
 from windows.views.menu import StyledContextMenu
 
-import requests
 import threading
 import json
 import datetime
@@ -453,18 +452,15 @@ class About(QDialog):
 
     def get_release_from_http(self):
         """Get the current version # from openshot.org"""
-        RELEASE_URL = 'http://www.openshot.org/releases/%s/'
+        RELEASE_URL = 'https://www.openshot.org/releases/%s/'
 
-        # Send metric HTTP data
         try:
-            release_details = {}
-            r = requests.get(RELEASE_URL % info.VERSION,
-                             headers={"user-agent": "openshot-qt-%s" % info.VERSION}, verify=False)
-            if r.ok:
-                log.warning("Found current release: %s" % r.json())
-                release_details = r.json()
-            else:
-                log.warning("Failed to find current release: %s" % r.status_code)
+            release_details = http_client.get_json(
+                http_client.urls_with_http_fallback(RELEASE_URL % info.VERSION),
+                "OpenShot release details",
+                headers={"user-agent": "openshot-qt-%s" % info.VERSION},
+            )
+            log.info("Found current release: %s" % release_details)
             release_git_SHA = release_details.get("sha", "")
             release_notes = release_details.get("notes", "")
 
@@ -513,8 +509,8 @@ class About(QDialog):
             # emit release found
             self.releaseFound.emit(version_text)
 
-        except Exception as Ex:
-            log.error("Failed to get version from: %s" % RELEASE_URL % info.VERSION)
+        except Exception:
+            log.warning("Failed to get OpenShot release details", exc_info=True)
 
 
     def load_credit(self):

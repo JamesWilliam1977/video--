@@ -66,6 +66,7 @@ ensure_app_state(app, DummySettings, extra_attrs={"window": types.SimpleNamespac
 from windows.video_widget import VideoWidget
 from windows.models.properties_model import ClipStandardItemModel, PropertiesModel
 from windows.process_effect import ProcessEffect
+from classes import http_client
 
 
 def clip_with(scale_mode, gravity=openshot.GRAVITY_CENTER):
@@ -150,6 +151,56 @@ class VideoWidgetTransformTests(unittest.TestCase):
                 ProcessEffect.file_sha256(None, test_path),
                 "c54dd3b21ba1b2283d358605d1c7740ce50adc337b4682f5d96c954db4390337",
             )
+        finally:
+            os.remove(test_path)
+
+    def test_yolo5_ssl_context_prefers_certifi_bundle(self):
+        certifi_stub = types.SimpleNamespace(where=lambda: "/tmp/cacert.pem")
+        context_stub = object()
+
+        with patch.dict(sys.modules, {"certifi": certifi_stub}), \
+                patch("classes.http_client.os.path.exists", return_value=True), \
+                patch("classes.http_client.ssl.create_default_context", return_value=context_stub) as create_context:
+            self.assertIs(http_client.ssl_context(), context_stub)
+
+        create_context.assert_called_once_with(cafile="/tmp/cacert.pem")
+
+    def test_download_url_to_file_streams_with_ssl_context_and_progress(self):
+        class FakeResponse:
+            headers = {"Content-Length": "11"}
+
+            def __init__(self):
+                self.chunks = [b"hello ", b"world", b""]
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_args):
+                return False
+
+            def read(self, _size):
+                return self.chunks.pop(0)
+
+        progress = []
+        context_stub = object()
+        response = FakeResponse()
+
+        with tempfile.NamedTemporaryFile(delete=False) as test_file:
+            test_path = test_file.name
+        try:
+            with patch("classes.http_client.ssl_context", return_value=context_stub), \
+                    patch("classes.http_client.urllib.request.urlopen", return_value=response) as urlopen:
+                http_client.download_file(
+                    "https://example.com/model.zip",
+                    test_path,
+                    "test model",
+                    lambda downloaded, total: progress.append((downloaded, total)),
+                )
+
+            with open(test_path, "rb") as output_file:
+                self.assertEqual(output_file.read(), b"hello world")
+            self.assertEqual(progress, [(6, 11), (11, 11)])
+            self.assertIs(urlopen.call_args.kwargs["context"], context_stub)
         finally:
             os.remove(test_path)
 

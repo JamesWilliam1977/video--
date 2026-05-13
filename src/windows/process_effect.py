@@ -33,7 +33,6 @@ import webbrowser
 import hashlib
 import subprocess
 import sys
-import urllib.request
 import zipfile
 
 from qt_api import Qt, pyqtSignal, QCoreApplication, QTimer
@@ -46,6 +45,7 @@ from qt_api import (
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
 from classes import info
+from classes import http_client
 from classes import ui_util
 from classes.app import get_app
 from classes.logger import log
@@ -538,15 +538,23 @@ except Exception as ex:
                 if os.path.exists(path):
                     os.remove(path)
 
-        def report_hook(block_count, block_size, total_size):
+        def report_progress(downloaded_size, total_size):
             if total_size > 0:
-                progress.setValue(min(100, int(block_count * block_size * 100 / total_size)))
-                QCoreApplication.processEvents()
+                progress.setValue(min(100, int(downloaded_size * 100 / total_size)))
+            else:
+                progress.setValue(0)
+            QCoreApplication.processEvents()
             if progress.wasCanceled():
                 raise DownloadCancelled()
 
         try:
-            urllib.request.urlretrieve(YOLO5_DOWNLOAD_URL, zip_download_path, report_hook)
+            http_client.download_file(
+                http_client.urls_with_http_fallback(YOLO5_DOWNLOAD_URL),
+                zip_download_path,
+                self.model_message(_("%(model)s files")),
+                report_progress,
+                cancel_exceptions=(DownloadCancelled,),
+            )
             if self.file_sha256(zip_download_path) != YOLO5_DOWNLOAD_SHA256:
                 raise ValueError(self.model_message(_("Downloaded %(model)s files are invalid.")))
 
