@@ -81,6 +81,8 @@ mac:
     -   done
     - done
     - cp -r "$CI_PROJECT_DIR/build/install-x64/python/." "$CI_PROJECT_DIR"
+    - export OPENCV_FREEZE_LIB_PATH="$CI_PROJECT_DIR/build/opencv-freeze-lib"
+    - python3 installer/fix_opencv_rpath.py "$CI_PROJECT_DIR/_openshot.so" "$OPENCV_ROOT" "$OPENCV_FREEZE_LIB_PATH"
     - export LD_LIBRARY_PATH=$CI_PROJECT_DIR/build/install-x64/lib:$LD_LIBRARY_PATH
     - export DYLD_LIBRARY_PATH=$OPENCV_ROOT/lib:$CI_PROJECT_DIR/build/install-x64/lib:$DYLD_LIBRARY_PATH
     - VERSION=$(python3 src/launch.py -V)
