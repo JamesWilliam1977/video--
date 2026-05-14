@@ -287,6 +287,22 @@ if sys.platform == "win32":
         else:
             log.warning("Missing optional Windows imageformat runtime DLL: %s", dll_path)
 
+    # libopenshot's Python extension links directly to the OpenCV runtime DLLs.
+    # Copy them from the explicit CI/toolchain OpenCV root so we don't package
+    # stale pacman DLLs when a source-built OpenCV is installed side-by-side.
+    opencv_root = os.getenv("OPENCV_ROOT")
+    if opencv_root:
+        opencv_bin_path = os.path.join(opencv_root, "bin")
+        opencv_runtime_dlls = list(find_files(opencv_bin_path, ["*.dll"]))
+        if opencv_runtime_dlls:
+            for dll_path in opencv_runtime_dlls:
+                log.info("Adding Windows OpenCV runtime DLL: %s", dll_path)
+                src_files.append((dll_path, os.path.basename(dll_path)))
+        else:
+            log.warning("No Windows OpenCV runtime DLLs found in: %s", opencv_bin_path)
+    else:
+        log.warning("OPENCV_ROOT is not set; Windows OpenCV runtime DLLs will rely on cx_Freeze detection.")
+
     # Append all source files
     src_files.append((os.path.join(PATH, "installer", "qt.conf"), "qt.conf"))
     for filename in find_files("openshot_qt", ["*"]):
@@ -470,6 +486,19 @@ elif sys.platform == "darwin":
     resvg_path = "/usr/local/lib/librsvg-2.dylib"
     if os.path.exists(resvg_path):
         external_so_files.append((resvg_path, resvg_path.replace("/usr/local/lib/", "")))
+
+    opencv_root = os.getenv("OPENCV_ROOT")
+    if opencv_root:
+        opencv_lib_path = os.path.join(opencv_root, "lib")
+        opencv_runtime_libs = list(find_files(opencv_lib_path, ["*.dylib"]))
+        if opencv_runtime_libs:
+            for dylib_path in opencv_runtime_libs:
+                log.info("Adding macOS OpenCV runtime library: %s", dylib_path)
+                external_so_files.append((dylib_path, os.path.basename(dylib_path)))
+        else:
+            log.warning("No macOS OpenCV runtime libraries found in: %s", opencv_lib_path)
+    else:
+        log.warning("OPENCV_ROOT is not set; macOS OpenCV runtime libraries will rely on cx_Freeze detection.")
 
     # Copy openshot.py Python bindings
     src_files.append((os.path.join(PATH, "installer", "launch-mac"), "launch-mac"))
