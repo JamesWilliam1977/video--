@@ -38,7 +38,7 @@ def fix_rpath(PATH):
            call(["install_name_tool", file_path, "-id", executable_path])
 
            # Loop through all dependencies of each library/executable
-           raw_output = subprocess.Popen(["oTool", "-L", file_path], stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+           raw_output = subprocess.Popen(["otool", "-L", file_path], stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
            for output in raw_output.split("\n")[1:-1]:
                if output and "is not an object file" not in output and ".o):" not in output:
                    dependency_path = output.split('\t')[1].split(' ')[0]
@@ -72,7 +72,7 @@ def print_min_versions(PATH):
            if os.path.splitext(file_path)[-1] in non_executables or basename.startswith("."):
                continue
 
-           raw_output = subprocess.Popen(["oTool", "-l", file_path], stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
+           raw_output = subprocess.Popen(["otool", "-l", file_path], stdout=subprocess.PIPE).communicate()[0].decode('utf-8')
            matches = REGEX_SDK_MATCH.findall(raw_output)
            matches2 = REGEX_SDK_MATCH2.findall(raw_output)
            min_version = None

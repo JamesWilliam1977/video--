@@ -490,6 +490,7 @@ elif sys.platform == "darwin":
     opencv_root = os.getenv("OPENCV_ROOT")
     if opencv_root:
         opencv_lib_path = os.path.join(opencv_root, "lib")
+        build_exe_options.setdefault("bin_path_includes", []).append(opencv_lib_path)
         opencv_runtime_libs = list(find_files(opencv_lib_path, ["*.dylib"]))
         if opencv_runtime_libs:
             for dylib_path in opencv_runtime_libs:

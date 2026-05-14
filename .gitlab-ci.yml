@@ -72,7 +72,7 @@ mac:
     - libraries=$( find ./build/install-x64 -type f \( -name *.dylib -or -name *.so \) | sed 's/\.\/*//' )
     - for f in $libraries; do
     -   echo "file f = $f"
-    -   dependencies=$(oTool -L $f | grep libopenshot | sed 's/ .*//' | xargs)
+    -   dependencies=$(otool -L $f | grep libopenshot | sed 's/ .*//' | xargs)
     -   for d in $dependencies; do
     -     echo "dependency d = $d"
     -     dname="$(basename $d)"
