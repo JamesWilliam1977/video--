@@ -27,6 +27,7 @@ linux:
     - build/install-x64/share/*.env
     - build/install-x64/share/*.log
     - build/build-server.log
+    - build/freeze-linux.log
   script:
     - "curl -O -J -L --header PRIVATE-TOKEN:$ACCESS_TOKEN http://gitlab.openshot.org/OpenShot/libopenshot/-/jobs/artifacts/$CI_COMMIT_REF_NAME/download?job=linux-builder"
     - if [ ! -f artifacts.zip ]; then
@@ -41,7 +42,7 @@ linux:
     - echo -e "CI_PROJECT_NAME:$CI_PROJECT_NAME\nCI_COMMIT_REF_NAME:$CI_COMMIT_REF_NAME\nCI_COMMIT_SHA:$CI_COMMIT_SHA\nCI_JOB_ID:$CI_JOB_ID\nCI_PIPELINE_ID:$CI_PIPELINE_ID\nVERSION:$VERSION" > "build/install-x64/share/$CI_PROJECT_NAME.env"
     - git log $(git describe --tags --abbrev=0 @^)..@ --oneline --pretty=format:"- %C(auto,yellow)%h%C(auto,magenta)% %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(25,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D" --date=short > "build/install-x64/share/$CI_PROJECT_NAME.log"
     - cd doc; make html SPHINXOPTS="-D ga4_measurement_id=G-W2VHM9Y8QH"; cd ..;
-    - python3 -u freeze.py build --git-branch=$CI_COMMIT_REF_NAME
+    - python3 -u freeze.py build --git-branch=$CI_COMMIT_REF_NAME > build/freeze-linux.log 2>&1 || { tail -n 200 build/freeze-linux.log; exit 1; }
     - for dir in "build/*/"; do /bin/sh ./installer/mangle-hw-libs.sh $(realpath "${dir}"); done 
     - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
   when: always
@@ -62,6 +63,7 @@ mac:
     - build/install-x64/share/*.env
     - build/install-x64/share/*.log
     - build/build-server.log
+    - build/freeze-mac.log
   script:
     - "curl -O -J -L --header PRIVATE-TOKEN:$ACCESS_TOKEN http://gitlab.openshot.org/OpenShot/libopenshot/-/jobs/artifacts/$CI_COMMIT_REF_NAME/download?job=mac-builder"
     - if [ ! -f artifacts.zip ]; then
@@ -88,7 +90,7 @@ mac:
     - VERSION=$(python3 src/launch.py -V)
     - echo -e "CI_PROJECT_NAME:$CI_PROJECT_NAME\nCI_COMMIT_REF_NAME:$CI_COMMIT_REF_NAME\nCI_COMMIT_SHA:$CI_COMMIT_SHA\nCI_JOB_ID:$CI_JOB_ID\nCI_PIPELINE_ID:$CI_PIPELINE_ID\nVERSION:$VERSION" > "build/install-x64/share/$CI_PROJECT_NAME.env"
     - git log $(git describe --tags --abbrev=0 @^)..@ --oneline --pretty=format:"- %C(auto,yellow)%h%C(auto,magenta)% %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(25,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D" --date=short > "build/install-x64/share/$CI_PROJECT_NAME.log"
-    - python3 -u freeze.py bdist_mac --git-branch=$CI_COMMIT_REF_NAME --iconfile=installer/openshot.icns --custom-info-plist=installer/Info.plist --bundle-name="OpenShot Video Editor"
+    - python3 -u freeze.py bdist_mac --git-branch=$CI_COMMIT_REF_NAME --iconfile=installer/openshot.icns --custom-info-plist=installer/Info.plist --bundle-name="OpenShot Video Editor" > build/freeze-mac.log 2>&1 || { tail -n 200 build/freeze-mac.log; exit 1; }
     - python3 -u installer/build_server.py "$SLACK_TOKEN" "$GITHUB_USER" "$GITHUB_PASS" "False" "$CI_COMMIT_REF_NAME" "$MAC_PASSWORD"
   when: always
   except:
@@ -106,6 +108,7 @@ win-x64:
     - build\install-x64\share\*.env
     - build\install-x64\share\*.log
     - build\build-server.log
+    - build\freeze-win-x64.log
   script:
     - $PSVersionTable
     - $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
@@ -126,7 +129,7 @@ win-x64:
     - New-Item -path "build/install-x64/share/" -Name "$CI_PROJECT_NAME.env" -Value "CI_PROJECT_NAME:$CI_PROJECT_NAME`nCI_COMMIT_REF_NAME:$CI_COMMIT_REF_NAME`nCI_COMMIT_SHA:$CI_COMMIT_SHA`nCI_JOB_ID:$CI_JOB_ID`nCI_PIPELINE_ID:$env:CI_PIPELINE_ID`nVERSION:$VERSION" -ItemType file -force
     - $PREV_GIT_LABEL=(git describe --tags --abbrev=0 '@^')
     - git log "$PREV_GIT_LABEL..@" --oneline --pretty=format:"- %C(auto,yellow)%h%C(auto,magenta)% %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(25,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D" --date=short > "build/install-x64/share/$CI_PROJECT_NAME.log"
-    - python3 -u freeze.py build --git-branch=$CI_COMMIT_REF_NAME
+    - python3 -u freeze.py build --git-branch=$CI_COMMIT_REF_NAME *> build\freeze-win-x64.log; if ($LASTEXITCODE -ne 0) { Get-Content build\freeze-win-x64.log -Tail 200; exit $LASTEXITCODE }
     - $EXE_PATH = "$CI_PROJECT_DIR\build\exe.mingw-" + $PY_ABI + "\openshot-qt.exe"
     - $manifestPath = "installer/windows.manifest"
     - (Get-Content $manifestPath) -creplace "ARCHITECTURE", "amd64" | Set-Content $manifestPath
@@ -149,6 +152,7 @@ win-x86:
     - build\install-x86\share\*.env
     - build\install-x86\share\*.log
     - build\build-server.log
+    - build\freeze-win-x86.log
   script:
     - $PSVersionTable
     - $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
@@ -169,7 +173,7 @@ win-x86:
     - New-Item -path "build/install-x86/share/" -Name "$CI_PROJECT_NAME.env" -Value "CI_PROJECT_NAME:$CI_PROJECT_NAME`nCI_COMMIT_REF_NAME:$CI_COMMIT_REF_NAME`nCI_COMMIT_SHA:$CI_COMMIT_SHA`nCI_JOB_ID:$CI_JOB_ID`nCI_PIPELINE_ID:$env:CI_PIPELINE_ID`nVERSION:$VERSION" -ItemType file -force
     - $PREV_GIT_LABEL=(git describe --tags --abbrev=0 '@^')
     - git log "$PREV_GIT_LABEL..@" --oneline --pretty=format:"- %C(auto,yellow)%h%C(auto,magenta)% %C(auto,blue)%>(12,trunc)%ad %C(auto,green)%<(25,trunc)%aN%C(auto,reset)%s%C(auto,red)% gD% D" --date=short > "build/install-x86/share/$CI_PROJECT_NAME.log"
-    - python3 -u freeze.py build --git-branch=$CI_COMMIT_REF_NAME
+    - python3 -u freeze.py build --git-branch=$CI_COMMIT_REF_NAME *> build\freeze-win-x86.log; if ($LASTEXITCODE -ne 0) { Get-Content build\freeze-win-x86.log -Tail 200; exit $LASTEXITCODE }
     - $EXE_PATH = "$CI_PROJECT_DIR\build\exe.mingw-" + $PY_ABI + "\openshot-qt.exe"
     - editbin /LARGEADDRESSAWARE "$EXE_PATH"
     - $manifestPath = "installer/windows.manifest"
