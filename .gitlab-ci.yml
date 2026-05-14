@@ -18,7 +18,7 @@ init-builders:
 linux:
   stage: build
   variables:
-    OPENCV_ROOT: /opt/opencv-4.5.5
+    OPENCV_ROOT: /opt/opencv-4.13.0
   artifacts:
     expire_in: 2 weeks
     paths:
@@ -110,8 +110,9 @@ win-x64:
     - Expand-Archive -Path artifacts.zip -DestinationPath .
     - Copy-Item "$CI_PROJECT_DIR/build/install-x64/python/*" -Destination "$CI_PROJECT_DIR"
     - $env:MSYSTEM = "MINGW64"
+    - $env:OPENCV_ROOT = "C:\msys64\mingw64\opencv-4.13.0"
     - $originalPath = $env:Path
-    - $NewPath = "$CI_PROJECT_DIR\build\install-x64\bin;$CI_PROJECT_DIR\build\install-x64\python;C:\msys64\mingw64\bin;"
+    - $NewPath = "$env:OPENCV_ROOT\bin;$CI_PROJECT_DIR\build\install-x64\bin;$CI_PROJECT_DIR\build\install-x64\python;C:\msys64\mingw64\bin;"
     - $env:Path = $NewPath + $env:Path
     - $PY_ABI = (python3 -c "import sysconfig; print(sysconfig.get_config_var('py_version_short'))")
     - $NewPath = $NewPath + "C:\msys64\mingw64\lib\python" + $PY_ABI + "\;C:\msys64\mingw64\lib\python" + $PY_ABI + "\site-packages\;C:\msys64\mingw64\lib\python" + $PY_ABI + "\site-packages\PyQt5;";
@@ -152,8 +153,9 @@ win-x86:
     - Expand-Archive -Path artifacts.zip -DestinationPath .
     - Copy-Item "$CI_PROJECT_DIR/build/install-x86/python/*" -Destination "$CI_PROJECT_DIR"
     - $env:MSYSTEM = "MINGW32"
+    - $env:OPENCV_ROOT = "C:\msys64\mingw32\opencv-4.13.0"
     - $originalPath = $env:Path
-    - $NewPath = "$CI_PROJECT_DIR\build\install-x86\bin;$CI_PROJECT_DIR\build\install-x86\python;C:\msys64\mingw32\bin;"
+    - $NewPath = "$env:OPENCV_ROOT\bin;$CI_PROJECT_DIR\build\install-x86\bin;$CI_PROJECT_DIR\build\install-x86\python;C:\msys64\mingw32\bin;"
     - $env:Path = $NewPath + $env:Path
     - $PY_ABI = (python3 -c "import sysconfig; print(sysconfig.get_config_var('py_version_short'))")
     - $NewPath = $NewPath + "C:\msys64\mingw32\lib\python" + $PY_ABI + "\;C:\msys64\mingw32\lib\python" + $PY_ABI + "\site-packages\;C:\msys64\mingw32\lib\python " + $PY_ABI+ "\site-packages\PyQt5;";
