@@ -120,8 +120,9 @@ win-x64:
     - Copy-Item "$CI_PROJECT_DIR/build/install-x64/python/*" -Destination "$CI_PROJECT_DIR"
     - $env:MSYSTEM = "MINGW64"
     - $env:OPENCV_ROOT = "C:\msys64\mingw64\opencv-4.13.0"
+    - $env:OPENCV_DLL_DIR = "$env:OPENCV_ROOT\x64\mingw\bin"
     - $originalPath = $env:Path
-    - $NewPath = "$env:OPENCV_ROOT\bin;$CI_PROJECT_DIR\build\install-x64\bin;$CI_PROJECT_DIR\build\install-x64\python;C:\msys64\mingw64\bin;"
+    - $NewPath = "$env:OPENCV_DLL_DIR;$CI_PROJECT_DIR\build\install-x64\bin;$CI_PROJECT_DIR\build\install-x64\python;C:\msys64\mingw64\bin;"
     - $env:Path = $NewPath + $env:Path
     - $PY_ABI = (python3 -c "import sysconfig; print(sysconfig.get_config_var('py_version_short'))")
     - $NewPath = $NewPath + "C:\msys64\mingw64\lib\python" + $PY_ABI + "\;C:\msys64\mingw64\lib\python" + $PY_ABI + "\site-packages\;C:\msys64\mingw64\lib\python" + $PY_ABI + "\site-packages\PyQt5;";
@@ -164,8 +165,9 @@ win-x86:
     - Copy-Item "$CI_PROJECT_DIR/build/install-x86/python/*" -Destination "$CI_PROJECT_DIR"
     - $env:MSYSTEM = "MINGW32"
     - $env:OPENCV_ROOT = "C:\msys64\mingw32\opencv-4.13.0"
+    - $env:OPENCV_DLL_DIR = "$env:OPENCV_ROOT\x64\mingw\bin"
     - $originalPath = $env:Path
-    - $NewPath = "$env:OPENCV_ROOT\bin;$CI_PROJECT_DIR\build\install-x86\bin;$CI_PROJECT_DIR\build\install-x86\python;C:\msys64\mingw32\bin;"
+    - $NewPath = "$env:OPENCV_DLL_DIR;$CI_PROJECT_DIR\build\install-x86\bin;$CI_PROJECT_DIR\build\install-x86\python;C:\msys64\mingw32\bin;"
     - $env:Path = $NewPath + $env:Path
     - $PY_ABI = (python3 -c "import sysconfig; print(sysconfig.get_config_var('py_version_short'))")
     - $NewPath = $NewPath + "C:\msys64\mingw32\lib\python" + $PY_ABI + "\;C:\msys64\mingw32\lib\python" + $PY_ABI + "\site-packages\;C:\msys64\mingw32\lib\python" + $PY_ABI+ "\site-packages\PyQt5;";

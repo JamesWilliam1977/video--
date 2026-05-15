@@ -296,18 +296,33 @@ if sys.platform == "win32":
             log.warning("Missing optional Windows imageformat runtime DLL: %s", dll_path)
 
     # libopenshot's Python extension links directly to the OpenCV runtime DLLs.
-    # Copy them from the explicit CI/toolchain OpenCV root so we don't package
+    # Copy them from the explicit CI/toolchain OpenCV path so we don't package
     # stale pacman DLLs when a source-built OpenCV is installed side-by-side.
     opencv_root = os.getenv("OPENCV_ROOT")
-    if opencv_root:
-        opencv_bin_path = os.path.join(opencv_root, "bin")
-        opencv_runtime_dlls = list(find_files(opencv_bin_path, ["*.dll"]))
+    opencv_dll_dir = os.getenv("OPENCV_DLL_DIR")
+    if opencv_root or opencv_dll_dir:
+        opencv_bin_paths = []
+        if opencv_dll_dir:
+            opencv_bin_paths.append(opencv_dll_dir)
+        if opencv_root:
+            opencv_bin_paths.extend([
+                os.path.join(opencv_root, "bin"),
+                os.path.join(opencv_root, "x64", "mingw", "bin"),
+            ])
+        opencv_runtime_dlls = []
+        for opencv_bin_path in opencv_bin_paths:
+            opencv_runtime_dlls.extend(find_files(opencv_bin_path, ["*opencv*.dll"]))
+        if not opencv_runtime_dlls:
+            log.warning("No Windows OpenCV runtime DLLs found in known bin paths: %s", opencv_bin_paths)
+            if opencv_root:
+                log.info("Searching Windows OpenCV prefix for runtime DLLs: %s", opencv_root)
+                opencv_runtime_dlls = list(find_files(opencv_root, ["*opencv*.dll"]))
         if opencv_runtime_dlls:
-            for dll_path in opencv_runtime_dlls:
+            for dll_path in sorted(set(opencv_runtime_dlls)):
                 log.info("Adding Windows OpenCV runtime DLL: %s", dll_path)
                 src_files.append((dll_path, os.path.basename(dll_path)))
         else:
-            log.warning("No Windows OpenCV runtime DLLs found in: %s", opencv_bin_path)
+            log.warning("No Windows OpenCV runtime DLLs found for OpenCV root: %s", opencv_root)
     else:
         log.warning("OPENCV_ROOT is not set; Windows OpenCV runtime DLLs will rely on cx_Freeze detection.")
 
