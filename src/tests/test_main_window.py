@@ -516,25 +516,32 @@ class MainWindowTests(unittest.TestCase):
         self.app.window = fake_window
         self.app.setOverrideCursor = lambda cursor: None
         self.app.restoreOverrideCursor = lambda: restore_cursor.append(True)
+        settings = openshot.Settings.Instance()
+        previous_caching = settings.ENABLE_PLAYBACK_CACHING
+        settings.ENABLE_PLAYBACK_CACHING = True
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            missing_path = os.path.join(tmpdir, "missing.osp")
-            with patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None):
-                self.main_window_module.MainWindow.open_project(
-                    fake_window,
-                    missing_path,
-                    clear_thumbnails=True,
-                )
+        try:
+            with tempfile.TemporaryDirectory() as tmpdir:
+                missing_path = os.path.join(tmpdir, "missing.osp")
+                with patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None):
+                    self.main_window_module.MainWindow.open_project(
+                        fake_window,
+                        missing_path,
+                        clear_thumbnails=True,
+                    )
 
-            self.assertEqual(removed, [missing_path])
-            self.assertEqual(loaded_recent, [True])
-            self.assertTrue(status_messages)
-            self.assertIn("missing", status_messages[0][0].lower())
-            self.assertIn(("seek", 1), move_calls)
-            self.assertIn(("playhead", 1), move_calls)
-            self.assertEqual(speed_calls.calls, [(0,)])
-            self.assertEqual(pause_calls.calls, [()])
-            self.assertEqual(restore_cursor, [True])
+                self.assertEqual(removed, [missing_path])
+                self.assertEqual(loaded_recent, [True])
+                self.assertTrue(status_messages)
+                self.assertIn("missing", status_messages[0][0].lower())
+                self.assertIn(("seek", 1), move_calls)
+                self.assertIn(("playhead", 1), move_calls)
+                self.assertEqual(speed_calls.calls, [(0,)])
+                self.assertEqual(pause_calls.calls, [()])
+                self.assertEqual(restore_cursor, [True])
+                self.assertTrue(settings.ENABLE_PLAYBACK_CACHING)
+        finally:
+            settings.ENABLE_PLAYBACK_CACHING = previous_caching
 
     def test_save_recovery_creates_zip_and_calls_retention(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -800,32 +807,50 @@ class MainWindowTests(unittest.TestCase):
         self.app.window = fake_window
         self.app.setOverrideCursor = lambda cursor: None
         self.app.restoreOverrideCursor = lambda: recent_calls.append("restore")
+        scheduled = []
+        settings = openshot.Settings.Instance()
+        previous_caching = settings.ENABLE_PLAYBACK_CACHING
+        settings.ENABLE_PLAYBACK_CACHING = True
 
-        with tempfile.TemporaryDirectory() as tmpdir:
-            project_path = os.path.join(tmpdir, "existing.osp")
-            with ExitStack() as stack:
-                stack.enter_context(
-                    patch.object(self.main_window_module.os.path, "exists", return_value=True)
-                )
-                stack.enter_context(
-                    patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None)
-                )
-                self.main_window_module.MainWindow.open_project(
-                    fake_window,
-                    project_path,
-                    clear_thumbnails=True,
-                )
+        try:
+            with tempfile.TemporaryDirectory() as tmpdir:
+                project_path = os.path.join(tmpdir, "existing.osp")
+                with ExitStack() as stack:
+                    stack.enter_context(
+                        patch.object(self.main_window_module.os.path, "exists", return_value=True)
+                    )
+                    stack.enter_context(
+                        patch.object(self.main_window_module.QCoreApplication, "processEvents", lambda: None)
+                    )
+                    stack.enter_context(
+                        patch.object(
+                            self.main_window_module.QTimer,
+                            "singleShot",
+                            side_effect=lambda delay, callback: scheduled.append((delay, callback)),
+                        )
+                    )
+                    self.main_window_module.MainWindow.open_project(
+                        fake_window,
+                        project_path,
+                        clear_thumbnails=True,
+                    )
 
-            self.assertEqual(load_calls, [(project_path, True)])
-            self.assertEqual(history_calls, [self.app.project])
-            self.assertEqual(clear_temp, [True])
-            self.assertEqual(refresh_files.calls, [()])
-            self.assertEqual(refresh_frame.calls, [()])
-            self.assertEqual(max_size.calls, [("preview-size",)])
-            self.assertIn(("seek", 1), move_calls)
-            self.assertIn(("playhead", 1), move_calls)
-            self.assertIn("recent", recent_calls)
-            self.assertIn("restore", recent_calls)
+                self.assertEqual(load_calls, [(project_path, True)])
+                self.assertEqual(history_calls, [self.app.project])
+                self.assertEqual(clear_temp, [True])
+                self.assertEqual(refresh_files.calls, [()])
+                self.assertEqual(refresh_frame.calls, [])
+                self.assertEqual(max_size.calls, [("preview-size",)])
+                self.assertIn(("seek", 1), move_calls)
+                self.assertFalse(settings.ENABLE_PLAYBACK_CACHING)
+                self.assertEqual([delay for delay, _callback in scheduled], [0])
+                scheduled[0][1]()
+                self.assertEqual(refresh_frame.calls, [()])
+        finally:
+            settings.ENABLE_PLAYBACK_CACHING = previous_caching
+        self.assertIn(("playhead", 1), move_calls)
+        self.assertIn("recent", recent_calls)
+        self.assertIn("restore", recent_calls)
 
     def test_action_remove_clip_skips_locked_tracks(self):
         deleted = []
