@@ -65,7 +65,14 @@ ensure_app_state(app, DummySettings, extra_attrs={"window": types.SimpleNamespac
 
 from windows.video_widget import VideoWidget
 from windows.models.properties_model import ClipStandardItemModel, PropertiesModel
-from windows.process_effect import ProcessEffect
+from windows.process_effect import (
+    ProcessEffect,
+    load_yolo_models_manifest,
+    yolo_classes_path,
+    yolo_download_button_label,
+    yolo_model_label,
+    yolo_model_path,
+)
 from classes import http_client
 from classes.effect_init import effect_options
 
@@ -154,6 +161,17 @@ class VideoWidgetTransformTests(unittest.TestCase):
             )
         finally:
             os.remove(test_path)
+
+    def test_yolo_manifest_has_packaged_recommended_default(self):
+        manifest = load_yolo_models_manifest()
+        recommended = [model for model in manifest["models"] if model.get("recommended")]
+
+        self.assertEqual(len(recommended), 1)
+        self.assertEqual(recommended[0]["id"], "yolo26n-seg")
+        self.assertEqual(yolo_model_label(recommended[0]), "YOLO26: Nano (Recommended, fastest)")
+        self.assertEqual(yolo_download_button_label(recommended[0]), "Download (10 MB)")
+        self.assertTrue(yolo_model_path(recommended[0]).endswith("yolo26n-seg/model.onnx"))
+        self.assertTrue(yolo_classes_path(recommended[0]).endswith("yolo26n-seg/classes.names"))
 
     def test_yolo5_validation_uses_libopenshot(self):
         process = ProcessEffect.__new__(ProcessEffect)

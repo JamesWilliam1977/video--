@@ -28,7 +28,7 @@
 from classes.info import YOLO_PATH
 import os
 
-YOLO5_PATH = os.path.join(YOLO_PATH, "Yolo5")
+YOLO_DEFAULT_PATH = os.path.join(YOLO_PATH, "yolo26n-seg")
 # Not all Effects support pre-processing, so for now, this is a hard-coded
 # solution to providing the pre-processing params needed for these special effects.
 
@@ -154,13 +154,13 @@ effect_options = {
     "ObjectDetection": [
         {
             "title": "Model Files",
-            "type": "download-yolo5",
-            "setting": "download-yolo5",
+            "type": "download-yolo",
+            "setting": "download-yolo",
             "model-setting": "model",
             "classes-setting": "classes_file"
         },
         {
-            "value": os.path.join(YOLO5_PATH, "yolov5s.onnx"),
+            "value": os.path.join(YOLO_DEFAULT_PATH, "model.onnx"),
             "title": "Model File",
             "type": "file",
             "setting": "model",
@@ -169,7 +169,7 @@ effect_options = {
             "required": True
         },
         {
-            "value": os.path.join(YOLO5_PATH, "obj.names"),
+            "value": os.path.join(YOLO_DEFAULT_PATH, "classes.names"),
             "title": "Class Names",
             "type": "file",
             "setting": "classes_file",

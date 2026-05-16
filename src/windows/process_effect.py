@@ -32,6 +32,7 @@ import functools
 import webbrowser
 import hashlib
 import zipfile
+from urllib.parse import urljoin
 
 from qt_api import Qt, pyqtSignal, QCoreApplication, QTimer
 from qt_api import QPainter
@@ -49,18 +50,58 @@ from classes.app import get_app
 from classes.logger import log
 from classes.metrics import *
 
-YOLO5_DOWNLOAD_URL = "https://cdn.openshot.org/static/files/yolov5/yolov5s-openshot.zip"
-YOLO5_DOWNLOAD_SHA256 = "cd401831d6a700cb827b4470ec0a505fb8802a85075fcd55c279cb4b73e02c69"
-YOLO5_DIR = os.path.join(info.YOLO_PATH, "Yolo5")
-YOLO5_MODEL_PATH = os.path.join(YOLO5_DIR, "yolov5s.onnx")
-YOLO5_CLASSES_PATH = os.path.join(YOLO5_DIR, "obj.names")
-YOLO5_MODEL_SHA256 = "ffcac948408e3731ba6b0059e125f3d759672830771b72d5081fb6244ff47e5d"
-YOLO5_CLASSES_SHA256 = "bd17f1ee35d5f3c862a4894605855abbb9dda4b0621fdb0ac4c2c8c7bb7e730a"
-YOLO5_MODEL_NAME = "YOLOv5"
+YOLO_MODELS_PATH = os.path.join(info.RESOURCES_PATH, "yolo-models.json")
+YOLO_MODEL_FILENAME = "model.onnx"
+YOLO_CLASSES_FILENAME = "classes.names"
+YOLO_INSTALL_METADATA = "install.json"
+YOLO_FALLBACK_MODEL_NAME = "YOLO"
 
 
 class DownloadCancelled(Exception):
     """Raised when a user cancels an in-progress download."""
+
+
+def load_yolo_models_manifest():
+    """Load the packaged allow-list of YOLO model downloads."""
+    with open(YOLO_MODELS_PATH, "r", encoding="utf-8") as manifest_file:
+        manifest = json.load(manifest_file)
+    manifest.setdefault("models", [])
+    return manifest
+
+
+def yolo_model_dir(model):
+    """Return the install directory for a packaged YOLO model entry."""
+    model_id = model.get("id", "")
+    if not model_id or os.path.basename(model_id) != model_id:
+        raise ValueError("Invalid YOLO model id: %s" % model_id)
+    return os.path.join(info.YOLO_PATH, model_id)
+
+
+def yolo_model_path(model):
+    """Return the installed ONNX path for a packaged YOLO model entry."""
+    return os.path.join(yolo_model_dir(model), YOLO_MODEL_FILENAME)
+
+
+def yolo_classes_path(model):
+    """Return the installed class names path for a packaged YOLO model entry."""
+    return os.path.join(yolo_model_dir(model), YOLO_CLASSES_FILENAME)
+
+
+def yolo_model_label(model):
+    """Return the dropdown label for a packaged YOLO model entry."""
+    label = model.get("name") or model.get("id") or YOLO_FALLBACK_MODEL_NAME
+    description = model.get("description")
+    if description:
+        label = "%s (%s)" % (label, description)
+    return label
+
+
+def yolo_download_button_label(model=None):
+    """Return the download button label for a packaged YOLO model entry."""
+    _ = get_app()._tr
+    if not model or not model.get("bytes"):
+        return _("Download")
+    return _("Download (%s MB)") % max(1, int(round(model.get("bytes") / 1000000.0)))
 
 
 class RegionButton(QPushButton):
@@ -103,6 +144,8 @@ class ProcessEffect(QDialog):
         self.context = {}
         self.file_fields = {}
         self.onnx_validation_cache = {}
+        self.yolo_models_manifest = None
+        self.yolo_models = []
         self.processing_effect = False
         self.file_validation_timer = QTimer(self)
         self.file_validation_timer.setInterval(300)
@@ -154,10 +197,38 @@ class ProcessEffect(QDialog):
                 label.setTextInteractionFlags(Qt.TextBrowserInteraction)
                 label.linkActivated.connect(functools.partial(self.link_activated, widget, param))
 
-            if param["type"] == "download-yolo5":
-                widget = QPushButton(_("Download"))
-                widget.setToolTip(self.model_message(_("Download %(model)s model files.")))
-                widget.clicked.connect(functools.partial(self.download_yolo5_clicked, widget, param))
+            if param["type"] in ("download-yolo", "download-yolo5"):
+                self.load_yolo_models()
+                widget = QWidget()
+                widget_layout = QHBoxLayout(widget)
+                widget_layout.setContentsMargins(0, 0, 0, 0)
+                widget_layout.setSpacing(6)
+
+                model_combo = QComboBox()
+                selected_index = 0
+                for index, model in enumerate(self.yolo_models):
+                    model_combo.addItem(_(yolo_model_label(model)), model.get("id"))
+                    if model.get("recommended"):
+                        selected_index = index
+                selected_model = self.yolo_model_by_id(
+                    self.yolo_models[selected_index].get("id")
+                ) if self.yolo_models else None
+
+                download_button = QPushButton(yolo_download_button_label(selected_model))
+                download_button.setToolTip(_("Download selected YOLO model files."))
+                download_button.clicked.connect(
+                    functools.partial(self.download_yolo_clicked, download_button, model_combo, param)
+                )
+                if self.yolo_models:
+                    model_combo.setCurrentIndex(selected_index)
+                    model_combo.currentIndexChanged.connect(
+                        functools.partial(self.yolo_model_index_changed, model_combo, download_button, param)
+                    )
+
+                model_combo.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+                download_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+                widget_layout.addWidget(model_combo, 1, Qt.AlignVCenter)
+                widget_layout.addWidget(download_button, 0, Qt.AlignVCenter)
 
             if param["type"] == "spinner":
                 # create QDoubleSpinBox
@@ -306,9 +377,34 @@ class ProcessEffect(QDialog):
         """Link activated"""
         webbrowser.open(value, new=1)
 
-    def model_message(self, message):
+    def model_message(self, message, model=None):
         """Format a translated message with the object detection model name."""
-        return message % {"model": YOLO5_MODEL_NAME}
+        model_name = (model or {}).get("name") or YOLO_FALLBACK_MODEL_NAME
+        return message % {"model": model_name}
+
+    def load_yolo_models(self):
+        """Load packaged YOLO model metadata for the Object Detection initializer."""
+        if self.yolo_models_manifest is None:
+            self.yolo_models_manifest = load_yolo_models_manifest()
+            self.yolo_models = self.yolo_models_manifest.get("models", [])
+
+    def yolo_model_by_id(self, model_id):
+        """Return a YOLO model manifest entry by id."""
+        for model in self.yolo_models:
+            if model.get("id") == model_id:
+                return model
+        return self.yolo_models[0] if self.yolo_models else None
+
+    def selected_yolo_model(self, widget):
+        """Return the model selected in the YOLO download dropdown."""
+        return self.yolo_model_by_id(widget.itemData(widget.currentIndex()))
+
+    def yolo_model_index_changed(self, widget, download_button, param, index):
+        """YOLO model selection changed."""
+        model = self.yolo_model_by_id(widget.itemData(index))
+        if model:
+            download_button.setText(yolo_download_button_label(model))
+            self.set_yolo_file_fields(param, model)
 
     def spinner_value_changed(self, widget, param, value):
         """Spinner value change callback"""
@@ -454,59 +550,115 @@ class ProcessEffect(QDialog):
                 digest.update(chunk)
         return digest.hexdigest()
 
-    def yolo5_default_files_match(self):
-        """Return whether the default YOLOv5 files already match expected checksums."""
+    def yolo_installed_files_match(self, model):
+        """Return whether an installed YOLO model matches recorded metadata."""
+        model_path = yolo_model_path(model)
+        classes_path = yolo_classes_path(model)
+        metadata_path = os.path.join(yolo_model_dir(model), YOLO_INSTALL_METADATA)
         try:
+            with open(metadata_path, "r", encoding="utf-8") as metadata_file:
+                metadata = json.load(metadata_file)
             return (
-                os.path.isfile(YOLO5_MODEL_PATH)
-                and os.path.isfile(YOLO5_CLASSES_PATH)
-                and self.file_sha256(YOLO5_MODEL_PATH) == YOLO5_MODEL_SHA256
-                and self.file_sha256(YOLO5_CLASSES_PATH) == YOLO5_CLASSES_SHA256
+                metadata.get("id") == model.get("id")
+                and metadata.get("asset_sha256") == model.get("sha256")
+                and os.path.isfile(model_path)
+                and os.path.isfile(classes_path)
+                and metadata.get("model_sha256") == self.file_sha256(model_path)
+                and metadata.get("classes_sha256") == self.file_sha256(classes_path)
             )
-        except OSError:
+        except (OSError, ValueError):
             return False
 
-    def set_yolo5_default_file_fields(self, param):
-        """Point the YOLOv5 file inputs at the default downloaded files."""
+    def set_yolo_file_fields(self, param, model):
+        """Point the YOLO file inputs at the selected model files."""
         for setting, path in (
-            (param.get("model-setting"), YOLO5_MODEL_PATH),
-            (param.get("classes-setting"), YOLO5_CLASSES_PATH),
+            (param.get("model-setting"), yolo_model_path(model)),
+            (param.get("classes-setting"), yolo_classes_path(model)),
         ):
             field = self.file_fields.get(setting)
             if field:
                 field["path"].setText(path)
 
-    def download_yolo5_clicked(self, widget, param):
-        """Download the default YOLOv5 model files."""
-        _ = get_app()._tr
-        os.makedirs(YOLO5_DIR, exist_ok=True)
+    def yolo_model_download_url(self, model):
+        """Return the download URL for a YOLO model manifest entry."""
+        base_url = self.yolo_models_manifest.get("base_url", "")
+        return urljoin("%s/" % base_url.rstrip("/"), model.get("asset", ""))
 
-        if self.yolo5_default_files_match():
-            self.set_yolo5_default_file_fields(param)
+    def extract_yolo_zip_member(self, yolo_zip, suffixes, destination_path):
+        """Extract the first matching file from a verified YOLO model archive."""
+        if isinstance(suffixes, str):
+            suffixes = (suffixes,)
+        for member in yolo_zip.infolist():
+            if member.is_dir():
+                continue
+            if os.path.basename(member.filename).lower().endswith(tuple(suffixes)):
+                with yolo_zip.open(member) as source_file, open(destination_path, "wb") as output_file:
+                    output_file.write(source_file.read())
+                return
+        raise ValueError("Downloaded YOLO files are invalid.")
+
+    def write_yolo_install_metadata(self, model, model_path, classes_path):
+        """Record extracted-file hashes for future already-downloaded checks."""
+        metadata_path = os.path.join(yolo_model_dir(model), YOLO_INSTALL_METADATA)
+        metadata_download_path = "{}.download".format(metadata_path)
+        with open(metadata_download_path, "w", encoding="utf-8") as metadata_file:
+            json.dump(
+                {
+                    "id": model.get("id"),
+                    "asset": model.get("asset"),
+                    "asset_sha256": model.get("sha256"),
+                    "model": YOLO_MODEL_FILENAME,
+                    "model_sha256": self.file_sha256(model_path),
+                    "classes": YOLO_CLASSES_FILENAME,
+                    "classes_sha256": self.file_sha256(classes_path),
+                },
+                metadata_file,
+                indent=2,
+                sort_keys=True,
+            )
+            metadata_file.write("\n")
+        os.replace(metadata_download_path, metadata_path)
+
+    def download_yolo_clicked(self, widget, combo_widget, param):
+        """Download the selected YOLO model files."""
+        _ = get_app()._tr
+        model = self.selected_yolo_model(combo_widget)
+        if not model:
+            QMessageBox.warning(self, _("Download Failed"), _("No YOLO models are available."))
+            return
+
+        model_dir = yolo_model_dir(model)
+        model_path = yolo_model_path(model)
+        classes_path = yolo_classes_path(model)
+        os.makedirs(model_dir, exist_ok=True)
+
+        if self.yolo_installed_files_match(model):
+            self.set_yolo_file_fields(param, model)
             self.update_file_validation()
             QMessageBox.information(
                 self,
-                self.model_message(_("Download %(model)s Files")),
-                self.model_message(_("The %(model)s files are already downloaded.")),
+                self.model_message(_("Download %(model)s Files"), model),
+                self.model_message(_("The %(model)s files are already downloaded."), model),
             )
             return
 
         progress = QProgressDialog(
-            self.model_message(_("Downloading %(model)s files...")),
+            self.model_message(_("Downloading %(model)s files..."), model),
             _("Cancel"),
             0,
             100,
             self,
         )
-        progress.setWindowTitle(self.model_message(_("Download %(model)s Files")))
+        progress.setWindowTitle(self.model_message(_("Download %(model)s Files"), model))
         progress.setWindowModality(Qt.WindowModal)
         progress.setMinimumDuration(0)
-        zip_download_path = os.path.join(YOLO5_DIR, "yolov5s-openshot.zip.download")
-        model_download_path = "{}.download".format(YOLO5_MODEL_PATH)
-        classes_download_path = "{}.download".format(YOLO5_CLASSES_PATH)
+        zip_download_path = os.path.join(model_dir, "%s.download" % model.get("asset", "model.zip"))
+        model_download_path = "{}.download".format(model_path)
+        classes_download_path = "{}.download".format(classes_path)
+        metadata_download_path = os.path.join(model_dir, "%s.download" % YOLO_INSTALL_METADATA)
 
         def remove_partial_downloads():
-            for path in (zip_download_path, model_download_path, classes_download_path):
+            for path in (zip_download_path, model_download_path, classes_download_path, metadata_download_path):
                 if os.path.exists(path):
                     os.remove(path)
 
@@ -521,39 +673,35 @@ class ProcessEffect(QDialog):
 
         try:
             http_client.download_file(
-                http_client.urls_with_http_fallback(YOLO5_DOWNLOAD_URL),
+                self.yolo_model_download_url(model),
                 zip_download_path,
-                self.model_message(_("%(model)s files")),
+                self.model_message(_("%(model)s files"), model),
                 report_progress,
                 cancel_exceptions=(DownloadCancelled,),
             )
-            if self.file_sha256(zip_download_path) != YOLO5_DOWNLOAD_SHA256:
-                raise ValueError(self.model_message(_("Downloaded %(model)s files are invalid.")))
+            if self.file_sha256(zip_download_path) != model.get("sha256"):
+                raise ValueError(self.model_message(_("Downloaded %(model)s files are invalid."), model))
 
-            with zipfile.ZipFile(zip_download_path) as yolo5_zip:
-                for member_name, destination_path in (
-                    ("yolov5s.onnx", model_download_path),
-                    ("obj.names", classes_download_path),
-                ):
-                    with yolo5_zip.open(member_name) as source_file, open(destination_path, "wb") as output_file:
-                        output_file.write(source_file.read())
+            with zipfile.ZipFile(zip_download_path) as yolo_zip:
+                self.extract_yolo_zip_member(yolo_zip, ".onnx", model_download_path)
+                self.extract_yolo_zip_member(yolo_zip, (".names", ".txt"), classes_download_path)
 
-            if self.file_sha256(model_download_path) != YOLO5_MODEL_SHA256:
-                raise ValueError(self.model_message(_("Downloaded %(model)s files are invalid.")))
-            if self.file_sha256(classes_download_path) != YOLO5_CLASSES_SHA256:
-                raise ValueError(self.model_message(_("Downloaded %(model)s files are invalid.")))
+            if os.path.getsize(model_download_path) <= 0 or os.path.getsize(classes_download_path) <= 0:
+                raise ValueError(self.model_message(_("Downloaded %(model)s files are invalid."), model))
 
-            os.replace(model_download_path, YOLO5_MODEL_PATH)
-            os.replace(classes_download_path, YOLO5_CLASSES_PATH)
+            os.replace(model_download_path, model_path)
+            os.replace(classes_download_path, classes_path)
+            self.write_yolo_install_metadata(model, model_path, classes_path)
         except DownloadCancelled:
             remove_partial_downloads()
-            log.info("YOLOv5 file download cancelled")
+            log.info("YOLO file download cancelled")
             self.update_file_validation()
             return
         except Exception as ex:
             remove_partial_downloads()
+            progress.close()
             QMessageBox.warning(self, _("Download Failed"), str(ex))
-            log.error("Failed to download YOLOv5 files: %s", ex)
+            log.error("Failed to download YOLO files: %s", ex)
             self.update_file_validation()
             return
         finally:
@@ -561,7 +709,7 @@ class ProcessEffect(QDialog):
                 os.remove(zip_download_path)
             progress.close()
 
-        self.set_yolo5_default_file_fields(param)
+        self.set_yolo_file_fields(param, model)
         self.update_file_validation()
 
     def rect_select_clicked(self, widget, param):
