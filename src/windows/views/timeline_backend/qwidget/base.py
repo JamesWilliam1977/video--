@@ -832,6 +832,7 @@ class TimelineWidgetBase(QWidget):
             start_preroll=bool(start_preroll),
             force=bool(force),
         )
+        self.centerOnPlayhead()
         editor = getattr(self, "playhead_time_editor", None)
         if editor and force:
             editor.hide()

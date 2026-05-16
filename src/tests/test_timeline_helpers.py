@@ -141,6 +141,31 @@ class TimelineHelperTests(unittest.TestCase):
         self.assertEqual(edit.parse_text("00:00:00,00"), 1)
         self.assertIsNone(edit.parse_text("bad"))
 
+    def test_playhead_time_edit_commit_centers_on_new_playhead_frame(self):
+        helper = types.SimpleNamespace()
+        helper.current_frame = 1
+        helper.playhead_time_editor = None
+        helper.updated = 0
+        helper.seeks = []
+        helper.center_calls = 0
+        helper.update = lambda: setattr(helper, "updated", helper.updated + 1)
+        helper._emit_playhead_seek = lambda frame, start_preroll=True, force=False: helper.seeks.append(
+            (frame, start_preroll, force)
+        )
+        helper.centerOnPlayhead = lambda: setattr(helper, "center_calls", helper.center_calls + 1)
+
+        self.qwidget_base_module.TimelineWidgetBase._commit_playhead_time_edit(
+            helper,
+            301,
+            start_preroll=False,
+            force=False,
+        )
+
+        self.assertEqual(helper.current_frame, 301)
+        self.assertEqual(helper.updated, 1)
+        self.assertEqual(helper.seeks, [(301, False, False)])
+        self.assertEqual(helper.center_calls, 1)
+
     def make_time_helper(self):
         timeline_module = self.timeline_module
 
