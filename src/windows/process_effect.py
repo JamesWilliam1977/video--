@@ -143,6 +143,7 @@ class ProcessEffect(QDialog):
         self.effect_class = effect_class
         self.context = {}
         self.file_fields = {}
+        self.selection_fields = {}
         self.onnx_validation_cache = {}
         self.yolo_models_manifest = None
         self.yolo_models = []
@@ -252,6 +253,33 @@ class ProcessEffect(QDialog):
 
                 # Set initial context
                 self.context[param["setting"]] = {"button-clicked": False, "x": 0, "y": 0, "width": 0, "height": 0}
+
+            if param["type"] == "object-mask-selection":
+                widget = QWidget()
+                widget_layout = QHBoxLayout(widget)
+                widget_layout.setContentsMargins(0, 0, 0, 0)
+                widget_layout.setSpacing(6)
+
+                select_button = QPushButton(_("Select Point / Region"))
+                select_button.setToolTip(_("Choose a positive point or rectangle, and optional negative points."))
+                select_button.clicked.connect(functools.partial(self.object_mask_select_clicked, select_button, param))
+
+                status_widget = QLabel()
+                status_widget.setMinimumWidth(20)
+                status_widget.setToolTip(_("Point or region has not been selected."))
+
+                select_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+                status_widget.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+                widget_layout.addWidget(select_button, 1, Qt.AlignVCenter)
+                widget_layout.addWidget(status_widget, 0, Qt.AlignVCenter)
+
+                self.context[param["setting"]] = {}
+                self.selection_fields[param["setting"]] = {
+                    "param": param,
+                    "button": select_button,
+                    "status": status_widget,
+                    "valid": False,
+                }
 
             if param["type"] == "spinner-int":
                 # create QDoubleSpinBox
@@ -518,6 +546,117 @@ class ProcessEffect(QDialog):
                 return False, _("Class names file is empty")
         return True, _("Ready")
 
+    @staticmethod
+    def object_mask_payload_to_source_pixels(payload, preview_size, source_size):
+        """Scale annotation payload coordinates from preview pixels to source-frame pixels."""
+        if not isinstance(payload, dict):
+            return payload
+        if not preview_size or not source_size:
+            return payload
+
+        try:
+            preview_width = float(preview_size.width())
+            preview_height = float(preview_size.height())
+            source_width = float(source_size.width())
+            source_height = float(source_size.height())
+        except Exception:
+            return payload
+        if preview_width <= 0.0 or preview_height <= 0.0 or source_width <= 0.0 or source_height <= 0.0:
+            return payload
+
+        scale_x = source_width / preview_width
+        scale_y = source_height / preview_height
+        scaled = json.loads(json.dumps(payload))
+
+        for frame_payload in (scaled.get("frames") or {}).values():
+            if not isinstance(frame_payload, dict):
+                continue
+            for key in ("positive_points", "negative_points"):
+                for point in frame_payload.get(key) or []:
+                    if not isinstance(point, dict):
+                        continue
+                    point["x"] = float(point.get("x", 0.0)) * scale_x
+                    point["y"] = float(point.get("y", 0.0)) * scale_y
+            for key in ("positive_rects", "negative_rects"):
+                for rect in frame_payload.get(key) or []:
+                    if not isinstance(rect, dict):
+                        continue
+                    rect["x1"] = float(rect.get("x1", 0.0)) * scale_x
+                    rect["x2"] = float(rect.get("x2", 0.0)) * scale_x
+                    rect["y1"] = float(rect.get("y1", 0.0)) * scale_y
+                    rect["y2"] = float(rect.get("y2", 0.0)) * scale_y
+
+        return scaled
+
+    @staticmethod
+    def object_mask_context_from_payload(payload):
+        """Convert SelectRegion annotation payload into ObjectMask preprocessing settings."""
+        if not isinstance(payload, dict):
+            return {}, False
+        frames = payload.get("frames") or {}
+        if not isinstance(frames, dict) or not frames:
+            return {}, False
+
+        try:
+            seed_frame_key = str(payload.get("seed_frame") or sorted(int(f) for f in frames.keys())[0])
+        except Exception:
+            seed_frame_key = sorted(frames.keys())[0]
+        frame_payload = frames.get(seed_frame_key) or frames.get(str(seed_frame_key)) or {}
+
+        context = {}
+        positive_points = frame_payload.get("positive_points") or []
+        negative_points = frame_payload.get("negative_points") or []
+        positive_rects = frame_payload.get("positive_rects") or []
+        context["positive_points"] = list(positive_points)
+        context["negative_points"] = list(negative_points)
+
+        if positive_rects:
+            rect = positive_rects[0]
+            x1 = float(rect.get("x1", 0.0))
+            y1 = float(rect.get("y1", 0.0))
+            x2 = float(rect.get("x2", 0.0))
+            y2 = float(rect.get("y2", 0.0))
+            context.update({
+                "rect_x1": min(x1, x2),
+                "rect_y1": min(y1, y2),
+                "rect_x2": max(x1, x2),
+                "rect_y2": max(y1, y2),
+            })
+            if not positive_points:
+                context.update({
+                    "positive_x": (x1 + x2) / 2.0,
+                    "positive_y": (y1 + y2) / 2.0,
+                })
+
+        if positive_points:
+            point = positive_points[0]
+            context.update({
+                "positive_x": float(point.get("x", 0.0)),
+                "positive_y": float(point.get("y", 0.0)),
+            })
+
+        if negative_points:
+            point = negative_points[0]
+            context.update({
+                "negative_x": float(point.get("x", 0.0)),
+                "negative_y": float(point.get("y", 0.0)),
+            })
+
+        return context, "positive_x" in context and "positive_y" in context
+
+    def update_selection_validation(self):
+        """Update selection indicators and return whether all required selections are valid."""
+        _ = get_app()._tr
+        all_valid = True
+        for setting, field in self.selection_fields.items():
+            valid = bool(field.get("valid"))
+            status = field["status"]
+            status.setText("✓" if valid else "✕")
+            status.setStyleSheet("color: #4caf50; font-weight: bold;" if valid else "color: #e53935; font-weight: bold;")
+            status.setToolTip(_("Ready") if valid else _("Select a positive point or rectangle."))
+            all_valid = all_valid and valid
+        return all_valid
+
     def update_file_validation(self):
         """Update validation indicators and Process button state."""
         if self.file_validation_timer.isActive():
@@ -532,6 +671,8 @@ class ProcessEffect(QDialog):
             status.setStyleSheet("color: #4caf50; font-weight: bold;" if valid else "color: #e53935; font-weight: bold;")
             status.setToolTip(message)
             all_valid = all_valid and valid
+
+        all_valid = all_valid and self.update_selection_validation()
 
         if hasattr(self, "process_button"):
             self.process_button.setEnabled(all_valid and not self.processing_effect)
@@ -778,6 +919,60 @@ class ProcessEffect(QDialog):
 
         else:
             log.error('No file found with path: %s' % reader_path)
+
+    def object_mask_select_clicked(self, widget, param):
+        """Open annotation selector for Object Mask prompts."""
+        _ = get_app()._tr
+        from windows.region import SelectRegion
+        from classes.query import File, Clip
+
+        c = Clip.get(id=self.clip_id)
+        reader_path = c.data.get('reader', {}).get('path', '')
+        f = File.get(path=reader_path)
+        if not f:
+            log.error('No file found with path: %s' % reader_path)
+            return
+
+        win = SelectRegion(f, self.clip_instance, selection_mode="annotate", parent=self)
+        result = win.exec_()
+        if result != QDialog.Accepted:
+            return
+
+        payload = win.selection_payload() if hasattr(win, "selection_payload") else {}
+        preview_size = getattr(win.videoPreview, "curr_frame_size", None)
+        source_image = getattr(win.videoPreview, "current_image", None)
+        source_size = source_image.size() if source_image else None
+        payload = self.object_mask_payload_to_source_pixels(payload, preview_size, source_size)
+
+        prompt_context, valid = self.object_mask_context_from_payload(payload)
+        if not valid:
+            QMessageBox.warning(
+                self,
+                _("Invalid Selection"),
+                _("Please select a positive point or rectangle."),
+            )
+            return
+
+        self.context[param["setting"]] = payload
+        self.context.update(prompt_context)
+
+        field = self.selection_fields.get(param["setting"])
+        if field:
+            field["valid"] = True
+            positives = len(prompt_context.get("positive_points") or [])
+            rects = 1 if "rect_x1" in prompt_context else 0
+            negatives = len(prompt_context.get("negative_points") or [])
+            if positives == 0 and "positive_x" in prompt_context:
+                positives = 1
+            field["button"].setText(
+                _("Selection: %(points)s point, %(rects)s rect, %(negatives)s negative") % {
+                    "points": positives,
+                    "rects": rects,
+                    "negatives": negatives,
+                }
+            )
+        self.update_file_validation()
+        log.info(self.context)
 
     def accept(self):
         """ Start processing effect """

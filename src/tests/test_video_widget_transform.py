@@ -216,6 +216,97 @@ class VideoWidgetTransformTests(unittest.TestCase):
 
         self.assertEqual(generate_masks, [])
 
+    def test_object_mask_initializer_defaults_to_edgesam_downloads(self):
+        object_mask_options = effect_options["ObjectMask"]
+        encoder = next(option for option in object_mask_options if option.get("setting") == "encoder_model")
+        decoder = next(option for option in object_mask_options if option.get("setting") == "decoder_model")
+        xmem_key = next(option for option in object_mask_options if option.get("setting") == "xmem_encode_key_model")
+        xmem_value = next(option for option in object_mask_options if option.get("setting") == "xmem_encode_value_model")
+        xmem_decode = next(option for option in object_mask_options if option.get("setting") == "xmem_decode_model")
+        selector = next(option for option in object_mask_options if option.get("setting") == "object_mask_selection")
+
+        self.assertEqual(encoder["type"], "file")
+        self.assertEqual(decoder["type"], "file")
+        self.assertEqual(xmem_key["type"], "file")
+        self.assertEqual(xmem_value["type"], "file")
+        self.assertEqual(xmem_decode["type"], "file")
+        self.assertTrue(encoder["value"].endswith("Downloads/edgesam-opencv/edge_sam_encoder.onnx"))
+        self.assertTrue(decoder["value"].endswith("Downloads/edgesam-opencv/edge_sam_decoder_np10.onnx"))
+        self.assertTrue(xmem_key["value"].endswith("Downloads/xmem-opencv/XMem-encode_key.onnx"))
+        self.assertTrue(xmem_value["value"].endswith("Downloads/xmem-opencv/XMem-encode_value-m1.onnx"))
+        self.assertTrue(xmem_decode["value"].endswith("Downloads/xmem-opencv/XMem-decode-m1.onnx"))
+        self.assertEqual(selector["type"], "object-mask-selection")
+
+    def test_object_mask_payload_converts_to_preprocess_context(self):
+        payload = {
+            "seed_frame": 1,
+            "frames": {
+                "1": {
+                    "positive_points": [{"x": 375.0, "y": 175.0}],
+                    "negative_points": [{"x": 295.0, "y": 65.0}, {"x": 315.0, "y": 75.0}],
+                    "positive_rects": [{"x1": 300.0, "y1": 120.0, "x2": 420.0, "y2": 240.0}],
+                }
+            },
+        }
+
+        context, valid = ProcessEffect.object_mask_context_from_payload(payload)
+
+        self.assertTrue(valid)
+        self.assertEqual(context["positive_x"], 375.0)
+        self.assertEqual(context["positive_y"], 175.0)
+        self.assertEqual(context["negative_x"], 295.0)
+        self.assertEqual(context["negative_y"], 65.0)
+        self.assertEqual(len(context["negative_points"]), 2)
+        self.assertEqual(context["negative_points"][1]["x"], 315.0)
+        self.assertEqual(context["rect_x1"], 300.0)
+        self.assertEqual(context["rect_y1"], 120.0)
+        self.assertEqual(context["rect_x2"], 420.0)
+        self.assertEqual(context["rect_y2"], 240.0)
+
+    def test_object_mask_rect_payload_uses_center_as_positive_prompt(self):
+        payload = {
+            "seed_frame": 1,
+            "frames": {
+                "1": {
+                    "positive_rects": [{"x1": 10.0, "y1": 20.0, "x2": 30.0, "y2": 60.0}],
+                }
+            },
+        }
+
+        context, valid = ProcessEffect.object_mask_context_from_payload(payload)
+
+        self.assertTrue(valid)
+        self.assertEqual(context["positive_x"], 20.0)
+        self.assertEqual(context["positive_y"], 40.0)
+
+    def test_object_mask_payload_scales_preview_pixels_to_source_pixels(self):
+        payload = {
+            "seed_frame": 1,
+            "frames": {
+                "1": {
+                    "positive_points": [{"x": 290.0, "y": 136.0}],
+                    "negative_points": [{"x": 227.0, "y": 50.0}],
+                    "positive_rects": [{"x1": 100.0, "y1": 20.0, "x2": 200.0, "y2": 80.0}],
+                },
+                "300": {
+                    "positive_points": [{"x": 320.0, "y": 140.0}],
+                }
+            },
+        }
+        preview_size = types.SimpleNamespace(width=lambda: 495, height=lambda: 280)
+        source_size = types.SimpleNamespace(width=lambda: 640, height=lambda: 360)
+
+        scaled = ProcessEffect.object_mask_payload_to_source_pixels(payload, preview_size, source_size)
+
+        frame = scaled["frames"]["1"]
+        self.assertAlmostEqual(frame["positive_points"][0]["x"], 374.949, places=3)
+        self.assertAlmostEqual(frame["positive_points"][0]["y"], 174.857, places=3)
+        self.assertAlmostEqual(frame["negative_points"][0]["x"], 293.495, places=3)
+        self.assertAlmostEqual(frame["negative_points"][0]["y"], 64.286, places=3)
+        self.assertAlmostEqual(frame["positive_rects"][0]["x1"], 129.293, places=3)
+        self.assertAlmostEqual(frame["positive_rects"][0]["y2"], 102.857, places=3)
+        self.assertAlmostEqual(scaled["frames"]["300"]["positive_points"][0]["x"], 413.737, places=3)
+
     def test_process_effect_disables_editable_controls_while_processing(self):
         process = ProcessEffect.__new__(ProcessEffect)
         enabled_calls = {

@@ -29,6 +29,8 @@ from classes.info import YOLO_PATH
 import os
 
 YOLO_DEFAULT_PATH = os.path.join(YOLO_PATH, "yolo26n-seg")
+EDGESAM_DEFAULT_PATH = os.path.expanduser("~/Downloads/edgesam-opencv")
+XMEM_DEFAULT_PATH = os.path.expanduser("~/Downloads/xmem-opencv")
 # Not all Effects support pre-processing, so for now, this is a hard-coded
 # solution to providing the pre-processing params needed for these special effects.
 
@@ -176,6 +178,75 @@ effect_options = {
             "file-filter": "Class names (*.names *.txt)",
             "validator": "classes",
             "required": True
+        },
+        {
+            "title": "Processing Device",
+            "setting": "processing-device",
+            "value": "CPU",
+            "values": [
+                {
+                    "value": "GPU",
+                    "name": "GPU"
+                },
+                {
+                    "value": "CPU",
+                    "name": "CPU"
+                }
+            ],
+            "type": "dropdown",
+        }
+    ],
+
+    "ObjectMask": [
+        {
+            "value": os.path.join(EDGESAM_DEFAULT_PATH, "edge_sam_encoder.onnx"),
+            "title": "Encoder Model File",
+            "type": "file",
+            "setting": "encoder_model",
+            "file-filter": "Model files (*.onnx)",
+            "validator": "onnx",
+            "required": True
+        },
+        {
+            "value": os.path.join(EDGESAM_DEFAULT_PATH, "edge_sam_decoder_np10.onnx"),
+            "title": "Decoder Model File",
+            "type": "file",
+            "setting": "decoder_model",
+            "file-filter": "Model files (*.onnx)",
+            "validator": "onnx",
+            "required": True
+        },
+        {
+            "value": os.path.join(XMEM_DEFAULT_PATH, "XMem-encode_key.onnx"),
+            "title": "XMem Key Encoder Model File",
+            "type": "file",
+            "setting": "xmem_encode_key_model",
+            "file-filter": "Model files (*.onnx)",
+            "validator": "onnx",
+            "required": True
+        },
+        {
+            "value": os.path.join(XMEM_DEFAULT_PATH, "XMem-encode_value-m1.onnx"),
+            "title": "XMem Value Encoder Model File",
+            "type": "file",
+            "setting": "xmem_encode_value_model",
+            "file-filter": "Model files (*.onnx)",
+            "validator": "onnx",
+            "required": True
+        },
+        {
+            "value": os.path.join(XMEM_DEFAULT_PATH, "XMem-decode-m1.onnx"),
+            "title": "XMem Decoder Model File",
+            "type": "file",
+            "setting": "xmem_decode_model",
+            "file-filter": "Model files (*.onnx)",
+            "validator": "onnx",
+            "required": True
+        },
+        {
+            "title": "Point / Region",
+            "type": "object-mask-selection",
+            "setting": "object_mask_selection"
         },
         {
             "title": "Processing Device",
