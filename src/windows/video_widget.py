@@ -49,6 +49,9 @@ from classes.app import get_app
 from classes.query import Clip, Effect
 
 MARGIN_BOX_EFFECTS = {"Bars", "Blur", "Caption", "Crop", "Pixelate"}
+OBJECT_MASK_PREVIEW_COLOR = QColor(83, 160, 237, 120)
+OBJECT_MASK_PREVIEW_STROKE_COLOR = QColor(255, 255, 255, 255)
+OBJECT_MASK_PREVIEW_STROKE_WIDTH = 3
 
 
 class VideoWidget(QWidget, updates.UpdateInterface):
@@ -218,6 +221,38 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 return True
             return all(prop in self.transforming_effect.data for prop in ("left", "top", "right", "bottom"))
         return False
+
+    def _draw_object_mask_preview(self, painter, mask_image, target_rect):
+        if mask_image is None or mask_image.isNull():
+            return
+
+        overlay = QImage(mask_image.size(), QImage.Format_ARGB32_Premultiplied)
+        overlay.fill(Qt.transparent)
+        overlay_painter = QPainter(overlay)
+        overlay_painter.setCompositionMode(QPainter.CompositionMode_Source)
+        overlay_painter.fillRect(overlay.rect(), OBJECT_MASK_PREVIEW_COLOR)
+        overlay_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        overlay_painter.drawImage(0, 0, mask_image)
+        overlay_painter.end()
+        painter.drawImage(target_rect, overlay)
+
+        stroke = QImage(mask_image.size(), QImage.Format_ARGB32_Premultiplied)
+        stroke.fill(Qt.transparent)
+        stroke_painter = QPainter(stroke)
+        stroke_painter.setCompositionMode(QPainter.CompositionMode_Source)
+        stroke_painter.fillRect(stroke.rect(), OBJECT_MASK_PREVIEW_STROKE_COLOR)
+        stroke_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        radius = max(1, int(OBJECT_MASK_PREVIEW_STROKE_WIDTH))
+        for y in range(-radius, radius + 1):
+            for x in range(-radius, radius + 1):
+                if x == 0 and y == 0:
+                    continue
+                if (x * x + y * y) <= (radius * radius):
+                    stroke_painter.drawImage(x, y, mask_image)
+        stroke_painter.setCompositionMode(QPainter.CompositionMode_DestinationOut)
+        stroke_painter.drawImage(0, 0, mask_image)
+        stroke_painter.end()
+        painter.drawImage(target_rect, stroke)
 
     @staticmethod
     def _margin_box_norm(raw_properties):
@@ -487,6 +522,13 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             else:
                 dock.setWindowTitle(base_title)
 
+    @staticmethod
+    def _scaled_frame_size(image_size, widget_size):
+        """Return the logical displayed frame size inside the widget."""
+        pix_size = QSize(image_size)
+        pix_size.scale(widget_size, Qt.KeepAspectRatio)
+        return pix_size
+
     def paintEvent(self, event, *args):
         """ Custom paint event """
         event.accept()
@@ -524,8 +566,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             # Viewport and frame
             viewport = self.centeredViewport(self.width(), self.height())
             if self.current_image:
-                pix_size = self.current_image.size()
-                pix_size.scale(event.rect().size(), Qt.KeepAspectRatio)
+                pix_size = self._scaled_frame_size(self.current_image.size(), self.size())
                 self.curr_frame_size = pix_size
 
                 scale = self.devicePixelRatioF()
@@ -753,6 +794,15 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
                 cs = self.cs
                 if self.region_selection_mode in ("point", "annotate"):
+                    if (
+                        self.region_selection_mode == "annotate"
+                        and self.region_mask_preview_image is not None
+                        and self.curr_frame_size is not None
+                    ):
+                        mask_image = self.region_mask_preview_image
+                        mask_rect = QRectF(0.0, 0.0, float(self.curr_frame_size.width()), float(self.curr_frame_size.height()))
+                        self._draw_object_mask_preview(painter, mask_image, mask_rect)
+
                     point_radius = max(2.0, (cs * 0.4) / max(self.zoom, 0.001))
                     if self.region_points_positive:
                         pos_color = QColor("#53a0ed")
@@ -2054,8 +2104,6 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 get_app().window.refreshFrameSignal.emit()
 
     def _ensure_region_transform(self):
-        if self.region_transform:
-            return
         viewport = self.centeredViewport(self.width(), self.height())
         self.region_transform = QTransform()
         rx = viewport.x()
@@ -2549,6 +2597,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.region_rects_negative = []
             self.region_rect_drag_start = None
             self.region_rect_drag_current = None
+            self.region_mask_preview_image = None
+            self.region_mask_preview_frame = None
             self.regionTopLeftHandle = None
             self.regionBottomRightHandle = None
         self.update()
@@ -2878,6 +2928,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         self.region_rect_drag_start = None
         self.region_rect_drag_current = None
         self.region_annotation_inherited = False
+        self.region_mask_preview_image = None
+        self.region_mask_preview_frame = None
         self.region_mode = None
         self.region_press_outside = False
         self.scope_region_drag_anchor = None

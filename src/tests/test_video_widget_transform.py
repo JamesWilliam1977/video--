@@ -33,7 +33,7 @@ import unittest
 from unittest.mock import patch
 
 import openshot
-from qt_api import QApplication, QColor, QPoint, QRect, QRectF, QStandardItem, QTransform, Qt, QWidget
+from qt_api import QApplication, QColor, QPoint, QRect, QRectF, QSize, QStandardItem, QTransform, Qt, QWidget
 
 
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -216,22 +216,20 @@ class VideoWidgetTransformTests(unittest.TestCase):
 
         self.assertEqual(generate_masks, [])
 
-    def test_object_mask_initializer_defaults_to_edgesam_downloads(self):
+    def test_object_mask_initializer_defaults_to_efficientsam_downloads(self):
         object_mask_options = effect_options["ObjectMask"]
-        encoder = next(option for option in object_mask_options if option.get("setting") == "encoder_model")
-        decoder = next(option for option in object_mask_options if option.get("setting") == "decoder_model")
+        efficient_sam = next(option for option in object_mask_options if option.get("setting") == "efficient_sam_model")
         xmem_key = next(option for option in object_mask_options if option.get("setting") == "xmem_encode_key_model")
         xmem_value = next(option for option in object_mask_options if option.get("setting") == "xmem_encode_value_model")
         xmem_decode = next(option for option in object_mask_options if option.get("setting") == "xmem_decode_model")
         selector = next(option for option in object_mask_options if option.get("setting") == "object_mask_selection")
 
-        self.assertEqual(encoder["type"], "file")
-        self.assertEqual(decoder["type"], "file")
+        self.assertEqual(efficient_sam["type"], "file")
         self.assertEqual(xmem_key["type"], "file")
         self.assertEqual(xmem_value["type"], "file")
         self.assertEqual(xmem_decode["type"], "file")
-        self.assertTrue(encoder["value"].endswith("Downloads/edgesam-opencv/edge_sam_encoder.onnx"))
-        self.assertTrue(decoder["value"].endswith("Downloads/edgesam-opencv/edge_sam_decoder_np10.onnx"))
+        self.assertTrue(efficient_sam["value"].endswith(
+            "Downloads/efficientsam-opencv/image_segmentation_efficientsam_ti_2025april.onnx"))
         self.assertTrue(xmem_key["value"].endswith("Downloads/xmem-opencv/XMem-encode_key.onnx"))
         self.assertTrue(xmem_value["value"].endswith("Downloads/xmem-opencv/XMem-encode_value-m1.onnx"))
         self.assertTrue(xmem_decode["value"].endswith("Downloads/xmem-opencv/XMem-decode-m1.onnx"))
@@ -306,6 +304,12 @@ class VideoWidgetTransformTests(unittest.TestCase):
         self.assertAlmostEqual(frame["positive_rects"][0]["x1"], 129.293, places=3)
         self.assertAlmostEqual(frame["positive_rects"][0]["y2"], 102.857, places=3)
         self.assertAlmostEqual(scaled["frames"]["300"]["positive_points"][0]["x"], 413.737, places=3)
+
+    def test_display_frame_size_ignores_partial_paint_rect_size(self):
+        frame_size = VideoWidget._scaled_frame_size(QSize(810, 456), QSize(810, 456))
+
+        self.assertEqual(frame_size.width(), 810)
+        self.assertEqual(frame_size.height(), 456)
 
     def test_process_effect_disables_editable_controls_while_processing(self):
         process = ProcessEffect.__new__(ProcessEffect)

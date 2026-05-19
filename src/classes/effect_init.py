@@ -29,7 +29,7 @@ from classes.info import YOLO_PATH
 import os
 
 YOLO_DEFAULT_PATH = os.path.join(YOLO_PATH, "yolo26n-seg")
-EDGESAM_DEFAULT_PATH = os.path.expanduser("~/Downloads/edgesam-opencv")
+EFFICIENTSAM_DEFAULT_PATH = os.path.expanduser("~/Downloads/efficientsam-opencv")
 XMEM_DEFAULT_PATH = os.path.expanduser("~/Downloads/xmem-opencv")
 # Not all Effects support pre-processing, so for now, this is a hard-coded
 # solution to providing the pre-processing params needed for these special effects.
@@ -199,19 +199,10 @@ effect_options = {
 
     "ObjectMask": [
         {
-            "value": os.path.join(EDGESAM_DEFAULT_PATH, "edge_sam_encoder.onnx"),
-            "title": "Encoder Model File",
+            "value": os.path.join(EFFICIENTSAM_DEFAULT_PATH, "image_segmentation_efficientsam_ti_2025april.onnx"),
+            "title": "EfficientSAM Model File",
             "type": "file",
-            "setting": "encoder_model",
-            "file-filter": "Model files (*.onnx)",
-            "validator": "onnx",
-            "required": True
-        },
-        {
-            "value": os.path.join(EDGESAM_DEFAULT_PATH, "edge_sam_decoder_np10.onnx"),
-            "title": "Decoder Model File",
-            "type": "file",
-            "setting": "decoder_model",
+            "setting": "efficient_sam_model",
             "file-filter": "Model files (*.onnx)",
             "validator": "onnx",
             "required": True

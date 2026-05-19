@@ -34,7 +34,7 @@ import hashlib
 import zipfile
 from urllib.parse import urljoin
 
-from qt_api import Qt, pyqtSignal, QCoreApplication, QTimer
+from qt_api import Qt, pyqtSignal, QCoreApplication, QTimer, QSize
 from qt_api import QPainter
 from qt_api import (
     QPushButton, QDialog, QLabel, QDoubleSpinBox, QSpinBox, QLineEdit,
@@ -644,6 +644,26 @@ class ProcessEffect(QDialog):
 
         return context, "positive_x" in context and "positive_y" in context
 
+    def object_mask_processing_frame_size(self, payload):
+        """Return the frame size that libopenshot will use while processing ObjectMask."""
+        if not isinstance(payload, dict):
+            return QSize()
+        try:
+            frames = payload.get("frames") or {}
+            seed_frame = int(payload.get("seed_frame") or sorted(int(f) for f in frames.keys())[0])
+        except Exception:
+            seed_frame = 1
+        try:
+            frame = self.clip_instance.GetFrame(max(1, seed_frame))
+            if frame:
+                width = int(frame.GetWidth())
+                height = int(frame.GetHeight())
+                if width > 0 and height > 0:
+                    return QSize(width, height)
+        except Exception as ex:
+            log.warning("Unable to read Object Mask processing frame size: %s", ex)
+        return QSize()
+
     def update_selection_validation(self):
         """Update selection indicators and return whether all required selections are valid."""
         _ = get_app()._tr
@@ -933,16 +953,30 @@ class ProcessEffect(QDialog):
             log.error('No file found with path: %s' % reader_path)
             return
 
-        win = SelectRegion(f, self.clip_instance, selection_mode="annotate", parent=self)
+        win = SelectRegion(
+            f,
+            self.clip_instance,
+            selection_mode="annotate",
+            parent=self,
+            object_mask_preview_context=dict(self.context),
+        )
         result = win.exec_()
         if result != QDialog.Accepted:
             return
 
         payload = win.selection_payload() if hasattr(win, "selection_payload") else {}
         preview_size = getattr(win.videoPreview, "curr_frame_size", None)
-        source_image = getattr(win.videoPreview, "current_image", None)
-        source_size = source_image.size() if source_image else None
-        payload = self.object_mask_payload_to_source_pixels(payload, preview_size, source_size)
+        processing_size = self.object_mask_processing_frame_size(payload)
+        if not processing_size.isValid() or processing_size.width() <= 0 or processing_size.height() <= 0:
+            processing_size = QSize(int(getattr(win, "width", 0) or 0), int(getattr(win, "height", 0) or 0))
+        log.debug(
+            "Object Mask selection scale: preview=%sx%s processing=%sx%s",
+            preview_size.width() if preview_size else 0,
+            preview_size.height() if preview_size else 0,
+            processing_size.width(),
+            processing_size.height(),
+        )
+        payload = self.object_mask_payload_to_source_pixels(payload, preview_size, processing_size)
 
         prompt_context, valid = self.object_mask_context_from_payload(payload)
         if not valid:
