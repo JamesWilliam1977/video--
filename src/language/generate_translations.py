@@ -307,6 +307,19 @@ from themes.manager import ThemeName
 for theme_name in ThemeName.get_sorted_theme_names():
     export_text[theme_name] = "User-Interface Theme Name"
 
+# Include AI model names and descriptions shown in model dropdowns.
+for manifest_name in ("yolo-models.json", "cutie-models.json", "efficient-sam-models.json"):
+    manifest_path = os.path.join(info.RESOURCES_PATH, manifest_name)
+    if not os.path.exists(manifest_path):
+        continue
+    with open(manifest_path, "r", encoding="utf-8") as manifest_file:
+        manifest = json.load(manifest_file)
+    for model in manifest.get("models", []):
+        if model.get("name"):
+            export_text[model["name"]] = "AI model dropdown (%s name)" % manifest_name
+        if model.get("description"):
+            export_text[model["description"]] = "AI model dropdown (%s description)" % manifest_name
+
 # Loop through transitions and add to POT file
 transitions_text = { "translator-credits": "Translator credits to be translated by LaunchPad" }
 transitions_ignore_keys = ("Common", "Fade")

@@ -29,8 +29,8 @@ from classes.info import YOLO_PATH
 import os
 
 YOLO_DEFAULT_PATH = os.path.join(YOLO_PATH, "yolo26n-seg")
-EFFICIENTSAM_DEFAULT_PATH = os.path.expanduser("~/Downloads/efficientsam-opencv")
-XMEM_DEFAULT_PATH = os.path.expanduser("~/Downloads/xmem-opencv")
+EFFICIENTSAM_DEFAULT_PATH = os.path.join(YOLO_PATH, "efficient-sam-tiny-1024")
+CUTIE_DEFAULT_PATH = os.path.join(YOLO_PATH, "cutie-medium")
 # Not all Effects support pre-processing, so for now, this is a hard-coded
 # solution to providing the pre-processing params needed for these special effects.
 
@@ -155,11 +155,12 @@ effect_options = {
 
     "ObjectDetection": [
         {
-            "title": "Model Files",
+            "title": "Version",
             "type": "download-yolo",
             "setting": "download-yolo",
             "model-setting": "model",
-            "classes-setting": "classes_file"
+            "classes-setting": "classes_file",
+            "file-settings": ["model", "classes_file"]
         },
         {
             "value": os.path.join(YOLO_DEFAULT_PATH, "model.onnx"),
@@ -168,7 +169,8 @@ effect_options = {
             "setting": "model",
             "file-filter": "Model files (*.onnx)",
             "validator": "onnx",
-            "required": True
+            "required": True,
+            "advanced": True
         },
         {
             "value": os.path.join(YOLO_DEFAULT_PATH, "classes.names"),
@@ -177,12 +179,13 @@ effect_options = {
             "setting": "classes_file",
             "file-filter": "Class names (*.names *.txt)",
             "validator": "classes",
-            "required": True
+            "required": True,
+            "advanced": True
         },
         {
             "title": "Processing Device",
             "setting": "processing-device",
-            "value": "CPU",
+            "value": "GPU",
             "values": [
                 {
                     "value": "GPU",
@@ -194,10 +197,30 @@ effect_options = {
                 }
             ],
             "type": "dropdown",
+            "advanced": True
         }
     ],
 
     "ObjectMask": [
+        {
+            "title": "Quality",
+            "type": "download-object-mask",
+            "setting": "download-object-mask",
+            "efficient-sam-setting": "efficient_sam_model",
+            "cutie-settings": {
+                "encode-key": "cutie_encode_key_model",
+                "encode-value": "cutie_encode_value_model",
+                "memory-readout": "cutie_memory_readout_model",
+                "decode": "cutie_decode_model"
+            },
+            "file-settings": [
+                "efficient_sam_model",
+                "cutie_encode_key_model",
+                "cutie_encode_value_model",
+                "cutie_memory_readout_model",
+                "cutie_decode_model"
+            ]
+        },
         {
             "value": os.path.join(EFFICIENTSAM_DEFAULT_PATH, "image_segmentation_efficientsam_ti_2025april.onnx"),
             "title": "EfficientSAM Model File",
@@ -205,44 +228,53 @@ effect_options = {
             "setting": "efficient_sam_model",
             "file-filter": "Model files (*.onnx)",
             "validator": "onnx",
-            "required": True
+            "required": True,
+            "advanced": True
         },
         {
-            "value": os.path.join(XMEM_DEFAULT_PATH, "XMem-encode_key.onnx"),
-            "title": "XMem Key Encoder Model File",
+            "value": os.path.join(CUTIE_DEFAULT_PATH, "cutie-encode-key-640x368.onnx"),
+            "title": "Cutie Key Encoder Model File",
             "type": "file",
-            "setting": "xmem_encode_key_model",
+            "setting": "cutie_encode_key_model",
             "file-filter": "Model files (*.onnx)",
             "validator": "onnx",
-            "required": True
+            "required": True,
+            "advanced": True
         },
         {
-            "value": os.path.join(XMEM_DEFAULT_PATH, "XMem-encode_value-m1.onnx"),
-            "title": "XMem Value Encoder Model File",
+            "value": os.path.join(CUTIE_DEFAULT_PATH, "cutie-encode-value-640x368.onnx"),
+            "title": "Cutie Value Encoder Model File",
             "type": "file",
-            "setting": "xmem_encode_value_model",
+            "setting": "cutie_encode_value_model",
             "file-filter": "Model files (*.onnx)",
             "validator": "onnx",
-            "required": True
+            "required": True,
+            "advanced": True
         },
         {
-            "value": os.path.join(XMEM_DEFAULT_PATH, "XMem-decode-m1.onnx"),
-            "title": "XMem Decoder Model File",
+            "value": os.path.join(CUTIE_DEFAULT_PATH, "cutie-memory-readout-floatmask-valid-640x368-m6-topk30-opencv.onnx"),
+            "title": "Cutie Memory Readout Model File",
             "type": "file",
-            "setting": "xmem_decode_model",
+            "setting": "cutie_memory_readout_model",
             "file-filter": "Model files (*.onnx)",
             "validator": "onnx",
-            "required": True
+            "required": True,
+            "advanced": True
         },
         {
-            "title": "Point / Region",
-            "type": "object-mask-selection",
-            "setting": "object_mask_selection"
+            "value": os.path.join(CUTIE_DEFAULT_PATH, "cutie-decode-640x368.onnx"),
+            "title": "Cutie Decoder Model File",
+            "type": "file",
+            "setting": "cutie_decode_model",
+            "file-filter": "Model files (*.onnx)",
+            "validator": "onnx",
+            "required": True,
+            "advanced": True
         },
         {
             "title": "Processing Device",
             "setting": "processing-device",
-            "value": "CPU",
+            "value": "GPU",
             "values": [
                 {
                     "value": "GPU",
@@ -254,6 +286,12 @@ effect_options = {
                 }
             ],
             "type": "dropdown",
+            "advanced": True
+        },
+        {
+            "title": "Select Points",
+            "type": "object-mask-selection",
+            "setting": "object_mask_selection"
         }
     ]
 }

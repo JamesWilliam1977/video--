@@ -34,7 +34,7 @@ from qt_api import QIcon, QPainter, QColor, QPen, QBrush, QKeySequence, QImage
 from qt_api import (
     QDialog, QSlider, QStyleOptionSlider, QStyle, QShortcut, QSizePolicy,
     QPushButton, QHBoxLayout, QLabel, QMessageBox, QDialogButtonBox,
-    QButtonGroup, QToolButton, QCheckBox,
+    QButtonGroup, QToolButton, QCheckBox, QApplication,
 )
 import openshot  # Python module for libopenshot (required video editing module installed separately)
 
@@ -284,6 +284,7 @@ class SelectRegion(QDialog):
         self._mask_preview_thread = None
         self._mask_preview_worker = None
         self._mask_preview_dirty = False
+        self._mask_preview_wait_cursor = False
         self._mask_preview_timer = QTimer(self)
         self._mask_preview_timer.setSingleShot(True)
         self._mask_preview_timer.setInterval(350)
@@ -747,6 +748,17 @@ class SelectRegion(QDialog):
         }
         if "processing-device" not in context and "processing_device" not in context:
             context["processing-device"] = "CPU"
+        positive_count = len(payload.get("positive_points") or []) + len(payload.get("positive_rects") or [])
+        negative_count = len(payload.get("negative_points") or []) + len(payload.get("negative_rects") or [])
+        log.debug(
+            "Object Mask preview request: frame=%s efficient_sam_model=%s processing_device=%s "
+            "positive_prompts=%s negative_prompts=%s",
+            frame_number,
+            context.get("efficient_sam_model") or context.get("efficient_sam_model_path") or context.get("sam_model"),
+            context.get("processing-device") or context.get("processing_device"),
+            positive_count,
+            negative_count,
+        )
 
         request_id = int(self._mask_preview_request_id)
         self._mask_preview_dirty = False
@@ -760,9 +772,14 @@ class SelectRegion(QDialog):
         thread.finished.connect(thread.deleteLater)
         self._mask_preview_thread = thread
         self._mask_preview_worker = worker
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self._mask_preview_wait_cursor = True
         thread.start()
 
     def _on_mask_preview_finished(self, request_id, frame_number, image, error):
+        if getattr(self, "_mask_preview_wait_cursor", False):
+            QApplication.restoreOverrideCursor()
+            self._mask_preview_wait_cursor = False
         if error:
             log.warning("Object Mask preview failed: %s", error)
         is_current = (
@@ -771,10 +788,18 @@ class SelectRegion(QDialog):
             and not self.btnPlay.isChecked()
         )
         if is_current and image is not None:
+            log.debug(
+                "Object Mask preview ready: request=%s frame=%s size=%sx%s",
+                request_id,
+                frame_number,
+                image.width(),
+                image.height(),
+            )
             self.videoPreview.region_mask_preview_image = image
             self.videoPreview.region_mask_preview_frame = int(frame_number)
             self.videoPreview.update()
         elif is_current:
+            log.debug("Object Mask preview returned no mask: request=%s frame=%s", request_id, frame_number)
             self._clear_mask_preview()
 
         self._mask_preview_thread = None
@@ -792,6 +817,9 @@ class SelectRegion(QDialog):
             if not thread.wait(5000):
                 log.warning("Waiting for Object Mask preview worker to finish before dialog shutdown.")
                 thread.wait()
+        if getattr(self, "_mask_preview_wait_cursor", False):
+            QApplication.restoreOverrideCursor()
+            self._mask_preview_wait_cursor = False
         self._mask_preview_thread = None
         self._mask_preview_worker = None
 
