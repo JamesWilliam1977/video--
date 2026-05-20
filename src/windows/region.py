@@ -50,6 +50,11 @@ from windows.video_widget import VideoWidget
 import json
 
 
+OBJECT_MASK_PROMPT_SLOTS_MAX = 6
+OBJECT_MASK_MAX_POSITIVE_RECTS = OBJECT_MASK_PROMPT_SLOTS_MAX // 2
+OBJECT_MASK_MAX_NEGATIVE_FILTERS = 8
+
+
 class RegionAnnotatedSlider(QSlider):
     frameClicked = pyqtSignal(int)
 
@@ -376,7 +381,9 @@ class SelectRegion(QDialog):
         self.videoPreview.setObjectName("videoPreview")
         self.videoPreview.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         self.videoPreview.region_selection_mode = self.selection_mode
+        self.videoPreview.region_annotation_limits = self._object_mask_annotation_limits()
         self.videoPreview.regionAnnotationChanged.connect(self._on_video_annotation_changed)
+        self.videoPreview.regionAnnotationLimitReached.connect(self._on_annotation_limit_reached)
         self.verticalLayout.insertWidget(1, self.videoPreview)
         if self.selection_mode == "annotate":
             self._build_annotation_toolbar()
@@ -547,6 +554,62 @@ class SelectRegion(QDialog):
             return path
         return ""
 
+    def _object_mask_annotation_limits(self):
+        return {
+            "prompt_slots": OBJECT_MASK_PROMPT_SLOTS_MAX,
+            "positive_rects": OBJECT_MASK_MAX_POSITIVE_RECTS,
+            "negative_filters": OBJECT_MASK_MAX_NEGATIVE_FILTERS,
+        }
+
+    def _sanitize_annotation_payload(self, payload):
+        if not isinstance(payload, dict):
+            payload = {}
+
+        positive_rects = [r for r in (payload.get("positive_rects") or []) if isinstance(r, dict)]
+        positive_rects = positive_rects[:OBJECT_MASK_MAX_POSITIVE_RECTS]
+
+        remaining_positive_slots = max(0, OBJECT_MASK_PROMPT_SLOTS_MAX - (2 * len(positive_rects)))
+        positive_points = [p for p in (payload.get("positive_points") or []) if isinstance(p, dict)]
+        positive_points = positive_points[:remaining_positive_slots]
+
+        negative_points = [p for p in (payload.get("negative_points") or []) if isinstance(p, dict)]
+        negative_points = negative_points[:OBJECT_MASK_MAX_NEGATIVE_FILTERS]
+        remaining_negative_slots = max(0, OBJECT_MASK_MAX_NEGATIVE_FILTERS - len(negative_points))
+        negative_rects = [r for r in (payload.get("negative_rects") or []) if isinstance(r, dict)]
+        negative_rects = negative_rects[:remaining_negative_slots]
+
+        return {
+            "positive_points": positive_points,
+            "negative_points": negative_points,
+            "positive_rects": positive_rects,
+            "negative_rects": negative_rects,
+        }
+
+    def _on_annotation_limit_reached(self):
+        self._refresh_annotation_tool_state()
+
+    def _refresh_annotation_tool_state(self):
+        if self.selection_mode != "annotate" or not hasattr(self, "annotation_tool_buttons"):
+            return
+        can_add = getattr(self.videoPreview, "_can_add_region_annotation", None)
+        if not callable(can_add):
+            return
+
+        current_tool = str(getattr(self.videoPreview, "region_annotation_tool", "positive_point") or "positive_point")
+        first_enabled_tool = None
+        for tool_id, button in self.annotation_tool_buttons.items():
+            enabled = bool(can_add(tool_id))
+            button.setEnabled(enabled)
+            if enabled and first_enabled_tool is None:
+                first_enabled_tool = tool_id
+
+        current_button = self.annotation_tool_buttons.get(current_tool)
+        if current_button is not None and not current_button.isEnabled() and first_enabled_tool:
+            next_button = self.annotation_tool_buttons.get(first_enabled_tool)
+            if next_button is not None:
+                next_button.setChecked(True)
+            self._on_annotation_tool_changed(first_enabled_tool)
+
     def _build_annotation_toolbar(self):
         _ = get_app()._tr
         self.annotation_toolbar = QHBoxLayout()
@@ -626,10 +689,12 @@ class SelectRegion(QDialog):
         if default_btn:
             default_btn.setChecked(True)
         self._on_annotation_tool_changed("positive_point")
+        self._refresh_annotation_tool_state()
 
     def _on_annotation_tool_changed(self, tool_id):
         if hasattr(self, "videoPreview") and self.videoPreview is not None:
             self.videoPreview.region_annotation_tool = str(tool_id or "positive_point")
+        self._refresh_annotation_tool_state()
 
     def _mask_preview_model_path(self):
         context = getattr(self, "object_mask_preview_context", {}) or {}
@@ -847,12 +912,12 @@ class SelectRegion(QDialog):
                 })
             return payload
 
-        return {
+        return self._sanitize_annotation_payload({
             "positive_points": _points_to_payload(self.videoPreview.region_points_positive),
             "negative_points": _points_to_payload(self.videoPreview.region_points_negative),
             "positive_rects": _rects_to_payload(self.videoPreview.region_rects_positive),
             "negative_rects": _rects_to_payload(self.videoPreview.region_rects_negative),
-        }
+        })
 
     def _has_any_annotation(self, payload):
         return bool(
@@ -884,13 +949,15 @@ class SelectRegion(QDialog):
         payload = {}
         inherited = False
         if frame in self.frame_annotations:
-            payload = dict(self.frame_annotations.get(frame, {}))
+            payload = self._sanitize_annotation_payload(self.frame_annotations.get(frame, {}))
         else:
             prior_frames = [f for f in self.frame_annotations.keys() if int(f) <= frame]
             if prior_frames:
                 nearest = int(sorted(prior_frames)[-1])
-                payload = dict(self.frame_annotations.get(nearest, {}))
+                payload = self._sanitize_annotation_payload(self.frame_annotations.get(nearest, {}))
                 inherited = True
+        if frame in self.frame_annotations:
+            self.frame_annotations[frame] = payload
         self.videoPreview.region_points_positive = [
             QPointF(float(p.get("x", 0.0)), float(p.get("y", 0.0)))
             for p in (payload.get("positive_points") or [])
@@ -925,6 +992,7 @@ class SelectRegion(QDialog):
         self.videoPreview.update()
         self._frame_has_local_keyframe = frame in self.frame_annotations
         self._frame_edited = False
+        self._refresh_annotation_tool_state()
         if self._frame_has_local_keyframe and not inherited:
             self._schedule_mask_preview()
 
@@ -944,6 +1012,7 @@ class SelectRegion(QDialog):
         self.videoPreview.region_mask_preview_image = None
         self.videoPreview.region_mask_preview_frame = None
         self.videoPreview.update()
+        self._refresh_annotation_tool_state()
         self._update_defined_frames_label()
         self._refresh_marker_bar()
 
@@ -952,6 +1021,7 @@ class SelectRegion(QDialog):
             return
         self._frame_edited = True
         self._save_current_frame_annotations(force=True)
+        self._refresh_annotation_tool_state()
         self._refresh_marker_bar()
         self._schedule_mask_preview()
 
@@ -1108,8 +1178,24 @@ class SelectRegion(QDialog):
                 self._selected_region_qimage = region_qimage.copy()
         if self.selection_mode == "annotate":
             self._save_current_frame_annotations()
+            self.frame_annotations = {
+                int(frame): self._sanitize_annotation_payload(payload)
+                for frame, payload in self.frame_annotations.items()
+                if isinstance(payload, dict)
+            }
             if not self.frame_annotations:
                 QMessageBox.warning(self, _("Invalid Selection"), _("Please select at least one point or rectangle."))
+                return
+            frames_without_positive = [
+                int(frame) for frame, payload in self.frame_annotations.items()
+                if not self._has_positive_annotation(payload)
+            ]
+            if frames_without_positive:
+                QMessageBox.warning(
+                    self,
+                    _("Invalid Selection"),
+                    _("Each Object Mask frame must include at least one positive point or rectangle."),
+                )
                 return
             sorted_frames = sorted(self.frame_annotations.keys())
             seed_frame = int(sorted_frames[0]) if sorted_frames else int(self.current_frame)

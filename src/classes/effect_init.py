@@ -185,15 +185,23 @@ effect_options = {
         {
             "title": "Processing Device",
             "setting": "processing-device",
-            "value": "GPU",
+            "value": "CPU",
             "values": [
-                {
-                    "value": "GPU",
-                    "name": "GPU"
-                },
                 {
                     "value": "CPU",
                     "name": "CPU"
+                },
+                {
+                    "value": "GPU_AUTO",
+                    "name": "GPU (Auto)"
+                },
+                {
+                    "value": "GPU_CUDA",
+                    "name": "GPU (CUDA)"
+                },
+                {
+                    "value": "GPU_OPENCL",
+                    "name": "GPU (OpenCL)"
                 }
             ],
             "type": "dropdown",
@@ -274,15 +282,23 @@ effect_options = {
         {
             "title": "Processing Device",
             "setting": "processing-device",
-            "value": "GPU",
+            "value": "CPU",
             "values": [
-                {
-                    "value": "GPU",
-                    "name": "GPU"
-                },
                 {
                     "value": "CPU",
                     "name": "CPU"
+                },
+                {
+                    "value": "GPU_AUTO",
+                    "name": "GPU (Auto)"
+                },
+                {
+                    "value": "GPU_CUDA",
+                    "name": "GPU (CUDA)"
+                },
+                {
+                    "value": "GPU_OPENCL",
+                    "name": "GPU (OpenCL)"
                 }
             ],
             "type": "dropdown",

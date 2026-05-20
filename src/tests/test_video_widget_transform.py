@@ -267,7 +267,7 @@ class VideoWidgetTransformTests(unittest.TestCase):
         self.assertTrue(model["advanced"])
         self.assertTrue(classes["advanced"])
         self.assertTrue(device["advanced"])
-        self.assertEqual(device["value"], "GPU")
+        self.assertEqual(device["value"], "CPU")
 
     def test_object_mask_initializer_defaults_to_efficientsam_downloads(self):
         object_mask_options = effect_options["ObjectMask"]
@@ -302,7 +302,7 @@ class VideoWidgetTransformTests(unittest.TestCase):
         self.assertTrue(cutie_readout["advanced"])
         self.assertTrue(cutie_decode["advanced"])
         self.assertTrue(device["advanced"])
-        self.assertEqual(device["value"], "GPU")
+        self.assertEqual(device["value"], "CPU")
         self.assertLess(device_index, selector_index)
         self.assertTrue(efficient_sam["value"].endswith(
             ".openshot_qt/yolo/efficient-sam-tiny-1024/image_segmentation_efficientsam_ti_2025april.onnx"))

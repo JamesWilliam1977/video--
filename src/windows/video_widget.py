@@ -57,6 +57,7 @@ OBJECT_MASK_PREVIEW_STROKE_WIDTH = 3
 class VideoWidget(QWidget, updates.UpdateInterface):
     """ A QWidget used on the video display widget """
     regionAnnotationChanged = pyqtSignal()
+    regionAnnotationLimitReached = pyqtSignal()
     regionRectChanged = pyqtSignal()
     scopeRegionCancelled = pyqtSignal()
 
@@ -990,14 +991,26 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self.region_annotation_inherited = False
             tool = str(self.region_annotation_tool or "positive_point")
             if tool == "positive_point":
+                if not self._can_add_region_annotation(tool):
+                    self.regionAnnotationLimitReached.emit()
+                    self.update()
+                    return
                 self.region_points_positive.append(point)
                 self.update()
                 self.regionAnnotationChanged.emit()
             elif tool == "negative_point":
+                if not self._can_add_region_annotation(tool):
+                    self.regionAnnotationLimitReached.emit()
+                    self.update()
+                    return
                 self.region_points_negative.append(point)
                 self.update()
                 self.regionAnnotationChanged.emit()
             elif tool in ("positive_rect", "negative_rect"):
+                if not self._can_add_region_annotation(tool):
+                    self.regionAnnotationLimitReached.emit()
+                    self.update()
+                    return
                 self.region_rect_drag_start = QPointF(point)
                 self.region_rect_drag_current = QPointF(point)
                 self.update()
@@ -1044,10 +1057,13 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 rect = QRectF(self.region_rect_drag_start, self.region_rect_drag_current).normalized()
                 if rect.width() >= 2.0 and rect.height() >= 2.0:
                     tool = str(self.region_annotation_tool or "positive_rect")
-                    if tool == "negative_rect":
-                        self.region_rects_negative.append(rect)
+                    if self._can_add_region_annotation(tool):
+                        if tool == "negative_rect":
+                            self.region_rects_negative.append(rect)
+                        else:
+                            self.region_rects_positive.append(rect)
                     else:
-                        self.region_rects_positive.append(rect)
+                        self.regionAnnotationLimitReached.emit()
             self.region_rect_drag_start = None
             self.region_rect_drag_current = None
             self.region_mode = None
@@ -2125,6 +2141,35 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         y = min(max(float(point.y()), 0.0), max(max_h - 1.0, 0.0))
         return QPointF(x, y)
 
+    def _region_annotation_limit(self, name, default):
+        limits = getattr(self, "region_annotation_limits", {}) or {}
+        try:
+            return int(limits.get(name, default))
+        except Exception:
+            return int(default)
+
+    def _negative_annotation_count(self):
+        return len(self.region_points_negative or []) + len(self.region_rects_negative or [])
+
+    def _positive_prompt_slots_used(self):
+        return len(self.region_points_positive or []) + (2 * len(self.region_rects_positive or []))
+
+    def _can_add_region_annotation(self, tool):
+        tool = str(tool or "")
+        prompt_slots = self._region_annotation_limit("prompt_slots", 6)
+        max_positive_rects = self._region_annotation_limit("positive_rects", 3)
+        max_negative_filters = self._region_annotation_limit("negative_filters", 8)
+
+        if tool == "positive_point":
+            return self._positive_prompt_slots_used() < prompt_slots
+        if tool == "positive_rect":
+            if len(self.region_rects_positive or []) >= max_positive_rects:
+                return False
+            return self._positive_prompt_slots_used() + 2 <= prompt_slots
+        if tool in ("negative_point", "negative_rect"):
+            return self._negative_annotation_count() < max_negative_filters
+        return True
+
     def updateEffectProperty(self, effect_id, frame_number, obj_id, property_key, new_value, refresh=True):
         """Update a keyframe property to a new value, adding or updating keyframes as needed"""
         self.updateEffectProperties(
@@ -2920,6 +2965,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         self.region_enabled = False
         self.region_selection_mode = "rect"
         self.region_annotation_tool = "positive_point"
+        self.region_annotation_limits = {}
         self.region_points = []
         self.region_points_positive = []
         self.region_points_negative = []

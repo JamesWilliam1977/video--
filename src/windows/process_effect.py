@@ -919,8 +919,11 @@ class ProcessEffect(QDialog):
         positive_points = frame_payload.get("positive_points") or []
         negative_points = frame_payload.get("negative_points") or []
         positive_rects = frame_payload.get("positive_rects") or []
+        negative_rects = frame_payload.get("negative_rects") or []
         context["positive_points"] = list(positive_points)
         context["negative_points"] = list(negative_points)
+        context["positive_rects"] = list(positive_rects)
+        context["negative_rects"] = list(negative_rects)
 
         if positive_rects:
             rect = positive_rects[0]
@@ -1652,17 +1655,20 @@ class ProcessEffect(QDialog):
         field = self.selection_fields.get(param["setting"])
         if field:
             field["valid"] = True
-            positives = len(prompt_context.get("positive_points") or [])
-            rects = 1 if "rect_x1" in prompt_context else 0
-            negatives = len(prompt_context.get("negative_points") or [])
-            if positives == 0 and "positive_x" in prompt_context:
-                positives = 1
+            includes = len(prompt_context.get("positive_points") or []) + len(prompt_context.get("positive_rects") or [])
+            excludes = len(prompt_context.get("negative_points") or []) + len(prompt_context.get("negative_rects") or [])
+            if includes == 0 and "positive_x" in prompt_context:
+                includes = 1
+            label_args = {
+                "include": includes,
+                "exclude": excludes,
+            }
+            if excludes > 0:
+                button_text = _("Selection: %(include)s include, %(exclude)s exclude") % label_args
+            else:
+                button_text = _("Selection: %(include)s include") % label_args
             field["button"].setText(
-                _("Selection: %(points)s point, %(rects)s rect, %(negatives)s negative") % {
-                    "points": positives,
-                    "rects": rects,
-                    "negatives": negatives,
-                }
+                button_text
             )
         self.update_file_validation()
         log.info(self.context)
