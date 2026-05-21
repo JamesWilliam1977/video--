@@ -5,6 +5,7 @@
 
 import os
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -48,3 +49,10 @@ class AssetsPathTests(unittest.TestCase):
             asset_path = get_assets_path("content://documents/tree/project.osp", create_paths=False)
 
         self.assertEqual(asset_path, "/home/test/.openshot_qt")
+
+    def test_get_assets_path_creates_protobuf_data_folder(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_path = os.path.join(tmpdir, "example.osp")
+            asset_path = get_assets_path(project_path, create_paths=True)
+
+            self.assertTrue(os.path.isdir(os.path.join(asset_path, "protobuf_data")))

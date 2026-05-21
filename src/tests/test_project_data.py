@@ -890,3 +890,72 @@ class ProjectDataTests(unittest.TestCase):
             )
             self.assertTrue(os.path.exists(expected_blender))
             self.assertTrue(os.path.exists(expected_protobuf))
+
+    def test_move_temp_paths_to_project_folder_copies_effect_protobuf_from_stale_path(self):
+        store = make_store()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            stale_proto_root = os.path.join(tmpdir, "old-runtime-protobuf")
+            current_proto_root = os.path.join(tmpdir, "current-project-protobuf")
+            thumb_root = os.path.join(tmpdir, "thumbs")
+            title_root = os.path.join(tmpdir, "titles")
+            blender_root = os.path.join(tmpdir, "blender")
+            clipboard_root = os.path.join(tmpdir, "clipboard")
+            comfy_root = os.path.join(tmpdir, "comfy")
+            proxy_root = os.path.join(tmpdir, "optimized")
+            for folder in [
+                stale_proto_root, current_proto_root, thumb_root, title_root,
+                blender_root, clipboard_root, comfy_root, proxy_root,
+            ]:
+                os.mkdir(folder)
+
+            stale_proto = os.path.join(stale_proto_root, "E1.data")
+            with open(stale_proto, "w", encoding="utf-8") as handle:
+                handle.write("object-mask-data")
+
+            project_path = os.path.join(tmpdir, "example.osp")
+            asset_path = os.path.join(tmpdir, "example_assets")
+            store._data = {
+                "files": [],
+                "effects": [{"id": "T1", "protobuf_data_path": stale_proto}],
+                "clips": [
+                    {
+                        "id": "C1",
+                        "file_id": "",
+                        "reader": {},
+                        "effects": [{"id": "E1", "protobuf_data_path": stale_proto}],
+                    },
+                ],
+            }
+
+            with ExitStack() as stack:
+                stack.enter_context(patch("classes.project_data.get_assets_path", lambda path, create_paths=True: asset_path))
+                stack.enter_context(patch("classes.project_data.info.THUMBNAIL_PATH", thumb_root))
+                stack.enter_context(patch("classes.project_data.info.TITLE_PATH", title_root))
+                stack.enter_context(patch("classes.project_data.info.BLENDER_PATH", blender_root))
+                stack.enter_context(patch("classes.project_data.info.PROTOBUF_DATA_PATH", current_proto_root))
+                stack.enter_context(patch("classes.project_data.info.CLIPBOARD_PATH", clipboard_root))
+                stack.enter_context(patch("classes.project_data.info.COMFYUI_OUTPUT_PATH", comfy_root))
+                stack.enter_context(patch("classes.project_data.info.PROXY_PATH", proxy_root))
+                ProjectDataStore.move_temp_paths_to_project_folder(store, project_path)
+
+            expected_proto = os.path.join(asset_path, "protobuf_data", "E1.data")
+            self.assertTrue(os.path.exists(expected_proto))
+            self.assertEqual(store._data["effects"][0]["protobuf_data_path"], expected_proto)
+            self.assertEqual(store._data["clips"][0]["effects"][0]["protobuf_data_path"], expected_proto)
+
+    def test_save_updates_active_protobuf_path_to_project_assets(self):
+        store = make_store()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            project_path = os.path.join(tmpdir, "example.osp")
+            asset_path = os.path.join(tmpdir, "example_assets")
+            store._data = {"files": [], "effects": [], "clips": []}
+
+            with ExitStack() as stack:
+                stack.enter_context(patch("classes.project_data.get_assets_path", lambda path, create_paths=True: asset_path))
+                stack.enter_context(patch("classes.project_data.info.PROTOBUF_DATA_PATH", os.path.join(tmpdir, "runtime-protobuf")))
+                stack.enter_context(patch.object(store, "move_temp_paths_to_project_folder", lambda file_path, previous_path=None: None))
+                stack.enter_context(patch.object(store, "write_to_file", lambda *args, **kwargs: None))
+                stack.enter_context(patch.object(store, "add_to_recent_files", lambda file_path: None))
+                ProjectDataStore.save(store, project_path)
+                from classes import info
+                self.assertEqual(info.PROTOBUF_DATA_PATH, os.path.join(asset_path, "protobuf_data"))
