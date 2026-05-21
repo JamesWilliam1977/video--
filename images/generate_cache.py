@@ -220,7 +220,7 @@ def collect_transitions(icon_size):
         ("extra", extra_dir, os.listdir(extra_dir)),
     ]
 
-    for group_type, dir_name, files in transition_groups:
+    for _, dir_name, files in transition_groups:
         for filename in sorted(files):
             if filename[0] == "." or "thumbs.db" in filename.lower():
                 continue

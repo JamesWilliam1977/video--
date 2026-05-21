@@ -42,12 +42,20 @@ from classes import http_client, info
 from classes.logger import log
 
 
+def _validate_urlopen_scheme(url):
+    request_url = getattr(url, "full_url", url)
+    scheme = urlparse(str(request_url)).scheme.lower()
+    if scheme not in ("http", "https"):
+        raise ValueError("Unsupported URL scheme for ComfyUI request: {}".format(scheme or "<empty>"))
+    return request_url, scheme
+
+
 def urlopen(url, *args, **kwargs):
     """Open Comfy URLs with packaged CA handling for HTTPS."""
-    request_url = getattr(url, "full_url", url)
-    if urlparse(str(request_url)).scheme.lower() == "https" and "context" not in kwargs:
+    request_url, scheme = _validate_urlopen_scheme(url)
+    if scheme == "https" and "context" not in kwargs:
         kwargs["context"] = http_client.ssl_context()
-    return _stdlib_urlopen(url, *args, **kwargs)
+    return _stdlib_urlopen(url, *args, **kwargs)  # nosec B310 - URL schemes are restricted above.
 
 
 class ComfyProgressSocket:

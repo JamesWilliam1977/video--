@@ -508,7 +508,7 @@ class ProcessEffect(QDialog):
             if os.path.getsize(path) <= 0:
                 return False, _("Model file is empty.")
             return self.validate_onnx_model_load(path)
-        elif validator == "classes":
+        if validator == "classes":
             try:
                 with open(path, "r", encoding="utf-8") as classes_file:
                     class_names = [line.strip() for line in classes_file if line.strip()]
@@ -524,7 +524,7 @@ class ProcessEffect(QDialog):
             self.file_validation_timer.stop()
 
         all_valid = True
-        for setting, field in self.file_fields.items():
+        for field in self.file_fields.values():
             path = field["path"].text()
             valid, message = self.validate_file_param(field["param"], path)
             status = field["status"]

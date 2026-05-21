@@ -541,7 +541,7 @@ class PropertiesModel(updates.UpdateInterface):
             # Create reference
             clip_data = c.data
             if object_id:
-                clip_data, is_all_objects_update = self._tracked_object_clip_data(c.data, object_id)
+                clip_data, _ = self._tracked_object_clip_data(c.data, object_id)
                 if not clip_data:
                     log.debug("No clip data found for this object id")
                     return
@@ -699,7 +699,7 @@ class PropertiesModel(updates.UpdateInterface):
                     # Create reference
                     clip_data = c.data
                     if object_id:
-                        clip_data, is_all_objects_update = self._tracked_object_clip_data(c.data, object_id)
+                        clip_data, _ = self._tracked_object_clip_data(c.data, object_id)
                         if not isinstance(clip_data, dict):
                             clip_data = {}
 
@@ -979,7 +979,7 @@ class PropertiesModel(updates.UpdateInterface):
                 # Create reference
                 clip_data = c.data
                 if object_id:
-                    clip_data, is_all_objects_update = self._tracked_object_clip_data(c.data, object_id)
+                    clip_data, _ = self._tracked_object_clip_data(c.data, object_id)
                     if not clip_data:
                         log.debug("No clip data found for this object id")
                         return

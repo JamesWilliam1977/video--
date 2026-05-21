@@ -10,17 +10,40 @@ import argparse
 import glob
 import os
 import shutil
-import subprocess
+import subprocess  # nosec B404 - macOS packaging uses fixed local tooling.
 import sys
 
 
+ALLOWED_COMMANDS = {
+    "install_name_tool": "/usr/bin/install_name_tool",
+    "otool": "/usr/bin/otool",
+}
+
+
+def validate_tool_command(command):
+    """Validate subprocess commands used by this packaging helper."""
+    if not command or command[0] not in ALLOWED_COMMANDS:
+        raise ValueError("Unexpected command: {}".format(command[0] if command else ""))
+    if any("\x00" in str(argument) for argument in command):
+        raise ValueError("Command arguments must not contain null bytes")
+    return [ALLOWED_COMMANDS[command[0]]] + command[1:]
+
+
 def run(command):
+    validated_command = validate_tool_command(command)
     print(" ".join(command))
-    subprocess.check_call(command)
+    subprocess.check_call(validated_command)  # nosec B603 - fixed executable, validated args, no shell.
 
 
 def otool_dependencies(path):
-    output = subprocess.check_output(["otool", "-L", path], text=True)
+    path = os.path.abspath(path)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Binary not found: {path}")
+    command = validate_tool_command(["otool", "-L", path])
+    output = subprocess.check_output(  # nosec B603 - fixed executable, validated path, no shell.
+        command,
+        text=True,
+    )
     dependencies = []
     for line in output.splitlines()[1:]:
         line = line.strip()

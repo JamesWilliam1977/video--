@@ -215,7 +215,7 @@ def _send_metric_worker():
         }
 
         try:
-            r = http_client.post_json(
+            http_client.post_json(
                 url,
                 payload,
                 "metrics",

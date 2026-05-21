@@ -31,6 +31,7 @@ from classes.logger import log
 DEFAULT_CONNECT_TIMEOUT = 2
 DEFAULT_READ_TIMEOUT = 5
 DOWNLOAD_READ_SIZE = 1024 * 1024
+URLLIB_ALLOWED_SCHEMES = ("http", "https")
 
 
 def ca_bundle_path():
@@ -78,6 +79,14 @@ def http_fallback_url(url):
     if parsed.scheme.lower() != "https":
         return None
     return urlunparse(parsed._replace(scheme="http"))
+
+
+def validate_url_scheme(url, allowed_schemes=URLLIB_ALLOWED_SCHEMES):
+    """Validate URLs before passing them to urllib helpers."""
+    scheme = urlparse(str(url)).scheme.lower()
+    if scheme not in allowed_schemes:
+        raise ValueError("Unsupported URL scheme: {}".format(scheme or "<empty>"))
+    return scheme
 
 
 def urls_with_http_fallback(url):
@@ -163,15 +172,16 @@ def download_file(urls, output_path, description, progress_callback=None, timeou
 
 
 def _download_file_once(url, output_path, progress_callback, timeout):
+    scheme = validate_url_scheme(url)
     request = urllib.request.Request(
         url,
         headers={"User-Agent": "OpenShot/{}".format(info.VERSION)},
     )
     kwargs = {"timeout": sum(timeout) if isinstance(timeout, tuple) else timeout}
-    if urlparse(url).scheme.lower() == "https":
+    if scheme == "https":
         kwargs["context"] = ssl_context()
 
-    with urllib.request.urlopen(request, **kwargs) as response:
+    with urllib.request.urlopen(request, **kwargs) as response:  # nosec B310 - URL scheme is restricted above.
         total_size = response.headers.get("Content-Length")
         total_size = int(total_size) if total_size else 0
         downloaded_size = 0

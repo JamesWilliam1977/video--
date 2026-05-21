@@ -179,10 +179,18 @@ def find_files(directory, patterns):
 
 def find_windows_imports(binary_path):
     """Return DLL imports reported by objdump for a Windows binary."""
+    binary_path = os.path.abspath(binary_path)
+    if not os.path.isfile(binary_path):
+        log.warning("Unable to inspect Windows DLL imports for missing file: %s", binary_path)
+        return None
+    if "\x00" in binary_path:
+        log.warning("Unable to inspect Windows DLL imports for invalid path")
+        return None
+
     log.info("Inspecting Windows DLL imports: %s", binary_path)
     try:
-        output = subprocess.check_output(
-            ["objdump", "-p", binary_path],
+        output = subprocess.check_output(  # nosec B603,B607 - fixed tool, validated file path, no shell.
+            ["objdump", "-p", "--", binary_path],
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         )
