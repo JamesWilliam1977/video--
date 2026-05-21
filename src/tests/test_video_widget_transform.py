@@ -33,7 +33,7 @@ import unittest
 from unittest.mock import patch
 
 import openshot
-from qt_api import QApplication, QColor, QLabel, QPoint, QPushButton, QRect, QRectF, QSize, QStandardItem, QTransform, Qt, QWidget
+from qt_api import QApplication, QColor, QLabel, QPoint, QPointF, QPushButton, QRect, QRectF, QSize, QStandardItem, QTransform, Qt, QWidget
 
 
 PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -456,6 +456,15 @@ class VideoWidgetTransformTests(unittest.TestCase):
 
         self.assertEqual(frame_size.width(), 810)
         self.assertEqual(frame_size.height(), 456)
+
+    def test_region_rect_edges_can_reach_frame_bounds(self):
+        self.widget.curr_frame_size = QSize(640, 360)
+
+        point = VideoWidget._clamp_region_point(self.widget, QPointF(640.0, 360.0))
+        edge = VideoWidget._clamp_region_point(self.widget, QPointF(640.0, 360.0), include_edges=True)
+
+        self.assertEqual(point, QPointF(639.0, 359.0))
+        self.assertEqual(edge, QPointF(640.0, 360.0))
 
     def test_process_effect_disables_editable_controls_while_processing(self):
         process = ProcessEffect.__new__(ProcessEffect)

@@ -942,7 +942,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
         if self.region_enabled and self.region_selection_mode not in ("point", "annotate") and event.button() == Qt.LeftButton:
             self._ensure_region_transform()
-            point = self._clamp_region_point(self.region_transform_inverted.map(event.pos()))
+            point = self._clamp_region_point(
+                self.region_transform_inverted.map(event.pos()),
+                include_edges=True)
             region_rect = self._scope_region_rect()
             self.region_mode = None
             self.region_press_outside = False
@@ -978,8 +980,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.update()
         elif self.region_enabled and self.region_selection_mode == "annotate" and event.button() == Qt.LeftButton:
             self._ensure_region_transform()
+            tool = str(self.region_annotation_tool or "positive_point")
             point = self.region_transform_inverted.map(event.pos())
-            point = self._clamp_region_point(point)
+            point = self._clamp_region_point(point, include_edges=tool.endswith("_rect"))
             if bool(self.region_annotation_inherited):
                 # First edit on a carried frame should replace inherited selections.
                 self.region_points_positive = []
@@ -989,7 +992,6 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self.region_rect_drag_start = None
                 self.region_rect_drag_current = None
                 self.region_annotation_inherited = False
-            tool = str(self.region_annotation_tool or "positive_point")
             if tool == "positive_point":
                 if not self._can_add_region_annotation(tool):
                     self.regionAnnotationLimitReached.emit()
@@ -1323,7 +1325,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self._ensure_region_transform()
                 if self.region_rect_drag_start is not None and self.mouse_pressed:
                     current = self.region_transform_inverted.map(event.pos())
-                    self.region_rect_drag_current = self._clamp_region_point(current)
+                    self.region_rect_drag_current = self._clamp_region_point(current, include_edges=True)
                     self.update()
                 self.mouse_position = event.pos()
                 self.mutex.unlock()
@@ -1336,7 +1338,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 return
 
             self._ensure_region_transform()
-            point = self._clamp_region_point(self.region_transform_inverted.map(event.pos()))
+            point = self._clamp_region_point(
+                self.region_transform_inverted.map(event.pos()),
+                include_edges=True)
             region_rect = self._scope_region_rect()
             corner_rects = self._scope_region_corner_rects()
             hover_mode = None
@@ -1355,7 +1359,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self.setCursor(Qt.CrossCursor)
 
             if self.mouse_dragging:
-                last_point = self._clamp_region_point(self.region_transform_inverted.map(self.mouse_position))
+                last_point = self._clamp_region_point(
+                    self.region_transform_inverted.map(self.mouse_position),
+                    include_edges=True)
                 diff_x = point.x() - last_point.x()
                 diff_y = point.y() - last_point.y()
 
@@ -2130,15 +2136,17 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.region_transform.scale(self.zoom, self.zoom)
         self.region_transform_inverted = self.region_transform.inverted()[0]
 
-    def _clamp_region_point(self, point):
+    def _clamp_region_point(self, point, include_edges=False):
         max_w = float(self.curr_frame_size.width()) if self.curr_frame_size else 0.0
         max_h = float(self.curr_frame_size.height()) if self.curr_frame_size else 0.0
         if max_w <= 0.0 or max_h <= 0.0:
             viewport = self.centeredViewport(self.width(), self.height())
             max_w = float(viewport.width()) / max(self.zoom, 0.001)
             max_h = float(viewport.height()) / max(self.zoom, 0.001)
-        x = min(max(float(point.x()), 0.0), max(max_w - 1.0, 0.0))
-        y = min(max(float(point.y()), 0.0), max(max_h - 1.0, 0.0))
+        max_x = max_w if include_edges else max(max_w - 1.0, 0.0)
+        max_y = max_h if include_edges else max(max_h - 1.0, 0.0)
+        x = min(max(float(point.x()), 0.0), max(max_x, 0.0))
+        y = min(max(float(point.y()), 0.0), max(max_y, 0.0))
         return QPointF(x, y)
 
     def _region_annotation_limit(self, name, default):
