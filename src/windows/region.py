@@ -549,9 +549,10 @@ class SelectRegion(QDialog):
 
     def _icon_path(self, name):
         icon_name = str(name or "").strip()
-        path = os.path.join(info.PATH, "themes", "humanity", "images", icon_name)
-        if os.path.exists(path):
-            return path
+        for theme_name in ("cosmic", "humanity"):
+            path = os.path.join(info.PATH, "themes", theme_name, "images", icon_name)
+            if os.path.exists(path):
+                return path
         return ""
 
     def _object_mask_annotation_limits(self):
