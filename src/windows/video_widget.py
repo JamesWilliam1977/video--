@@ -49,11 +49,15 @@ from classes.app import get_app
 from classes.query import Clip, Effect
 
 MARGIN_BOX_EFFECTS = {"Bars", "Blur", "Caption", "Crop", "Pixelate"}
+OBJECT_MASK_PREVIEW_COLOR = QColor(83, 160, 237, 120)
+OBJECT_MASK_PREVIEW_STROKE_COLOR = QColor(255, 255, 255, 255)
+OBJECT_MASK_PREVIEW_STROKE_WIDTH = 3
 
 
 class VideoWidget(QWidget, updates.UpdateInterface):
     """ A QWidget used on the video display widget """
     regionAnnotationChanged = pyqtSignal()
+    regionAnnotationLimitReached = pyqtSignal()
     regionRectChanged = pyqtSignal()
     scopeRegionCancelled = pyqtSignal()
 
@@ -218,6 +222,38 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 return True
             return all(prop in self.transforming_effect.data for prop in ("left", "top", "right", "bottom"))
         return False
+
+    def _draw_object_mask_preview(self, painter, mask_image, target_rect):
+        if mask_image is None or mask_image.isNull():
+            return
+
+        overlay = QImage(mask_image.size(), QImage.Format_ARGB32_Premultiplied)
+        overlay.fill(Qt.transparent)
+        overlay_painter = QPainter(overlay)
+        overlay_painter.setCompositionMode(QPainter.CompositionMode_Source)
+        overlay_painter.fillRect(overlay.rect(), OBJECT_MASK_PREVIEW_COLOR)
+        overlay_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        overlay_painter.drawImage(0, 0, mask_image)
+        overlay_painter.end()
+        painter.drawImage(target_rect, overlay)
+
+        stroke = QImage(mask_image.size(), QImage.Format_ARGB32_Premultiplied)
+        stroke.fill(Qt.transparent)
+        stroke_painter = QPainter(stroke)
+        stroke_painter.setCompositionMode(QPainter.CompositionMode_Source)
+        stroke_painter.fillRect(stroke.rect(), OBJECT_MASK_PREVIEW_STROKE_COLOR)
+        stroke_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
+        radius = max(1, int(OBJECT_MASK_PREVIEW_STROKE_WIDTH))
+        for y in range(-radius, radius + 1):
+            for x in range(-radius, radius + 1):
+                if x == 0 and y == 0:
+                    continue
+                if (x * x + y * y) <= (radius * radius):
+                    stroke_painter.drawImage(x, y, mask_image)
+        stroke_painter.setCompositionMode(QPainter.CompositionMode_DestinationOut)
+        stroke_painter.drawImage(0, 0, mask_image)
+        stroke_painter.end()
+        painter.drawImage(target_rect, stroke)
 
     @staticmethod
     def _margin_box_norm(raw_properties):
@@ -487,6 +523,13 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             else:
                 dock.setWindowTitle(base_title)
 
+    @staticmethod
+    def _scaled_frame_size(image_size, widget_size):
+        """Return the logical displayed frame size inside the widget."""
+        pix_size = QSize(image_size)
+        pix_size.scale(widget_size, Qt.KeepAspectRatio)
+        return pix_size
+
     def paintEvent(self, event, *args):
         """ Custom paint event """
         event.accept()
@@ -524,8 +567,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             # Viewport and frame
             viewport = self.centeredViewport(self.width(), self.height())
             if self.current_image:
-                pix_size = self.current_image.size()
-                pix_size.scale(event.rect().size(), Qt.KeepAspectRatio)
+                pix_size = self._scaled_frame_size(self.current_image.size(), self.size())
                 self.curr_frame_size = pix_size
 
                 scale = self.devicePixelRatioF()
@@ -753,6 +795,15 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
                 cs = self.cs
                 if self.region_selection_mode in ("point", "annotate"):
+                    if (
+                        self.region_selection_mode == "annotate"
+                        and self.region_mask_preview_image is not None
+                        and self.curr_frame_size is not None
+                    ):
+                        mask_image = self.region_mask_preview_image
+                        mask_rect = QRectF(0.0, 0.0, float(self.curr_frame_size.width()), float(self.curr_frame_size.height()))
+                        self._draw_object_mask_preview(painter, mask_image, mask_rect)
+
                     point_radius = max(2.0, (cs * 0.4) / max(self.zoom, 0.001))
                     if self.region_points_positive:
                         pos_color = QColor("#53a0ed")
@@ -891,7 +942,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
 
         if self.region_enabled and self.region_selection_mode not in ("point", "annotate") and event.button() == Qt.LeftButton:
             self._ensure_region_transform()
-            point = self._clamp_region_point(self.region_transform_inverted.map(event.pos()))
+            point = self._clamp_region_point(
+                self.region_transform_inverted.map(event.pos()),
+                include_edges=True)
             region_rect = self._scope_region_rect()
             self.region_mode = None
             self.region_press_outside = False
@@ -927,8 +980,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.update()
         elif self.region_enabled and self.region_selection_mode == "annotate" and event.button() == Qt.LeftButton:
             self._ensure_region_transform()
+            tool = str(self.region_annotation_tool or "positive_point")
             point = self.region_transform_inverted.map(event.pos())
-            point = self._clamp_region_point(point)
+            point = self._clamp_region_point(point, include_edges=tool.endswith("_rect"))
             if bool(self.region_annotation_inherited):
                 # First edit on a carried frame should replace inherited selections.
                 self.region_points_positive = []
@@ -938,16 +992,27 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self.region_rect_drag_start = None
                 self.region_rect_drag_current = None
                 self.region_annotation_inherited = False
-            tool = str(self.region_annotation_tool or "positive_point")
             if tool == "positive_point":
+                if not self._can_add_region_annotation(tool):
+                    self.regionAnnotationLimitReached.emit()
+                    self.update()
+                    return
                 self.region_points_positive.append(point)
                 self.update()
                 self.regionAnnotationChanged.emit()
             elif tool == "negative_point":
+                if not self._can_add_region_annotation(tool):
+                    self.regionAnnotationLimitReached.emit()
+                    self.update()
+                    return
                 self.region_points_negative.append(point)
                 self.update()
                 self.regionAnnotationChanged.emit()
             elif tool in ("positive_rect", "negative_rect"):
+                if not self._can_add_region_annotation(tool):
+                    self.regionAnnotationLimitReached.emit()
+                    self.update()
+                    return
                 self.region_rect_drag_start = QPointF(point)
                 self.region_rect_drag_current = QPointF(point)
                 self.update()
@@ -994,10 +1059,13 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 rect = QRectF(self.region_rect_drag_start, self.region_rect_drag_current).normalized()
                 if rect.width() >= 2.0 and rect.height() >= 2.0:
                     tool = str(self.region_annotation_tool or "positive_rect")
-                    if tool == "negative_rect":
-                        self.region_rects_negative.append(rect)
+                    if self._can_add_region_annotation(tool):
+                        if tool == "negative_rect":
+                            self.region_rects_negative.append(rect)
+                        else:
+                            self.region_rects_positive.append(rect)
                     else:
-                        self.region_rects_positive.append(rect)
+                        self.regionAnnotationLimitReached.emit()
             self.region_rect_drag_start = None
             self.region_rect_drag_current = None
             self.region_mode = None
@@ -1257,7 +1325,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self._ensure_region_transform()
                 if self.region_rect_drag_start is not None and self.mouse_pressed:
                     current = self.region_transform_inverted.map(event.pos())
-                    self.region_rect_drag_current = self._clamp_region_point(current)
+                    self.region_rect_drag_current = self._clamp_region_point(current, include_edges=True)
                     self.update()
                 self.mouse_position = event.pos()
                 self.mutex.unlock()
@@ -1270,7 +1338,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 return
 
             self._ensure_region_transform()
-            point = self._clamp_region_point(self.region_transform_inverted.map(event.pos()))
+            point = self._clamp_region_point(
+                self.region_transform_inverted.map(event.pos()),
+                include_edges=True)
             region_rect = self._scope_region_rect()
             corner_rects = self._scope_region_corner_rects()
             hover_mode = None
@@ -1289,7 +1359,9 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 self.setCursor(Qt.CrossCursor)
 
             if self.mouse_dragging:
-                last_point = self._clamp_region_point(self.region_transform_inverted.map(self.mouse_position))
+                last_point = self._clamp_region_point(
+                    self.region_transform_inverted.map(self.mouse_position),
+                    include_edges=True)
                 diff_x = point.x() - last_point.x()
                 diff_y = point.y() - last_point.y()
 
@@ -2054,8 +2126,6 @@ class VideoWidget(QWidget, updates.UpdateInterface):
                 get_app().window.refreshFrameSignal.emit()
 
     def _ensure_region_transform(self):
-        if self.region_transform:
-            return
         viewport = self.centeredViewport(self.width(), self.height())
         self.region_transform = QTransform()
         rx = viewport.x()
@@ -2066,16 +2136,47 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.region_transform.scale(self.zoom, self.zoom)
         self.region_transform_inverted = self.region_transform.inverted()[0]
 
-    def _clamp_region_point(self, point):
+    def _clamp_region_point(self, point, include_edges=False):
         max_w = float(self.curr_frame_size.width()) if self.curr_frame_size else 0.0
         max_h = float(self.curr_frame_size.height()) if self.curr_frame_size else 0.0
         if max_w <= 0.0 or max_h <= 0.0:
             viewport = self.centeredViewport(self.width(), self.height())
             max_w = float(viewport.width()) / max(self.zoom, 0.001)
             max_h = float(viewport.height()) / max(self.zoom, 0.001)
-        x = min(max(float(point.x()), 0.0), max(max_w - 1.0, 0.0))
-        y = min(max(float(point.y()), 0.0), max(max_h - 1.0, 0.0))
+        max_x = max_w if include_edges else max(max_w - 1.0, 0.0)
+        max_y = max_h if include_edges else max(max_h - 1.0, 0.0)
+        x = min(max(float(point.x()), 0.0), max(max_x, 0.0))
+        y = min(max(float(point.y()), 0.0), max(max_y, 0.0))
         return QPointF(x, y)
+
+    def _region_annotation_limit(self, name, default):
+        limits = getattr(self, "region_annotation_limits", {}) or {}
+        try:
+            return int(limits.get(name, default))
+        except Exception:
+            return int(default)
+
+    def _negative_annotation_count(self):
+        return len(self.region_points_negative or []) + len(self.region_rects_negative or [])
+
+    def _positive_prompt_slots_used(self):
+        return len(self.region_points_positive or []) + (2 * len(self.region_rects_positive or []))
+
+    def _can_add_region_annotation(self, tool):
+        tool = str(tool or "")
+        prompt_slots = self._region_annotation_limit("prompt_slots", 6)
+        max_positive_rects = self._region_annotation_limit("positive_rects", 3)
+        max_negative_filters = self._region_annotation_limit("negative_filters", 8)
+
+        if tool == "positive_point":
+            return self._positive_prompt_slots_used() < prompt_slots
+        if tool == "positive_rect":
+            if len(self.region_rects_positive or []) >= max_positive_rects:
+                return False
+            return self._positive_prompt_slots_used() + 2 <= prompt_slots
+        if tool in ("negative_point", "negative_rect"):
+            return self._negative_annotation_count() < max_negative_filters
+        return True
 
     def updateEffectProperty(self, effect_id, frame_number, obj_id, property_key, new_value, refresh=True):
         """Update a keyframe property to a new value, adding or updating keyframes as needed"""
@@ -2549,6 +2650,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
             self.region_rects_negative = []
             self.region_rect_drag_start = None
             self.region_rect_drag_current = None
+            self.region_mask_preview_image = None
+            self.region_mask_preview_frame = None
             self.regionTopLeftHandle = None
             self.regionBottomRightHandle = None
         self.update()
@@ -2870,6 +2973,7 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         self.region_enabled = False
         self.region_selection_mode = "rect"
         self.region_annotation_tool = "positive_point"
+        self.region_annotation_limits = {}
         self.region_points = []
         self.region_points_positive = []
         self.region_points_negative = []
@@ -2878,6 +2982,8 @@ class VideoWidget(QWidget, updates.UpdateInterface):
         self.region_rect_drag_start = None
         self.region_rect_drag_current = None
         self.region_annotation_inherited = False
+        self.region_mask_preview_image = None
+        self.region_mask_preview_frame = None
         self.region_mode = None
         self.region_press_outside = False
         self.scope_region_drag_anchor = None
