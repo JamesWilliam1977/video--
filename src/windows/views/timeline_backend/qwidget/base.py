@@ -2033,9 +2033,26 @@ class TimelineWidgetBase(QWidget):
             event.accept()
             return
 
+        horizontal_delta = 0.0
+        pixel_delta = event.pixelDelta()
+        angle_delta = event.angleDelta()
+        if not pixel_delta.isNull():
+            horizontal_delta = pixel_delta.x()
+        if not horizontal_delta:
+            horizontal_delta = angle_delta.x()
+
+        if horizontal_delta and self.scrollbar_position[3] > 0 and self.scrollbar_position[2] > self.scrollbar_position[3]:
+            delta = -horizontal_delta / 120.0
+            self._pending_hscroll_delta += delta
+            if not self._hscroll_timer.isActive():
+                # Process accumulated wheel events once the event queue is flushed
+                self._hscroll_timer.start(0)
+            event.accept()
+            return
+
         if event.modifiers() & Qt.ShiftModifier:
             if self.scrollbar_position[3] > 0 and self.scrollbar_position[2] > self.scrollbar_position[3]:
-                delta = -event.angleDelta().y() / 120.0
+                delta = -angle_delta.y() / 120.0
                 if delta:
                     self._pending_hscroll_delta += delta
                     if not self._hscroll_timer.isActive():
